@@ -5,8 +5,8 @@ const _ = require('lodash');
 const common = require('./common');
 
 router.get('/payment/:orderId', (req, res, next) => {
-    var db = req.app.db;
-    var config = common.getConfig();
+    let db = req.app.db;
+    let config = common.getConfig();
 
     // render the payment complete message
     db.orders.findOne({_id: common.getId(req.params.orderId)}, (err, result) => {
@@ -29,7 +29,7 @@ router.get('/payment/:orderId', (req, res, next) => {
 });
 
 router.get('/checkout', (req, res, next) => {
-    var config = common.getConfig();
+    let config = common.getConfig();
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -56,7 +56,7 @@ router.get('/checkout', (req, res, next) => {
 });
 
 router.get('/pay', (req, res, next) => {
-    var config = common.getConfig();
+    let config = common.getConfig();
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -96,10 +96,10 @@ router.get('/cartPartial', (req, res) => {
 
 // show an individual product
 router.get('/product/:id', (req, res) => {
-    var db = req.app.db;
-    var config = common.getConfig();
+    let db = req.app.db;
+    let config = common.getConfig();
 
-    db.products.findOne({$or: [{_id: common.getId(req.params.id)}, {productPermalink: req.params.id}]}, function (err, result){
+    db.products.findOne({$or: [{_id: common.getId(req.params.id)}, {productPermalink: req.params.id}]}, (err, result) => {
         // render 404 if page is not published
         if(err){
             res.render('error', {message: '404 - Page not found', helpers: req.handlebars.helpers});
@@ -107,13 +107,13 @@ router.get('/product/:id', (req, res) => {
         if(err || result == null || result.productPublished === 'false'){
             res.render('error', {message: '404 - Page not found', helpers: req.handlebars.helper});
         }else{
-            var productOptions = {};
+            let productOptions = {};
             if(result.productOptions){
                 productOptions = JSON.parse(result.productOptions);
             }
 
             // show the view
-            common.getImages(result._id, req, res, function (images){
+            common.getImages(result._id, req, res, (images) => {
                 res.render(config.themeViews + 'product', {
                     title: result.productTitle,
                     result: result,
@@ -137,7 +137,7 @@ router.get('/product/:id', (req, res) => {
 });
 
 // logout
-router.get('/logout', function (req, res){
+router.get('/logout', (req, res) => {
     req.session.user = null;
     req.session.message = null;
     req.session.messageType = null;
@@ -145,10 +145,10 @@ router.get('/logout', function (req, res){
 });
 
 // login form
-router.get('/login', function (req, res){
-    var db = req.app.db;
+router.get('/login', (req, res) => {
+    let db = req.app.db;
 
-    db.users.count({}, function(err, userCount){
+    db.users.count({}, (err, userCount) => {
         if(err){
             // if there are no users set the "needsSetup" session
             req.session.needsSetup = true;
@@ -176,10 +176,10 @@ router.get('/login', function (req, res){
 });
 
 // setup form is shown when there are no users setup in the DB
-router.get('/setup', function (req, res){
-    var db = req.app.db;
+router.get('/setup', (req, res) => {
+    let db = req.app.db;
 
-    db.users.count({}, function (err, userCount){
+    db.users.count({}, (err, userCount) => {
         if(err){
             console.error(colors.red('Error getting users for setup', err));
         }
@@ -198,17 +198,16 @@ router.get('/setup', function (req, res){
             });
         }else{
             res.redirect('/login');
-            return;
         }
     });
 });
 
 // login the user and check the password
-router.post('/login_action', function (req, res){
-    var db = req.app.db;
-    var bcrypt = req.bcrypt;
+router.post('/login_action', (req, res) => {
+    let db = req.app.db;
+    let bcrypt = req.bcrypt;
 
-    db.users.findOne({userEmail: req.body.email}, function (err, user){
+    db.users.findOne({userEmail: req.body.email}, (err, user) => {
         if(err){
             req.session.message = 'Cannot find user.';
             req.session.messageType = 'danger';
@@ -234,21 +233,20 @@ router.post('/login_action', function (req, res){
                 req.session.message = 'Access denied. Check password and try again.';
                 req.session.messageType = 'danger';
                 res.redirect('/login');
-                return;
             }
         }
     });
 });
 
 // search products
-router.get('/search/:searchTerm/:pageNum?', function (req, res){
-    var searchTerm = req.params.searchTerm;
-    var productsIndex = req.app.productsIndex;
-    var config = common.getConfig();
-    var numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+router.get('/search/:searchTerm/:pageNum?', (req, res) => {
+    let searchTerm = req.params.searchTerm;
+    let productsIndex = req.app.productsIndex;
+    let config = common.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    var lunrIdArray = [];
-    productsIndex.search(searchTerm).forEach(function(id){
+    let lunrIdArray = [];
+    productsIndex.search(searchTerm).forEach((id) => {
         if(config.databaseType !== 'embedded'){
             lunrIdArray.push(common.getId(id.ref));
         }else{
@@ -256,13 +254,13 @@ router.get('/search/:searchTerm/:pageNum?', function (req, res){
         }
     });
 
-    var pageNum = 1;
+    let pageNum = 1;
     if(req.params.pageNum){
         pageNum = req.params.pageNum;
     }
 
     // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, function (err, results){
+    getData(req, pageNum, {_id: {$in: lunrIdArray}}, (err, results) => {
         if(err){
             console.error(colors.red('Error searching for products', err));
         }
@@ -290,14 +288,14 @@ router.get('/search/:searchTerm/:pageNum?', function (req, res){
 });
 
 // search products
-router.get('/category/:cat/:pageNum?', function (req, res){
-    var searchTerm = req.params.cat;
-    var productsIndex = req.app.productsIndex;
-    var config = common.getConfig();
-    var numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+router.get('/category/:cat/:pageNum?', (req, res) => {
+    let searchTerm = req.params.cat;
+    let productsIndex = req.app.productsIndex;
+    let config = common.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    var lunrIdArray = [];
-    productsIndex.search(searchTerm).forEach(function(id){
+    let lunrIdArray = [];
+    productsIndex.search(searchTerm).forEach((id) => {
         if(config.databaseType !== 'embedded'){
             lunrIdArray.push(common.getId(id.ref));
         }else{
@@ -305,15 +303,15 @@ router.get('/category/:cat/:pageNum?', function (req, res){
         }
     });
 
-    var menuLink = _.find(common.getMenu().items, function(obj){ return obj.link === searchTerm; });
+    let menuLink = _.find(common.getMenu().items, (obj) => { return obj.link === searchTerm; });
 
-    var pageNum = 1;
+    let pageNum = 1;
     if(req.params.pageNum){
         pageNum = req.params.pageNum;
     }
 
     // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, function (err, results){
+    getData(req, pageNum, {_id: {$in: lunrIdArray}}, (err, results) => {
         if(err){
             console.error(colors.red('Error getting products for category', err));
         }
@@ -342,15 +340,15 @@ router.get('/category/:cat/:pageNum?', function (req, res){
 });
 
 // return sitemap
-router.get('/sitemap.xml', function (req, res, next){
-    var sm = require('sitemap');
-    var config = common.getConfig();
+router.get('/sitemap.xml', (req, res, next) => {
+    let sm = require('sitemap');
+    let config = common.getConfig();
 
-    common.addSitemapProducts(req, res, function (err, products){
+    common.addSitemapProducts(req, res, (err, products) => {
         if(err){
             console.error(colors.red('Error generating sitemap.xml', err));
         }
-        var sitemap = sm.createSitemap(
+        let sitemap = sm.createSitemap(
             {
                 hostname: config.baseUrl,
                 cacheTime: 600000,
@@ -359,11 +357,11 @@ router.get('/sitemap.xml', function (req, res, next){
                 ]
             });
 
-        var currentUrls = sitemap.urls;
-        var mergedUrls = currentUrls.concat(products);
+        let currentUrls = sitemap.urls;
+        let mergedUrls = currentUrls.concat(products);
         sitemap.urls = mergedUrls;
         // render the sitemap
-        sitemap.toXML(function(err, xml){
+        sitemap.toXML((err, xml) => {
             if(err){
                 return res.status(500).end();
             }
@@ -374,11 +372,11 @@ router.get('/sitemap.xml', function (req, res, next){
     });
 });
 
-router.get('/page/:pageNum', function (req, res, next){
-    var config = common.getConfig();
-    var numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+router.get('/page/:pageNum', (req, res, next) => {
+    let config = common.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    getData(req, req.params.pageNum, {}, function (err, results){
+    getData(req, req.params.pageNum, {}, (err, results) => {
         if(err){
             console.error(colors.red('Error getting products for page', err));
         }
@@ -403,14 +401,14 @@ router.get('/page/:pageNum', function (req, res, next){
     });
 });
 
-router.get('/:page?', function (req, res, next){
-    var db = req.app.db;
-    var config = common.getConfig();
-    var numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+router.get('/:page?', (req, res, next) => {
+    let db = req.app.db;
+    let config = common.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
-        getData(req, 1, {}, function (err, results){
+        getData(req, 1, {}, (err, results) => {
             if(err){
                 console.error(colors.red('Error getting products for page', err));
             }
@@ -439,7 +437,7 @@ router.get('/:page?', function (req, res, next){
             return;
         }
         // lets look for a page
-        db.pages.findOne({pageSlug: req.params.page, pageEnabled: 'true'}, function (err, page){
+        db.pages.findOne({pageSlug: req.params.page, pageEnabled: 'true'}, (err, page) => {
             if(err){
                 console.error(colors.red('Error getting page', err));
             }
@@ -473,35 +471,35 @@ router.get('/:page?', function (req, res, next){
     }
 });
 
-var getData = function (req, page, query, cb){
-    var db = req.app.db;
-    var config = common.getConfig();
-    var numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+const getData = function (req, page, query, cb){
+    let db = req.app.db;
+    let config = common.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    var skip = 0;
+    let skip = 0;
     if(page > 1){
         skip = (page - 1) * numberProducts;
     }
 
     query['productPublished'] = 'true';
 
-    db.products.count(query, function (err, totalProducts){
+    db.products.count(query, (err, totalProducts) => {
         if(err){
             console.error(colors.red('Error getting total product count', err));
         }
 
         if(config.databaseType === 'embedded'){
-            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).exec(function (err, results){
+            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).exec((err, results) => {
                 if(err){
-                    cb('Error retrieving products', null);
+                    cb(new Error('Error retrieving products'), null);
                 }else{
                     cb(null, {data: results, totalProducts: totalProducts});
                 }
             });
         }else{
-            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray(function (err, results){
+            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray((err, results) => {
                 if(err){
-                    cb('Error retrieving products', null);
+                    cb(new Error('Error retrieving products'), null);
                 }else{
                     cb(null, {data: results, totalProducts: totalProducts});
                 }

@@ -12,9 +12,8 @@ const MongoClient = require('mongodb').MongoClient;
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
+const config = require('./config/settings.json');
 const common = require('./routes/common');
-const frameguard = require('frameguard');
-
 let handlebars = require('express-handlebars');
 
 // require the routes
@@ -156,9 +155,6 @@ handlebars = handlebars.create({
     }
 });
 
-// get config
-let config = common.getConfig();
-
 // var session store
 let store = new MongoStore({
     uri: config.databaseConnectionString,
@@ -182,12 +178,6 @@ app.use(session({
         maxAge: 3600000 * 24
     },
     store: store
-}));
-
-// allows for codecanyon
-app.use(frameguard({
-    action: 'allow-from',
-    domain: 'http://preview.codecanyon.net'
 }));
 
 // serving static content
@@ -258,6 +248,7 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
 
     // setup the collections
     db.users = db.collection('users');
+    db.config = db.collection('config');
     db.products = db.collection('products');
     db.orders = db.collection('orders');
     db.pages = db.collection('pages');
@@ -271,9 +262,14 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
             console.error(colors.red('Error setting up indexes:' + err));
             process.exit();
         }
-        // lift the app
-        app.listen(app.get('port'), () => {
-            console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
+
+        // Loads the config file into the DB
+        db.config.update({}, config, {upsert: true})
+        .then(() => {
+            // lift the app
+            app.listen(app.get('port'), () => {
+                console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
+            });
         });
     });
 });

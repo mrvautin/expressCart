@@ -31,7 +31,7 @@ exports.showCartCloseBtn = function(page){
 exports.addSitemapProducts = function(req, res, cb){
     let db = req.app.db;
     let async = require('async');
-    let config = this.getConfig();
+    let config = exports.getConfig();
     let hostname = config.baseUrl;
 
     exports.dbQuery(db.products, {productPublished: 'true'}, null, null, (err, products) => {
@@ -70,7 +70,7 @@ exports.clearSessionValue = function(session, sessionVar){
 };
 
 exports.updateTotalCartAmount = function(req, res){
-    let config = this.getConfig();
+    let config = exports.getConfig();
 
     req.session.totalCartAmount = 0;
 
@@ -157,11 +157,6 @@ exports.getConfig = function(){
         config.env = '';
     }
 
-    // default DB to embedded
-    if(typeof config.databaseType === 'undefined'){
-        config.databaseType = 'embedded';
-    }
-
     // setup theme
     config.themeViews = '';
     if(typeof config.theme !== 'undefined' && config.theme !== ''){
@@ -169,11 +164,7 @@ exports.getConfig = function(){
     }
 
     // if db set to mongodb override connection with MONGODB_CONNECTION_STRING env var
-    if(config.databaseType === 'mongodb'){
-        config.databaseConnectionString = process.env.MONGODB_CONNECTION_STRING || config.databaseConnectionString;
-    }
-
-    console.log('got config');
+    config.databaseConnectionString = process.env.MONGODB_CONNECTION_STRING || config.databaseConnectionString;
 
     return config;
 };
@@ -406,7 +397,6 @@ exports.getId = function(id){
 
 // run the DB query
 exports.dbQuery = function(db, query, sort, limit, callback){
-    let config = exports.getConfig();
     if(sort && limit){
         db.find(query).sort(sort).limit(parseInt(limit)).toArray((err, results) => {
             if(err){

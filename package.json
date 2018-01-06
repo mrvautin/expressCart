@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dist": "npm run minify && gulp dist"
+    "deploy": "gulp deploy"
   },
   "dependencies": {
     "async": "^2.6.0",
