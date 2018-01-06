@@ -1,6 +1,7 @@
 {
   "name": "express-cart",
   "version": "1.0.11",
+  "description": "A fully functioning Node.js shopping cart with Stripe and PayPal payments.",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -63,7 +64,6 @@
     "gulp-zip": "^4.0.0",
     "run-sequence": "^2.2.1"
   },
-  "description": "expressCart",
   "main": "app.js",
   "keywords": [
     "Shopping cart",
