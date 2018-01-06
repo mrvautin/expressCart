@@ -128,7 +128,6 @@ router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
 // order product
 router.get('/order/delete/:id', common.restrict, (req, res) => {
     let db = req.app.db;
-    let ordersIndex = req.app.ordersIndex;
 
     // remove the article
     db.orders.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
@@ -136,12 +135,13 @@ router.get('/order/delete/:id', common.restrict, (req, res) => {
             console.info(err.stack);
         }
         // remove the index
-        ordersIndex.remove({id: req.params.id}, false);
-
-        // redirect home
-        req.session.message = 'Order successfully deleted';
-        req.session.messageType = 'success';
-        res.redirect('/admin/orders');
+        common.indexOrders(req.app)
+        .then(() => {
+            // redirect home
+            req.session.message = 'Order successfully deleted';
+            req.session.messageType = 'success';
+            res.redirect('/admin/orders');
+        });
     });
 });
 
@@ -371,7 +371,6 @@ router.get('/product/new', common.restrict, (req, res) => {
 router.post('/product/insert', common.restrict, (req, res) => {
     let db = req.app.db;
     let config = common.getConfig();
-    let productsIndex = req.app.productsIndex;
 
     let doc = {
         productPermalink: req.body.frmProductPermalink,
@@ -428,22 +427,15 @@ router.post('/product/insert', common.restrict, (req, res) => {
                         newId = newDoc.insertedIds;
                     }
 
-                    // create lunr doc
-                    let lunrDoc = {
-                        productTitle: req.body.frmProductTitle,
-                        productTags: req.body.frmProductTags,
-                        productDescription: req.body.frmProductDescription,
-                        id: newId
-                    };
-
                     // add to lunr index
-                    productsIndex.add(lunrDoc);
+                    common.indexProducts(req.app)
+                    .then(() => {
+                        req.session.message = 'New product successfully created';
+                        req.session.messageType = 'success';
 
-                    req.session.message = 'New product successfully created';
-                    req.session.messageType = 'success';
-
-                    // redirect to new doc
-                    res.redirect('/admin/product/edit/' + newId);
+                        // redirect to new doc
+                        res.redirect('/admin/product/edit/' + newId);
+                    });
                 }
             });
         }
@@ -484,7 +476,6 @@ router.get('/product/edit/:id', common.restrict, (req, res) => {
 // Update an existing product form action
 router.post('/product/update', common.restrict, (req, res) => {
     let db = req.app.db;
-    let productsIndex = req.app.productsIndex;
 
     db.products.findOne({_id: common.getId(req.body.frmProductId)}, (err, product) => {
         if(err){
@@ -547,20 +538,13 @@ router.post('/product/update', common.restrict, (req, res) => {
                             req.session.messageType = 'danger';
                             res.redirect('/admin/product/edit/' + req.body.frmProductId);
                         }else{
-                            // create lunr doc
-                            let lunrDoc = {
-                                productTitle: req.body.frmProductTitle,
-                                productTags: req.body.frmProductTags,
-                                productDescription: req.body.frmProductDescription,
-                                id: req.body.frmProductId
-                            };
-
-                            // update the index
-                            productsIndex.update(lunrDoc, false);
-
-                            req.session.message = 'Successfully saved';
-                            req.session.messageType = 'success';
-                            res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                            // Update the index
+                            common.indexProducts(req.app)
+                            .then(() => {
+                                req.session.message = 'Successfully saved';
+                                req.session.messageType = 'success';
+                                res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                            });
                         }
                     });
                 });
@@ -573,7 +557,6 @@ router.post('/product/update', common.restrict, (req, res) => {
 router.get('/product/delete/:id', common.restrict, (req, res) => {
     let db = req.app.db;
     let rimraf = require('rimraf');
-    let productsIndex = req.app.productsIndex;
 
     // remove the article
     db.products.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
@@ -585,21 +568,15 @@ router.get('/product/delete/:id', common.restrict, (req, res) => {
             if(err){
                 console.info(err.stack);
             }
-            // create lunr doc
-            let lunrDoc = {
-                productTitle: req.body.frmProductTitle,
-                productTags: req.body.frmProductTags,
-                productDescription: req.body.frmProductDescription,
-                id: req.body.frmProductId
-            };
 
             // remove the index
-            productsIndex.remove(lunrDoc, false);
-
-            // redirect home
-            req.session.message = 'Product successfully deleted';
-            req.session.messageType = 'success';
-            res.redirect('/admin/products');
+            common.indexProducts(req.app)
+            .then(() => {
+                // redirect home
+                req.session.message = 'Product successfully deleted';
+                req.session.messageType = 'success';
+                res.redirect('/admin/products');
+            });
         });
     });
 });

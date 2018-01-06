@@ -1,7 +1,8 @@
-let _ = require('lodash');
-let uglifycss = require('uglifycss');
-let colors = require('colors');
-let escape = require('html-entities').AllHtmlEntities;
+const _ = require('lodash');
+const uglifycss = require('uglifycss');
+const colors = require('colors');
+const lunr = require('lunr');
+const escape = require('html-entities').AllHtmlEntities;
 
 // common functions
 exports.checkLogin = function(req, res, next){
@@ -143,8 +144,6 @@ exports.getImages = function (dir, req, res, callback){
 exports.getConfig = function(){
     let fs = require('fs');
     let path = require('path');
-
-    console.log('getting config');
 
     let config = JSON.parse(fs.readFileSync(path.join(__dirname, '../config', 'settings.json'), 'utf8'));
     config.customCss = typeof config.customCss !== 'undefined' ? escape.decode(config.customCss) : null;
@@ -412,4 +411,89 @@ exports.dbQuery = function(db, query, sort, limit, callback){
             callback(null, results);
         });
     }
+};
+
+exports.indexProducts = (app) => {
+    // index all products in lunr on startup
+    return new Promise((resolve, reject) => {
+        exports.dbQuery(app.db.products, {}, null, null, (err, productsList) => {
+            if(err){
+                console.error(colors.red(err.stack));
+                reject(err);
+            }
+
+            // setup lunr indexing
+            const productsIndex = lunr(function (){
+                this.field('productTitle', {boost: 10});
+                this.field('productTags', {boost: 5});
+                this.field('productDescription');
+
+                const lunrIndex = this;
+
+                // add to lunr index
+                productsList.forEach((product) => {
+                    let doc = {
+                        'productTitle': product.productTitle,
+                        'productTags': product.productTags,
+                        'productDescription': product.productDescription,
+                        'id': product._id
+                    };
+                    lunrIndex.add(doc);
+                });
+            });
+
+            app.productsIndex = productsIndex;
+            console.log(colors.cyan('- Product indexing complete'));
+            resolve();
+        });
+    });
+};
+
+exports.indexOrders = (app, cb) => {
+    // index all orders in lunr on startup
+    return new Promise((resolve, reject) => {
+        exports.dbQuery(app.db.orders, {}, null, null, (err, ordersList) => {
+            if(err){
+                console.error(colors.red('Error setting up products index: ' + err));
+                reject(err);
+            }
+
+            // setup lunr indexing
+            const ordersIndex = lunr(function (){
+                this.field('orderEmail', {boost: 10});
+                this.field('orderLastname', {boost: 5});
+                this.field('orderPostcode');
+
+                const lunrIndex = this;
+
+                // add to lunr index
+                ordersList.forEach((order) => {
+                    let doc = {
+                        'orderLastname': order.orderLastname,
+                        'orderEmail': order.orderEmail,
+                        'orderPostcode': order.orderPostcode,
+                        'id': order._id
+                    };
+                    lunrIndex.add(doc);
+                });
+            });
+
+            app.ordersIndex = ordersIndex;
+            console.log(colors.cyan('- Order indexing complete'));
+            resolve();
+        });
+    });
+};
+
+// start indexing products and orders
+exports.runIndexing = (app) => {
+    console.info(colors.yellow('Setting up indexes..'));
+
+    return Promise.all([
+        exports.indexProducts(app),
+        exports.indexOrders(app)
+    ])
+    .catch((err) => {
+        process.exit(2);
+    });
 };

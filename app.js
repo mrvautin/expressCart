@@ -5,15 +5,14 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt-nodejs');
-const lunr = require('lunr');
 const moment = require('moment');
 const MongoStore = require('connect-mongodb-session')(session);
 const MongoClient = require('mongodb').MongoClient;
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
-const config = require('./config/settings.json');
 const common = require('./routes/common');
+
 let handlebars = require('express-handlebars');
 
 // require the routes
@@ -155,6 +154,9 @@ handlebars = handlebars.create({
     }
 });
 
+// get config
+let config = common.getConfig();
+
 // var session store
 let store = new MongoStore({
     uri: config.databaseConnectionString,
@@ -248,7 +250,6 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
 
     // setup the collections
     db.users = db.collection('users');
-    db.config = db.collection('config');
     db.products = db.collection('products');
     db.orders = db.collection('orders');
     db.pages = db.collection('pages');
@@ -257,105 +258,17 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     app.db = db;
 
     // add indexing
-    runIndexing(app, (err) => {
-        if(err){
-            console.error(colors.red('Error setting up indexes:' + err));
-            process.exit();
-        }
-
-        // Loads the config file into the DB
-        db.config.update({}, config, {upsert: true})
-        .then(() => {
-            // lift the app
-            app.listen(app.get('port'), () => {
-                console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
-            });
+    common.runIndexing(app)
+    .then(() => {
+        // lift the app
+        app.listen(app.get('port'), () => {
+            console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
         });
+    })
+    .catch(() => {
+        console.error(colors.red('Error setting up indexes:' + err));
+        process.exit();
     });
 });
-
-function indexProducts(app, cb){
-    // index all products in lunr on startup
-    common.dbQuery(app.db.products, {}, null, null, (err, productsList) => {
-        if(err){
-            console.error(colors.red(err.stack));
-        }
-
-        // setup lunr indexing
-        const productsIndex = lunr(function (){
-            this.field('productTitle', {boost: 10});
-            this.field('productTags', {boost: 5});
-            this.field('productDescription');
-
-            const lunrIndex = this;
-
-            // add to lunr index
-            productsList.forEach((product) => {
-                let doc = {
-                    'productTitle': product.productTitle,
-                    'productTags': product.productTags,
-                    'productDescription': product.productDescription,
-                    'id': product._id
-                };
-                lunrIndex.add(doc);
-            });
-        });
-
-        app.productsIndex = productsIndex;
-        cb(null);
-    });
-}
-
-function indexOrders(app, cb){
-    // index all orders in lunr on startup
-    common.dbQuery(app.db.orders, {}, null, null, (err, ordersList) => {
-        if(err){
-            console.error(colors.red(err.stack));
-        }
-
-        // setup lunr indexing
-        const ordersIndex = lunr(function (){
-            this.field('orderEmail', {boost: 10});
-            this.field('orderLastname', {boost: 5});
-            this.field('orderPostcode');
-
-            const lunrIndex = this;
-
-            // add to lunr index
-            ordersList.forEach((order) => {
-                let doc = {
-                    'orderLastname': order.orderLastname,
-                    'orderEmail': order.orderEmail,
-                    'orderPostcode': order.orderPostcode,
-                    'id': order._id
-                };
-                lunrIndex.add(doc);
-            });
-        });
-
-        app.ordersIndex = ordersIndex;
-        cb(null);
-    });
-}
-
-// start indexing products and orders
-function runIndexing(app, cb){
-    console.info(colors.yellow('Setting up indexes..'));
-    indexProducts(app, (err) => {
-        if(err){
-            console.error(colors.red('Error setting up products index: ' + err));
-            cb(err);
-        }
-        console.log(colors.cyan('- Product indexing complete'));
-        indexOrders(app, (err) => {
-            if(err){
-                console.error(colors.red('Error setting up products index: ' + err));
-                cb(err);
-            }
-            console.log(colors.cyan('- Order indexing complete'));
-            cb(null);
-        });
-    });
-}
 
 module.exports = app;
