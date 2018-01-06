@@ -1,0 +1,102 @@
+<nav class="navbar navbar-default navbarMenuWrapper">
+    <div class="container-fluid">
+        <div class="col-md-8 col-md-offset-2 navbarMenu">
+            <ul class="nav navbar-nav">
+                <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
+                {{#each menu.items}}
+                    <li {{#ifCond this.link '==' ../searchTerm}}class="navActive"{{/ifCond}}><a href="/category/{{this.link}}">{{this.title}}</a></li>
+                {{/each}}
+                <li class="pull-right col-md-4 searchBarWrapper">
+                    <div class="search-bar-input input-group searchMenuLocation-{{config.menuLocation}} searchProPerRow-{{config.productsPerRow}}">
+                        <input type="text" name="frm_search" id="frm_search" class="form-control" placeholder="Search the shop">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" id="btn_search" type="submit">Search</button>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>  
+</nav>
+<div class="product-layout col-md-8 col-md-offset-2">
+    <div class="row">
+        <div class="col-xs-12 col-md-6 pull-right">
+            <div class="row">
+            <h1 class="col-md-10 product-title">{{result.productTitle}}</h1>
+            <h4 class="col-md-10 product-price">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
+            {{#if productOptions}}
+                <h4 class="col-md-10 product-option">Options</h4>
+                <div class="col-md-10">
+                {{#each productOptions}}
+                    {{#ifCond this.optType '==' "select"}}
+                        <strong>{{this.optName}}</strong>
+                        <select name="opt-{{this.optName}}" class="form-control product-opt">
+                            {{#each this.optOptions}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    {{/ifCond}}
+                    {{#ifCond this.optType '==' "radio"}}
+                        {{#each this.optOptions}}
+                            <strong>{{this.optName}}</strong>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" class="product-opt" name="opt-{{../this.optName}}" value="{{this}}">
+                                    {{this}}
+                                </label>
+                            </div>
+                        {{/each}}
+                    {{/ifCond}}
+                    {{#ifCond this.optType '==' "checkbox"}}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="product-opt" name="opt-{{../this.optName}}" value="{{this.optName}}"><strong>{{this.optName}}</strong>
+                            </label>
+                        </div>
+                    {{/ifCond}}
+                {{/each}}
+                </div>
+            {{/if}}
+            <div class="col-md-10 productOptions">
+                <p class="product-option-text">Quantity</p>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary qty-btn-minus" type="button">-</button>
+                    </span>
+                    <input type="text" class="form-control add-color text-center" id="product_quantity" maxlength="3" value="1">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary qty-btn-plus" type="button">+</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-10 btnAddToCart">
+                <button class="btn btn-primary btn-block product-add-to-cart" type="button">Add to cart</button>
+            </div>
+            <div class="col-md-10 body_text">
+                {{{productDescription}}}
+            </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 pull-left">  
+            {{#if result.productImage}}
+                <div class="title-image-container">
+                    <div class="image-prev image-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-responsive" alt="...">
+                    <div class="image-next image-button"> <i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>  
+            {{else}}
+                <div class="title-image-container">
+                    <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-responsive" alt="...">
+                </div>
+            {{/if}}
+            {{#ifCond images.length '>' 1}}
+                {{#each images}}     
+                    <div class="vertical-center top-pad-20 col-xs-6 col-lg-6 col-xl-6">
+                        <img src="{{this.path}}" class="thumbnail-image img-responsive">
+                    </div>
+                {{/each}}
+            {{/ifCond}}  
+        </div>
+    </div> 
+</div>
+<input type="hidden" id="productId" value="{{result._id}}">

@@ -1,0 +1,120 @@
+{{> menu}}
+<div class="col-lg-9">
+    <form method="post" class="form-horizontal" id="insert_form" action="/admin/product/insert" data-toggle="validator">
+        <div class="col-lg-12">
+            <div class="page-header">
+                <div class="pull-right">
+                    <button id="frm_edit_product_save" class="btn btn-success" type="submit">Add product <i class="fa fa-plus"></i></button>
+                </div>
+                <h2>New product</h2>
+            </div>
+            <div class="form-group">
+                <label for="frmProductTitle" class="col-sm-2 control-label">Product title *</label>
+                <div class="col-sm-10">
+                    <input type="text" id="frmProductTitle" name="frmProductTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="frmProductPrice" class="col-sm-2 control-label">Product price *</label>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="number" name="frmProductPrice" class="form-control" step="any" value="{{productPrice}}" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="frmProductPublished" class="col-sm-2 control-label">Status</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="frmProductPublished" name="frmProductPublished">
+                        <option value="true" selected>Published</option>
+                        <option value="false">Draft</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="editor-wrapper">
+                <label for="editor" class="col-sm-2 control-label">Product description *</label>
+                <div class="col-sm-10">
+                    <textarea id="editor" minlength="5" rows="10" name="frmProductDescription" class="form-control" required>{{productDescription}}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Permalink</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="frmProductPermalink" id="frmProductPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" id="validate_permalink" type="button">Validate</button>
+                        </span>
+                    </div>
+                    <p class="help-block">This sets a readable URL for the product</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" id="productOptJson" name="productOptJson" value="{{result.productOptions}}" />
+                <label for="editor" class="col-sm-2 control-label">Product options</label>
+                <div class="col-lg-10">
+                    <ul class="list-group" id="product_opt_wrapper">
+                        <li class="list-group-item">
+                            <div class="row">
+                            <div class="col-lg-2">
+                                <strong>Name:</strong>
+                                <input type="text" id="product_optName" class="form-control" placeholder="Size" />
+                            </div>
+                            <div class="col-lg-2">
+                                <strong>Label:</strong>
+                                <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
+                            </div>
+                            <div class="col-lg-2">
+                                <strong>Type:</strong>
+                                <select id="product_optType" class="form-control">
+                                    <option value="select">Select</option>
+                                    <option value="radio">Radio</option>
+                                    <option value="checkbox">Checkbox</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <strong>Options:</strong>
+                                <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
+                            </div>
+                            <div class="col-lg-2 text-right"></br>
+                                <button id="product_opt_add" class="btn btn-success">Add</button>
+                            </div></div>
+                        </li>
+                        {{#each options}}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class='col-lg-2 opt-name'>{{this.optName}}</div>
+                                    <div class='col-lg-2'>{{this.optLabel}}</div>
+                                    <div class='col-lg-2'>{{this.optType}}</div>
+                                    <div class='col-lg-4'>{{{this.optOptions}}}</div>
+                                    <div class='col-lg-2 text-right'>
+                                        <button class='product_opt_remove btn btn-danger btn-sm'>Remove</button>
+                                    </div>
+                                </div>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <p class="help-block">Here you can set options for your product. Eg: Size, color, style</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="frmProductTags" class="col-sm-2 control-label">Product tag words</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="frmProductTags" name="frmProductTags">
+                    <p class="help-block">Tag words are used to making searching for products easier</p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+<script>
+    $(document).ready(function() {
+        $('#editor').summernote({  
+            height: 300,
+            minHeight: null
+        });
+    });
+</script>

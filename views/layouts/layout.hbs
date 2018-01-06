@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>{{config.cartTitle}} - {{title}}</title>
+	    <meta charset="utf-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {{#if admin}}
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <!--[if IE]><link rel="SHORTCUT ICON" href="/images/favicon.png"/><![endif]-->
+        {{else}}
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <!--[if IE]><link rel="SHORTCUT ICON" href="/favicon.ico"/><![endif]-->
+        {{/if}}
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        {{#if metaDescription}}
+        <meta name="description" content="{{metaDescription}}">
+        {{else}}
+		<meta name="description" content="{{config.cartDescription}}">
+        {{/if}}
+		<meta name="keywords" content="{{config.cartTitle}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css">
+        <link rel="stylesheet" href="/stylesheets/bootstrap-xl.css">
+        <link rel="stylesheet" href="/stylesheets/pushy.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css">
+        <link rel="stylesheet" href="/stylesheets/codemirror-style.min.css">
+        <link rel="stylesheet" href="/stylesheets/style{{config.env}}.css">
+        {{#if admin}}
+        <link rel="stylesheet" href="/stylesheets/admin{{config.env}}.css">
+        {{/if}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/css/css.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/xml/xml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+        <script src="/javascripts/jquery.bootpag.min.js"></script>
+        <script src="/javascripts/cssbeautify.min.js"></script>
+		<script src="/javascripts/expressCart{{config.env}}.js"></script>
+        <script src="/javascripts/jquery.dotdotdot.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
+        <!-- SEO data -->
+        <link rel="canonical" href="{{config.baseUrl}}" />
+        <meta name="referrer" content="origin" />
+        <meta property="og:site_name" content="{{config.cartTitle}}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="{{title}}" />
+        <meta property="og:url" content="{{config.baseUrl}}" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="{{title}}" />
+        <meta name="twitter:url" content="{{config.baseUrl}}" />
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "WebSite",
+                "publisher": "{{config.cartTitle}}",
+                "url": "{{config.baseUrl}}"
+            }
+        </script>
+        {{#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
+        {{#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}
+        {{#if config.theme}}<link rel="stylesheet" href="/themes/{{config.theme}}/style.css">{{/if}}
+        <!-- SEO data -->
+	</head>
+    {{#if admin}}
+	<body class="admin">
+    {{else}}
+    <body>
+    {{/if}}
+		<!-- Static navbar -->
+	    <nav class="navbar navbar-default navbar-static-top">
+			<div class="container-fluid mainNavBar">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed offcanvas-trigger" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+                    {{#if admin}}
+                        <a class="navbar-brand navbar-brand-image" href="/admin"><img class="img-responsive" src="/images/logo-admin.png"></a>
+                    {{else}}
+                        {{#isNull config.cartLogo}}
+                            {{#isNull config.cartTitle}}
+                                <a class="navbar-brand" href="/">expressCart</a>
+                            {{else}}
+                                <a class="navbar-brand" href="/">{{config.cartTitle}}</a>
+                            {{/isNull}}
+                        {{else}}
+                            <a class="navbar-brand navbar-brand-image" href="/"><img class="img-responsive" src="{{config.cartLogo}}"></a>
+                        {{/isNull}}
+                    {{/if}}
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+                        {{#unless admin}}
+                        {{#ifCond page '!=' 'checkout'}}
+                        {{#ifCond page '!=' 'pay'}}
+                            {{#if session.cart}}
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{objectLength session.cart}}</span></a></li>
+                                {{else}}
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">0</span></a></li>
+                            {{/if}}
+                        {{/ifCond}}
+                        {{/ifCond}}
+                        {{/unless}}
+                        {{#if session.user}}
+							<li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"> </i>Logout</a></li>
+						{{/if}}
+					</ul>
+				</div>
+	      </div>
+	    </nav>
+        <div class="site-overlay"></div>
+        {{#unless admin}}
+            {{#ifCond page '!=' 'checkout'}}
+            {{#ifCond page '!=' 'pay'}}
+            <div class="container-fluid">
+                <div class="row">
+                    <div id="cart" class="col-md-12 pushy pushy-right">
+                        {{> cart}}
+                    </div>
+                </div>
+            </div>
+            {{/ifCond}}
+            {{/ifCond}}
+        {{/unless}}
+		<div class="container-fluid content-body" id="container">
+            <div class="row">
+                {{#if admin}}
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    {{{body}}}
+                </div>
+                {{else}}
+                {{{body}}}
+                {{/if}}
+            </div>
+		</div>
+		<input type="hidden" id="input_notify_message" value="{{message}}">
+		<input type="hidden" id="input_notify_messageType" value="{{messageType}}">
+        <input type="hidden" id="cartCheckout" value="{{checkout}}">
+		<div id="notify_message"></div>
+		{{#if showFooter}}
+            <footer class="footer">
+                <div class="container-fluid">
+                    {{#isNull config.footerHtml}}
+                        <h4 class="text-center">Powered by expressCart</h4>
+                    {{else}}
+                        {{{config.footerHtml}}}
+                    {{/isNull}}
+                </div>
+            </footer>
+		{{/if}}
+        <script src="/javascripts/pushy.min.js"></script>
+	</body>
+</html>

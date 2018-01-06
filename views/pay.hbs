@@ -1,0 +1,97 @@
+<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <div class="row">
+        {{#if paymentMessage}}
+            <p class="text-danger text-center">{{paymentMessage}}</p>
+        {{/if}}
+        <div class="col-md-5">
+            <div class="panel panel-default" style="margin-top: 30px;">
+                <div class="panel-heading">Customer details</div>
+                <div class="panel-body customer-details">
+                    <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action" method="post" role="form" data-toggle="validator" novalidate="false">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <input type="email" class="form-control customerDetails" id="shipEmail" name="shipEmail" minlength="5" placeholder="Email address" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipFirstname" name="shipFirstname" placeholder="First name" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipLastname" name="shipLastname" placeholder="Last name" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipAddr1" name="shipAddr1" placeholder="Address 1" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipAddr2" name="shipAddr2" placeholder="Address 2 (optional)">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipCountry" name="shipCountry" placeholder="Country" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control customerDetails" id="shipState" name="shipState" placeholder="State" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group">
+                                <input type="number" class="form-control customerDetails" id="shipPostcode" name="shipPostcode" placeholder="Post code" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <input type="number" class="form-control customerDetails" id="shipPostcode" name="shipPostcode" placeholder="Post code" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                                <input type="number" class="form-control customerDetails" id="shipPhoneNumber" name="shipPhoneNumber" placeholder="Phone number (optional)">
+                            </div>
+                        </div>
+                        {{#ifCond config.paymentGateway '==' 'paypal'}}
+                        <div class="paypal_button col-xs-12 col-md-12 text-center">
+                            <button id="checkout_paypal" class="btn btn-success" type="submit"><i class="fa fa-cc-paypal fa-lg" aria-hidden="true"></i> Pay with PayPal <i class="fa fa-cc-paypal fa-lg" aria-hidden="true"></i></button>
+                        </div>
+                        {{/ifCond}}
+                    </form>
+                    {{#ifCond config.paymentGateway '==' 'stripe'}}
+                    <div class="col-xs-12 col-md-12 text-center">
+                        <form method="POST" id="payment-form">
+                            <button
+                                type="submit"
+                                id="stripeButton"
+                                value="Process payment"
+                                class="btn btn-success"
+                                type="submit"
+                                data-key="{{paymentConfig.publicKey}}"
+                                data-amount="{{amountNoDecimal session.totalCartAmount}}"
+                                data-name="{{config.cartTitle}}"
+                                data-description="{{config.cartTitle}} Payment"
+                                data-image="{{paymentConfig.stripeLogoURL}}"
+                                data-locale="auto"
+                                data-zip-code="false"
+                                data-currency="{{paymentConfig.stripeCurrency}}">
+                                <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i> Process payment <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i>
+                            </button>
+                            <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+                        </form>
+                    </div>
+                    {{/ifCond}}
+                </div>
+            </div>
+        </div>
+        <div id="cart" class="col-md-7">
+            {{> cart}}
+        </div>
+    </div>
+</div>

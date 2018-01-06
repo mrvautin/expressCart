@@ -1,0 +1,117 @@
+<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <div class="row">
+        <form>
+            {{#ifCond config.menuEnabled '==' "true"}}
+                {{#ifCond config.menuLocation '==' "side"}}
+                    <div class="col-md-offset-2 col-lg-offset-2 col-xl-9 col-xl-offset-3 search-bar col-md-10 search-bar">
+                {{else}}
+                    <div class="col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 search-bar">
+                {{/ifCond}}
+            {{else}}
+                <div class="col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 search-bar">
+            {{/ifCond}}
+                <div class="search-bar-input input-group searchMenuLocation-{{config.menuLocation}} searchProPerRow-{{config.productsPerRow}}">
+                    <input type="text" name="frm_search" id="frm_search" class="form-control" placeholder="Search the shop">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" id="btn_search" type="submit">Search</button>
+                        <a href="/" class="hidden-xs btn btn-primary"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        {{#ifCond config.menuEnabled '==' "true"}}
+            {{#ifCond config.menuLocation '==' "side"}}
+                <div class="col-xl-3 col-md-2">
+                    <ul class="list-group menu-side">
+                        <li class="list-group-item active">{{config.menuTitle}}</li>
+                        <li class="list-group-item"><a href="/">All</a></li>
+                        {{#each menu.items}}
+                            <li class="list-group-item"><a href="/category/{{this.link}}">{{this.title}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="col-xl-9 col-md-10">
+            {{else}}
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+                        <ol class="breadcrumb menu-top breadcrumbProPerRow-{{config.productsPerRow}}">
+                            <li><a href="/">Home</a></li>
+                            {{#each menu.items}}
+                                <li><a href="/category/{{this.link}}">{{this.title}}</a></li>
+                            {{/each}}
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+            {{/ifCond}}
+        {{else}}
+            <div class="col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+        {{/ifCond}}
+            {{#if filtered}}
+                <div class="product-layout left-pad-30 col-md-12">
+                    <strong>Showing results for: {{searchTerm}}</strong>
+                </div>
+            {{/if}}
+            <div class="product-layout">
+                {{#ifCond results.length '==' 0}}
+                    <div class="col-md-12">
+                        <p class="text-danger">No products found</p>
+                    </div>
+                {{/ifCond}}
+                {{#each results}}
+                    <div class="{{perRowClass ../config.productsPerRow}}">
+                        <div class="thumbnail">
+                            {{#if productPermalink}}
+                                <div class="product_wrapper">
+                                    <a href="/product/{{this.productPermalink}}">
+                                        <div class="vertical-center thumbnail-image-container">
+                                            {{#if productImage}}
+                                                <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                            {{else}}
+                                                <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                            {{/if}}
+                                        </div>
+                                        <h3 class="product-title product-title-home top-pad-10">
+                                            {{this.productTitle}}
+                                        </h3>
+                                    </a>
+                                </div>
+                            {{else}}                     
+                                <a href="/product/{{this._id}}">
+                                    <div class="vertical-center thumbnail-image-container">
+                                        {{#if productImage}}
+                                            <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                        {{else}}
+                                            <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                        {{/if}}
+                                    </div>
+                                    <h3 class="product-title product-title-home top-pad-10">
+                                        {{this.productTitle}}
+                                    </h3>
+                                </a>
+                            {{/if}}
+                            <h3 class="product-price text-center">
+                                {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
+                            </h3>
+                            <p class="text-center">
+                                <a class="btn btn-primary add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">Add to cart</a>
+                            </p>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="productsPerPage" value="{{productsPerPage}}" >
+    <input type="hidden" id="pageNum" value="{{pageNum}}">
+    <input type="hidden" id="totalProductCount" value="{{totalProductCount}}">
+    <input type="hidden" id="paginateUrl" value="{{paginateUrl}}">
+    <input type="hidden" id="searchTerm" value="{{searchTerm}}">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-2 col-xl-9 col-xl-offset-3">
+            <div id="pager" class="text-center"></div>
+        </div>
+    </div>
+</div>

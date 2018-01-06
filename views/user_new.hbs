@@ -1,0 +1,30 @@
+{{> menu}}
+<div class="col-lg-9">
+	<div class="row">
+		<div class="col-md-8">
+			<h2>New User</h2>
+			<form method="post" id="edit_form" action="/admin/user/insert" data-toggle="validator">
+            <div class="form-group">
+		    	<label>Users name *</label>
+		    	<input type="text" class="form-control" name="usersName" value="{{user.usersName}}" required>
+		  	</div>
+			<div class="form-group">
+		    	<label>User email *</label>
+		    	<input type="email" class="form-control" name="userEmail" value="{{user.userEmail}}" required>
+		  	</div>
+		  	<div class="form-group">
+			    <label>User password *</label>
+			    <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+		  	</div>
+		  	<div class="form-group">
+			    <label>Password confirm *</label>
+			    <input type="password" data-match="#userPassword"  class="form-control" name="frm_userPassword_confirm" required>
+		  	</div>
+		  	<div class="form-group">
+    			<div class="pull-right">
+      				<button type="submit" class="btn btn-success">Create</button>
+    			</div>
+  			</div>
+		</div>
+	</div>
+</div>

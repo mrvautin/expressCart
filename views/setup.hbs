@@ -1,0 +1,22 @@
+<div class="col-md-offset-4 col-md-4 col-lg-offset-4 col-lg-4" style="padding-top: 50px">
+	<form class="form-signin" action="/admin/setup_action" method="post" role="form" data-toggle="validator">
+		<h2 class="form-signin-heading text-center">expressCart Setup</h2>
+        <div class="form-group">
+	    	<label for="usersName">Users name *</label>
+	    	<input type="text" class="form-control" id="usersName" name="usersName" placeholder="Users name" required>
+	  	</div>
+		<div class="form-group">
+	    	<label for="userEmail">User email *</label>
+	    	<input type="email" class="form-control" id="userEmail" name="userEmail" placeholder="Email address"  required>
+	  	</div>
+	  	<div class="form-group">
+		    <label for="userPassword">User password *</label>
+		    <input type="password" class="form-control" id="userPassword" name="userPassword" placeholder="Password" required>
+	  	</div>
+	  	<div class="form-group">
+		    <label for="frm_userPassword_confirm">Password confirm *</label>
+		    <input type="password" data-match="#userPassword" placeholder="Confirm password" class="form-control" id="frm_userPassword_confirm" name="frm_userPassword_confirm" required>
+	  	</div>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Complete setup</button>
+	</form>
+</div>

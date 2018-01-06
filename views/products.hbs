@@ -1,0 +1,49 @@
+{{> menu}}
+<div class="col-lg-9">
+    <div class="col-lg-12">
+        <h2>Products</h2>
+    </div>
+    <div class="col-lg-12 search_bar">
+        <div class="input-group">
+            <input type="text" name="product_filter" id="product_filter" class="form-control input-lg" placeholder="Filter products">
+            <span class="input-group-btn">
+                <button class="btn btn-success btn-lg" id="btn_product_filter">Filter</button>
+                <a href="/admin/products" class="hidden-xs btn btn-warning btn-lg"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </span>
+        </div>
+        <p class="text-warning top-pad-10">Products can be filtered by: product title or product description keywords</p>
+    </div>
+    {{#if results}}
+        <div class="col-lg-12">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="pull-right"><strong>Published</strong></span>
+                    <strong>Products - <span class="text-danger">Filtered term: {{searchTerm}} </span></strong>
+                </li>
+                {{#each results}}
+                    <li class="list-group-item">
+                        <h4 class="pull-right text-danger" style="padding-left: 10px;"><a class="text-danger" href="/admin/product/delete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this product?');"> <i class="fa fa-trash-o"></i></a></h4>
+                        <h4 class="pull-right"><input id="{{this._id}}" class="published_state" type="checkbox" {{checkedState this.productPublished}}></h4>
+                        <h5><a href="/admin/product/edit/{{this._id}}">{{this.productTitle}}</a></h5>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    {{else}}
+        <div class="col-lg-12">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="pull-right"><strong>Published</strong></span>
+                    <strong>Recent products</strong>
+                </li>
+                {{#each top_results}}
+                    <li class="list-group-item">
+                        <h4 class="pull-right" style="padding-left: 10px;"><a class="text-danger" href="/admin/product/delete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this product?');"> <i class="fa fa-trash-o"></i></a></h4>
+                        <h4 class="pull-right"><input id="{{this._id}}" class="published_state" type="checkbox" {{checkedState this.productPublished}}></h4>
+                        <h5><a href="/admin/product/edit/{{this._id}}">{{this.productTitle}}</a></h5>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
+</div>

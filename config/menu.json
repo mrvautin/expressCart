@@ -1,0 +1,14 @@
+{
+    "items": [
+        {
+            "title": "Backpacks",
+            "link": "backpack",
+            "order": 0
+        },
+        {
+            "title": "Boots",
+            "link": "boots",
+            "order": 1
+        }
+    ]
+}

@@ -1,0 +1,144 @@
+{{> menu}}
+<div class="col-lg-9">
+	<div class="row">
+		<div class="col-md-10">
+			<form method="post" id="settingsForm" action="/admin/settings/update" data-toggle="validator">
+            <h2 class="clearfix">General Settings <div class="pull-right"><button type="submit" id="btnSettingsUpdate" class="btn btn-success">Update</button></h2> 
+            <div class="form-group">
+		    	<label>Cart name *</label>
+		    	<input type="text" class="form-control" name="cartTitle" value="{{config.cartTitle}}" required>
+                <p class="help-block">
+                    This element is critical for search engine optimisation. Cart title is displayed if your logo is hidden.    
+                </p>
+		  	</div>
+              <div class="form-group">
+		    	<label>Cart description *</label>
+		    	<input type="text" class="form-control" name="cartDescription" value="{{config.cartDescription}}" required>
+                <p class="help-block">This description shows when your website is listed in search engine results.</p>
+		  	</div>
+            <div class="form-group">
+		    	<label>Cart image/logo</label>
+		    	<input type="text" class="form-control" name="cartLogo" value="{{config.cartLogo}}">
+		  	</div>
+			<div class="form-group">
+		    	<label>Cart URL *</label>
+		    	<input type="text" class="form-control" name="baseUrl" value="{{config.baseUrl}}" required>
+                <p class="help-block">This URL is used in sitemaps and when your customer returns from completing their payment.</p>
+		  	</div>
+            <div class="form-group">
+		    	<label>Cart Email *</label>
+		    	<input type="email" class="form-control" name="emailAddress" value="{{config.emailAddress}}" required>
+                <p class="help-block">This is used as the "from" email when sending receipts to your customers.</p>
+		  	</div>
+		  	<div class="form-group">
+			    <label>Flat shipping rate *</label>
+			    <input type="text" class="form-control" name="flatShipping" value="{{config.flatShipping}}" required>
+                <p class="help-block">A flat shipping rate applied to all orders.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Free shipping threshold</label>
+			    <input type="text" class="form-control" name="freeShippingAmount" value="{{config.freeShippingAmount}}">
+                <p class="help-block">Orders over this value will mean the shipped will the FREE. Set to high value if you always want to charge shipping.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Payment gateway</label>
+                <select class="form-control" name="paymentGateway">
+                    <option {{selectState 'paypal' config.paymentGateway}} value="paypal">Paypal</option>
+                    <option {{selectState 'stripe' config.paymentGateway}} value="stripe">Stripe</option>
+                </select>
+                <p class="help-block">You will also need to configure your payment gateway credentials in the `/config/&lt;gateway_name&gt;.json` file.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Currency symbol</label>
+			    <input type="text" class="form-control" name="currencySymbol" value="{{currencySymbol config.currencySymbol}}">
+                <p class="help-block">Set this to your currency symbol. Eg: $, £, €</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Theme</label>
+                <select class="form-control" name="theme">
+                    <option {{selectState '' config.theme}} value="">Default</option>
+                    {{#each themes}}
+                        <option {{selectState this ../config.theme}} value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                <p class="help-block">Themes are loaded from `/public/themes/`</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Products per row</label>
+                <select class="form-control" name="productsPerRow">
+                    <option {{selectState '1' config.productsPerRow}}>1</option>
+                    <option {{selectState '2' config.productsPerRow}}>2</option>
+                    <option {{selectState '3' config.productsPerRow}}>3</option>
+                    <option {{selectState '4' config.productsPerRow}}>4</option>
+                </select>
+                <p class="help-block">The number of products to be displayed across the page.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Products per page</label>
+			    <input type="number" class="form-control" name="productsPerPage" value="{{config.productsPerPage}}">
+                <p class="help-block">The number of products to be displayed on each page.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Menu Enabled: </label>
+                <div class="checkbox">
+                    <label><input class="settingsMenuEnabled" type="checkbox" {{checkedState config.menuEnabled}} id="menuEnabled" name="menuEnabled"></label>
+                </div>
+                <p class="help-block">If a menu is set (<a href="/admin/settings/menu">here</a>) you can enable it.</p>
+            </div>
+            <div class="form-group">
+			    <label>Menu header</label>
+			    <input type="text" class="form-control" name="menuTitle" value="{{config.menuTitle}}" placeholder="Menu">
+                <p class="help-block">The heading text for your menu.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Menu location: </label>
+                <select class="form-control" name="menuLocation">
+                    <option {{selectState 'top' config.menuLocation}}>top</option>
+                    <option {{selectState 'side' config.menuLocation}}>side</option>
+                </select>
+                <p class="help-block">The location of your menu.</p>
+		  	</div>
+            <div class="form-group">
+			    <label>Footer HTML</label>
+			    <textarea class="form-control codemirrorArea" rows="5" id="footerHtml" name="footerHtml">{{footerHtml}}</textarea>
+                <input type="hidden" id="footerHtml_input" name="footerHtml_input">
+		  	</div>
+            <div class="form-group">
+			    <label>Google analytics</label>
+			    <textarea class="form-control" rows="3" id="googleAnalytics" name="googleAnalytics">{{googleAnalytics}}</textarea>
+                <input type="hidden" id="googleAnalytics_input" name="googleAnalytics_input">
+                <p class="help-block">Your Google Analytics code. Please also inlude the "script" tags - <a href="https://support.google.com/analytics/answer/1032385?hl=en" target="_blank">Help</a></p>
+		  	</div>
+            <div class="form-group">
+			    <label>Custom CSS</label>
+			    <textarea class="form-control" rows="10" id="customCss" name="customCss">{{config.customCss}}</textarea>
+                <input type="hidden" id="customCss_input" name="customCss_input">
+		  	</div>
+            <div class="form-group">
+			    <label>Email SMTP Host</label>
+			    <input type="text" class="form-control" name="emailHost" value="{{config.emailHost}}" autocomplete="off" required>
+		  	</div>
+            <div class="form-group">
+			    <label>Email SMTP Port</label>
+			    <input type="text" class="form-control" name="emailPort" value="{{config.emailPort}}" autocomplete="off" required>
+		  	</div>
+            <div class="form-group">
+			    <label>Email SMTP secure </label>
+                <div class="checkbox">
+                    <label><input class="settingsMenuEnabled" type="checkbox" {{checkedState config.emailSecure}} name="emailSecure"></label>
+                </div>
+            </div>
+            <div class="form-group">
+			    <label>Email SMTP Username</label>
+			    <input type="text" class="form-control" name="emailUser" value="{{config.emailUser}}" autocomplete="off" required>
+		  	</div>
+            <div class="form-group">
+			    <label>Email SMTP Password</label>
+			    <input type="password" class="form-control" name="emailPassword" value="{{config.emailPassword}}" autocomplete="off" required>
+		  	</div>
+        <div class="form-group">
+                <button id="sendTestEmail" class="btn btn-success">Send test email</button>
+		  	</div>
+		</div>
+	</div>
+</div>

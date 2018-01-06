@@ -1,0 +1,21 @@
+<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <div class="row">
+        <div class="text-center col-md-10 col-md-offset-1">
+            {{#ifCond result.orderStatus '==' 'Paid'}}
+                <h2 class="text-success">Your payment has been successfully processed</h2>
+            {{else}}
+                <h2 class="text-danger">Your payment has failed. Please try again or contact us.</h2>
+            {{/ifCond}}
+            {{#if result}}
+                <div>
+                    <p><strong>Order ID:</strong> {{result._id}}</p>
+                    <p><strong>Payment ID:</strong> {{result.orderPaymentId}}</p>
+                </div>
+            {{/if}} 
+            {{#ifCond result.orderStatus '==' 'Paid'}}
+                <h3 class="text-warning">Please retain the details above as a reference of payment.</h3>
+            {{/ifCond}}
+            <a href="/" class="btn btn-warning">Home</a>
+        </div>
+    </div>
+</div>

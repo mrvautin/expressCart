@@ -1,0 +1,78 @@
+{{> menu}}
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+<div class="col-lg-9">
+	<div class="row">
+		<div class="col-md-10">
+			<h2>Menu</h2>
+            <table class="table table-condensed">
+                <th></th>
+                <th>Menu</th>
+                <th>Link</th>
+                <th></th>
+                <tbody id="draggable_list">
+                    {{#each menu}}
+                        <tr class="drag-row">
+                            <form method="post" action="/admin/settings/menu/update">
+                            <input type="hidden" class="navId" name="navId" value="{{title}}">
+                            <td class="dragable_item col-md-1 td-pad"><i class="fa fa-arrows"></i></td>
+                            <td class="dragable_item col-md-2">
+                                <input type="text" class="form-control input-sm test" name="navMenu" value="{{title}}">
+                            </td>
+                            <td class="dragable_item col-md-6">
+                                <input type="text" class="form-control input-sm test" name="navLink" value="{{link}}">
+                            </td>
+                            <td class="col-md-2">
+                                <a class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');" href="/admin/settings/menu/delete/{{@key}}">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>	
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fa fa-floppy-o"></i>
+                                </button>
+                            </td>
+                            </form>
+                        </tr>
+                    {{/each}}
+                        <tr>
+                            <form method="post" action="/admin/settings/menu/new">
+                            <td class="dragable_item col-md-1"></td>
+                            <td class="dragable_item col-md-2">
+                                <input type="text" class="form-control input-sm test" name="navMenu">
+                            </td>
+                            <td class="dragable_item col-md-6">
+                                <input type="text" class="form-control input-sm test" name="navLink">
+                            </td>
+                            <td class="col-md-2">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </td>
+                            </form>
+                        </tr>						
+                </tbody>
+            </table>
+            <p class="text-muted">
+                Here you can setup a menu to displayed on your shopping cart. You can use this menu to filter your products by specifying a keyword in the 
+                "link" field. Eg: To show products with a keyword (or tag) of boots you would set the menu field to "Backpacks" and a link value "backpack".
+                You can also use this menu to link to static pages, Eg: shipping, returns, help, about, contact etc.
+            </p> 
+		</div>
+	</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#draggable_list').sortable({
+            update: function (event, ui) {
+                var sorted = $( ".navId" ).serialize();
+                $.ajax({
+                    data: sorted,
+                    type: 'POST',
+                    url: '/admin/settings/menu/save_order'
+                })
+                .fail(function(msg){
+                    showNotification(msg.responseJSON.message, 'danger', true);
+                });
+            }
+        });
+    });
+</script>
