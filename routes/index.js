@@ -247,11 +247,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
 
     let lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
-        if(config.databaseType !== 'embedded'){
-            lunrIdArray.push(common.getId(id.ref));
-        }else{
-            lunrIdArray.push(id.ref);
-        }
+        lunrIdArray.push(common.getId(id.ref));
     });
 
     let pageNum = 1;
@@ -296,11 +292,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
     let lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
-        if(config.databaseType !== 'embedded'){
-            lunrIdArray.push(common.getId(id.ref));
-        }else{
-            lunrIdArray.push(id.ref);
-        }
+        lunrIdArray.push(common.getId(id.ref))
     });
 
     let menuLink = _.find(common.getMenu().items, (obj) => { return obj.link === searchTerm; });
@@ -488,23 +480,13 @@ const getData = function (req, page, query, cb){
             console.error(colors.red('Error getting total product count', err));
         }
 
-        if(config.databaseType === 'embedded'){
-            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).exec((err, results) => {
-                if(err){
-                    cb(new Error('Error retrieving products'), null);
-                }else{
-                    cb(null, {data: results, totalProducts: totalProducts});
-                }
-            });
-        }else{
-            db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray((err, results) => {
-                if(err){
-                    cb(new Error('Error retrieving products'), null);
-                }else{
-                    cb(null, {data: results, totalProducts: totalProducts});
-                }
-            });
-        }
+        db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray((err, results) => {
+            if(err){
+                cb(new Error('Error retrieving products'), null);
+            }else{
+                cb(null, {data: results, totalProducts: totalProducts});
+            }
+        });
     });
 };
 

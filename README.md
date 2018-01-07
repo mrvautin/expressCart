@@ -19,13 +19,13 @@ Keeping expressCart running after closing the terminal can be done in a few ways
 
 ## Admin
 
-Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin) 
+Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)
 
 A new user form will be shown where a user can be created.
 
 ### Styling
 
-Adding your own custom style is done by accessing the `Admin` panel then selecting `General settings`. 
+Adding your own custom style is done by accessing the `Admin` panel then selecting `General settings`.
 
 ###### CSS
 
@@ -45,12 +45,12 @@ Set this value to a full 2 decimal value with no commas or currency symbols.
 
 ##### Permalink
 
-A permalink is a nice link to your product which is normally shown in search engine rankings. By default, if you Permalink value is set when adding a product, 
-one will be generated using the Product title with spaces replaced by dashes. 
+A permalink is a nice link to your product which is normally shown in search engine rankings. By default, if you Permalink value is set when adding a product,
+one will be generated using the Product title with spaces replaced by dashes.
 
 ##### Options
 
-You may want to set product options such as 'Size', 'Color' etc. 
+You may want to set product options such as 'Size', 'Color' etc.
 
 Below is an explanation of the fields and what they do
 
@@ -67,23 +67,12 @@ Tags are used when indexing the products for search. It's advised to set tags (k
 
 ## Database
 
-By default `expressCart` uses an embedded database for easy setup and backup. `expressCart` also supports a MongoDB connection and it's recommended if you expect high traffic to your website.
-
-Setting of the database is done through the `/config/settings.json` file. There are two properties relating to the database connection:
-
-Example embedded DB configuration:
-
-```
-{
-    "databaseType": "embedded"
-}
-``` 
+`expressCart` uses a MongoDB for storing all the data. Setting of the database connection string is done through the `/config/settings.json` file. There are two properties relating to the database connection:
 
 Example MongoDB configuration:
 
 ```
 {
-    "databaseType": "mongodb",
     "databaseConnectionString": "mongodb://localhost:27017/expresscart"
 }
 ```
@@ -94,7 +83,7 @@ Note: The `databaseConnectionString` property requires a full connection string.
 
 ## Configuration
 
-All settings are managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)) except the Payment gateway and database settings. 
+All settings are managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)) except the Payment gateway and database settings.
 
 ##### Cart name and Cart description
 
@@ -144,7 +133,6 @@ to ensure the `Products per page` is a multiple of 3 for the best look.
 
 This is the number of products displayed per row on your website. You can select anywhere up to 4 `Products per row`.
 
-
 ##### Menu enabled
 
 Enables/disable the menu setup in `/admin/settings/menu`.
@@ -193,7 +181,7 @@ Note: The `secretKey` and `publicKey` is obtained from your Stripe account dashb
 
 You will need to configure your SMTP details for expressCart to send email receipts to your customers.
 
-You will need to consult your email provider for the relevant details. 
+You will need to consult your email provider for the relevant details.
 
 ##### Gmail settings
 
@@ -223,8 +211,8 @@ You can use the `Send test email` button to ensure your email settings are corre
 
 ## Menu
 
-Although expressCart is a search based shopping cart, you can also group your products into categories using tags. You can then setup menu Items to "filter" based on
-keywords (tags) to make it easier for your customers. 
+Although `expressCart` is a search based shopping cart, you can also group your products into categories using tags. You can then setup menu Items to "filter" based on
+keywords (tags) to make it easier for your customers.
 
 Setting of menu items is done via `/admin/settings/menu`.
 
@@ -240,12 +228,3 @@ You can re-order menu items by clicking and dragging the arrows icon and placing
 You may want to create a static page to show contact details, about us, shipping information etc.
 
 New static pages are setup via `/admin/settings/pages`.
-
-## Upgrade from embedded DB to MongoDB
-
-If you start using an embedded DB and decide your website is needing a dedicated MongoDB server you can simply upgrade by following these steps:
-
-1. **IMPORTANT** Backup your `/data` folder
-2. Ensure the MongoDB settings in the `/config/settings.json` file are added and are correct
-3. Run `npm run dbUpgrade`
-4. All done!

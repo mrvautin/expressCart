@@ -381,11 +381,7 @@ exports.orderMenu = function(req, res){
 
 // gets the correct type of index ID
 exports.getId = function(id){
-    let config = exports.getConfig();
     let ObjectID = require('mongodb').ObjectID;
-    if(config.databaseType === 'embedded'){
-        return id;
-    }
     if(id){
         if(id.length !== 24){
             return id;

@@ -95,15 +95,10 @@ router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
     let db = req.app.db;
     let searchTerm = req.params.search;
     let ordersIndex = req.app.ordersIndex;
-    let config = common.getConfig();
 
     let lunrIdArray = [];
     ordersIndex.search(searchTerm).forEach((id) => {
-        if(config.databaseType !== 'embedded'){
-            lunrIdArray.push(common.getId(id.ref));
-        }else{
-            lunrIdArray.push(id.ref);
-        }
+        lunrIdArray.push(common.getId(id.ref));
     });
 
     // we search on the lunr indexes
@@ -317,17 +312,12 @@ router.post('/product/emptycart', (req, res, next) => {
 // Admin section
 router.get('/products/filter/:search', common.restrict, (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
     let searchTerm = req.params.search;
     let productsIndex = req.app.productsIndex;
 
     let lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
-        if(config.databaseType !== 'embedded'){
-            lunrIdArray.push(common.getId(id.ref));
-        }else{
-            lunrIdArray.push(id.ref);
-        }
+        lunrIdArray.push(common.getId(id.ref));
     });
 
     // we search on the lunr indexes
@@ -422,10 +412,7 @@ router.post('/product/insert', common.restrict, (req, res) => {
                     res.redirect('/admin/product/new');
                 }else{
                     // get the new ID
-                    let newId = newDoc._id;
-                    if(config.databaseType !== 'embedded'){
-                        newId = newDoc.insertedIds;
-                    }
+                    let newId = newDoc.insertedIds;
 
                     // add to lunr index
                     common.indexProducts(req.app)

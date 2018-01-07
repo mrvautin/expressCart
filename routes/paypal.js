@@ -74,35 +74,30 @@ router.get('/checkout_return', (req, res, next) => {
                 if(err){
                     console.info(err.stack);
                 }
-                let lunrDoc = {
-                    orderLastname: order.orderLastname,
-                    orderEmail: order.orderEmail,
-                    orderPostcode: order.orderPostcode,
-                    id: order._id
-                };
 
                 // add to lunr index
-                req.app.ordersIndex.add(lunrDoc);
+                common.indexOrders(req.app)
+                .then(() => {
+                    // set the results
+                    req.session.messageType = 'success';
+                    req.session.message = paymentMessage;
+                    req.session.paymentEmailAddr = order.orderEmail;
+                    req.session.paymentApproved = paymentApproved;
+                    req.session.paymentDetails = paymentDetails;
 
-                // set the results
-                req.session.messageType = 'success';
-                req.session.message = paymentMessage;
-                req.session.paymentEmailAddr = order.orderEmail;
-                req.session.paymentApproved = paymentApproved;
-                req.session.paymentDetails = paymentDetails;
+                    let paymentResults = {
+                        message: req.session.message,
+                        messageType: req.session.messageType,
+                        paymentEmailAddr: req.session.paymentEmailAddr,
+                        paymentApproved: req.session.paymentApproved,
+                        paymentDetails: req.session.paymentDetails
+                    };
 
-                let paymentResults = {
-                    message: req.session.message,
-                    messageType: req.session.messageType,
-                    paymentEmailAddr: req.session.paymentEmailAddr,
-                    paymentApproved: req.session.paymentApproved,
-                    paymentDetails: req.session.paymentDetails
-                };
+                    // send the email with the response
+                    common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
 
-                // send the email with the response
-                common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
-
-                res.redirect('/payment/' + order._id);
+                    res.redirect('/payment/' + order._id);
+                });
             });
         });
     });
@@ -194,11 +189,9 @@ router.post('/checkout_action', (req, res, next) => {
                     }
 
                     // get the new ID
-                    let newId = newDoc._id;
-                    if(config.databaseType !== 'embedded'){
-                        if(newDoc.insertedIds.length > 0){
-                            newId = newDoc.insertedIds[0].toString();
-                        }
+                    let newId = '';
+                    if(newDoc.insertedIds.length > 0){
+                        newId = newDoc.insertedIds[0].toString();
                     }
 
                     // set the order ID in the session
