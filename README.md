@@ -153,8 +153,8 @@ The Paypal config file is located: `/config/paypal.json`. A example Paypal setti
 ```
 {
     "mode": "live", // sandbox or live
-    "client_id": "AZVozrpEtNfdfldfkdlfkdlfkldfpi_84bCA8XIdlfynuODpLQXF5e1fdfldkfldkfldkfldkfldklfd",
-    "client_secret": "EPB0jfdfdlfkdlfkdlfkldkfTe3WRRFmB_oTyCekOr_P5xNDrwfdjkfjkdjfkdjfkhboVu1l",
+    "client_id": "this_is_not_real",
+    "client_secret": "this_is_not_real",
     "paypalCartDescription": "expressCart", // Shows as the Paypal description
     "paypalCurrency": "USD" // The Paypal currency to charge in
 }
@@ -167,8 +167,8 @@ The Stripe config file is located: `/config/stripe.json`. A example Stripe setti
 
 ```
 {
-    "secretKey": "sk_test_htJLFOHHopwWW3xA1JWUJLDH",
-    "publicKey": "pk_test_htJLLDHWUJpwWW3xA1HopwHJ",
+    "secretKey": "sk_test_this_is_not_real",
+    "publicKey": "pk_test_this_is_not_real",
     "stripeCurrency": "usd", The Stripe currency to charge in
     "stripeDescription": "expressCart payment", // Shows as the Stripe description
     "stripeLogoURL": "http://localhost:1111/images/stripelogo.png" // URL to the logo to display on Stripe form
