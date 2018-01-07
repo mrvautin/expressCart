@@ -110,11 +110,11 @@
                 <h2>Product images</h2>
                 {{#if images}}
                 <div class="row">
-                    <div class="col-md-10 col-md-offset-2"> 
+                    <div class="col-md-10 col-md-offset-2">
                     {{#each images}}
-                        <div class="col-md-3">                   
+                        <div class="col-md-3">
                             <p>
-                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-danger btn-sm">Delete</a> 
+                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-danger btn-sm">Delete</a>
                                 {{#ifCond this.productImage '==' true}}
                                     <span class="label label-info">main image</span>
                                 {{else}}
@@ -148,7 +148,8 @@
                     <span class="btn btn-info btn-file">
                         Select file<input type="file" name="upload_file" id="upload_file">
                     </span>
-                    <input type="hidden" id="directory" name="directory" value="{{result._id}}"/>
+                    <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
+                    <input type="hidden" id="directory" name="directory" value="{{result.productPermalink}}"/>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -162,7 +163,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
-        $('#editor').summernote({  
+        $('#editor').summernote({
             height: 300,
             minHeight: null
         });

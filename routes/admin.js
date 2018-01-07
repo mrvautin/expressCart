@@ -571,7 +571,7 @@ router.get('/product/delete/:id', common.restrict, (req, res) => {
 // users
 router.get('/users', common.restrict, (req, res) => {
     let db = req.app.db;
-    common.dbQuery(db.users, {}, null, null, (err, users) => {
+    db.users.find({}).toArray((err, users) => {
         if(err){
             console.info(err.stack);
         }
@@ -1083,7 +1083,6 @@ router.post('/product/setasmainimage', common.restrict, (req, res) => {
 
     // update the productImage to the db
     db.products.update({_id: common.getId(req.body.product_id)}, {$set: {productImage: req.body.productImage}}, {multi: false}, (err, numReplaced) => {
-        console.log(err, numReplaced);
         if(err){
             res.status(400).json({message: 'Unable to set as main image. Please try again.'});
         }else{
@@ -1162,7 +1161,7 @@ router.post('/file/upload', common.restrict, upload.single('upload_file'), (req,
         });
 
         // get the product form the DB
-        db.products.findOne({_id: common.getId(req.body.directory)}, (err, product) => {
+        db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
             if(err){
                 console.info(err.stack);
             }
@@ -1170,24 +1169,24 @@ router.post('/file/upload', common.restrict, upload.single('upload_file'), (req,
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
-                db.products.update({_id: common.getId(req.body.directory)}, {$set: {productImage: imagePath}}, {multi: false}, (err, numReplaced) => {
+                db.products.update({_id: common.getId(req.body.productId)}, {$set: {productImage: imagePath}}, {multi: false}, (err, numReplaced) => {
                     if(err){
                         console.info(err.stack);
                     }
                     req.session.message = 'File uploaded successfully';
                     req.session.messageType = 'success';
-                    res.redirect('/admin/product/edit/' + req.body.directory);
+                    res.redirect('/admin/product/edit/' + req.body.productId);
                 });
             }else{
                 req.session.message = 'File uploaded successfully';
                 req.session.messageType = 'success';
-                res.redirect('/admin/product/edit/' + req.body.directory);
+                res.redirect('/admin/product/edit/' + req.body.productId);
             }
         });
     }else{
         req.session.message = 'File upload error. Please select a file.';
         req.session.messageType = 'danger';
-        res.redirect('/admin/product/edit/' + req.body.directory);
+        res.redirect('/admin/product/edit/' + req.body.productId);
     }
 });
 
