@@ -8,7 +8,6 @@ let router = express.Router();
 
 // Admin section
 router.get('/', common.restrict, (req, res, next) => {
-    console.log('test');
     res.redirect('/admin/orders');
 });
 
