@@ -1,5 +1,5 @@
 let express = require('express');
-let common = require('./common');
+let common = require('../common');
 let paypal = require('paypal-rest-sdk');
 let router = express.Router();
 
