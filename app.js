@@ -18,8 +18,8 @@ let handlebars = require('express-handlebars');
 // require the routes
 const index = require('./routes/index');
 const admin = require('./routes/admin');
-const paypal = require('./routes/paypal');
-const stripe = require('./routes/stripe');
+const paypal = require('./routes/payments/paypal');
+const stripe = require('./routes/payments/stripe');
 
 const app = express();
 

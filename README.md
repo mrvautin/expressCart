@@ -123,6 +123,8 @@ Themes are a set of handlebars views and a stylesheet file. See `Cloth` theme as
 
 Themes are loaded from `/public/themes/`.
 
+It would be great to have some themes contributed back for others to use.
+
 ##### Number of Products per page
 
 You can set the number of products per page by changing the `Products per page` value to a whole number of your choice. You may want to ensure
@@ -228,3 +230,11 @@ You can re-order menu items by clicking and dragging the arrows icon and placing
 You may want to create a static page to show contact details, about us, shipping information etc.
 
 New static pages are setup via `/admin/settings/pages`.
+
+## Contributing
+
+I'm looking for contributors of any kind. I'm working on turning the admin panel into something more modern and using Vue.js. The frontend part of the website will always be a normal webapp with no SPA frameworks as I believe eCommerce apps should have SEO as top priority.
+
+Contributing payment providers and themes would be much appreciated. Payment providers are added by simply adding the payment provider file to `/routes/payments/providerName.js`, then adding the route to the `app.js` file by adding `const providerName = require('./routes/payments/{providerName}');` and mounting the route `app.use('/providerName', providerName);`.
+
+If you see current code which could be enhanced (note: parts of the code is quite old but new to Github) you are welcome to submit a PR.
