@@ -259,6 +259,7 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
 
     // add indexing
     common.runIndexing(app)
+    .then(common.testData(db))
     .then(() => {
         // lift the app
         app.listen(app.get('port'), () => {

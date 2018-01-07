@@ -2,6 +2,7 @@ const _ = require('lodash');
 const uglifycss = require('uglifycss');
 const colors = require('colors');
 const lunr = require('lunr');
+const fs = require('fs');
 const escape = require('html-entities').AllHtmlEntities;
 
 // common functions
@@ -112,8 +113,9 @@ exports.getImages = function (dir, req, res, callback){
         if(err){
             console.error(colors.red('Error getting images', err));
         }
+
         // loop files in /public/uploads/
-        glob('public/uploads/' + dir + '/**', {nosort: true}, (er, files) => {
+        glob('public/uploads/' + product.productPermalink + '/**', {nosort: true}, (er, files) => {
             // sort array
             files.sort();
 
@@ -491,5 +493,25 @@ exports.runIndexing = (app) => {
     ])
     .catch((err) => {
         process.exit(2);
+    });
+};
+
+exports.testData = (db) => {
+    db.products.count({})
+    .then((products) => {
+        if(products > 0){
+            return Promise.resolve();
+        }
+
+        console.info(colors.cyan('No products, inserting test data'));
+
+        const testdata = fs.readFileSync('./bin/testdata.json', 'utf-8');
+        return Promise.all([
+            db.products.insertMany(JSON.parse(testdata))
+        ])
+        .catch((err) => {
+            console.info(colors.red('Error inserting test data. Check `/bin/testdata.json` is correctly formatted.', err));
+            process.exit(2);
+        });
     });
 };
