@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-12 top-pad-10">
         <ul class="list-group">
             <li class="list-group-item">
@@ -42,6 +42,7 @@
                     <strong>Recent orders</strong>
                 {{/if}}
             </li>
+            {{#if orders}}
             {{#each orders}}
                 <li class="list-group-item">
                     <h4 class="pull-right" style="padding-left: 10px;">
@@ -53,6 +54,13 @@
                     </h5>
                 </li>
             {{/each}}
+            {{else}}
+                <li class="list-group-item">
+                    <h4 class="text-center">
+                        No orders found
+                    </h4>
+                </li>
+            {{/if}}
         </ul>
-    </div> 
+    </div>
 </div>
