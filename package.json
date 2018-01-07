@@ -1,8 +1,8 @@
 {
   "name": "express-cart",
-  "version": "1.0.11",
+  "version": "1.0.1",
   "description": "A fully functioning Node.js shopping cart with Stripe and PayPal payments.",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "node app.js",
     "deploy": "gulp deploy"
@@ -77,5 +77,5 @@
     "shopping"
   ],
   "author": "Mark Moffat",
-  "homepage": "https://markmoffat.com"
+  "homepage": "https://expresscart.markmoffat.com"
 }
