@@ -2,7 +2,7 @@
     <div class="row">
         <form action="/search" id="search_form" method="post">
         <div class="row">
-            {{#ifCond config.menuEnabled '==' "true"}}
+            {{#ifCond config.menuEnabled '==' 'true'}}
                 {{#ifCond config.menuLocation '==' "side"}}
                     <div class="col-md-offset-2 col-lg-offset-2 col-xl-9 col-xl-offset-3 search-bar col-md-10 search-bar">
                 {{else}}
@@ -23,7 +23,7 @@
         </form>
     </div>
     <div class="row">
-        {{#ifCond config.menuEnabled '==' "true"}}
+        {{#ifCond config.menuEnabled '==' 'true'}}
             {{#ifCond config.menuLocation '==' "side"}}
                 <div class="col-xl-3 col-md-2">
                     <ul class="list-group menu-side">

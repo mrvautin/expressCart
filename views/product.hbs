@@ -1,6 +1,6 @@
 <div class="col-xl-8 col-xl-offset-2 col-xs-12">
     <div class="row">
-        {{#ifCond config.menuEnabled '==' "true"}}
+        {{#ifCond config.menuEnabled '==' 'true'}}
             {{#ifCond config.menuLocation '==' "side"}}
                 <div class="col-xl-3 col-md-2">
                     <ul class="list-group menu-side">
@@ -92,13 +92,13 @@
                             {{{productDescription}}}
                         </p>
                     </div>
-                    <div class="col-xs-12 col-md-6 pull-left">  
+                    <div class="col-xs-12 col-md-6 pull-left">
                         {{#if result.productImage}}
                             <div class="title-image-container">
                                 <div class="image-prev image-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i></div>
                                 <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-responsive" alt="...">
                                 <div class="image-next image-button"> <i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                            </div>  
+                            </div>
                         {{else}}
                             <div class="title-image-container">
                                 <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-responsive" alt="...">
@@ -106,16 +106,16 @@
                         {{/if}}
                         {{#ifCond images.length '>' 1}}
                             <div class="row">
-                            {{#each images}}     
+                            {{#each images}}
                                 <div class="vertical-center top-pad-20 col-xs-6 col-lg-6 col-xl-6">
                                     <img src="{{this.path}}" class="thumbnail-image img-responsive">
                                 </div>
                             {{/each}}
                             </div>
-                        {{/ifCond}}  
+                        {{/ifCond}}
                     </div>
                 </div>
-            </div>  
+            </div>
         </div>
     </div>
     <input type="hidden" id="productId" value="{{result._id}}">

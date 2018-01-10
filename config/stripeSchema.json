@@ -1,0 +1,29 @@
+{
+    "properties": {
+        "secretKey": {
+            "type": "string",
+            "default": "sandbox"
+        },
+        "publicKey": {
+            "type": "string"
+        },
+        "stripeCurrency": {
+            "type": "string"
+        },
+        "stripeDescription": {
+            "type": "string"
+        },
+        "stripeLogoURL": {
+            "type": "string",
+            "format": "uri-template"
+        }
+    },
+    "required": [
+        "secretKey",
+        "publicKey",
+        "stripeCurrency",
+        "stripeDescription",
+        "stripeLogoURL"
+    ],
+    "additionalProperties": false
+}

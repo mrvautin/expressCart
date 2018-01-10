@@ -1,7 +1,7 @@
 <div class="col-xl-8 col-xl-offset-2 col-xs-12">
     <div class="row">
         <form>
-            {{#ifCond config.menuEnabled '==' "true"}}
+            {{#ifCond config.menuEnabled '==' 'true'}}
                 {{#ifCond config.menuLocation '==' "side"}}
                     <div class="col-md-offset-2 col-lg-offset-2 col-xl-9 col-xl-offset-3 search-bar col-md-10 search-bar">
                 {{else}}
@@ -21,7 +21,7 @@
         </form>
     </div>
     <div class="row">
-        {{#ifCond config.menuEnabled '==' "true"}}
+        {{#ifCond config.menuEnabled '==' 'true'}}
             {{#ifCond config.menuLocation '==' "side"}}
                 <div class="col-xl-3 col-md-2">
                     <ul class="list-group menu-side">
@@ -78,7 +78,7 @@
                                         </h3>
                                     </a>
                                 </div>
-                            {{else}}                     
+                            {{else}}
                                 <a href="/product/{{this._id}}">
                                     <div class="vertical-center thumbnail-image-container">
                                         {{#if productImage}}

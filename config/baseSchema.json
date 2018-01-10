@@ -1,0 +1,108 @@
+{
+    "properties": {
+        "cartTitle": {
+            "type": "string",
+            "default": "expressCart"
+        },
+        "cartDescription": {
+            "type": "string",
+            "default": "This is my expressCart"
+        },
+        "cartLogo": {
+            "type": "string"
+        },
+        "baseUrl": {
+            "type": "string",
+            "format": "uri-template",
+            "default": "http://localhost:1111"
+        },
+        "emailHost": {
+            "format": "uri-template",
+            "type": "string"
+        },
+        "emailPort": {
+            "type": "number",
+            "default": 587
+        },
+        "emailSecure": {
+            "type": "boolean",
+            "default": false
+        },
+        "emailUser": {
+            "type": "string"
+        },
+        "emailPassword": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string",
+            "format": "email"
+        },
+        "menuEnabled": {
+            "type": "boolean",
+            "default": true
+        },
+        "flatShipping": {
+            "type": "number",
+            "default": 10
+        },
+        "freeShippingAmount": {
+            "type": "number",
+            "default": 100
+        },
+        "productsPerRow": {
+            "type": "number",
+            "default": 3
+        },
+        "productsPerPage": {
+            "type": "number",
+            "default": 6
+        },
+        "menuTitle": {
+            "type": "string",
+            "default": "Menu"
+        },
+        "menuLocation": {
+            "type": "string",
+            "default": "side",
+            "enum": ["top", "side"]
+        },
+        "footerHtml": {
+            "type": "string",
+            "default": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;"
+        },
+        "googleAnalytics": {
+            "type": "string"
+        },
+        "customCss": {
+            "type": "string"
+        },
+        "currencySymbol": {
+            "type": "string",
+            "default": "£"
+        },
+        "paymentGateway": {
+            "type": "string",
+            "enum": ["paypal", "stripe"]
+        },
+        "databaseConnectionString": {
+            "format": "uri-template",
+            "type": "string"
+        },
+        "theme": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "baseUrl",
+        "emailHost",
+        "emailPort",
+        "emailSecure",
+        "emailUser",
+        "emailPassword",
+        "emailAddress",
+        "paymentGateway",
+        "databaseConnectionString"
+    ],
+    "additionalProperties": false
+}
