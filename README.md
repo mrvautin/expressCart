@@ -231,6 +231,14 @@ You may want to create a static page to show contact details, about us, shipping
 
 New static pages are setup via `/admin/settings/pages`.
 
+## Demo images
+
+Sample homepage
+![Sample homepage](https://mrvautin.com/content/images/2018/01/expressCart-demo.jpg)
+
+Admin page
+![Admin page](https://mrvautin.com/content/images/2018/01/admin-settings.png)
+
 ## Contributing
 
 I'm looking for contributors of any kind. I'm working on turning the admin panel into something more modern and using Vue.js. The frontend part of the website will always be a normal webapp with no SPA frameworks as I believe eCommerce apps should have SEO as top priority.
