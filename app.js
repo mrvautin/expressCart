@@ -12,8 +12,38 @@ const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
 const common = require('./routes/common');
+const mongodbUri = require('mongodb-uri');
 
 let handlebars = require('express-handlebars');
+
+// Validate our settings schema
+const Ajv = require('ajv');
+const ajv = new Ajv({useDefaults: true});
+
+const baseConfig = ajv.validate(require('./config/baseSchema'), require('./config/settings.json'));
+if(baseConfig === false){
+    console.log(colors.red(`settings.json incorrect: ${ajv.errorsText()}`));
+    process.exit(2);
+}
+
+// get config
+let config = common.getConfig();
+
+// Validate the payment gateway config
+if(config.paymentGateway === 'paypal'){
+    const paypalConfig = ajv.validate(require('./config/paypalSchema'), require('./config/paypal.json'));
+    if(paypalConfig === false){
+        console.log(colors.red(`PayPal config is incorrect: ${ajv.errorsText()}`));
+        process.exit(2);
+    }
+}
+if(config.paymentGateway === 'stripe'){
+    const stripeConfig = ajv.validate(require('./config/stripeSchema'), require('./config/stripe.json'));
+    if(stripeConfig === false){
+        console.log(colors.red(`PayPal config is incorrect: ${ajv.errorsText()}`));
+        process.exit(2);
+    }
+}
 
 // require the routes
 const index = require('./routes/index');
@@ -154,9 +184,6 @@ handlebars = handlebars.create({
     }
 });
 
-// get config
-let config = common.getConfig();
-
 // var session store
 let store = new MongoStore({
     uri: config.databaseConnectionString,
@@ -246,7 +273,8 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     }
 
     // select DB
-    const db = client.db('expresscart');
+    const dbUriObj = mongodbUri.parse(config.databaseConnectionString);
+    const db = client.db(dbUriObj.database);
 
     // setup the collections
     db.users = db.collection('users');
