@@ -27,6 +27,14 @@ A new user form will be shown where a user can be created.
 
 Adding your own custom style is done by accessing the `Admin` panel then selecting `General settings`.
 
+#### Demo images
+
+Sample homepage
+![Sample homepage](https://mrvautin.com/content/images/2018/01/expressCart-demo.jpg)
+
+Admin page
+![Admin page](https://mrvautin.com/content/images/2018/01/admin-settings.png)
+
 ###### CSS
 
 You can add your own custom CSS into the `Custom CSS` box. This will be minified and added to each page.
@@ -230,14 +238,6 @@ You can re-order menu items by clicking and dragging the arrows icon and placing
 You may want to create a static page to show contact details, about us, shipping information etc.
 
 New static pages are setup via `/admin/settings/pages`.
-
-## Demo images
-
-Sample homepage
-![Sample homepage](https://mrvautin.com/content/images/2018/01/expressCart-demo.jpg)
-
-Admin page
-![Admin page](https://mrvautin.com/content/images/2018/01/admin-settings.png)
 
 ## Contributing
 
