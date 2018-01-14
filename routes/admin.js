@@ -359,7 +359,6 @@ router.get('/product/new', common.restrict, (req, res) => {
 // insert new product form action
 router.post('/product/insert', common.restrict, (req, res) => {
     let db = req.app.db;
-    let config = common.getConfig();
 
     let doc = {
         productPermalink: req.body.frmProductPermalink,
@@ -852,7 +851,8 @@ router.post('/settings/option/remove', common.restrict, (req, res) => {
 });
 
 // settings update
-router.get('/settings/menu', common.restrict, (req, res) => {
+router.get('/settings/menu', common.restrict, async (req, res) => {
+    let db = req.app.db;
     res.render('settings_menu', {
         title: 'Cart menu',
         session: req.session,
@@ -861,17 +861,18 @@ router.get('/settings/menu', common.restrict, (req, res) => {
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: common.getConfig(),
-        menu: common.getMenu().items
+        menu: common.sortMenu(await common.getMenu(db))
     });
 });
 
 // settings page list
 router.get('/settings/pages', common.restrict, (req, res) => {
     let db = req.app.db;
-    common.dbQuery(db.pages, {}, null, null, (err, pages) => {
+    common.dbQuery(db.pages, {}, null, null, async (err, pages) => {
         if(err){
             console.info(err.stack);
         }
+
         res.render('settings_pages', {
             title: 'Static pages',
             pages: pages,
@@ -881,13 +882,15 @@ router.get('/settings/pages', common.restrict, (req, res) => {
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
             config: common.getConfig(),
-            menu: common.getMenu().items
+            menu: common.sortMenu(await common.getMenu(db))
         });
     });
 });
 
 // settings pages new
-router.get('/settings/pages/new', common.restrict, (req, res) => {
+router.get('/settings/pages/new', common.restrict, async (req, res) => {
+    let db = req.app.db;
+
     res.render('settings_page_edit', {
         title: 'Static pages',
         session: req.session,
@@ -897,18 +900,19 @@ router.get('/settings/pages/new', common.restrict, (req, res) => {
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: common.getConfig(),
-        menu: common.getMenu().items
+        menu: common.sortMenu(await common.getMenu(db))
     });
 });
 
 // settings pages editor
 router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
     let db = req.app.db;
-    db.pages.findOne({_id: common.getId(req.params.page)}, (err, page) => {
+    db.pages.findOne({_id: common.getId(req.params.page)}, async (err, page) => {
         if(err){
             console.info(err.stack);
         }
         // page found
+        const menu = common.sortMenu(await common.getMenu(db));
         if(page){
             res.render('settings_page_edit', {
                 title: 'Static pages',
@@ -920,7 +924,7 @@ router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
                 messageType: common.clearSessionValue(req.session, 'messageType'),
                 helpers: req.handlebars.helpers,
                 config: common.getConfig(),
-                menu: common.getMenu().items
+                menu
             });
         }else{
             // 404 it!
@@ -930,9 +934,8 @@ router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
                 message: '404 Error - Page not found',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: common.getMenu()
-            }
-            );
+                menu
+            });
         }
     });
 });

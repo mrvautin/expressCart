@@ -260,16 +260,22 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Nodejs version check
+if(parseInt(process.version.split('.')[0].replace('v', '')) <= 7){
+    console.log(colors.red('Please use Node.js version 7.x or above'));
+    process.exit(2);
+}
+
 app.on('uncaughtException', (err) => {
     console.error(colors.red(err.stack));
-    process.exit();
+    process.exit(2);
 });
 
 MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     // On connection error we display then exit
     if(err){
         console.log(colors.red('Error connecting to MongoDB: ' + err));
-        process.exit();
+        process.exit(2);
     }
 
     // select DB
@@ -281,22 +287,22 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     db.products = db.collection('products');
     db.orders = db.collection('orders');
     db.pages = db.collection('pages');
+    db.menu = db.collection('menu');
 
     // add db to app for routes
     app.db = db;
 
     // add indexing
     common.runIndexing(app)
-    .then(common.testData(db))
+    .then(common.testData(db, app))
+    .then(app.listen(app.get('port')))
     .then(() => {
         // lift the app
-        app.listen(app.get('port'), () => {
-            console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
-        });
+        console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
     })
     .catch(() => {
         console.error(colors.red('Error setting up indexes:' + err));
-        process.exit();
+        process.exit(2);
     });
 });
 

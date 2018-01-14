@@ -4,12 +4,12 @@ const colors = require('colors');
 const _ = require('lodash');
 const common = require('./common');
 
-router.get('/payment/:orderId', (req, res, next) => {
+router.get('/payment/:orderId', async (req, res, next) => {
     let db = req.app.db;
     let config = common.getConfig();
 
     // render the payment complete message
-    db.orders.findOne({_id: common.getId(req.params.orderId)}, (err, result) => {
+    db.orders.findOne({_id: common.getId(req.params.orderId)}, async (err, result) => {
         if(err){
             console.info(err.stack);
         }
@@ -23,12 +23,12 @@ router.get('/payment/:orderId', (req, res, next) => {
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter',
-            menu: common.getMenu()
+            menu: common.sortMenu(await common.getMenu(db))
         });
     });
 });
 
-router.get('/checkout', (req, res, next) => {
+router.get('/checkout', async (req, res, next) => {
     let config = common.getConfig();
 
     // if there is no items in the cart then render a failure
@@ -50,12 +50,11 @@ router.get('/checkout', (req, res, next) => {
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        showFooter: 'showFooter',
-        menu: common.getMenu()
+        showFooter: 'showFooter'
     });
 });
 
-router.get('/pay', (req, res, next) => {
+router.get('/pay', async (req, res, next) => {
     let config = common.getConfig();
 
     // if there is no items in the cart then render a failure
@@ -78,8 +77,7 @@ router.get('/pay', (req, res, next) => {
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        showFooter: 'showFooter',
-        menu: common.getMenu()
+        showFooter: 'showFooter'
     });
 });
 
@@ -113,7 +111,7 @@ router.get('/product/:id', (req, res) => {
             }
 
             // show the view
-            common.getImages(result._id, req, res, (images) => {
+            common.getImages(result._id, req, res, async (images) => {
                 res.render(config.themeViews + 'product', {
                     title: result.productTitle,
                     result: result,
@@ -129,7 +127,7 @@ router.get('/product/:id', (req, res) => {
                     messageType: common.clearSessionValue(req.session, 'messageType'),
                     helpers: req.handlebars.helpers,
                     showFooter: 'showFooter',
-                    menu: common.getMenu()
+                    menu: common.sortMenu(await common.getMenu(db))
                 });
             });
         }
@@ -240,6 +238,7 @@ router.post('/login_action', (req, res) => {
 
 // search products
 router.get('/search/:searchTerm/:pageNum?', (req, res) => {
+    let db = req.app.db;
     let searchTerm = req.params.searchTerm;
     let productsIndex = req.app.productsIndex;
     let config = common.getConfig();
@@ -256,7 +255,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     }
 
     // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, (err, results) => {
+    getData(req, pageNum, {_id: {$in: lunrIdArray}}, async (err, results) => {
         if(err){
             console.error(colors.red('Error searching for products', err));
         }
@@ -276,7 +275,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
             pageNum: pageNum,
             paginateUrl: 'search',
             config: config,
-            menu: common.getMenu(),
+            menu: common.sortMenu(await common.getMenu(db)),
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter'
         });
@@ -285,6 +284,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
 
 // search products
 router.get('/category/:cat/:pageNum?', (req, res) => {
+    let db = req.app.db;
     let searchTerm = req.params.cat;
     let productsIndex = req.app.productsIndex;
     let config = common.getConfig();
@@ -292,10 +292,8 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
     let lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
-        lunrIdArray.push(common.getId(id.ref))
+        lunrIdArray.push(common.getId(id.ref));
     });
-
-    let menuLink = _.find(common.getMenu().items, (obj) => { return obj.link === searchTerm; });
 
     let pageNum = 1;
     if(req.params.pageNum){
@@ -303,7 +301,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     }
 
     // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, (err, results) => {
+    getData(req, pageNum, {_id: {$in: lunrIdArray}}, async (err, results) => {
         if(err){
             console.error(colors.red('Error getting products for category', err));
         }
@@ -321,10 +319,10 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
             productsPerPage: numberProducts,
             totalProductCount: results.totalProducts,
             pageNum: pageNum,
-            menuLink: menuLink,
+            menuLink: _.find(common.sortMenu(await common.getMenu(db)).items, (obj) => { return obj.link === searchTerm; }),
             paginateUrl: 'category',
             config: config,
-            menu: common.getMenu(),
+            menu: common.sortMenu(await common.getMenu(db)),
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter'
         });
@@ -365,10 +363,11 @@ router.get('/sitemap.xml', (req, res, next) => {
 });
 
 router.get('/page/:pageNum', (req, res, next) => {
+    let db = req.app.db;
     let config = common.getConfig();
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    getData(req, req.params.pageNum, {}, (err, results) => {
+    getData(req, req.params.pageNum, {}, async (err, results) => {
         if(err){
             console.error(colors.red('Error getting products for page', err));
         }
@@ -388,7 +387,7 @@ router.get('/page/:pageNum', (req, res, next) => {
             paginateUrl: 'page',
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter',
-            menu: common.getMenu()
+            menu: common.sortMenu(await common.getMenu(db))
         });
     });
 });
@@ -400,7 +399,7 @@ router.get('/:page?', (req, res, next) => {
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
-        getData(req, 1, {}, (err, results) => {
+        getData(req, 1, {}, async (err, results) => {
             if(err){
                 console.error(colors.red('Error getting products for page', err));
             }
@@ -420,7 +419,7 @@ router.get('/:page?', (req, res, next) => {
                 paginateUrl: 'page',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: common.getMenu()
+                menu: common.sortMenu(await common.getMenu(db))
             });
         });
     }else{
@@ -429,7 +428,7 @@ router.get('/:page?', (req, res, next) => {
             return;
         }
         // lets look for a page
-        db.pages.findOne({pageSlug: req.params.page, pageEnabled: 'true'}, (err, page) => {
+        db.pages.findOne({pageSlug: req.params.page, pageEnabled: 'true'}, async (err, page) => {
             if(err){
                 console.error(colors.red('Error getting page', err));
             }
@@ -446,7 +445,7 @@ router.get('/:page?', (req, res, next) => {
                     metaDescription: common.getConfig().cartTitle + ' - ' + page,
                     helpers: req.handlebars.helpers,
                     showFooter: 'showFooter',
-                    menu: common.getMenu()
+                    menu: common.sortMenu(await common.getMenu(db))
                 });
             }else{
                 res.status(404).render('error', {
@@ -455,9 +454,8 @@ router.get('/:page?', (req, res, next) => {
                     message: '404 Error - Page not found',
                     helpers: req.handlebars.helpers,
                     showFooter: 'showFooter',
-                    menu: common.getMenu()
-                }
-                );
+                    menu: common.sortMenu(await common.getMenu(db))
+                });
             }
         });
     }

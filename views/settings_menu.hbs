@@ -10,7 +10,7 @@
                 <th>Link</th>
                 <th></th>
                 <tbody id="draggable_list">
-                    {{#each menu}}
+                    {{#each menu.items}}
                         <tr class="drag-row">
                             <form method="post" action="/admin/settings/menu/update">
                             <input type="hidden" class="navId" name="navId" value="{{title}}">
@@ -24,7 +24,7 @@
                             <td class="col-md-2">
                                 <a class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');" href="/admin/settings/menu/delete/{{@key}}">
                                     <i class="fa fa-trash-o"></i>
-                                </a>	
+                                </a>
                                 <button type="submit" class="btn btn-success btn-sm">
                                     <i class="fa fa-floppy-o"></i>
                                 </button>
@@ -47,14 +47,14 @@
                                 </button>
                             </td>
                             </form>
-                        </tr>						
+                        </tr>
                 </tbody>
             </table>
             <p class="text-muted">
-                Here you can setup a menu to displayed on your shopping cart. You can use this menu to filter your products by specifying a keyword in the 
+                Here you can setup a menu to displayed on your shopping cart. You can use this menu to filter your products by specifying a keyword in the
                 "link" field. Eg: To show products with a keyword (or tag) of boots you would set the menu field to "Backpacks" and a link value "backpack".
                 You can also use this menu to link to static pages, Eg: shipping, returns, help, about, contact etc.
-            </p> 
+            </p>
 		</div>
 	</div>
 </div>

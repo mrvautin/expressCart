@@ -4,6 +4,7 @@ const colors = require('colors');
 const lunr = require('lunr');
 const fs = require('fs');
 const escape = require('html-entities').AllHtmlEntities;
+let ObjectId = require('mongodb').ObjectID;
 
 // common functions
 exports.checkLogin = function(req, res, next){
@@ -229,77 +230,99 @@ exports.updateConfig = function(fields){
     }
 };
 
-exports.getMenu = function(){
-    let fs = require('fs');
-    let path = require('path');
-    let menuFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/menu.json'), 'utf8'));
-
-    menuFile.items = _.sortBy(menuFile.items, 'order');
-    return menuFile;
+exports.getMenu = function(db){
+    return db.menu.findOne({});
 };
 
 // creates a new menu item
 exports.newMenu = function(req, res){
-    let fs = require('fs');
-    let path = require('path');
-    let menuJson = '../config/menu.json';
-    let menuFile = require(menuJson);
+    const db = req.app.db;
+    return exports.getMenu(db)
+    .then((menu) => {
+        // if no menu present
+        if(!menu){
+            menu = {};
+            menu.items = [];
+        }
+        let newNav = {
+            title: req.body.navMenu,
+            link: req.body.navLink,
+            order: Object.keys(menu.items).length + 1
+        };
 
-    let newNav = {
-        title: req.body.navMenu,
-        link: req.body.navLink,
-        order: Object.keys(menuFile.items).length + 1
-    };
-
-    // add new menu item
-    menuFile.items.push(newNav);
-
-    // write file
-    try{
-        fs.writeFileSync(path.join(__dirname, '../config/menu.json'), JSON.stringify(menuFile));
-        return true;
-    }catch(e){
+        menu.items.push(newNav);
+        return db.menu.updateOne({}, {$set: {items: menu.items}}, {upsert: true})
+        .then(() => {
+            return true;
+        });
+    })
+    .catch((err) => {
+        console.log('Error creating new menu', err);
         return false;
-    }
+    });
 };
 
 // delete a menu item
 exports.deleteMenu = function(req, res, menuIndex){
-    let fs = require('fs');
-    let path = require('path');
-    let menuJson = '../config/menu.json';
-    let menuFile = require(menuJson);
-
-    delete menuFile.items[menuIndex];
-
-    // write file
-    try{
-        fs.writeFileSync(path.join(__dirname, '../config/menu.json'), JSON.stringify(menuFile));
-        return true;
-    }catch(e){
+    const db = req.app.db;
+    return exports.getMenu(db)
+    .then((menu) => {
+        // Remove menu item
+        menu.items.splice(menuIndex, 1);
+        return db.menu.updateOne({}, {$set: {items: menu.items}}, {upsert: true})
+        .then(() => {
+            return true;
+        });
+    })
+    .catch(() => {
         return false;
-    }
+    });
 };
 
 // updates and existing menu item
 exports.updateMenu = function(req, res){
-    let fs = require('fs');
-    let path = require('path');
-    let menuJson = '../config/menu.json';
-    let menuFile = require(menuJson);
-
-    // find menu item and update it
-    let menuIndex = _.findIndex(menuFile.items, ['title', req.body.navId]);
-    menuFile.items[menuIndex].title = req.body.navMenu;
-    menuFile.items[menuIndex].link = req.body.navLink;
-
-    // write file
-    try{
-        fs.writeFileSync(path.join(__dirname, '../config/menu.json'), JSON.stringify(menuFile));
-        return true;
-    }catch(e){
+    const db = req.app.db;
+    return exports.getMenu(db)
+    .then((menu) => {
+        // find menu item and update it
+        let menuIndex = _.findIndex(menu.items, ['title', req.body.navId]);
+        menu.items[menuIndex].title = req.body.navMenu;
+        menu.items[menuIndex].link = req.body.navLink;
+        return db.menu.updateOne({}, {$set: {items: menu.items}}, {upsert: true})
+        .then(() => {
+            return true;
+        });
+    })
+    .catch(() => {
         return false;
+    });
+};
+
+exports.sortMenu = function(menu){
+    if(menu && menu.items){
+        menu.items = _.sortBy(menu.items, 'order');
+        return menu;
     }
+    return{};
+};
+
+// orders the menu
+exports.orderMenu = function(req, res){
+    const db = req.app.db;
+    return exports.getMenu(db)
+    .then((menu) => {
+        // update the order
+        for(let i = 0; i < req.body.navId.length; i++){
+            _.find(menu.items, ['title', req.body.navId[i]]).order = i;
+        }
+        return db.menu.updateOne({}, {$set: {items: menu.items}}, {upsert: true})
+        .then(() => {
+            return true;
+        });
+    })
+    .catch(() => {
+        return false;
+    });
 };
 
 exports.getEmailTemplate = function(result){
@@ -360,36 +383,14 @@ exports.sendEmail = function(to, subject, body){
     });
 };
 
-// orders the menu
-exports.orderMenu = function(req, res){
-    let fs = require('fs');
-    let path = require('path');
-    let menuJson = '../config/menu.json';
-    let menuFile = require(menuJson);
-
-    // update the order
-    for(let i = 0; i < req.body.navId.length; i++){
-        _.find(menuFile.items, ['title', req.body.navId[i]]).order = i;
-    }
-
-    // write file
-    try{
-        fs.writeFileSync(path.join(__dirname, '../config/menu.json'), JSON.stringify(menuFile));
-        return true;
-    }catch(e){
-        return false;
-    }
-};
-
 // gets the correct type of index ID
 exports.getId = function(id){
-    let ObjectID = require('mongodb').ObjectID;
     if(id){
         if(id.length !== 24){
             return id;
         }
     }
-    return ObjectID(id);
+    return ObjectId(id);
 };
 
 // run the DB query
@@ -496,7 +497,7 @@ exports.runIndexing = (app) => {
     });
 };
 
-exports.testData = (db) => {
+exports.testData = (db, app) => {
     db.products.count({})
     .then((products) => {
         if(products > 0){
@@ -505,9 +506,12 @@ exports.testData = (db) => {
 
         console.info(colors.cyan('No products, inserting test data'));
 
-        const testdata = fs.readFileSync('./bin/testdata.json', 'utf-8');
+        const testData = fs.readFileSync('./bin/testdata.json', 'utf-8');
+        const jsonData = JSON.parse(testData);
         return Promise.all([
-            db.products.insertMany(JSON.parse(testdata))
+            db.products.insertMany(jsonData.products),
+            db.menu.insertOne(jsonData.menu),
+            exports.runIndexing(app)
         ])
         .catch((err) => {
             console.info(colors.red('Error inserting test data. Check `/bin/testdata.json` is correctly formatted.', err));
