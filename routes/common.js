@@ -2,12 +2,17 @@ const _ = require('lodash');
 const uglifycss = require('uglifycss');
 const colors = require('colors');
 const lunr = require('lunr');
+const cheerio = require('cheerio');
 const fs = require('fs');
+const path = require('path');
+const glob = require('glob');
+const async = require('async');
+const nodemailer = require('nodemailer');
 const escape = require('html-entities').AllHtmlEntities;
 let ObjectId = require('mongodb').ObjectID;
 
 // common functions
-exports.checkLogin = function(req, res, next){
+exports.checkLogin = (req, res, next) => {
     // if not protecting we check for public pages and don't checkLogin
     if(req.session.needsSetup === true){
         res.redirect('/setup');
@@ -21,7 +26,7 @@ exports.checkLogin = function(req, res, next){
     res.redirect('/login');
 };
 
-exports.showCartCloseBtn = function(page){
+exports.showCartCloseBtn = (page) => {
     let showCartCloseButton = true;
     if(page === 'checkout' || page === 'pay'){
         showCartCloseButton = false;
@@ -31,9 +36,9 @@ exports.showCartCloseBtn = function(page){
 };
 
 // adds products to sitemap.xml
-exports.addSitemapProducts = function(req, res, cb){
+exports.addSitemapProducts = (req, res, cb) => {
     let db = req.app.db;
-    let async = require('async');
+
     let config = exports.getConfig();
     let hostname = config.baseUrl;
 
@@ -59,11 +64,11 @@ exports.addSitemapProducts = function(req, res, cb){
     });
 };
 
-exports.restrict = function(req, res, next){
+exports.restrict = (req, res, next) => {
     exports.checkLogin(req, res, next);
 };
 
-exports.clearSessionValue = function(session, sessionVar){
+exports.clearSessionValue = (session, sessionVar) => {
     let temp;
     if(session){
         temp = session[sessionVar];
@@ -72,7 +77,7 @@ exports.clearSessionValue = function(session, sessionVar){
     return temp;
 };
 
-exports.updateTotalCartAmount = function(req, res){
+exports.updateTotalCartAmount = (req, res) => {
     let config = exports.getConfig();
 
     req.session.totalCartAmount = 0;
@@ -90,8 +95,7 @@ exports.updateTotalCartAmount = function(req, res){
     }
 };
 
-exports.checkDirectorySync = function (directory){
-    let fs = require('fs');
+exports.checkDirectorySync = (directory) => {
     try{
         fs.statSync(directory);
     }catch(e){
@@ -99,16 +103,12 @@ exports.checkDirectorySync = function (directory){
     }
 };
 
-exports.getThemes = function (){
-    let fs = require('fs');
-    let path = require('path');
+exports.getThemes = () => {
     return fs.readdirSync(path.join('public', 'themes')).filter(file => fs.statSync(path.join(path.join('public', 'themes'), file)).isDirectory());
 };
 
-exports.getImages = function (dir, req, res, callback){
+exports.getImages = (dir, req, res, callback) => {
     let db = req.app.db;
-    let glob = require('glob');
-    let fs = require('fs');
 
     db.products.findOne({_id: exports.getId(dir)}, (err, product) => {
         if(err){
@@ -144,10 +144,7 @@ exports.getImages = function (dir, req, res, callback){
     });
 };
 
-exports.getConfig = function(){
-    let fs = require('fs');
-    let path = require('path');
-
+exports.getConfig = () => {
     let config = JSON.parse(fs.readFileSync(path.join(__dirname, '../config', 'settings.json'), 'utf8'));
     config.customCss = typeof config.customCss !== 'undefined' ? escape.decode(config.customCss) : null;
     config.footerHtml = typeof config.footerHtml !== 'undefined' ? escape.decode(config.footerHtml) : null;
@@ -171,9 +168,7 @@ exports.getConfig = function(){
     return config;
 };
 
-exports.getPaymentConfig = function(){
-    let fs = require('fs');
-    let path = require('path');
+exports.getPaymentConfig = () => {
     let siteConfig = this.getConfig();
 
     let config = [];
@@ -184,9 +179,7 @@ exports.getPaymentConfig = function(){
     return config;
 };
 
-exports.updateConfig = function(fields){
-    let fs = require('fs');
-    let path = require('path');
+exports.updateConfig = (fields) => {
     let settingsFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/settings.json'), 'utf8'));
 
     _.forEach(fields, (value, key) => {
@@ -230,12 +223,12 @@ exports.updateConfig = function(fields){
     }
 };
 
-exports.getMenu = function(db){
+exports.getMenu = (db) => {
     return db.menu.findOne({});
 };
 
 // creates a new menu item
-exports.newMenu = function(req, res){
+exports.newMenu = (req, res) => {
     const db = req.app.db;
     return exports.getMenu(db)
     .then((menu) => {
@@ -263,7 +256,7 @@ exports.newMenu = function(req, res){
 };
 
 // delete a menu item
-exports.deleteMenu = function(req, res, menuIndex){
+exports.deleteMenu = (req, res, menuIndex) => {
     const db = req.app.db;
     return exports.getMenu(db)
     .then((menu) => {
@@ -280,7 +273,7 @@ exports.deleteMenu = function(req, res, menuIndex){
 };
 
 // updates and existing menu item
-exports.updateMenu = function(req, res){
+exports.updateMenu = (req, res) => {
     const db = req.app.db;
     return exports.getMenu(db)
     .then((menu) => {
@@ -298,7 +291,7 @@ exports.updateMenu = function(req, res){
     });
 };
 
-exports.sortMenu = function(menu){
+exports.sortMenu = (menu) => {
     if(menu && menu.items){
         menu.items = _.sortBy(menu.items, 'order');
         return menu;
@@ -307,7 +300,7 @@ exports.sortMenu = function(menu){
 };
 
 // orders the menu
-exports.orderMenu = function(req, res){
+exports.orderMenu = (req, res) => {
     const db = req.app.db;
     return exports.getMenu(db)
     .then((menu) => {
@@ -325,11 +318,8 @@ exports.orderMenu = function(req, res){
     });
 };
 
-exports.getEmailTemplate = function(result){
-    let cheerio = require('cheerio');
+exports.getEmailTemplate = (result) => {
     let config = this.getConfig();
-    let fs = require('fs');
-    let path = require('path');
 
     let template = fs.readFileSync(path.join(__dirname, '../public/email_template.html'), 'utf8');
 
@@ -347,9 +337,8 @@ exports.getEmailTemplate = function(result){
     return $.html();
 };
 
-exports.sendEmail = function(to, subject, body){
+exports.sendEmail = (to, subject, body) => {
     let config = this.getConfig();
-    let nodemailer = require('nodemailer');
 
     let emailSettings = {
         host: config.emailHost,
@@ -384,7 +373,7 @@ exports.sendEmail = function(to, subject, body){
 };
 
 // gets the correct type of index ID
-exports.getId = function(id){
+exports.getId = (id) => {
     if(id){
         if(id.length !== 24){
             return id;
@@ -394,7 +383,7 @@ exports.getId = function(id){
 };
 
 // run the DB query
-exports.dbQuery = function(db, query, sort, limit, callback){
+exports.dbQuery = (db, query, sort, limit, callback) => {
     if(sort && limit){
         db.find(query).sort(sort).limit(parseInt(limit)).toArray((err, results) => {
             if(err){
@@ -412,6 +401,32 @@ exports.dbQuery = function(db, query, sort, limit, callback){
     }
 };
 
+exports.getData = async (req, page, query) => {
+    let db = req.app.db;
+    let config = exports.getConfig();
+    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+
+    let skip = 0;
+    if(page > 1){
+        skip = (page - 1) * numberProducts;
+    }
+
+    query['productPublished'] = 'true';
+
+    // Run our queries
+    return Promise.all([
+        db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray(),
+        db.products.count(query)
+    ])
+    .then((result) => {
+        const returnData = {data: result[0], totalProducts: result[1]};
+        return returnData;
+    })
+    .catch((err) => {
+        throw new Error('Error retrieving products');
+    });
+};
+
 exports.indexProducts = (app) => {
     // index all products in lunr on startup
     return new Promise((resolve, reject) => {
@@ -422,7 +437,7 @@ exports.indexProducts = (app) => {
             }
 
             // setup lunr indexing
-            const productsIndex = lunr(function (){
+            const productsIndex = lunr(function(){
                 this.field('productTitle', {boost: 10});
                 this.field('productTags', {boost: 5});
                 this.field('productDescription');
@@ -458,7 +473,7 @@ exports.indexOrders = (app, cb) => {
             }
 
             // setup lunr indexing
-            const ordersIndex = lunr(function (){
+            const ordersIndex = lunr(function(){
                 this.field('orderEmail', {boost: 10});
                 this.field('orderLastname', {boost: 5});
                 this.field('orderPostcode');

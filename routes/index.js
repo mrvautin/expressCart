@@ -13,7 +13,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         if(err){
             console.info(err.stack);
         }
-        res.render(config.themeViews + 'payment_complete', {
+        res.render(`${config.themeViews}payment_complete`, {
             title: 'Payment complete',
             config: common.getConfig(),
             session: req.session,
@@ -40,7 +40,7 @@ router.get('/checkout', async (req, res, next) => {
     }
 
     // render the checkout
-    res.render(config.themeViews + 'checkout', {
+    res.render(`${config.themeViews}checkout`, {
         title: 'Checkout',
         config: common.getConfig(),
         session: req.session,
@@ -66,7 +66,7 @@ router.get('/pay', async (req, res, next) => {
     }
 
     // render the payment page
-    res.render(config.themeViews + 'pay', {
+    res.render(`${config.themeViews}pay`, {
         title: 'Pay',
         config: common.getConfig(),
         paymentConfig: common.getPaymentConfig(),
@@ -112,7 +112,7 @@ router.get('/product/:id', (req, res) => {
 
             // show the view
             common.getImages(result._id, req, res, async (images) => {
-                res.render(config.themeViews + 'product', {
+                res.render(`${config.themeViews}product`, {
                     title: result.productTitle,
                     result: result,
                     productOptions: productOptions,
@@ -254,13 +254,12 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
         pageNum = req.params.pageNum;
     }
 
-    // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, async (err, results) => {
-        if(err){
-            console.error(colors.red('Error searching for products', err));
-        }
-
-        res.render(config.themeViews + 'index', {
+    Promise.all([
+        common.getData(req, pageNum, {_id: {$in: lunrIdArray}}),
+        common.getMenu(db)
+    ])
+    .then(([results, menu]) => {
+        res.render(`${config.themeViews}index`, {
             title: 'Results',
             results: results.data,
             filtered: true,
@@ -275,10 +274,13 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
             pageNum: pageNum,
             paginateUrl: 'search',
             config: config,
-            menu: common.sortMenu(await common.getMenu(db)),
+            menu: common.sortMenu(menu),
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter'
         });
+    })
+    .catch((err) => {
+        console.error(colors.red('Error searching for products', err));
     });
 });
 
@@ -300,13 +302,14 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
         pageNum = req.params.pageNum;
     }
 
-    // we search on the lunr indexes
-    getData(req, pageNum, {_id: {$in: lunrIdArray}}, async (err, results) => {
-        if(err){
-            console.error(colors.red('Error getting products for category', err));
-        }
+    Promise.all([
+        common.getData(req, pageNum, {_id: {$in: lunrIdArray}}),
+        common.getMenu(db)
+    ])
+    .then(([results, menu]) => {
+        const sortedMenu = common.sortMenu(menu);
 
-        res.render(config.themeViews + 'index', {
+        res.render(`${config.themeViews}index`, {
             title: 'Category',
             results: results.data,
             filtered: true,
@@ -319,13 +322,16 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
             productsPerPage: numberProducts,
             totalProductCount: results.totalProducts,
             pageNum: pageNum,
-            menuLink: _.find(common.sortMenu(await common.getMenu(db)).items, (obj) => { return obj.link === searchTerm; }),
+            menuLink: _.find(sortedMenu.items, (obj) => { return obj.link === searchTerm; }),
             paginateUrl: 'category',
             config: config,
-            menu: common.sortMenu(await common.getMenu(db)),
+            menu: sortedMenu,
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter'
         });
+    })
+    .catch((err) => {
+        console.error(colors.red('Error getting products for category', err));
     });
 });
 
@@ -367,12 +373,12 @@ router.get('/page/:pageNum', (req, res, next) => {
     let config = common.getConfig();
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    getData(req, req.params.pageNum, {}, async (err, results) => {
-        if(err){
-            console.error(colors.red('Error getting products for page', err));
-        }
-
-        res.render(config.themeViews + 'index', {
+    Promise.all([
+        common.getData(req, req.params.pageNum),
+        common.getMenu(db)
+    ])
+    .then(([results, menu]) => {
+        res.render(`${config.themeViews}index`, {
             title: 'Shop',
             results: results.data,
             session: req.session,
@@ -387,11 +393,15 @@ router.get('/page/:pageNum', (req, res, next) => {
             paginateUrl: 'page',
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter',
-            menu: common.sortMenu(await common.getMenu(db))
+            menu: common.sortMenu(menu)
         });
+    })
+    .catch((err) => {
+        console.error(colors.red('Error getting products for page', err));
     });
 });
 
+// The main entry point of the shop
 router.get('/:page?', (req, res, next) => {
     let db = req.app.db;
     let config = common.getConfig();
@@ -399,13 +409,13 @@ router.get('/:page?', (req, res, next) => {
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
-        getData(req, 1, {}, async (err, results) => {
-            if(err){
-                console.error(colors.red('Error getting products for page', err));
-            }
-
-            res.render(config.themeViews + 'index', {
-                title: 'Shop',
+        Promise.all([
+            common.getData(req, 1, {}),
+            common.getMenu(db)
+        ])
+        .then(([results, menu]) => {
+            res.render(`${config.themeViews}index`, {
+                title: `${config.cartTitle} - Shop`,
                 theme: config.theme,
                 results: results.data,
                 session: req.session,
@@ -419,8 +429,11 @@ router.get('/:page?', (req, res, next) => {
                 paginateUrl: 'page',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: common.sortMenu(await common.getMenu(db))
+                menu: common.sortMenu(menu)
             });
+        })
+        .catch((err) => {
+            console.error(colors.red('Error getting products for page', err));
         });
     }else{
         if(req.params.page === 'admin'){
@@ -434,7 +447,7 @@ router.get('/:page?', (req, res, next) => {
             }
             // if we have a page lets render it, else throw 404
             if(page){
-                res.render(config.themeViews + 'page', {
+                res.render(`${config.themeViews}page`, {
                     title: page.pageName,
                     page: page,
                     session: req.session,
@@ -460,32 +473,5 @@ router.get('/:page?', (req, res, next) => {
         });
     }
 });
-
-const getData = function (req, page, query, cb){
-    let db = req.app.db;
-    let config = common.getConfig();
-    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
-
-    let skip = 0;
-    if(page > 1){
-        skip = (page - 1) * numberProducts;
-    }
-
-    query['productPublished'] = 'true';
-
-    db.products.count(query, (err, totalProducts) => {
-        if(err){
-            console.error(colors.red('Error getting total product count', err));
-        }
-
-        db.products.find(query).skip(skip).limit(parseInt(numberProducts)).toArray((err, results) => {
-            if(err){
-                cb(new Error('Error retrieving products'), null);
-            }else{
-                cb(null, {data: results, totalProducts: totalProducts});
-            }
-        });
-    });
-};
 
 module.exports = router;

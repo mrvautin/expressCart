@@ -17,6 +17,8 @@ Keeping expressCart running after closing the terminal can be done in a few ways
 4. Save the PM2 config: `pm2 save`
 5. To start/stop: `pm2 start expressCart` / `pm2 stop expressCart`
 
+> Note: Node.js version 7.x or greater is needed.
+
 ## Admin
 
 Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)

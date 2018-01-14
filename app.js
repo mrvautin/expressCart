@@ -184,7 +184,7 @@ handlebars = handlebars.create({
     }
 });
 
-// var session store
+// session store
 let store = new MongoStore({
     uri: config.databaseConnectionString,
     collection: 'sessions'
