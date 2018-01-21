@@ -94,6 +94,7 @@ router.get('/checkout_return', (req, res, next) => {
                     };
 
                     // send the email with the response
+                    // TODO: Should fix this to properly handle result
                     common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
 
                     res.redirect('/payment/' + order._id);
