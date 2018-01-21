@@ -209,9 +209,29 @@ exports.updateConfig = (fields) => {
     }
 
     if(!fields['menuEnabled']){
-        settingsFile['menuEnabled'] = 'false';
+        settingsFile['menuEnabled'] = false;
     }else{
-        settingsFile['menuEnabled'] = 'true';
+        settingsFile['menuEnabled'] = true;
+    }
+
+    if(fields['emailPort']){
+        settingsFile['emailPort'] = parseInt(fields['emailPort']);
+    }
+
+    if(fields['flatShipping']){
+        settingsFile['flatShipping'] = parseInt(fields['flatShipping']);
+    }
+
+    if(fields['freeShippingAmount']){
+        settingsFile['freeShippingAmount'] = parseInt(fields['freeShippingAmount']);
+    }
+
+    if(fields['productsPerRow']){
+        settingsFile['productsPerRow'] = parseInt(fields['productsPerRow']);
+    }
+
+    if(fields['productsPerPage']){
+        settingsFile['productsPerPage'] = parseInt(fields['productsPerPage']);
     }
 
     // write file
@@ -401,7 +421,7 @@ exports.dbQuery = (db, query, sort, limit, callback) => {
     }
 };
 
-exports.getData = async (req, page, query) => {
+exports.getData = (req, page, query) => {
     let db = req.app.db;
     let config = exports.getConfig();
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
@@ -430,7 +450,7 @@ exports.getData = async (req, page, query) => {
 exports.indexProducts = (app) => {
     // index all products in lunr on startup
     return new Promise((resolve, reject) => {
-        exports.dbQuery(app.db.products, {}, null, null, (err, productsList) => {
+        app.db.products.find({}).toArray((err, productsList) => {
             if(err){
                 console.error(colors.red(err.stack));
                 reject(err);
@@ -463,10 +483,46 @@ exports.indexProducts = (app) => {
     });
 };
 
+exports.indexCustomers = (app) => {
+    // index all products in lunr on startup
+    return new Promise((resolve, reject) => {
+        app.db.customers.find({}).toArray((err, customerList) => {
+            if(err){
+                console.error(colors.red(err.stack));
+                reject(err);
+            }
+
+            // setup lunr indexing
+            const customersIndex = lunr(function(){
+                this.field('email', {boost: 10});
+                this.field('name', {boost: 5});
+                this.field('phone');
+
+                const lunrIndex = this;
+
+                // add to lunr index
+                customerList.forEach((customer) => {
+                    let doc = {
+                        'email': customer.email,
+                        'name': `${customer.firstName} ${customer.lastName}`,
+                        'phone': customer.phone,
+                        'id': customer._id
+                    };
+                    lunrIndex.add(doc);
+                });
+            });
+
+            app.customersIndex = customersIndex;
+            console.log(colors.cyan('- Customer indexing complete'));
+            resolve();
+        });
+    });
+};
+
 exports.indexOrders = (app, cb) => {
     // index all orders in lunr on startup
     return new Promise((resolve, reject) => {
-        exports.dbQuery(app.db.orders, {}, null, null, (err, ordersList) => {
+        app.db.orders.find({}).toArray((err, ordersList) => {
             if(err){
                 console.error(colors.red('Error setting up products index: ' + err));
                 reject(err);
@@ -505,7 +561,8 @@ exports.runIndexing = (app) => {
 
     return Promise.all([
         exports.indexProducts(app),
-        exports.indexOrders(app)
+        exports.indexOrders(app),
+        exports.indexCustomers(app)
     ])
     .catch((err) => {
         process.exit(2);
