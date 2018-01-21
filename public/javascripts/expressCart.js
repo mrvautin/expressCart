@@ -294,6 +294,79 @@ $(document).ready(function (){
         }
     });
 
+    $('#customerLogout').on('click', function(e){
+        $.ajax({
+            method: 'POST',
+            url: '/customer/logout',
+            data: {}
+        })
+        .done(function(msg){
+            location.reload();
+        });
+    });
+
+    $('#createCustomerAccount').validator().on('click', function(e){
+        e.preventDefault();
+        if($('#shipping-form').validator('validate').has('.has-error').length === 0){
+            $.ajax({
+                method: 'POST',
+                url: '/customer/create',
+                data: {
+                    email: $('#shipEmail').val(),
+                    firstName: $('#shipFirstname').val(),
+                    lastName: $('#shipLastname').val(),
+                    address1: $('#shipAddr1').val(),
+                    address2: $('#shipAddr2').val(),
+                    country: $('#shipCountry').val(),
+                    state: $('#shipState').val(),
+                    postcode: $('#shipPostcode').val(),
+                    phone: $('#shipPhoneNumber').val(),
+                    password: $('#newCustomerPassword').val()
+                }
+            })
+            .done(function(msg){
+                // Just reload to fill in the form from session
+                location.reload();
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.err, 'danger');
+            });
+        }
+    });
+
+    // call update settings API
+    $('#customerLogin').on('click', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/customer/login_action',
+                data: {
+                    loginEmail: $('#customerLoginEmail').val(),
+                    loginPassword: $('#customerLoginPassword').val()
+                }
+            })
+            .done(function(msg){
+                var customer = msg.customer;
+                // Fill in customer form
+                $('#shipEmail').val(customer.email);
+                $('#shipFirstname').val(customer.firstName);
+                $('#shipLastname').val(customer.lastName);
+                $('#shipAddr1').val(customer.address1);
+                $('#shipAddr2').val(customer.address2);
+                $('#shipCountry').val(customer.country);
+                $('#shipState').val(customer.state);
+                $('#shipPostcode').val(customer.postcode);
+                $('#shipPhoneNumber').val(customer.phone);
+                location.reload();
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.err, 'danger');
+            });
+        }
+        e.preventDefault();
+    });
+
     $(document).on('click', '.image-next', function(e){
         var thumbnails = $('.thumbnail-image');
         var index = 0;
@@ -473,7 +546,7 @@ $(document).ready(function (){
         }
     });
 
-	// applies an product filter
+    // applies an product filter
     $(document).on('click', '#btn_product_filter', function(e){
         if($('#product_filter').val() !== ''){
             window.location.href = '/admin/products/filter/' + $('#product_filter').val();
@@ -491,22 +564,21 @@ $(document).ready(function (){
         }
     });
 
+    // applies an product filter
+    $(document).on('click', '#btn_customer_filter', function(e){
+        if($('#customer_filter').val() !== ''){
+            window.location.href = '/admin/customers/filter/' + $('#customer_filter').val();
+        }else{
+            showNotification('Please enter a keyword to filter', 'danger');
+        }
+    });
+
     // resets the order filter
     $(document).on('click', '#btn_search_reset', function(e){
         window.location.replace('/');
     });
 
-    // resets the product filter
-    $(document).on('click', '#btn_product_reset', function(e){
-        window.location.href = '/admin/products';
-    });
-
-	// resets the order filter
-    $(document).on('click', '#btn_order_reset', function(e){
-        window.location.href = '/admin/orders';
-    });
-
-	// search button click event
+    // search button click event
     $(document).on('click', '#btn_search', function(e){
         e.preventDefault();
         if($('#frm_search').val().trim() === ''){

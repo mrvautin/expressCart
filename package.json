@@ -32,6 +32,7 @@
     "nodemailer": "^4.4.1",
     "numeral": "^2.0.6",
     "paypal-rest-sdk": "^1.6.9",
+    "rand-token": "^0.4.0",
     "rimraf": "^2.6.2",
     "sitemap": "^1.6.0",
     "stripe": "^5.4.0",

@@ -13,7 +13,7 @@ router.get('/', common.restrict, (req, res, next) => {
 
 // Admin section
 router.get('/orders', common.restrict, (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     // Top 10 products
     common.dbQuery(db.orders, {}, {'orderDate': -1}, 10, (err, orders) => {
@@ -35,7 +35,7 @@ router.get('/orders', common.restrict, (req, res, next) => {
 
 // Admin section
 router.get('/orders/bystatus/:orderstatus', common.restrict, (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     if(typeof req.params.orderstatus === 'undefined'){
         res.redirect('/admin/orders');
@@ -65,7 +65,7 @@ router.get('/orders/bystatus/:orderstatus', common.restrict, (req, res, next) =>
 
 // render the editor
 router.get('/order/view/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.orders.findOne({_id: common.getId(req.params.id)}, (err, result) => {
         if(err){
             console.info(err.stack);
@@ -91,7 +91,7 @@ router.get('/order/view/:id', common.restrict, (req, res) => {
 
 // Admin section
 router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let searchTerm = req.params.search;
     let ordersIndex = req.app.ordersIndex;
 
@@ -121,7 +121,7 @@ router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
 
 // order product
 router.get('/order/delete/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     // remove the article
     db.orders.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
@@ -141,7 +141,7 @@ router.get('/order/delete/:id', common.restrict, (req, res) => {
 
 // update order status
 router.post('/order/statusupdate', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.orders.update({_id: common.getId(req.body.order_id)}, {$set: {orderStatus: req.body.status}}, {multi: false}, (err, numReplaced) => {
         if(err){
             console.info(err.stack);
@@ -152,7 +152,7 @@ router.post('/order/statusupdate', common.restrict, (req, res) => {
 
 // Admin section
 router.get('/products', common.restrict, (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     // get the top results
     common.dbQuery(db.products, {}, {'productAddedDate': -1}, 10, (err, topResults) => {
         if(err){
@@ -173,7 +173,7 @@ router.get('/products', common.restrict, (req, res, next) => {
 
 // Admin section
 router.post('/product/addtocart', (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
 
     // setup cart object if it doesn't exist
@@ -240,7 +240,7 @@ router.post('/product/addtocart', (req, res, next) => {
 
 // Updates a single product quantity
 router.post('/product/updatecart', (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let cartItems = JSON.parse(req.body.items);
     let hasError = false;
 
@@ -310,7 +310,7 @@ router.post('/product/emptycart', (req, res, next) => {
 
 // Admin section
 router.get('/products/filter/:search', common.restrict, (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let searchTerm = req.params.search;
     let productsIndex = req.app.productsIndex;
 
@@ -358,7 +358,7 @@ router.get('/product/new', common.restrict, (req, res) => {
 
 // insert new product form action
 router.post('/product/insert', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     let doc = {
         productPermalink: req.body.frmProductPermalink,
@@ -429,7 +429,7 @@ router.post('/product/insert', common.restrict, (req, res) => {
 
 // render the editor
 router.get('/product/edit/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     common.getImages(req.params.id, req, res, (images) => {
         db.products.findOne({_id: common.getId(req.params.id)}, (err, result) => {
@@ -460,7 +460,7 @@ router.get('/product/edit/:id', common.restrict, (req, res) => {
 
 // Update an existing product form action
 router.post('/product/update', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.products.findOne({_id: common.getId(req.body.frmProductId)}, (err, product) => {
         if(err){
@@ -540,7 +540,7 @@ router.post('/product/update', common.restrict, (req, res) => {
 
 // delete product
 router.get('/product/delete/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let rimraf = require('rimraf');
 
     // remove the article
@@ -568,7 +568,7 @@ router.get('/product/delete/:id', common.restrict, (req, res) => {
 
 // users
 router.get('/users', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.users.find({}).toArray((err, users) => {
         if(err){
             console.info(err.stack);
@@ -589,7 +589,7 @@ router.get('/users', common.restrict, (req, res) => {
 
 // edit user
 router.get('/user/edit/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.users.findOne({_id: common.getId(req.params.id)}, (err, user) => {
         if(err){
             console.info(err.stack);
@@ -618,7 +618,7 @@ router.get('/user/edit/:id', common.restrict, (req, res) => {
 
 // update a user
 router.post('/user/update', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let bcrypt = req.bcrypt;
 
     let isAdmin = req.body.user_admin === 'on' ? 'true' : 'false';
@@ -666,7 +666,7 @@ router.post('/user/update', common.restrict, (req, res) => {
 
 // insert a user
 router.post('/setup_action', (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let bcrypt = req.bcrypt;
 
     let doc = {
@@ -704,7 +704,7 @@ router.post('/setup_action', (req, res) => {
 
 // insert a user
 router.post('/user/insert', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let bcrypt = req.bcrypt;
     let url = require('url');
 
@@ -765,6 +765,79 @@ router.post('/user/insert', common.restrict, (req, res) => {
     });
 });
 
+// render the customer view
+router.get('/customer/view/:id?', common.restrict, (req, res) => {
+    const db = req.app.db;
+
+    console.log('here');
+
+    db.customers.findOne({_id: common.getId(req.params.id)}, (err, result) => {
+        if(err){
+            console.info(err.stack);
+        }
+
+        res.render('customer', {
+            title: 'View customer',
+            result: result,
+            admin: true,
+            session: req.session,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            config: common.getConfig(),
+            editor: true,
+            helpers: req.handlebars.helpers
+        });
+    });
+});
+
+// customers list
+router.get('/customers', common.restrict, (req, res) => {
+    const db = req.app.db;
+
+    db.customers.find({}).limit(20).sort({created: -1}).toArray((err, customers) => {
+        res.render('customers', {
+            title: 'Customers - List',
+            admin: true,
+            customers: customers,
+            session: req.session,
+            helpers: req.handlebars.helpers,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            config: common.getConfig()
+        });
+    });
+});
+
+// Filtered customers list
+router.get('/customers/filter/:search', common.restrict, (req, res, next) => {
+    const db = req.app.db;
+    let searchTerm = req.params.search;
+    let customersIndex = req.app.customersIndex;
+
+    let lunrIdArray = [];
+    customersIndex.search(searchTerm).forEach((id) => {
+        lunrIdArray.push(common.getId(id.ref));
+    });
+
+    // we search on the lunr indexes
+    db.customers.find({_id: {$in: lunrIdArray}}).sort({created: -1}).toArray((err, customers) => {
+        if(err){
+            console.error(colors.red('Error searching', err));
+        }
+        res.render('customers', {
+            title: 'Customer results',
+            customers: customers,
+            admin: true,
+            config: common.getConfig(),
+            session: req.session,
+            searchTerm: searchTerm,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            helpers: req.handlebars.helpers
+        });
+    });
+});
+
 // users new
 router.get('/user/new', common.restrict, (req, res) => {
     res.render('user_new', {
@@ -780,7 +853,7 @@ router.get('/user/new', common.restrict, (req, res) => {
 
 // delete user
 router.get('/user/delete/:id', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     if(req.session.isAdmin === 'true'){
         db.users.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
             if(err){
@@ -825,7 +898,7 @@ router.post('/settings/update', common.restrict, (req, res) => {
 
 // settings update
 router.post('/settings/option/remove', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
         if(err){
             console.info(err.stack);
@@ -852,7 +925,7 @@ router.post('/settings/option/remove', common.restrict, (req, res) => {
 
 // settings update
 router.get('/settings/menu', common.restrict, async (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     res.render('settings_menu', {
         title: 'Cart menu',
         session: req.session,
@@ -867,7 +940,7 @@ router.get('/settings/menu', common.restrict, async (req, res) => {
 
 // settings page list
 router.get('/settings/pages', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     common.dbQuery(db.pages, {}, null, null, async (err, pages) => {
         if(err){
             console.info(err.stack);
@@ -889,7 +962,7 @@ router.get('/settings/pages', common.restrict, (req, res) => {
 
 // settings pages new
 router.get('/settings/pages/new', common.restrict, async (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     res.render('settings_page_edit', {
         title: 'Static pages',
@@ -906,7 +979,7 @@ router.get('/settings/pages/new', common.restrict, async (req, res) => {
 
 // settings pages editor
 router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.pages.findOne({_id: common.getId(req.params.page)}, async (err, page) => {
         if(err){
             console.info(err.stack);
@@ -942,7 +1015,7 @@ router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
 
 // settings update page
 router.post('/settings/pages/update', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     let doc = {
         pageName: req.body.pageName,
@@ -982,7 +1055,7 @@ router.post('/settings/pages/update', common.restrict, (req, res) => {
 
 // settings delete page
 router.get('/settings/pages/delete/:page', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     db.pages.remove({_id: common.getId(req.params.page)}, {}, (err, numRemoved) => {
         if(err){
             req.session.message = 'Error deleting page. Please try again.';
@@ -1040,7 +1113,7 @@ router.post('/settings/menu/save_order', common.restrict, (req, res) => {
 router.post('/api/validate_permalink', (req, res) => {
     // if doc id is provided it checks for permalink in any products other that one provided,
     // else it just checks for any products with that permalink
-    let db = req.app.db;
+    const db = req.app.db;
 
     let query = {};
     if(typeof req.body.docId === 'undefined' || req.body.docId === ''){
@@ -1065,7 +1138,7 @@ router.post('/api/validate_permalink', (req, res) => {
 
 // update the published state based on an ajax call from the frontend
 router.post('/product/published_state', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.products.update({_id: common.getId(req.body.id)}, {$set: {productPublished: req.body.state}}, {multi: false}, (err, numReplaced) => {
         if(err){
@@ -1081,7 +1154,7 @@ router.post('/product/published_state', common.restrict, (req, res) => {
 
 // set as main product image
 router.post('/product/setasmainimage', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     // update the productImage to the db
     db.products.update({_id: common.getId(req.body.product_id)}, {$set: {productImage: req.body.productImage}}, {multi: false}, (err, numReplaced) => {
@@ -1095,7 +1168,7 @@ router.post('/product/setasmainimage', common.restrict, (req, res) => {
 
 // deletes a product image
 router.post('/product/deleteimage', common.restrict, (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let fs = require('fs');
     let path = require('path');
 
@@ -1136,7 +1209,7 @@ router.post('/product/deleteimage', common.restrict, (req, res) => {
 let multer = require('multer');
 let upload = multer({dest: 'public/uploads/'});
 router.post('/file/upload', common.restrict, upload.single('upload_file'), (req, res, next) => {
-    let db = req.app.db;
+    const db = req.app.db;
     let fs = require('fs');
     let path = require('path');
 
@@ -1195,6 +1268,7 @@ router.post('/file/upload', common.restrict, upload.single('upload_file'), (req,
 // delete a file via ajax request
 router.post('/testEmail', common.restrict, (req, res) => {
     let config = common.getConfig();
+    // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json('Test email sent');
 });

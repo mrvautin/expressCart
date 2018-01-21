@@ -1,0 +1,64 @@
+{{> menu}}
+<div class="col-lg-9">
+    <div class="col-lg-12">
+        <h2>Customers</h2>
+    </div>
+    <div class="col-lg-12 search_bar">
+        <div class="input-group">
+            <input type="text" name="customer_filter" id="customer_filter" class="form-control input-lg" placeholder="Filter customers">
+            <span class="input-group-btn">
+                <button class="btn btn-success btn-lg" id="btn_customer_filter">Filter</button>
+                <a href="/admin/customers" class="hidden-xs btn btn-warning btn-lg"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </span>
+        </div>
+        <p class="text-warning top-pad-10">Customers can be filtered by: email, name or phone numnber</p>
+    </div>
+    {{#if customers}}
+        <div class="col-lg-12">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>
+                        Customers
+                        {{#if searchTerm}}
+                            - <span class="text-danger">Filtered term: {{searchTerm}} </span>
+                        {{/if}}
+                    </strong>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="text-info"><strong>Email address</strong></h5>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="text-info"><strong>Name</strong></h5>
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="text-info"><strong>Phone number</strong></h5>
+                        </div>
+                    </div>
+                </li>
+                {{#each customers}}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <a href="/admin/customer/view/{{this._id}}">
+                                <div class="col-md-4">
+                                    <h5 class="">{{this.email}}</h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="">{{this.firstName}} {{this.lastName}}</h5>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="">{{this.phone}}</h5>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    {{else}}
+    <h4 class="text-center">
+        No orders found
+    </h4>
+    {{/if}}
+</div>

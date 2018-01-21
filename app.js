@@ -288,6 +288,7 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     db.orders = db.collection('orders');
     db.pages = db.collection('pages');
     db.menu = db.collection('menu');
+    db.customers = db.collection('customers');
 
     // add db to app for routes
     app.db = db;
