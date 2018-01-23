@@ -1,0 +1,21 @@
+<div class="col-xs-12 col-md-12 text-center">
+    <form method="POST" id="payment-form">
+        <button
+            type="submit"
+            id="stripeButton"
+            value="Process payment"
+            class="btn btn-success"
+            type="submit"
+            data-key="{{paymentConfig.publicKey}}"
+            data-amount="{{amountNoDecimal session.totalCartAmount}}"
+            data-name="{{config.cartTitle}}"
+            data-description="{{config.cartTitle}} Payment"
+            data-image="{{paymentConfig.stripeLogoURL}}"
+            data-locale="auto"
+            data-zip-code="false"
+            data-currency="{{paymentConfig.stripeCurrency}}">
+            <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i> Process payment <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i>
+        </button>
+        <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+    </form>
+</div>
