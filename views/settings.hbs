@@ -66,6 +66,7 @@
             <div class="form-group">
 			    <label>Products per row</label>
                 <select class="form-control" name="productsPerRow">
+                    <option value="{{config.productsPerRow}}" hidden="hidden" selected="selected">{{config.productsPerRow}}</option>
                     <option {{selectState '1' config.productsPerRow}}>1</option>
                     <option {{selectState '2' config.productsPerRow}}>2</option>
                     <option {{selectState '3' config.productsPerRow}}>3</option>
