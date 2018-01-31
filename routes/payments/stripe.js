@@ -60,7 +60,7 @@ router.post('/checkout_action', (req, res, next) => {
             }
 
             // get the new ID
-            let newId = newDoc.insertedIds;
+            let newId = newDoc.insertedIds['0'];
 
             // add to lunr index
             common.indexOrders(req.app)
@@ -70,7 +70,7 @@ router.post('/checkout_action', (req, res, next) => {
                     // set the results
                     req.session.messageType = 'success';
                     req.session.message = 'Your payment was successfully completed';
-                    req.session.paymentEmailAddr = newDoc.orderEmail;
+                    req.session.paymentEmailAddr = newDoc.ops[0].orderEmail;
                     req.session.paymentApproved = true;
                     req.session.paymentDetails = '<p><strong>Order ID: </strong>' + newId + '</p><p><strong>Transaction ID: </strong>' + charge.id + '</p>';
 
