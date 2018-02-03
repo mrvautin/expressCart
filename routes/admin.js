@@ -1,10 +1,8 @@
-let express = require('express');
-let common = require('./common');
-let escape = require('html-entities').AllHtmlEntities;
-let async = require('async');
-let colors = require('colors');
-let _ = require('lodash');
-let router = express.Router();
+const express = require('express');
+const common = require('./common');
+const escape = require('html-entities').AllHtmlEntities;
+const colors = require('colors');
+const router = express.Router();
 
 // Admin section
 router.get('/', common.restrict, (req, res, next) => {
@@ -171,141 +169,106 @@ router.get('/products', common.restrict, (req, res, next) => {
     });
 });
 
-// Admin section
-router.post('/product/addtocart', (req, res, next) => {
-    const db = req.app.db;
-    let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
+// logout
+router.get('/logout', (req, res) => {
+    req.session.user = null;
+    req.session.message = null;
+    req.session.messageType = null;
+    res.redirect('/');
+});
 
-    // setup cart object if it doesn't exist
-    if(!req.session.cart){
-        req.session.cart = [];
-    }
+// login form
+router.get('/login', (req, res) => {
+    let db = req.app.db;
 
-    db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
+    db.users.count({}, (err, userCount) => {
         if(err){
-            console.error(colors.red('Error adding to cart', err));
+            // if there are no users set the "needsSetup" session
+            req.session.needsSetup = true;
+            res.redirect('/admin/setup');
         }
-
-        if(product){
-            let productPrice = parseFloat(product.productPrice).toFixed(2);
-
-            // doc used to test if existing in the cart with the options. If not found, we add new.
-            let options = {};
-            if(req.body.productOptions){
-                options = JSON.parse(req.body.productOptions);
-            }
-            let findDoc = {
-                productId: req.body.productId,
-                options: options
-            };
-
-            // if exists we add to the existing value
-            let cartIndex = _.findIndex(req.session.cart, findDoc);
-            if(cartIndex > -1){
-                req.session.cart[cartIndex].quantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
-                req.session.cart[cartIndex].totalItemPrice = productPrice * parseInt(req.session.cart[cartIndex].quantity);
-            }else{
-                // Doesnt exist so we add to the cart session
-                req.session.cartTotalItems = req.session.cartTotalItems + productQuantity;
-
-                // new product deets
-                let productObj = {};
-                productObj.productId = req.body.productId;
-                productObj.title = product.productTitle;
-                productObj.quantity = productQuantity;
-                productObj.totalItemPrice = productPrice * productQuantity;
-                productObj.options = options;
-                productObj.productImage = product.productImage;
-                if(product.productPermalink){
-                    productObj.link = product.productPermalink;
-                }else{
-                    productObj.link = product._id;
-                }
-
-                // merge into the current cart
-                req.session.cart.push(productObj);
-            }
-
-            // update total cart amount
-            common.updateTotalCartAmount(req, res);
-
-            // update how many products in the shopping cart
-            req.session.cartTotalItems = Object.keys(req.session.cart).length;
-            res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
-        }else{
-            res.status(400).json({message: 'Error updating cart. Please try again.'});
-        }
-    });
-});
-
-// Updates a single product quantity
-router.post('/product/updatecart', (req, res, next) => {
-    const db = req.app.db;
-    let cartItems = JSON.parse(req.body.items);
-    let hasError = false;
-
-    async.eachSeries(cartItems, (cartItem, callback) => {
-        let productQuantity = cartItem.itemQuantity ? cartItem.itemQuantity : 1;
-        if(cartItem.itemQuantity === 0){
-            // quantity equals zero so we remove the item
-            req.session.cart.splice(cartItem.cartIndex, 1);
-            callback(null);
-        }else{
-            db.products.findOne({_id: common.getId(cartItem.productId)}, (err, product) => {
-                if(err){
-                    console.error(colors.red('Error updating cart', err));
-                }
-                if(product){
-                    let productPrice = parseFloat(product.productPrice).toFixed(2);
-                    if(req.session.cart[cartItem.cartIndex]){
-                        req.session.cart[cartItem.cartIndex].quantity = productQuantity;
-                        req.session.cart[cartItem.cartIndex].totalItemPrice = productPrice * productQuantity;
-                        callback(null);
-                    }
-                }else{
-                    hasError = true;
-                    callback(null);
-                }
+        // we check for a user. If one exists, redirect to login form otherwise setup
+        if(userCount > 0){
+            // set needsSetup to false as a user exists
+            req.session.needsSetup = false;
+            res.render('login', {
+                title: 'Login',
+                referringUrl: req.header('Referer'),
+                config: common.getConfig(),
+                message: common.clearSessionValue(req.session, 'message'),
+                messageType: common.clearSessionValue(req.session, 'messageType'),
+                helpers: req.handlebars.helpers,
+                showFooter: 'showFooter'
             });
-        }
-    }, () => {
-        // update total cart amount
-        common.updateTotalCartAmount(req, res);
-
-        // show response
-        if(hasError === false){
-            res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
         }else{
-            res.status(400).json({message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length});
+            // if there are no users set the "needsSetup" session
+            req.session.needsSetup = true;
+            res.redirect('/admin/setup');
         }
     });
 });
 
-// Remove single product from cart
-router.post('/product/removefromcart', (req, res, next) => {
-    // remove item from cart
-    async.each(req.session.cart, (item, callback) => {
-        if(item){
-            if(item.productId === req.body.cart_index){
-                req.session.cart.splice(req.session.cart.indexOf(item), 1);
+// login the user and check the password
+router.post('/login_action', (req, res) => {
+    let db = req.app.db;
+    let bcrypt = req.bcrypt;
+
+    db.users.findOne({userEmail: req.body.email}, (err, user) => {
+        if(err){
+            req.session.message = 'Cannot find user.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/login');
+            return;
+        }
+
+        // check if user exists with that email
+        if(user === undefined || user === null){
+            req.session.message = 'A user with that email does not exist.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/login');
+        }else{
+            // we have a user under that email so we compare the password
+            if(bcrypt.compareSync(req.body.password, user.userPassword) === true){
+                req.session.user = req.body.email;
+                req.session.usersName = user.usersName;
+                req.session.userId = user._id.toString();
+                req.session.isAdmin = user.isAdmin;
+                res.redirect('/admin');
+            }else{
+                // password is not correct
+                req.session.message = 'Access denied. Check password and try again.';
+                req.session.messageType = 'danger';
+                res.redirect('/admin/login');
             }
         }
-        callback();
-    }, () => {
-        // update total cart amount
-        common.updateTotalCartAmount(req, res);
-        res.status(200).json({message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length});
     });
 });
 
-// Totally empty the cart
-router.post('/product/emptycart', (req, res, next) => {
-    delete req.session.cart;
-    delete req.session.orderId;
+// setup form is shown when there are no users setup in the DB
+router.get('/setup', (req, res) => {
+    let db = req.app.db;
 
-    // update total cart amount
-    common.updateTotalCartAmount(req, res);
-    res.status(200).json({message: 'Cart successfully emptied', totalCartItems: 0});
+    db.users.count({}, (err, userCount) => {
+        if(err){
+            console.error(colors.red('Error getting users for setup', err));
+        }
+        // dont allow the user to "re-setup" if a user exists.
+        // set needsSetup to false as a user exists
+        req.session.needsSetup = false;
+        if(userCount === 0){
+            req.session.needsSetup = true;
+            res.render('setup', {
+                title: 'Setup',
+                config: common.getConfig(),
+                helpers: req.handlebars.helpers,
+                message: common.clearSessionValue(req.session, 'message'),
+                messageType: common.clearSessionValue(req.session, 'messageType'),
+                showFooter: 'showFooter'
+            });
+        }else{
+            res.redirect('/admin/login');
+        }
+    });
 });
 
 // Admin section
@@ -689,15 +652,15 @@ router.post('/setup_action', (req, res) => {
                     console.error(colors.red('Failed to insert user: ' + err));
                     req.session.message = 'Setup failed';
                     req.session.messageType = 'danger';
-                    res.redirect('/setup');
+                    res.redirect('/admin/setup');
                 }else{
                     req.session.message = 'User account inserted';
                     req.session.messageType = 'success';
-                    res.redirect('/login');
+                    res.redirect('/admin/login');
                 }
             });
         }else{
-            res.redirect('/login');
+            res.redirect('/admin/login');
         }
     });
 });
@@ -712,7 +675,7 @@ router.post('/user/insert', common.restrict, (req, res) => {
     let urlParts = url.parse(req.header('Referer'));
 
     let isAdmin = 'false';
-    if(urlParts.path === '/setup'){
+    if(urlParts.path === '/admin/setup'){
         isAdmin = 'true';
     }
 
@@ -755,9 +718,9 @@ router.post('/user/insert', common.restrict, (req, res) => {
 
             // if from setup we add user to session and redirect to login.
             // Otherwise we show users screen
-            if(urlParts.path === '/setup'){
+            if(urlParts.path === '/admin/setup'){
                 req.session.user = req.body.userEmail;
-                res.redirect('/login');
+                res.redirect('/admin/login');
                 return;
             }
             res.redirect('/admin/users');

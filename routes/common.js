@@ -15,7 +15,7 @@ let ObjectId = require('mongodb').ObjectID;
 exports.checkLogin = (req, res, next) => {
     // if not protecting we check for public pages and don't checkLogin
     if(req.session.needsSetup === true){
-        res.redirect('/setup');
+        res.redirect('/admin/setup');
         return;
     }
 
@@ -23,7 +23,7 @@ exports.checkLogin = (req, res, next) => {
         next();
         return;
     }
-    res.redirect('/login');
+    res.redirect('/admin/login');
 };
 
 exports.showCartCloseBtn = (page) => {

@@ -428,7 +428,7 @@ $(document).ready(function (){
 
         $.ajax({
             method: 'POST',
-            url: '/admin/product/addtocart',
+            url: '/product/addtocart',
             data: {productId: $('#productId').val(), productQuantity: $('#product_quantity').val(), productOptions: JSON.stringify(productOptions)}
         })
 		.done(function(msg){
@@ -460,7 +460,7 @@ $(document).ready(function (){
         }else{
             $.ajax({
                 method: 'POST',
-                url: '/admin/product/addtocart',
+                url: '/product/addtocart',
                 data: {productId: $(this).attr('data-id')}
             })
             .done(function(msg){
@@ -477,7 +477,7 @@ $(document).ready(function (){
     $(document).on('click', '#empty-cart', function(e){
         $.ajax({
             method: 'POST',
-            url: '/admin/product/emptycart'
+            url: '/product/emptycart'
         })
 		.done(function(msg){
             $('#cart-count').text(msg.totalCartItems);
@@ -612,7 +612,7 @@ $(document).ready(function (){
 function deleteFromCart(element){
     $.ajax({
         method: 'POST',
-        url: '/admin/product/removefromcart',
+        url: '/product/removefromcart',
         data: {cart_index: element}
     })
     .done(function(msg){
@@ -672,7 +672,7 @@ function updateCart(){
     // update cart on server
     $.ajax({
         method: 'POST',
-        url: '/admin/product/updatecart',
+        url: '/product/updatecart',
         data: {items: JSON.stringify(cartItems)}
     })
     .done(function(msg){
