@@ -184,7 +184,7 @@ router.post('/product/removefromcart', (req, res, next) => {
     async.each(req.session.cart, (item, callback) => {
         if(item){
             if(item.productId === req.body.cart_index){
-                req.session.cart.splice(req.session.cart.indexOf(item), 1);
+                req.session.cart = _.pull(req.session.cart, item);
             }
         }
         callback();

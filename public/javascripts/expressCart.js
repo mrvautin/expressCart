@@ -613,17 +613,24 @@ function deleteFromCart(element){
     $.ajax({
         method: 'POST',
         url: '/product/removefromcart',
-        data: {cart_index: element}
+        data: {cart_index: element.attr('data-id')}
     })
     .done(function(msg){
         $('#cart-count').text(msg.totalCartItems);
         if(msg.totalCartItems === 0){
+			$(element).closest('.cart-row').hide('slow', function(){
+				$(element).closest('.cart-row').remove();
+			});
+			$('.cart-contents-shipping').hide('slow', function(){
+				$('.cart-contents-shipping').remove();
+			});
             showNotification(msg.message, 'success');
             setTimeout(function(){
                 window.location = '/';
             }, 3700);
         }else{
-            showNotification(msg.message, 'success', true);
+			$(element).closest('.cart-row').hide('slow', function(){ $(element).closest('.cart-row').remove(); });
+            showNotification(msg.message, 'success');
         }
     })
     .fail(function(msg){
@@ -644,8 +651,8 @@ function slugify(str){
 }
 
 function cartUpdate(element){
-    if($(element).val() === 0){
-        deleteFromCart($(element).attr('data-id'));
+    if($(element).val() < 1){
+        deleteFromCart($(element));
     }else{
         if($(element).val() !== ''){
             updateCart();
@@ -662,8 +669,8 @@ function updateCart(){
             itemQuantity: $(this).val(),
             productId: $(this).attr('data-id')
         };
-        if($(this).val() === '0'){
-            deleteFromCart($(this).attr('data-id'));
+        if($(this).val() < 0){
+            deleteFromCart($(this));
         }else{
             cartItems.push(item);
         }
