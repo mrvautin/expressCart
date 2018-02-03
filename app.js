@@ -48,6 +48,7 @@ if(config.paymentGateway === 'stripe'){
 // require the routes
 const index = require('./routes/index');
 const admin = require('./routes/admin');
+const customer = require('./routes/customer');
 const paypal = require('./routes/payments/paypal');
 const stripe = require('./routes/payments/stripe');
 
@@ -221,6 +222,7 @@ app.use((req, res, next) => {
 
 // setup the routes
 app.use('/', index);
+app.use('/', customer);
 app.use('/admin', admin);
 app.use('/paypal', paypal);
 app.use('/stripe', stripe);
