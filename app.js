@@ -177,7 +177,7 @@ handlebars = handlebars.create({
             }
         },
         isAnAdmin: function (value, options){
-            if(value === 'true'){
+            if(value === 'true' || value === true){
                 return options.fn(this);
             }
             return options.inverse(this);
