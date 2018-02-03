@@ -42,7 +42,7 @@ exports.addSitemapProducts = (req, res, cb) => {
     let config = exports.getConfig();
     let hostname = config.baseUrl;
 
-    exports.dbQuery(db.products, {productPublished: 'true'}, null, null, (err, products) => {
+    db.products.find({productPublished: 'true'}).toArray((err, products) => {
         let posts = [];
         if(err){
             cb(null, posts);
@@ -400,25 +400,6 @@ exports.getId = (id) => {
         }
     }
     return ObjectId(id);
-};
-
-// run the DB query
-exports.dbQuery = (db, query, sort, limit, callback) => {
-    if(sort && limit){
-        db.find(query).sort(sort).limit(parseInt(limit)).toArray((err, results) => {
-            if(err){
-                console.error(colors.red(err));
-            }
-            callback(null, results);
-        });
-    }else{
-        db.find(query).toArray((err, results) => {
-            if(err){
-                console.error(colors.red(err));
-            }
-            callback(null, results);
-        });
-    }
 };
 
 exports.getData = (req, page, query) => {

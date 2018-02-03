@@ -16,7 +16,7 @@ router.get('/orders', common.restrict, (req, res, next) => {
     const db = req.app.db;
 
     // Top 10 products
-    common.dbQuery(db.orders, {}, {'orderDate': -1}, 10, (err, orders) => {
+    db.orders.find({}).sort({'orderDate': -1}).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -44,7 +44,7 @@ router.get('/orders/bystatus/:orderstatus', common.restrict, (req, res, next) =>
 
     // case insensitive search
     let regex = new RegExp(['^', req.params.orderstatus, '$'].join(''), 'i');
-    common.dbQuery(db.orders, {orderStatus: regex}, {'orderDate': -1}, 10, (err, orders) => {
+    db.orders.find({orderStatus: regex}).sort({'orderDate': -1}).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -101,7 +101,7 @@ router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
     });
 
     // we search on the lunr indexes
-    common.dbQuery(db.orders, {_id: {$in: lunrIdArray}}, null, null, (err, orders) => {
+    db.orders.find({_id: {$in: lunrIdArray}}).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -154,7 +154,7 @@ router.post('/order/statusupdate', common.restrict, (req, res) => {
 router.get('/products', common.restrict, (req, res, next) => {
     const db = req.app.db;
     // get the top results
-    common.dbQuery(db.products, {}, {'productAddedDate': -1}, 10, (err, topResults) => {
+    db.products.find({}).sort({'productAddedDate': -1}).limit(10).toArray((err, topResults) => {
         if(err){
             console.info(err.stack);
         }
@@ -320,7 +320,7 @@ router.get('/products/filter/:search', common.restrict, (req, res, next) => {
     });
 
     // we search on the lunr indexes
-    common.dbQuery(db.products, {_id: {$in: lunrIdArray}}, null, null, (err, results) => {
+    db.products.find({_id: {$in: lunrIdArray}}).toArray((err, results) => {
         if(err){
             console.error(colors.red('Error searching', err));
         }
@@ -941,7 +941,7 @@ router.get('/settings/menu', common.restrict, async (req, res) => {
 // settings page list
 router.get('/settings/pages', common.restrict, (req, res) => {
     const db = req.app.db;
-    common.dbQuery(db.pages, {}, null, null, async (err, pages) => {
+    db.pages.find({}).toArray(async (err, pages) => {
         if(err){
             console.info(err.stack);
         }
