@@ -410,7 +410,7 @@ router.post('/product/insert', common.restrict, (req, res) => {
                     res.redirect('/admin/product/new');
                 }else{
                     // get the new ID
-                    let newId = newDoc.insertedIds;
+                    let newId = newDoc.insertedIds[0];
 
                     // add to lunr index
                     common.indexProducts(req.app)

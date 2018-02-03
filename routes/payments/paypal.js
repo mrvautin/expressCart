@@ -12,7 +12,7 @@ router.get('/checkout_return', (req, res, next) => {
     let db = req.app.db;
     let config = common.getConfig();
     let paymentId = req.session.paymentId;
-    let payerId = req.param('PayerID');
+    let payerId = req.query['PayerID'];
 
     let details = {'payer_id': payerId};
     paypal.payment.execute(paymentId, details, (error, payment) => {
@@ -190,10 +190,7 @@ router.post('/checkout_action', (req, res, next) => {
                     }
 
                     // get the new ID
-                    let newId = '';
-                    if(newDoc.insertedIds.length > 0){
-                        newId = newDoc.insertedIds[0].toString();
-                    }
+                    let newId = newDoc.insertedIds['0'];
 
                     // set the order ID in the session
                     req.session.orderId = newId;
