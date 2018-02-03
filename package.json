@@ -49,7 +49,8 @@
     "gulp": "latest",
     "gulp-clean-css": "^3.9.2",
     "gulp-minify": "^2.1.0",
-    "gulp-rename": "^1.2.2"
+    "gulp-rename": "^1.2.2",
+    "run-sequence": "^2.2.1"
   },
   "main": "app.js",
   "keywords": [
@@ -64,5 +65,13 @@
     "shopping"
   ],
   "author": "Mark Moffat",
-  "homepage": "https://expresscart.markmoffat.com"
+  "homepage": "https://expresscart.markmoffat.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrvautin/expressCart.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrvautin/expressCart/issues"
+  }
 }
