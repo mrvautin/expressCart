@@ -188,6 +188,21 @@ The Stripe config file is located: `/config/stripe.json`. A example Stripe setti
 
 Note: The `secretKey` and `publicKey` is obtained from your Stripe account dashboard.
 
+##### Authorize.net (Payments)
+
+The Authorize.net config file is located: `/config/authorizenet.json`. A example Authorize.net settings file is provided:
+
+```
+{
+    "loginId": "loginId",
+    "transactionKey": "transactionKey",
+    "clientKey": "clientKey",
+    "mode": "test"
+}
+```
+
+Note: The credentials are obtained from your Authorize.net account dashboard.
+
 ## Email settings
 
 You will need to configure your SMTP details for expressCart to send email receipts to your customers.
