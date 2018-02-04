@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const colors = require('colors');
 const randtoken = require('rand-token');
+const bcrypt = require('bcryptjs');
 const common = require('./common');
 
 // insert a customer
 router.post('/customer/create', (req, res) => {
     const db = req.app.db;
-    const bcrypt = req.bcrypt;
 
     let doc = {
         email: req.body.email,
@@ -19,7 +19,7 @@ router.post('/customer/create', (req, res) => {
         state: req.body.state,
         postcode: req.body.postcode,
         phone: req.body.phone,
-        password: bcrypt.hashSync(req.body.password),
+        password: bcrypt.hashSync(req.body.password, 10),
         created: new Date()
     };
 
@@ -61,9 +61,8 @@ router.post('/customer/create', (req, res) => {
 // login the customer and check the password
 router.post('/customer/login_action', (req, res) => {
     let db = req.app.db;
-    let bcrypt = req.bcrypt;
 
-    db.customers.findOne({email: req.body.loginEmail}, (err, customer) => {
+    db.customers.findOne({email: req.body.loginEmail}, (err, customer) => { // eslint-disable-line
         if(err){
             // An error accurred
             return res.status(400).json({
@@ -78,18 +77,26 @@ router.post('/customer/login_action', (req, res) => {
             });
         }
         // we have a customer under that email so we compare the password
-        if(bcrypt.compareSync(req.body.loginPassword, customer.password) === false){
-            // password is not correct
+        bcrypt.compare(req.body.loginPassword, customer.password)
+        .then((result) => {
+            if(!result){
+                // password is not correct
+                return res.status(400).json({
+                    err: 'Access denied. Check password and try again.'
+                });
+            }
+
+            // Customer login successful
+            req.session.customer = customer;
+            return res.status(200).json({
+                message: 'Successfully logged in',
+                customer: customer
+            });
+        })
+        .catch((err) => {
             return res.status(400).json({
                 err: 'Access denied. Check password and try again.'
             });
-        }
-
-        // Customer login successful
-        req.session.customer = customer;
-        return res.status(200).json({
-            message: 'Successfully logged in',
-            customer: customer
         });
     });
 });
@@ -174,7 +181,6 @@ router.get('/customer/reset/:token', (req, res) => {
 // reset password action
 router.post('/customer/reset/:token', (req, res) => {
     const db = req.app.db;
-    let bcrypt = req.bcrypt;
 
     // get the customer
     db.customers.findOne({resetToken: req.params.token, resetTokenExpiry: {$gt: Date.now()}}, (err, customer) => {
@@ -185,7 +191,7 @@ router.post('/customer/reset/:token', (req, res) => {
         }
 
         // update the password and remove the token
-        let newPassword = bcrypt.hashSync(req.body.password);
+        let newPassword = bcrypt.hashSync(req.body.password, 10);
         db.customers.update({email: customer.email}, {$set: {password: newPassword, resetToken: undefined, resetTokenExpiry: undefined}}, {multi: false}, (err, numReplaced) => {
             let mailOpts = {
                 to: customer.email,

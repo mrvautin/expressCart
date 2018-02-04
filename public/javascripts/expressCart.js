@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback,  no-var, no-tabs */
 $(document).ready(function (){
     if($(window).width() < 768){
         $('.menu-side').on('click', function(e){
@@ -44,7 +45,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/testEmail'
-        })
+		})
 		.done(function(msg){
             showNotification(msg, 'success');
         })
@@ -110,7 +111,7 @@ $(document).ready(function (){
     });
 
 	// Call to API for a change to the published state of a product
-    $("input[class='published_state']").change(function(){
+    $('input[class="published_state"]').change(function(){
         $.ajax({
             method: 'POST',
             url: '/admin/product/published_state',
@@ -731,8 +732,4 @@ function showNotification(msg, type, reloadPage){
             location.reload();
         }
     });
-}
-
-function searchForm(id){
-    $('form#' + id).submit();
 }

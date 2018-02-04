@@ -2,6 +2,13 @@ const express = require('express');
 const common = require('./common');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
+const bcrypt = require('bcryptjs');
+const rimraf = require('rimraf');
+const url = require('url');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+const glob = require('glob');
 const router = express.Router();
 
 // Admin section
@@ -211,7 +218,6 @@ router.get('/login', (req, res) => {
 // login the user and check the password
 router.post('/login_action', (req, res) => {
     let db = req.app.db;
-    let bcrypt = req.bcrypt;
 
     db.users.findOne({userEmail: req.body.email}, (err, user) => {
         if(err){
@@ -228,18 +234,21 @@ router.post('/login_action', (req, res) => {
             res.redirect('/admin/login');
         }else{
             // we have a user under that email so we compare the password
-            if(bcrypt.compareSync(req.body.password, user.userPassword) === true){
-                req.session.user = req.body.email;
-                req.session.usersName = user.usersName;
-                req.session.userId = user._id.toString();
-                req.session.isAdmin = user.isAdmin;
-                res.redirect('/admin');
-            }else{
-                // password is not correct
-                req.session.message = 'Access denied. Check password and try again.';
-                req.session.messageType = 'danger';
-                res.redirect('/admin/login');
-            }
+            bcrypt.compare(req.body.password, user.userPassword)
+            .then((result) => {
+                if(result){
+                    req.session.user = req.body.email;
+                    req.session.usersName = user.usersName;
+                    req.session.userId = user._id.toString();
+                    req.session.isAdmin = user.isAdmin;
+                    res.redirect('/admin');
+                }else{
+                    // password is not correct
+                    req.session.message = 'Access denied. Check password and try again.';
+                    req.session.messageType = 'danger';
+                    res.redirect('/admin/login');
+                }
+            });
         }
     });
 });
@@ -504,7 +513,6 @@ router.post('/product/update', common.restrict, (req, res) => {
 // delete product
 router.get('/product/delete/:id', common.restrict, (req, res) => {
     const db = req.app.db;
-    let rimraf = require('rimraf');
 
     // remove the article
     db.products.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
@@ -582,7 +590,6 @@ router.get('/user/edit/:id', common.restrict, (req, res) => {
 // update a user
 router.post('/user/update', common.restrict, (req, res) => {
     const db = req.app.db;
-    let bcrypt = req.bcrypt;
 
     let isAdmin = req.body.user_admin === 'on' ? 'true' : 'false';
 
@@ -630,12 +637,11 @@ router.post('/user/update', common.restrict, (req, res) => {
 // insert a user
 router.post('/setup_action', (req, res) => {
     const db = req.app.db;
-    let bcrypt = req.bcrypt;
 
     let doc = {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
-        userPassword: bcrypt.hashSync(req.body.userPassword),
+        userPassword: bcrypt.hashSync(req.body.userPassword, 10),
         isAdmin: true
     };
 
@@ -668,8 +674,6 @@ router.post('/setup_action', (req, res) => {
 // insert a user
 router.post('/user/insert', common.restrict, (req, res) => {
     const db = req.app.db;
-    let bcrypt = req.bcrypt;
-    let url = require('url');
 
     // set the account to admin if using the setup form. Eg: First user account
     let urlParts = url.parse(req.header('Referer'));
@@ -682,7 +686,7 @@ router.post('/user/insert', common.restrict, (req, res) => {
     let doc = {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
-        userPassword: bcrypt.hashSync(req.body.userPassword),
+        userPassword: bcrypt.hashSync(req.body.userPassword, 10),
         isAdmin: isAdmin
     };
 
@@ -1132,8 +1136,6 @@ router.post('/product/setasmainimage', common.restrict, (req, res) => {
 // deletes a product image
 router.post('/product/deleteimage', common.restrict, (req, res) => {
     const db = req.app.db;
-    let fs = require('fs');
-    let path = require('path');
 
     // get the productImage from the db
     db.products.findOne({_id: common.getId(req.body.product_id)}, (err, product) => {
@@ -1169,12 +1171,10 @@ router.post('/product/deleteimage', common.restrict, (req, res) => {
 });
 
 // upload the file
-let multer = require('multer');
+
 let upload = multer({dest: 'public/uploads/'});
 router.post('/file/upload', common.restrict, upload.single('upload_file'), (req, res, next) => {
     const db = req.app.db;
-    let fs = require('fs');
-    let path = require('path');
 
     if(req.file){
         // check for upload select
@@ -1238,8 +1238,6 @@ router.post('/testEmail', common.restrict, (req, res) => {
 
 // delete a file via ajax request
 router.post('/file/delete', common.restrict, (req, res) => {
-    let fs = require('fs');
-
     req.session.message = null;
     req.session.messageType = null;
 
@@ -1256,9 +1254,6 @@ router.post('/file/delete', common.restrict, (req, res) => {
 });
 
 router.get('/files', common.restrict, (req, res) => {
-    let glob = require('glob');
-    let fs = require('fs');
-
     // loop files in /public/uploads/
     glob('public/uploads/**', {nosort: true}, (er, files) => {
         // sort array

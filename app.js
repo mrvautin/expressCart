@@ -4,7 +4,6 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const bcrypt = require('bcrypt-nodejs');
 const moment = require('moment');
 const MongoStore = require('connect-mongodb-session')(session);
 const MongoClient = require('mongodb').MongoClient;
@@ -216,7 +215,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make stuff accessible to our router
 app.use((req, res, next) => {
     req.handlebars = handlebars;
-    req.bcrypt = bcrypt;
     next();
 });
 
