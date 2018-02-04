@@ -1,0 +1,61 @@
+{{#ifCond paymentConfig.mode '==' 'test'}}
+<script type="text/javascript"
+    src="https://jstest.authorize.net/v3/AcceptUI.js"
+    charset="utf-8">
+</script>
+{{else}}
+<script type="text/javascript"
+    src="https://js.authorize.net/v3/AcceptUI.js"
+    charset="utf-8">
+</script>
+{{/ifCond}}
+<script>
+    function responseHandler(data){
+        // Set fields from the form
+        data.shipEmail = $('#shipEmail').val();
+        data.shipFirstname = $('#shipFirstname').val();
+        data.shipLastname = $('#shipLastname').val();
+        data.shipAddr1 = $('#shipAddr1').val();
+        data.shipAddr2 = $('#shipAddr2').val();
+        data.shipCountry = $('#shipCountry').val();
+        data.shipState = $('#shipState').val();
+        data.shipPostcode = $('#shipPostcode').val();
+        data.shipPhoneNumber = $('#shipPhoneNumber').val();
+        $.ajax({
+            method: 'POST',
+            url: '/authorizenet/checkout_action',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data)
+        })
+        .done(function(data){
+            if(data.orderId){
+                window.location = '/payment/' + data.orderId;
+            }else{
+                showNotification('Transaction approved', 'success', true);
+            }
+        })
+        .fail(function(data){
+            if(data.orderId){
+                window.location = '/payment/' + data.orderId;
+            }else{
+                showNotification('Your payment has declined. Please try again.', 'danger');
+            }
+        });
+    }
+</script>
+<div class="col-xs-12 col-md-12 text-center">
+    <form id="paymentForm" method="POST">
+        <input type="hidden" name="dataValue" id="dataValue" />
+        <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+        <button type="button"
+            class="AcceptUI btn btn-success"
+            data-billingAddressOptions='{"show":false, "required":false}'
+            data-apiLoginID="{{paymentConfig.loginId}}"
+            data-clientKey="{{paymentConfig.clientKey}}"
+            data-acceptUIFormBtnTxt="Submit"
+            data-acceptUIFormHeaderTxt="Card Information"
+            data-responseHandler="responseHandler">Process payment
+        </button>
+    </form>
+</div>

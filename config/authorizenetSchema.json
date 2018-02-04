@@ -1,0 +1,24 @@
+{
+    "properties": {
+        "loginId": {
+            "type": "string"
+        },
+        "transactionKey": {
+            "type": "string"
+        },
+        "clientKey": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string",
+            "enum": ["test", "live"]
+        }
+    },
+    "required": [
+        "loginId",
+        "transactionKey",
+        "clientKey",
+        "mode"
+    ],
+    "additionalProperties": false
+}

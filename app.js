@@ -43,6 +43,13 @@ if(config.paymentGateway === 'stripe'){
         process.exit(2);
     }
 }
+if(config.paymentGateway === 'authorizenet'){
+    const authorizenetConfig = ajv.validate(require('./config/authorizenetSchema'), require('./config/authorizenet.json'));
+    if(authorizenetConfig === false){
+        console.log(colors.red(`Authorizenet config is incorrect: ${ajv.errorsText()}`));
+        process.exit(2);
+    }
+}
 
 // require the routes
 const index = require('./routes/index');
@@ -50,6 +57,7 @@ const admin = require('./routes/admin');
 const customer = require('./routes/customer');
 const paypal = require('./routes/payments/paypal');
 const stripe = require('./routes/payments/stripe');
+const authorizenet = require('./routes/payments/authorizenet');
 
 const app = express();
 
@@ -224,6 +232,7 @@ app.use('/', customer);
 app.use('/admin', admin);
 app.use('/paypal', paypal);
 app.use('/stripe', stripe);
+app.use('/authorizenet', authorizenet);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

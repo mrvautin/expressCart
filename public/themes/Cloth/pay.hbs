@@ -50,6 +50,9 @@
                     {{#ifCond config.paymentGateway '==' 'stripe'}}
                         {{> payments/stripe}}
                     {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'authorizenet'}}
+                        {{> payments/authorizenet}}
+                    {{/ifCond}}
                     {{/if}}
                 </div>
             </div>

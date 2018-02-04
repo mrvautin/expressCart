@@ -1,5 +1,5 @@
-<div class="row">	
-	<div class="col-xs-12 col-md-12">
+<div class="row">
+    <div class="col-xs-12 col-md-12">
         {{#if pageCloseBtn}}
         <div class="row {{checkout}}">
             <div class="col-lg-12 text-right">
@@ -11,91 +11,88 @@
             <div class="panel-heading">Cart contents</div>
             <div class="panel-body cart-body">
                 <div class="container-fluid">
-                {{#each session.cart}}
+                    {{#each session.cart}}
                     <div class="row cart-row">
                         <div class="col-xs-4 col-md-2">
                             {{#if productImage}}
-                                <img class="img-responsive" src="{{this.productImage}}" alt="{{this.title}} product image">
-                            {{else}}
-                                <img class="img-responsive" src="/uploads/placeholder.png" alt="{{this.title}} product image">
-                            {{/if}}
+                            <img class="img-responsive" src="{{this.productImage}}" alt="{{this.title}} product image"> {{else}}
+                            <img class="img-responsive" src="/uploads/placeholder.png" alt="{{this.title}} product image"> {{/if}}
                         </div>
                         <div class="cart-item-row text-left col-xs-12 col-md-7">
-                            <p><a class="cart-link" href="/product/{{this.link}}">{{this.title}}</a></p>
                             <p>
-                                &nbsp;{{#each this.options}}
-                                    {{#if @last}}
-                                        {{this}}
-                                    {{else}}
-                                        {{this}} /
-                                    {{/if}}
-                                {{/each}}
+                                <a class="cart-link" href="/product/{{this.link}}">{{this.title}}</a>
                             </p>
                             <p>
-                            <div class="form-group">
-                                <div class="col-lg-5 no-pad-left">
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-qty-minus" type="button">-</button>
-                                        </span>
-                                        <input type="number" class="form-control cart-product-quantity input-sm text-center" data-id="{{this.productId}}" id="{{@key}}" maxlength="2" value="{{this.quantity}}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-qty-add" type="button">+</button>
-                                        </span>
+                                &nbsp;{{#each this.options}} {{#if @last}} {{this}} {{else}} {{this}} / {{/if}} {{/each}}
+                            </p>
+                            <p>
+                                <div class="form-group">
+                                    <div class="col-lg-5 no-pad-left">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-qty-minus" type="button">-</button>
+                                            </span>
+                                            <input type="number" class="form-control cart-product-quantity input-sm text-center" data-id="{{this.productId}}" id="{{@key}}"
+                                                maxlength="2" value="{{this.quantity}}">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-qty-add" type="button">+</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </p>
                         </div>
                         <div class="col-xs-12 col-lg-4 cart-item-row text-right no-pad-right">
                             <strong>{{currencySymbol ../config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
-                        </div>     
+                        </div>
                     </div>
-                {{/each}}
+                    {{/each}}
                 </div>
                 <div class="container-fluid">
-                {{#if session.cart}}
+                    {{#if session.cart}}
                     <div class="row">
                         <div class="cart-contents-shipping col-md-12 no-pad-right">
                             {{#ifCond session.shippingCostApplied '===' true}}
-                                <div class="text-right">
-                                    Shipping: <strong>{{currencySymbol config.currencySymbol}}{{formatAmount config.flatShipping}}</strong>
-                                </div>
-                            {{else}}    
-                                <div class="text-right">
-                                    Shipping: <strong>FREE</strong>
-                                </div>
+                            <div class="text-right">
+                                Shipping:
+                                <strong>{{currencySymbol config.currencySymbol}}{{formatAmount config.flatShipping}}</strong>
+                            </div>
+                            {{else}}
+                            <div class="text-right">
+                                Shipping:
+                                <strong>FREE</strong>
+                            </div>
                             {{/ifCond}}
                             <div class="text-right">
-                                Total: <strong>{{currencySymbol config.currencySymbol}}{{formatAmount session.totalCartAmount}}</strong>
+                                Total:
+                                <strong>{{currencySymbol config.currencySymbol}}{{formatAmount session.totalCartAmount}}</strong>
                             </div>
                         </div>
                     </div>
-                {{else}}
-                     <div class="row">
-                         <div class="cart-contents-shipping col-md-12 no-pad-right">
-                             Cart empty
-                         </div>
-                     </div>
-                {{/if}}
+                    {{else}}
+                    <div class="row">
+                        <div class="cart-contents-shipping col-md-12 no-pad-right">
+                            Cart empty
+                        </div>
+                    </div>
+                    {{/if}}
                 </div>
             </div>
         </div>
         <div class="row">
             {{#if session.cart}}
-                <div class="col-xs-6 col-lg-6 text-left">
-                    <button class="btn btn-danger" id="empty-cart" type="button">Empty cart</button>
-                </div>
-                {{#ifCond page '!=' 'pay'}}
-                <div class="text-right col-xs-6 col-md-6">
-                    {{#ifCond page '==' 'checkout'}}
-                        <a href="/pay" class="btn btn-default">Pay now</a>
-                    {{else}}
-                        <a href="/checkout" class="btn btn-default">Checkout</a>
-                    {{/ifCond}} 
-                </div>
+            <div class="col-xs-6 col-lg-6 text-left">
+                <button class="btn btn-danger" id="empty-cart" type="button">Empty cart</button>
+            </div>
+            {{#ifCond page '!=' 'pay'}}
+            <div class="text-right col-xs-6 col-md-6">
+                {{#ifCond page '==' 'checkout'}}
+                <a href="/pay" class="btn btn-default">Pay now</a>
+                {{else}}
+                <a href="/checkout" class="btn btn-default">Checkout</a>
                 {{/ifCond}}
-            {{/if}}
+            </div>
+            {{/ifCond}} {{/if}}
         </div>
-	</div>
+    </div>
 </div>

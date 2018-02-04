@@ -10,6 +10,7 @@
   "dependencies": {
     "ajv": "^6.0.0",
     "async": "^2.6.0",
+    "axios": "^0.17.1",
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
@@ -36,6 +37,7 @@
     "rand-token": "^0.4.0",
     "rimraf": "^2.6.2",
     "sitemap": "^1.6.0",
+    "strip-bom": "^3.0.0",
     "stripe": "^5.4.0",
     "uglifycss": "0.0.27"
   },
