@@ -54,7 +54,10 @@ if(config.paymentGateway === 'authorizenet'){
 // require the routes
 const index = require('./routes/index');
 const admin = require('./routes/admin');
+const product = require('./routes/product');
 const customer = require('./routes/customer');
+const order = require('./routes/order');
+const user = require('./routes/user');
 const paypal = require('./routes/payments/paypal');
 const stripe = require('./routes/payments/stripe');
 const authorizenet = require('./routes/payments/authorizenet');
@@ -229,6 +232,9 @@ app.use((req, res, next) => {
 // setup the routes
 app.use('/', index);
 app.use('/', customer);
+app.use('/', product);
+app.use('/', order);
+app.use('/', user);
 app.use('/admin', admin);
 app.use('/paypal', paypal);
 app.use('/stripe', stripe);
