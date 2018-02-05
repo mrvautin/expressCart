@@ -3,7 +3,7 @@ const common = require('../lib/common');
 const router = express.Router();
 
 // Show orders
-router.get('/orders', common.restrict, (req, res, next) => {
+router.get('/admin/orders', common.restrict, (req, res, next) => {
     const db = req.app.db;
 
     // Top 10 products
@@ -25,7 +25,7 @@ router.get('/orders', common.restrict, (req, res, next) => {
 });
 
 // Admin section
-router.get('/orders/bystatus/:orderstatus', common.restrict, (req, res, next) => {
+router.get('/admin/orders/bystatus/:orderstatus', common.restrict, (req, res, next) => {
     const db = req.app.db;
 
     if(typeof req.params.orderstatus === 'undefined'){
@@ -55,7 +55,7 @@ router.get('/orders/bystatus/:orderstatus', common.restrict, (req, res, next) =>
 });
 
 // render the editor
-router.get('/order/view/:id', common.restrict, (req, res) => {
+router.get('/admin/order/view/:id', common.restrict, (req, res) => {
     const db = req.app.db;
     db.orders.findOne({_id: common.getId(req.params.id)}, (err, result) => {
         if(err){
@@ -81,7 +81,7 @@ router.get('/order/view/:id', common.restrict, (req, res) => {
 });
 
 // Admin section
-router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
+router.get('/admin/orders/filter/:search', common.restrict, (req, res, next) => {
     const db = req.app.db;
     let searchTerm = req.params.search;
     let ordersIndex = req.app.ordersIndex;
@@ -111,7 +111,7 @@ router.get('/orders/filter/:search', common.restrict, (req, res, next) => {
 });
 
 // order product
-router.get('/order/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/order/delete/:id', common.restrict, (req, res) => {
     const db = req.app.db;
 
     // remove the article
@@ -131,7 +131,7 @@ router.get('/order/delete/:id', common.restrict, (req, res) => {
 });
 
 // update order status
-router.post('/order/statusupdate', common.restrict, (req, res) => {
+router.post('/admin/order/statusupdate', common.restrict, (req, res) => {
     const db = req.app.db;
     db.orders.update({_id: common.getId(req.body.order_id)}, {$set: {orderStatus: req.body.status}}, {multi: false}, (err, numReplaced) => {
         if(err){
