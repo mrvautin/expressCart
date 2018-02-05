@@ -24,8 +24,9 @@ Keeping expressCart running after closing the terminal can be done in a few ways
 The easiest way to get up and running is using Docker. Once the Docker CLI is installed from [https://www.docker.com/get-docker](https://www.docker.com/get-docker).
 
 1. Enter the root of the expressCart application
-2. Run: `docker-compose up --build`
-3. Visit [http://127.0.0.1:1111](http://127.0.0.1:1111) in your browser
+2. Change `/config/settings.json` - `"databaseConnectionString": "mongodb://mongodb:27017/expresscart"`
+3. Run: `docker-compose up --build`
+4. Visit [http://127.0.0.1:1111](http://127.0.0.1:1111) in your browser
 
 ## Admin
 
