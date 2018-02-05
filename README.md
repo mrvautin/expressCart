@@ -32,6 +32,8 @@ The easiest way to get up and running is using Docker. Once the Docker CLI is in
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mrvautin/expressCart)
 
+> Note: When deploying to Heroku you will need to configure your external MongoDB either on your own server or a hosted service on mLab, AWS etc.
+
 ## Admin
 
 Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)
