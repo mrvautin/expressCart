@@ -74,7 +74,7 @@ router.get('/admin/product/new', common.restrict, common.checkAccess, (req, res)
 });
 
 // insert new product form action
-router.post('/admin/product/insert', common.restrict, (req, res) => {
+router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -145,7 +145,7 @@ router.post('/admin/product/insert', common.restrict, (req, res) => {
 });
 
 // render the editor
-router.get('/admin/product/edit/:id', common.restrict, (req, res) => {
+router.get('/admin/product/edit/:id', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     common.getImages(req.params.id, req, res, (images) => {
@@ -176,7 +176,7 @@ router.get('/admin/product/edit/:id', common.restrict, (req, res) => {
 });
 
 // Update an existing product form action
-router.post('/admin/product/update', common.restrict, (req, res) => {
+router.post('/admin/product/update', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     db.products.findOne({_id: common.getId(req.body.frmProductId)}, (err, product) => {
@@ -256,7 +256,7 @@ router.post('/admin/product/update', common.restrict, (req, res) => {
 });
 
 // delete product
-router.get('/admin/product/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/product/delete/:id', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     // remove the article
@@ -283,23 +283,21 @@ router.get('/admin/product/delete/:id', common.restrict, (req, res) => {
 });
 
 // update the published state based on an ajax call from the frontend
-router.post('/admin/product/published_state', common.restrict, (req, res) => {
+router.post('/admin/product/published_state', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     db.products.update({_id: common.getId(req.body.id)}, {$set: {productPublished: req.body.state}}, {multi: false}, (err, numReplaced) => {
         if(err){
             console.error(colors.red('Failed to update the published state: ' + err));
-            res.writeHead(400, {'Content-Type': 'application/text'});
-            res.end('Published state not updated');
+            res.status(400).json('Published state not updated');
         }else{
-            res.writeHead(200, {'Content-Type': 'application/text'});
-            res.end('Published state updated');
+            res.status(200).json('Published state updated');
         }
     });
 });
 
 // set as main product image
-router.post('/admin/product/setasmainimage', common.restrict, (req, res) => {
+router.post('/admin/product/setasmainimage', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     // update the productImage to the db
@@ -313,7 +311,7 @@ router.post('/admin/product/setasmainimage', common.restrict, (req, res) => {
 });
 
 // deletes a product image
-router.post('/admin/product/deleteimage', common.restrict, (req, res) => {
+router.post('/admin/product/deleteimage', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     // get the productImage from the db

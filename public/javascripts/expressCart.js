@@ -50,7 +50,7 @@ $(document).ready(function (){
             showNotification(msg, 'success');
         })
         .fail(function(msg){
-            showNotification(msg.responseText, 'danger');
+            showNotification(msg.responseJSON.message, 'danger');
         });
     });
 
@@ -118,10 +118,10 @@ $(document).ready(function (){
             data: {id: this.id, state: this.checked}
         })
 		.done(function(msg){
-            showNotification(msg, 'success');
+            showNotification(msg.message, 'success');
         })
         .fail(function(msg){
-            showNotification(msg.responseText, 'danger');
+            showNotification(msg.responseJSON.message, 'danger');
         });
     });
 
@@ -540,7 +540,7 @@ $(document).ready(function (){
                 showNotification(msg, 'success');
             })
             .fail(function(msg){
-                showNotification(msg.responseText, 'danger');
+                showNotification(msg.responseJSON.message, 'danger');
             });
         }else{
             showNotification('Please enter a permalink to validate', 'danger');

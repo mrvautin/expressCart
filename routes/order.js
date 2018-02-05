@@ -131,7 +131,7 @@ router.get('/admin/order/delete/:id', common.restrict, (req, res) => {
 });
 
 // update order status
-router.post('/admin/order/statusupdate', common.restrict, (req, res) => {
+router.post('/admin/order/statusupdate', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
     db.orders.update({_id: common.getId(req.body.order_id)}, {$set: {orderStatus: req.body.status}}, {multi: false}, (err, numReplaced) => {
         if(err){

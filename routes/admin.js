@@ -10,12 +10,12 @@ const glob = require('glob');
 const router = express.Router();
 
 // Admin section
-router.get('/', common.restrict, (req, res, next) => {
+router.get('/admin', common.restrict, (req, res, next) => {
     res.redirect('/admin/orders');
 });
 
 // logout
-router.get('/logout', (req, res) => {
+router.get('/admin/logout', (req, res) => {
     req.session.user = null;
     req.session.message = null;
     req.session.messageType = null;
@@ -23,7 +23,7 @@ router.get('/logout', (req, res) => {
 });
 
 // login form
-router.get('/login', (req, res) => {
+router.get('/admin/login', (req, res) => {
     let db = req.app.db;
 
     db.users.count({}, (err, userCount) => {
@@ -54,7 +54,7 @@ router.get('/login', (req, res) => {
 });
 
 // login the user and check the password
-router.post('/login_action', (req, res) => {
+router.post('/admin/login_action', (req, res) => {
     let db = req.app.db;
 
     db.users.findOne({userEmail: req.body.email}, (err, user) => {
@@ -92,7 +92,7 @@ router.post('/login_action', (req, res) => {
 });
 
 // setup form is shown when there are no users setup in the DB
-router.get('/setup', (req, res) => {
+router.get('/admin/setup', (req, res) => {
     let db = req.app.db;
 
     db.users.count({}, (err, userCount) => {
@@ -119,7 +119,7 @@ router.get('/setup', (req, res) => {
 });
 
 // insert a user
-router.post('/setup_action', (req, res) => {
+router.post('/admin/setup_action', (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -156,7 +156,7 @@ router.post('/setup_action', (req, res) => {
 });
 
 // settings update
-router.get('/settings', common.restrict, (req, res) => {
+router.get('/admin/settings', common.restrict, (req, res) => {
     res.render('settings', {
         title: 'Cart settings',
         session: req.session,
@@ -172,7 +172,7 @@ router.get('/settings', common.restrict, (req, res) => {
 });
 
 // settings update
-router.post('/settings/update', common.restrict, (req, res) => {
+router.post('/admin/settings/update', common.restrict, common.checkAccess, (req, res) => {
     let result = common.updateConfig(req.body);
     if(result === true){
         res.status(200).json({message: 'Settings successfully updated'});
@@ -182,7 +182,7 @@ router.post('/settings/update', common.restrict, (req, res) => {
 });
 
 // settings update
-router.post('/settings/option/remove', common.restrict, (req, res) => {
+router.post('/admin/settings/option/remove', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
     db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
         if(err){
@@ -209,7 +209,7 @@ router.post('/settings/option/remove', common.restrict, (req, res) => {
 });
 
 // settings update
-router.get('/settings/menu', common.restrict, async (req, res) => {
+router.get('/admin/settings/menu', common.restrict, async (req, res) => {
     const db = req.app.db;
     res.render('settings_menu', {
         title: 'Cart menu',
@@ -224,7 +224,7 @@ router.get('/settings/menu', common.restrict, async (req, res) => {
 });
 
 // settings page list
-router.get('/settings/pages', common.restrict, (req, res) => {
+router.get('/admin/settings/pages', common.restrict, (req, res) => {
     const db = req.app.db;
     db.pages.find({}).toArray(async (err, pages) => {
         if(err){
@@ -246,7 +246,7 @@ router.get('/settings/pages', common.restrict, (req, res) => {
 });
 
 // settings pages new
-router.get('/settings/pages/new', common.restrict, async (req, res) => {
+router.get('/admin/settings/pages/new', common.restrict, common.checkAccess, async (req, res) => {
     const db = req.app.db;
 
     res.render('settings_page_edit', {
@@ -263,7 +263,7 @@ router.get('/settings/pages/new', common.restrict, async (req, res) => {
 });
 
 // settings pages editor
-router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
+router.get('/admin/settings/pages/edit/:page', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
     db.pages.findOne({_id: common.getId(req.params.page)}, async (err, page) => {
         if(err){
@@ -299,7 +299,7 @@ router.get('/settings/pages/edit/:page', common.restrict, (req, res) => {
 });
 
 // settings update page
-router.post('/settings/pages/update', common.restrict, (req, res) => {
+router.post('/admin/settings/pages/update', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -339,7 +339,7 @@ router.post('/settings/pages/update', common.restrict, (req, res) => {
 });
 
 // settings delete page
-router.get('/settings/pages/delete/:page', common.restrict, (req, res) => {
+router.get('/admin/settings/pages/delete/:page', common.restrict, common.checkAccess, (req, res) => {
     const db = req.app.db;
     db.pages.remove({_id: common.getId(req.params.page)}, {}, (err, numRemoved) => {
         if(err){
@@ -355,7 +355,7 @@ router.get('/settings/pages/delete/:page', common.restrict, (req, res) => {
 });
 
 // new menu item
-router.post('/settings/menu/new', common.restrict, (req, res) => {
+router.post('/admin/settings/menu/new', common.restrict, common.checkAccess, (req, res) => {
     let result = common.newMenu(req, res);
     if(result === false){
         req.session.message = 'Failed creating menu.';
@@ -365,7 +365,7 @@ router.post('/settings/menu/new', common.restrict, (req, res) => {
 });
 
 // update existing menu item
-router.post('/settings/menu/update', common.restrict, (req, res) => {
+router.post('/admin/settings/menu/update', common.restrict, common.checkAccess, (req, res) => {
     let result = common.updateMenu(req, res);
     if(result === false){
         req.session.message = 'Failed updating menu.';
@@ -375,7 +375,7 @@ router.post('/settings/menu/update', common.restrict, (req, res) => {
 });
 
 // delete menu item
-router.get('/settings/menu/delete/:menuid', common.restrict, (req, res) => {
+router.get('/admin/settings/menu/delete/:menuid', common.restrict, common.checkAccess, (req, res) => {
     let result = common.deleteMenu(req, res, req.params.menuid);
     if(result === false){
         req.session.message = 'Failed deleting menu.';
@@ -385,7 +385,7 @@ router.get('/settings/menu/delete/:menuid', common.restrict, (req, res) => {
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/settings/menu/save_order', common.restrict, (req, res) => {
+router.post('/admin/settings/menu/save_order', common.restrict, common.checkAccess, (req, res) => {
     let result = common.orderMenu(req, res);
     if(result === false){
         res.status(400).json({message: 'Failed saving menu order'});
@@ -395,7 +395,7 @@ router.post('/settings/menu/save_order', common.restrict, (req, res) => {
 });
 
 // validate the permalink
-router.post('/api/validate_permalink', (req, res) => {
+router.post('/admin/api/validate_permalink', (req, res) => {
     // if doc id is provided it checks for permalink in any products other that one provided,
     // else it just checks for any products with that permalink
     const db = req.app.db;
@@ -412,18 +412,16 @@ router.post('/api/validate_permalink', (req, res) => {
             console.info(err.stack);
         }
         if(products > 0){
-            res.writeHead(400, {'Content-Type': 'application/text'});
-            res.end('Permalink already exists');
+            res.status(400).json({message: 'Permalink already exists'});
         }else{
-            res.writeHead(200, {'Content-Type': 'application/text'});
-            res.end('Permalink validated successfully');
+            res.status(200).json({message: 'Permalink validated successfully'});
         }
     });
 });
 
 // upload the file
 let upload = multer({dest: 'public/uploads/'});
-router.post('/file/upload', common.restrict, upload.single('upload_file'), (req, res, next) => {
+router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.single('upload_file'), (req, res, next) => {
     const db = req.app.db;
 
     if(req.file){
@@ -479,15 +477,15 @@ router.post('/file/upload', common.restrict, upload.single('upload_file'), (req,
 });
 
 // delete a file via ajax request
-router.post('/testEmail', common.restrict, (req, res) => {
+router.post('/admin/testEmail', common.restrict, (req, res) => {
     let config = common.getConfig();
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
-    res.status(200).json('Test email sent');
+    res.status(200).json({message: 'Test email sent'});
 });
 
 // delete a file via ajax request
-router.post('/file/delete', common.restrict, (req, res) => {
+router.post('/admin/file/delete', common.restrict, common.checkAccess, (req, res) => {
     req.session.message = null;
     req.session.messageType = null;
 
@@ -503,7 +501,7 @@ router.post('/file/delete', common.restrict, (req, res) => {
     });
 });
 
-router.get('/files', common.restrict, (req, res) => {
+router.get('/admin/files', common.restrict, (req, res) => {
     // loop files in /public/uploads/
     glob('public/uploads/**', {nosort: true}, (er, files) => {
         // sort array

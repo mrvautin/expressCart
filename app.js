@@ -235,7 +235,7 @@ app.use('/', customer);
 app.use('/', product);
 app.use('/', order);
 app.use('/', user);
-app.use('/admin', admin);
+app.use('/', admin);
 app.use('/paypal', paypal);
 app.use('/stripe', stripe);
 app.use('/authorizenet', authorizenet);
