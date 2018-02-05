@@ -1,5 +1,5 @@
 const express = require('express');
-const common = require('./common');
+const common = require('../lib/common');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');

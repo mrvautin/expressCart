@@ -3,7 +3,7 @@ const router = express.Router();
 const colors = require('colors');
 const async = require('async');
 const _ = require('lodash');
-const common = require('./common');
+const common = require('../lib/common');
 
 // These is the customer facing routes
 

@@ -1,5 +1,5 @@
 let express = require('express');
-let common = require('../common');
+let common = require('../../lib/common');
 let numeral = require('numeral');
 let stripe = require('stripe')(common.getPaymentConfig().secretKey);
 let router = express.Router();

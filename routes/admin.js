@@ -1,5 +1,5 @@
 const express = require('express');
-const common = require('./common');
+const common = require('../lib/common');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
 const bcrypt = require('bcryptjs');

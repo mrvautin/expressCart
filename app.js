@@ -10,7 +10,7 @@ const MongoClient = require('mongodb').MongoClient;
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
-const common = require('./routes/common');
+const common = require('./lib/common');
 const mongodbUri = require('mongodb-uri');
 
 let handlebars = require('express-handlebars');

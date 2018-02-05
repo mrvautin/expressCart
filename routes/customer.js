@@ -3,7 +3,7 @@ const router = express.Router();
 const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
-const common = require('./common');
+const common = require('../lib/common');
 
 // insert a customer
 router.post('/customer/create', (req, res) => {
