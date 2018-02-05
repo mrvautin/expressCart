@@ -34,7 +34,7 @@ router.get('/admin/user/edit/:id', common.restrict, (req, res) => {
         }
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
-        if(user.userEmail !== req.session.user && req.session.isAdmin === 'false'){
+        if(user.userEmail !== req.session.user && req.session.isAdmin === false){
             req.session.message = 'Access denied';
             req.session.messageType = 'danger';
             res.redirect('/Users/');
@@ -70,7 +70,7 @@ router.get('/admin/user/new', common.restrict, (req, res) => {
 // delete user
 router.get('/admin/user/delete/:id', common.restrict, (req, res) => {
     const db = req.app.db;
-    if(req.session.isAdmin === 'true'){
+    if(req.session.isAdmin === true){
         db.users.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
             if(err){
                 console.info(err.stack);
@@ -90,7 +90,7 @@ router.get('/admin/user/delete/:id', common.restrict, (req, res) => {
 router.post('/admin/user/update', common.restrict, (req, res) => {
     const db = req.app.db;
 
-    let isAdmin = req.body.user_admin === 'on' ? 'true' : 'false';
+    let isAdmin = req.body.user_admin === 'on';
 
     // get the user we want to update
     db.users.findOne({_id: common.getId(req.body.userId)}, (err, user) => {
@@ -99,7 +99,7 @@ router.post('/admin/user/update', common.restrict, (req, res) => {
         }
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
-        if(user.userEmail !== req.session.user && req.session.isAdmin === 'false'){
+        if(user.userEmail !== req.session.user && req.session.isAdmin === false){
             req.session.message = 'Access denied';
             req.session.messageType = 'danger';
             res.redirect('/admin/users/');
@@ -140,9 +140,9 @@ router.post('/admin/user/insert', common.restrict, (req, res) => {
     // set the account to admin if using the setup form. Eg: First user account
     let urlParts = url.parse(req.header('Referer'));
 
-    let isAdmin = 'false';
+    let isAdmin = false;
     if(urlParts.path === '/admin/setup'){
-        isAdmin = 'true';
+        isAdmin = true;
     }
 
     let doc = {
