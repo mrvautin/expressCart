@@ -97,6 +97,12 @@ router.post('/admin/user/update', common.restrict, (req, res) => {
         if(err){
             console.info(err.stack);
         }
+
+        // If the current user changing own account ensure isAdmin retains existing
+        if(user.userEmail === req.session.user){
+            isAdmin = user.isAdmin;
+        }
+
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
         if(user.userEmail !== req.session.user && req.session.isAdmin === false){
