@@ -59,7 +59,7 @@ router.post('/customer/create', (req, res) => {
 });
 
 // render the customer view
-router.get('/customer/view/:id?', common.restrict, (req, res) => {
+router.get('/admin/customer/view/:id?', common.restrict, (req, res) => {
     const db = req.app.db;
 
     db.customers.findOne({_id: common.getId(req.params.id)}, (err, result) => {
@@ -82,7 +82,7 @@ router.get('/customer/view/:id?', common.restrict, (req, res) => {
 });
 
 // customers list
-router.get('/customers', common.restrict, (req, res) => {
+router.get('/admin/customers', common.restrict, (req, res) => {
     const db = req.app.db;
 
     db.customers.find({}).limit(20).sort({created: -1}).toArray((err, customers) => {
@@ -100,7 +100,7 @@ router.get('/customers', common.restrict, (req, res) => {
 });
 
 // Filtered customers list
-router.get('/customers/filter/:search', common.restrict, (req, res, next) => {
+router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) => {
     const db = req.app.db;
     let searchTerm = req.params.search;
     let customersIndex = req.app.customersIndex;

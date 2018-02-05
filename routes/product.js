@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-router.get('/products', common.restrict, (req, res, next) => {
+router.get('/admin/products', common.restrict, (req, res, next) => {
     const db = req.app.db;
     // get the top results
     db.products.find({}).sort({'productAddedDate': -1}).limit(10).toArray((err, topResults) => {
@@ -26,7 +26,7 @@ router.get('/products', common.restrict, (req, res, next) => {
     });
 });
 
-router.get('/products/filter/:search', common.restrict, (req, res, next) => {
+router.get('/admin/products/filter/:search', (req, res, next) => {
     const db = req.app.db;
     let searchTerm = req.params.search;
     let productsIndex = req.app.productsIndex;
@@ -56,7 +56,7 @@ router.get('/products/filter/:search', common.restrict, (req, res, next) => {
 });
 
 // insert form
-router.get('/product/new', common.restrict, (req, res) => {
+router.get('/admin/product/new', common.restrict, common.checkAccess, (req, res) => {
     res.render('product_new', {
         title: 'New product',
         session: req.session,
@@ -74,7 +74,7 @@ router.get('/product/new', common.restrict, (req, res) => {
 });
 
 // insert new product form action
-router.post('/product/insert', common.restrict, (req, res) => {
+router.post('/admin/product/insert', common.restrict, (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -145,7 +145,7 @@ router.post('/product/insert', common.restrict, (req, res) => {
 });
 
 // render the editor
-router.get('/product/edit/:id', common.restrict, (req, res) => {
+router.get('/admin/product/edit/:id', common.restrict, (req, res) => {
     const db = req.app.db;
 
     common.getImages(req.params.id, req, res, (images) => {
@@ -176,7 +176,7 @@ router.get('/product/edit/:id', common.restrict, (req, res) => {
 });
 
 // Update an existing product form action
-router.post('/product/update', common.restrict, (req, res) => {
+router.post('/admin/product/update', common.restrict, (req, res) => {
     const db = req.app.db;
 
     db.products.findOne({_id: common.getId(req.body.frmProductId)}, (err, product) => {
@@ -256,7 +256,7 @@ router.post('/product/update', common.restrict, (req, res) => {
 });
 
 // delete product
-router.get('/product/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/product/delete/:id', common.restrict, (req, res) => {
     const db = req.app.db;
 
     // remove the article
@@ -283,7 +283,7 @@ router.get('/product/delete/:id', common.restrict, (req, res) => {
 });
 
 // update the published state based on an ajax call from the frontend
-router.post('/product/published_state', common.restrict, (req, res) => {
+router.post('/admin/product/published_state', common.restrict, (req, res) => {
     const db = req.app.db;
 
     db.products.update({_id: common.getId(req.body.id)}, {$set: {productPublished: req.body.state}}, {multi: false}, (err, numReplaced) => {
@@ -299,7 +299,7 @@ router.post('/product/published_state', common.restrict, (req, res) => {
 });
 
 // set as main product image
-router.post('/product/setasmainimage', common.restrict, (req, res) => {
+router.post('/admin/product/setasmainimage', common.restrict, (req, res) => {
     const db = req.app.db;
 
     // update the productImage to the db
@@ -313,7 +313,7 @@ router.post('/product/setasmainimage', common.restrict, (req, res) => {
 });
 
 // deletes a product image
-router.post('/product/deleteimage', common.restrict, (req, res) => {
+router.post('/admin/product/deleteimage', common.restrict, (req, res) => {
     const db = req.app.db;
 
     // get the productImage from the db

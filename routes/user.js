@@ -2,9 +2,10 @@ const express = require('express');
 const common = require('../lib/common');
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
+const url = require('url');
 const router = express.Router();
 
-router.get('/users', common.restrict, (req, res) => {
+router.get('/admin/users', common.restrict, (req, res) => {
     const db = req.app.db;
     db.users.find({}).toArray((err, users) => {
         if(err){
@@ -25,7 +26,7 @@ router.get('/users', common.restrict, (req, res) => {
 });
 
 // edit user
-router.get('/user/edit/:id', common.restrict, (req, res) => {
+router.get('/admin/user/edit/:id', common.restrict, (req, res) => {
     const db = req.app.db;
     db.users.findOne({_id: common.getId(req.params.id)}, (err, user) => {
         if(err){
@@ -54,7 +55,7 @@ router.get('/user/edit/:id', common.restrict, (req, res) => {
 });
 
 // users new
-router.get('/user/new', common.restrict, (req, res) => {
+router.get('/admin/user/new', common.restrict, (req, res) => {
     res.render('user_new', {
         title: 'User - New',
         admin: true,
@@ -67,7 +68,7 @@ router.get('/user/new', common.restrict, (req, res) => {
 });
 
 // delete user
-router.get('/user/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/user/delete/:id', common.restrict, (req, res) => {
     const db = req.app.db;
     if(req.session.isAdmin === 'true'){
         db.users.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
@@ -86,7 +87,7 @@ router.get('/user/delete/:id', common.restrict, (req, res) => {
 });
 
 // update a user
-router.post('/user/update', common.restrict, (req, res) => {
+router.post('/admin/user/update', common.restrict, (req, res) => {
     const db = req.app.db;
 
     let isAdmin = req.body.user_admin === 'on' ? 'true' : 'false';
@@ -133,7 +134,7 @@ router.post('/user/update', common.restrict, (req, res) => {
 });
 
 // insert a user
-router.post('/user/insert', common.restrict, (req, res) => {
+router.post('/admin/user/insert', common.restrict, (req, res) => {
     const db = req.app.db;
 
     // set the account to admin if using the setup form. Eg: First user account
