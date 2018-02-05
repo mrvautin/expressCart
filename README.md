@@ -1,5 +1,12 @@
 # expressCart
 
+![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
+
+`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal and Authorize.net payments.
+
+[![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
+[![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
+
 ## Installation
 
 1. Create a folder to hold your installation: `mkdir expressCart`
@@ -269,6 +276,12 @@ You can re-order menu items by clicking and dragging the arrows icon and placing
 You may want to create a static page to show contact details, about us, shipping information etc.
 
 New static pages are setup via `/admin/settings/pages`.
+
+## TODO
+
+- Add some tests...
+- Separate API and frontend
+- Modernize the frontend
 
 ## Contributing
 

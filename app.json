@@ -2,7 +2,7 @@
     "name": "expressCart",
     "description": "A fully functioning Node.js shopping cart with Stripe, PayPal and Authorize.net payments.",
     "repository": "https://github.com/mrvautin/expressCart",
-    "logo": "https://expresscart.markmoffat.com/assets/img/logo.png",
+    "logo": "https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png",
     "keywords": [
         "Shopping cart",
         "express",
