@@ -5,6 +5,8 @@ const async = require('async');
 const _ = require('lodash');
 const common = require('./common');
 
+// These is the customer facing routes
+
 router.get('/payment/:orderId', async (req, res, next) => {
     let db = req.app.db;
     let config = common.getConfig();

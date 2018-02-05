@@ -58,6 +58,77 @@ router.post('/customer/create', (req, res) => {
     });
 });
 
+// render the customer view
+router.get('/customer/view/:id?', common.restrict, (req, res) => {
+    const db = req.app.db;
+
+    db.customers.findOne({_id: common.getId(req.params.id)}, (err, result) => {
+        if(err){
+            console.info(err.stack);
+        }
+
+        res.render('customer', {
+            title: 'View customer',
+            result: result,
+            admin: true,
+            session: req.session,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            config: common.getConfig(),
+            editor: true,
+            helpers: req.handlebars.helpers
+        });
+    });
+});
+
+// customers list
+router.get('/customers', common.restrict, (req, res) => {
+    const db = req.app.db;
+
+    db.customers.find({}).limit(20).sort({created: -1}).toArray((err, customers) => {
+        res.render('customers', {
+            title: 'Customers - List',
+            admin: true,
+            customers: customers,
+            session: req.session,
+            helpers: req.handlebars.helpers,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            config: common.getConfig()
+        });
+    });
+});
+
+// Filtered customers list
+router.get('/customers/filter/:search', common.restrict, (req, res, next) => {
+    const db = req.app.db;
+    let searchTerm = req.params.search;
+    let customersIndex = req.app.customersIndex;
+
+    let lunrIdArray = [];
+    customersIndex.search(searchTerm).forEach((id) => {
+        lunrIdArray.push(common.getId(id.ref));
+    });
+
+    // we search on the lunr indexes
+    db.customers.find({_id: {$in: lunrIdArray}}).sort({created: -1}).toArray((err, customers) => {
+        if(err){
+            console.error(colors.red('Error searching', err));
+        }
+        res.render('customers', {
+            title: 'Customer results',
+            customers: customers,
+            admin: true,
+            config: common.getConfig(),
+            session: req.session,
+            searchTerm: searchTerm,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            helpers: req.handlebars.helpers
+        });
+    });
+});
+
 // login the customer and check the password
 router.post('/customer/login_action', (req, res) => {
     let db = req.app.db;
