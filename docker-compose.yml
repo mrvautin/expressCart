@@ -14,15 +14,14 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    image: mongo:latest
+    image: mongo:3.4.10
     container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-      # - MONGODB_USER="user"
-      # - MONGODB_PASS="pass"
-    volumes:
-      - ./data/db:/data/db
     ports:
-        - 27017:27017
+      - 27017
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null
+volumes:
+  mongo-data:
