@@ -1,0 +1,28 @@
+version: '3'
+services:
+  expresscart:
+    image: "node:8"
+    build: .
+    container_name: "expresscart"
+    environment:
+      NODE_ENV: development
+      NODE_PATH: /
+    ports:
+      - "1111:1111"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      # - MONGODB_USER="user"
+      # - MONGODB_PASS="pass"
+    volumes:
+      - ./data/db:/data/db
+    ports:
+        - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null

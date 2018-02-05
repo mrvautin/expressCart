@@ -19,6 +19,14 @@ Keeping expressCart running after closing the terminal can be done in a few ways
 
 > Note: Node.js version 7.x or greater is needed.
 
+### Docker
+
+The easiest way to get up and running is using Docker. Once the Docker CLI is installed from [https://www.docker.com/get-docker](https://www.docker.com/get-docker).
+
+1. Enter the root of the expressCart application
+2. Run: `docker-compose up --build`
+3. Visit [http://127.0.0.1:1111](http://127.0.0.1:1111) in your browser
+
 ## Admin
 
 Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)
