@@ -39,7 +39,7 @@ if(config.paymentGateway === 'paypal'){
 if(config.paymentGateway === 'stripe'){
     const stripeConfig = ajv.validate(require('./config/stripeSchema'), require('./config/stripe.json'));
     if(stripeConfig === false){
-        console.log(colors.red(`PayPal config is incorrect: ${ajv.errorsText()}`));
+        console.log(colors.red(`Stripe config is incorrect: ${ajv.errorsText()}`));
         process.exit(2);
     }
 }
