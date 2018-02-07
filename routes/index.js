@@ -103,10 +103,10 @@ router.get('/product/:id', (req, res) => {
     db.products.findOne({$or: [{_id: common.getId(req.params.id)}, {productPermalink: req.params.id}]}, (err, result) => {
         // render 404 if page is not published
         if(err){
-            res.render('error', {message: '404 - Page not found', helpers: req.handlebars.helpers});
+            res.render('error', {message: 'Product not found', helpers: req.handlebars.helpers});
         }
         if(err || result == null || result.productPublished === 'false'){
-            res.render('error', {message: '404 - Page not found', helpers: req.handlebars.helper});
+            res.render('error', {message: 'Product not found', helpers: req.handlebars.helpers});
         }else{
             let productOptions = {};
             if(result.productOptions){
