@@ -7,6 +7,8 @@
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
 [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
 
+[**View the demo**](https://demo.expresscart.markmoffat.com/)
+
 ## Installation
 
 1. Create a folder to hold your installation: `mkdir expressCart`
