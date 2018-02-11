@@ -1,4 +1,4 @@
-{{> menu}}
+{{> partials/menu}}
 <div class="col-lg-9">
     <div class="col-lg-12">
         <h2>View Order</h2>
@@ -38,12 +38,12 @@
             <li class="list-group-item"><strong> State: </strong><span class="pull-right">{{result.orderState}}</span></li>
             <li class="list-group-item"><strong> Postcode/Zipcode: </strong><span class="pull-right">{{result.orderPostcode}}</span></li>
             <li class="list-group-item"><strong> Phone number: </strong><span class="pull-right">{{result.orderPhoneNumber}}</span></li>
-            
+
             <li class="list-group-item">&nbsp;</li>
             <li class="list-group-item"><strong class="text-info">Products ordered</strong></li>
             {{#each result.orderProducts}}
                 <li class="list-group-item">
-                    {{this.quantity}} x {{this.title}} 
+                    {{this.quantity}} x {{this.title}}
                     {{#if productOptions}}
                         &nbsp; > &nbsp;
                         <span class="text-warning"> Options: </span>
@@ -54,13 +54,13 @@
                             {{else}}
                                 {{this}} /
                             {{/if}}
-                        {{/each}} 
-                        )  
-                    {{/if}}            
+                        {{/each}}
+                        )
+                    {{/if}}
                     <div class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
                 </li>
             {{/each}}
         </ul>
         <input type="hidden" id="order_id" value="{{result._id}}">
     </div>
-</div>  
+</div>

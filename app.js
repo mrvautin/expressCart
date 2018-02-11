@@ -12,7 +12,6 @@ const helmet = require('helmet');
 const colors = require('colors');
 const common = require('./lib/common');
 const mongodbUri = require('mongodb-uri');
-
 let handlebars = require('express-handlebars');
 
 // Validate our settings schema
@@ -66,14 +65,16 @@ const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '/views'));
-app.engine('hbs', handlebars({extname: 'hbs', layoutsDir: path.join(__dirname, 'views', 'layouts'), defaultLayout: 'layout.hbs'}));
+app.engine('hbs', handlebars({
+    extname: 'hbs',
+    layoutsDir: path.join(__dirname, 'views', 'layouts'),
+    defaultLayout: 'layout.hbs',
+    partialsDir: [ path.join(__dirname, 'views') ]
+}));
 app.set('view engine', 'hbs');
 
 // helpers for the handlebar templating platform
 handlebars = handlebars.create({
-    partialsDir: [
-        'views/partials/'
-    ],
     helpers: {
         perRowClass: function(numProducts){
             if(parseInt(numProducts) === 1){
@@ -159,6 +160,12 @@ handlebars = handlebars.create({
             }
             return options.inverse(this);
         },
+        toLower: function (value){
+            if(value){
+                return value.toLowerCase();
+            }
+            return null;
+        },
         formatDate: function (date, format){
             return moment(date).format(format);
         },
@@ -222,6 +229,7 @@ app.use(session({
 
 // serving static content
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views', 'themes')));
 
 // Make stuff accessible to our router
 app.use((req, res, next) => {

@@ -1,4 +1,4 @@
-{{> menu}}
+{{> partials/menu}}
 <div class="col-lg-9">
 	<div class="row">
 		<div class="col-md-8">
@@ -6,8 +6,8 @@
 			<ul class="list-group">
 				{{#each users}}
 					<li class="list-group-item">
-						<strong>User:</strong> {{this.usersName}} - ({{this.userEmail}}) 
-				  		<span class="pull-right">	
+						<strong>User:</strong> {{this.usersName}} - ({{this.userEmail}})
+				  		<span class="pull-right">
                             <strong>Role: </strong>
                             {{#isAnAdmin this.isAdmin}}
                                 <span>Admin</span>

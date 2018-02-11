@@ -30,7 +30,7 @@
                     </div>
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action" method="post" role="form" data-toggle="validator" novalidate="false">
-                        {{> payments/shipping-form}}
+                        {{> partials/payments/shipping-form}}
                         {{#if session.customer}}
                         {{#ifCond config.paymentGateway '==' 'paypal'}}
                             {{> payments/paypal}}
@@ -48,17 +48,17 @@
                     </form>
                     {{#if session.customer}}
                     {{#ifCond config.paymentGateway '==' 'stripe'}}
-                        {{> payments/stripe}}
+                        {{> partials/payments/stripe}}
                     {{/ifCond}}
                     {{#ifCond config.paymentGateway '==' 'authorizenet'}}
-                        {{> payments/authorizenet}}
+                        {{> partials/payments/authorizenet}}
                     {{/ifCond}}
                     {{/if}}
                 </div>
             </div>
         </div>
         <div id="cart" class="col-md-7">
-            {{> cart}}
+            {{> partials/cart}}
         </div>
     </div>
 </div>

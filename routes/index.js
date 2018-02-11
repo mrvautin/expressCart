@@ -490,6 +490,7 @@ router.get('/:page?', (req, res, next) => {
                 res.render(`${config.themeViews}page`, {
                     title: page.pageName,
                     page: page,
+                    searchTerm: req.params.page,
                     session: req.session,
                     message: common.clearSessionValue(req.session, 'message'),
                     messageType: common.clearSessionValue(req.session, 'messageType'),

@@ -188,7 +188,7 @@ router.post('/admin/settings/option/remove', common.restrict, common.checkAccess
         if(err){
             console.info(err.stack);
         }
-        if(product.productOptions){
+        if(product && product.productOptions){
             let optJson = JSON.parse(product.productOptions);
             delete optJson[req.body.optName];
 
@@ -203,7 +203,7 @@ router.post('/admin/settings/option/remove', common.restrict, common.checkAccess
                 }
             });
         }else{
-            res.status(400).json({message: 'Product not found.'});
+            res.status(400).json({message: 'Product not found. Try saving before removing.'});
         }
     });
 });

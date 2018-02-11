@@ -1,9 +1,9 @@
-{{> menu}}
+{{> partials/menu}}
 <div class="col-lg-9">
 	<div class="row">
 		<div class="col-md-12">
             <form id="settingsPageEditor">
-                <h2 class="clearfix">Static page <div class="pull-right"><button type="submit" id="btnPageUpdate" class="btn btn-success">{{button_text}}</button></div></h2> 
+                <h2 class="clearfix">Static page <div class="pull-right"><button type="submit" id="btnPageUpdate" class="btn btn-success">{{button_text}}</button></div></h2>
                 <input type="hidden" id="page_id" value="{{page._id}}">
                 <div class="form-group">
                     <label>Page name *</label>
@@ -34,7 +34,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
-        $('#pageContent').summernote({  
+        $('#pageContent').summernote({
             height: 300,
             minHeight: null
         });

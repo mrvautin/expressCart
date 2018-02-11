@@ -1,4 +1,4 @@
-{{> menu}}
+{{> partials/menu}}
 <div class="col-lg-9">
     <div class="row">
         <div class="col-md-10">
@@ -61,7 +61,6 @@
                 <div class="form-group">
                     <label>Theme</label>
                     <select class="form-control" name="theme">
-                        <option {{selectState '' config.theme}} value="">Default</option>
                         {{#each themes}}
                         <option {{selectState this ../config.theme}} value="{{this}}">{{this}}</option>
                         {{/each}}

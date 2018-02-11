@@ -1,0 +1,25 @@
+<nav class="navbar navbar-default navbarMenuWrapper">
+    <div class="container-fluid">
+        <div class="col-md-8 col-md-offset-2 navbarMenu">
+            <ul class="nav navbar-nav">
+
+                <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
+                {{#each menu.items}}
+                    <li
+                        {{#ifCond (toLower this.title) '==' (toLower @root.searchTerm)}}class="navActive"{{/ifCond}}
+                        {{#ifCond (toLower this.title) '==' @root.title}}class="navActive"{{/ifCond}}>
+                        <a href="{{this.link}}">{{this.title}}</a>
+                    </li>
+                {{/each}}
+                <li class="pull-right col-md-4 searchBarWrapper">
+                    <div class="search-bar-input input-group searchMenuLocation-{{config.menuLocation}} searchProPerRow-{{config.productsPerRow}}">
+                        <input type="text" name="frm_search" id="frm_search" class="form-control" placeholder="Search the shop">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" id="btn_search" type="submit">Search</button>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
