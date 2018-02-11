@@ -308,7 +308,7 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     // add db to app for routes
     app.db = db;
 
-    // add indexing
+    // run indexing
     common.runIndexing(app)
     .then(common.testData(db, app))
     .then(app.listen(app.get('port')))
