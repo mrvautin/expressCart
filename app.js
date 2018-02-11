@@ -162,6 +162,9 @@ handlebars = handlebars.create({
         formatDate: function (date, format){
             return moment(date).format(format);
         },
+        stringify: function (data){
+            return JSON.stringify(data);
+        },
         ifCond: function (v1, operator, v2, options){
             switch(operator){
             case'==':

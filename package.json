@@ -35,6 +35,8 @@
     "numeral": "^2.0.6",
     "paypal-rest-sdk": "^1.6.9",
     "rand-token": "^0.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "rimraf": "^2.6.2",
     "sitemap": "^1.6.0",
     "strip-bom": "^3.0.0",
@@ -42,6 +44,9 @@
     "uglifycss": "0.0.27"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-react": "^6.24.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-standard": "^10.2.1",
@@ -53,7 +58,10 @@
     "gulp-clean-css": "^3.9.2",
     "gulp-minify": "^2.1.0",
     "gulp-rename": "^1.2.2",
-    "run-sequence": "^2.2.1"
+    "install": "^0.10.4",
+    "npm": "^5.6.0",
+    "run-sequence": "^2.2.1",
+    "webpack": "^3.11.0"
   },
   "main": "app.js",
   "keywords": [

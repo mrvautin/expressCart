@@ -38,6 +38,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
         <script src="/javascripts/jquery.bootpag.min.js"></script>
         <script src="/javascripts/cssbeautify.min.js"></script>
+        <script src="/dist/app.js"></script>
 		<script src="/javascripts/expressCart{{config.env}}.js"></script>
         <script src="/javascripts/jquery.dotdotdot.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
@@ -70,6 +71,8 @@
     <body>
     {{/if}}
 		<!-- Static navbar -->
+        <div id="app"></div>
+        <div id="menu" data-menu="{{stringify this}}"></div>
 	    <nav class="navbar navbar-default navbar-static-top">
 			<div class="container-fluid mainNavBar">
 				<div class="navbar-header">
