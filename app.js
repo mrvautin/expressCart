@@ -78,19 +78,22 @@ handlebars = handlebars.create({
     helpers: {
         perRowClass: function(numProducts){
             if(parseInt(numProducts) === 1){
-                return'col-md-12 col-xl-12 product-item';
+                return'col-md-12 col-xl-12 col m12 xl12 product-item';
             }
             if(parseInt(numProducts) === 2){
-                return'col-md-6 col-xl-6 product-item';
+                return'col-md-6 col-xl-6 col m6 xl6 product-item';
             }
             if(parseInt(numProducts) === 3){
-                return'col-md-4 col-xl-4 product-item';
+                return'col-md-4 col-xl-4 col m4 xl4 product-item';
             }
             if(parseInt(numProducts) === 4){
-                return'col-md-3 col-xl-3 product-item';
+                return'col-md-3 col-xl-3 col m3 xl3 product-item';
             }
 
-            return'col-md-6 col-xl-6 product-item';
+            return'col-md-6 col-xl-6 col m6 xl6 product-item';
+        },
+        getTheme: function(view){
+            return`themes/${config.theme}/${view}`;
         },
         formatAmount: function(amt){
             if(amt){
