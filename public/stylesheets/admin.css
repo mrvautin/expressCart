@@ -1,105 +1,144 @@
-.navbar-default {
-    background-color: #ffffff;
+.search-bar-input, #frm_search, .search-bar-input .btn{
+    padding-top: 10px;
+    height: 45px;
 }
 
-.navbar-default .navbar-nav>li>a {
-    color: #E74C3C;
+.searchMenuLocation-side {
+    padding-right: 0;
 }
 
-.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
-    color: #E74C3C;
+.productsWrapper{
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
-a:hover, a:focus {
-    color: #E74C3C;
+.searchBarWrapper{
+    padding-right: 0;
+    padding-left: 0;
 }
 
-a {
-    color: #E74C3C;
+.footer{
+    padding-top: 20px;
 }
 
-.fa-icon{
-    width: 15px;
-    color: #535356;
+.product-price {
+    padding-bottom: 0;
 }
 
-.btn-danger, .btn-primary {
-    color: #ffffff;
-    background-color: #E74C3C;
-    border-color: #E74C3C;
+.navbarMenuWrapper{
+    background-color: #f5f5f5;
 }
 
-.btn-danger:hover {
-    color: #ffffff;
-    background-color: #E74C3C;
-    border-color: #E74C3C;
-    opacity: 0.65;
+.navbarMenu>ul>li>a:hover{
+    color: #cc4135 !important;
 }
 
-.list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
-    background-color: #E74C3C;
-    border-color: #E74C3C;
+.navbarMenu{
+    padding-right: 0;
+    padding-left: 0;
 }
 
-.navbar-default .badge {
-    background-color: #2c3e50;
-    color: #fff;
+.product_wrapper>a:hover{
+    color: #cc4135 !important;
 }
 
-.navbar-default .navbar-toggle {
-    background-color: #E74C3C;
-    border-color: #E74C3C;
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
+    margin-bottom: 0;
+    height: 100px !important;
 }
 
-.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-    background-color: #E74C3C;
+#navbar>.navbar-nav>li>a{
+    padding-top: 35px;
 }
 
-.navbar-brand {
-    height: 70px;
+.pagination>li>a{
+    background-color: #cc4135 !important;
 }
 
-.thumbnail {
-    border: none;
+.navbar-brand{
+    color: #cc4135 !important;
+    letter-spacing: 4px;
+    padding-left: 20px !important;
+    padding-top: 20px !important;
+    height: 100px !important;
+    font-size: 55px !important;
 }
 
-.help-block{
-    color: #95a5a6;
-}
-
-.formLabel{
-    padding-top: 5px;
-}
-
-.orderFilter{
+.navbar-brand-image, .navbar-brand{
+    height: 80px;
+    padding-left: 10px;
     padding-top: 10px;
 }
 
-.list-group-item:first-child, .list-group-item:last-child {
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
+.navbar-default .badge {
+    background-color: #cc4135;
 }
 
-.form-control {
-    border-radius: 0px;
+.pushy-link, #empty-cart{
+    border-color: #E74C3C;
+    background-color: #E74C3C;
 }
 
-.btn {
-    border-radius: 0px;
+.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover,
+#empty-cart:hover, #empty-cart:focus, #empty-cart:active, #empty-cart:active:hover{
+    border-color: #cc4135;
+    background-color: #cc4135;
 }
 
-.pagination>li:first-child>a, .pagination>li:first-child>span{
-    border-bottom-left-radius: 0px;
-    border-top-left-radius: 0px;
+.navActive>a{
+    margin-bottom: 0px;
+    padding-top: 15px;
+    border-bottom: 5px solid #E74C3C;
 }
 
-.pagination>li:last-child>a, .pagination>li:last-child>span {
-    border-bottom-right-radius: 0px; 
-    border-top-right-radius: 0px; 
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a {
+    background-color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #838b8f;
+    font-size: 20px;
 }
 
 @media only screen and (max-width: 768px){
-    .navbar-brand {
-        width: 180px;
+    .navbar-default .navbar-brand {
+        padding-top: 10px;
+    }
+
+    .navbar-default .navbar-nav>li>a{
+        font-size: 16px;
+    }
+
+    .searchBarWrapper{
+        padding-top: 10px;
+    }
+
+    .navbarMenuWrapper{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .navbarMenuOuter{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .navActive>a {
+        color: #fff !important;
+    }
+
+    .navbarMenu {
+        padding-right: 7.5px;
+        padding-left: 7.5px;
+    }
+
+    .navActive>a{
+        color: white !important;
+        background-color: #E74C3C;
+        border-bottom: none;
+    }
+
+    .footer {
+        padding-top: 10px;
     }
 }
