@@ -15,11 +15,9 @@ gulp.task('compressJS', () => {
         .pipe(gulp.dest('public/javascripts'));
 });
 
-gulp.task('compressCSS', () => {
+gulp.task('compressCss', () => {
     return gulp.src(['public/stylesheets/*.css',
-            '!public/stylesheets/*.min.css',
-            'public/themes/*.css',
-            '!public/themes/*.min.css'
+            '!public/stylesheets/*.min.css'
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(rename({
@@ -29,7 +27,18 @@ gulp.task('compressCSS', () => {
         .pipe(gulp.dest('./'));
 });
 
+gulp.task('compressThemeCss', () => {
+    return gulp.src(['views/themes/**/*.css',
+            '!views/themes/**/*.min.css'
+        ])
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(rename({
+            extname: '.min.css'
+        }))
+        .pipe(gulp.dest('views/themes/'));
+});
+
 // run the tasks
 gulp.task('deploy', (callback) => {
-    runsequence('compressJS', 'compressCSS', callback);
+    runsequence('compressJS', 'compressCss', 'compressThemeCss', callback);
 });
