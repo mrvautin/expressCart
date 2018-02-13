@@ -1,0 +1,70 @@
+{{> themes/Material/front-menu}}
+<div class="productsWrapper col m8 offset-m2">
+    {{#if filtered}}
+        <div class="product-layout col m12">
+            {{#if menuLink}}
+            <h4>Category: <strong>{{menuLink.title}}</strong></h4>
+            {{else}}
+            <h4>Search results: <strong>{{searchTerm}}</strong></h4>
+            {{/if}}
+        </div>
+    {{/if}}
+    <div class="row product-layout">
+        {{#ifCond results.length '==' 0}}
+            <div class="col m12">
+                <p class="text-danger">No products found</p>
+            </div>
+        {{/ifCond}}
+        {{#each results}}
+            <div class="{{perRowClass ../config.productsPerRow}}">
+                <div class="thumbnail">
+                    {{#if productPermalink}}
+                        <div class="product_wrapper">
+                            <a href="/product/{{this.productPermalink}}">
+                                <div class="vertical-center thumbnail-image-container">
+                                    {{#if productImage}}
+                                        <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                    {{else}}
+                                        <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                    {{/if}}
+                                </div>
+                                <h3 class="product-title product-title-home top-pad-10">
+                                    {{this.productTitle}}
+                                </h3>
+                            </a>
+                        </div>
+                    {{else}}
+                        <a href="/product/{{this._id}}">
+                            <div class="vertical-center thumbnail-image-container">
+                                {{#if productImage}}
+                                    <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                {{else}}
+                                    <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                {{/if}}
+                            </div>
+                            <h3 class="product-title product-title-home top-pad-10">
+                                {{this.productTitle}}
+                            </h3>
+                        </a>
+                    {{/if}}
+                    <h3 class="product-price text-center">
+                        {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
+                    </h3>
+                    <p class="text-center">
+                        <a class="btn waves-effect waves-light blue darken-3 add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">Add to cart</a>
+                    </p>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+<input type="hidden" id="productsPerPage" value="{{productsPerPage}}" >
+<input type="hidden" id="pageNum" value="{{pageNum}}">
+<input type="hidden" id="totalProductCount" value="{{totalProductCount}}">
+<input type="hidden" id="paginateUrl" value="{{paginateUrl}}">
+<input type="hidden" id="searchTerm" value="{{searchTerm}}">
+<div class="row">
+    <div class="col s12">
+        <div id="pager" class="text-center"></div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<nav class="navbarMenuWrapper">
+    <div class="nav-wrapper">
+        <div class="col m8 offset-m2 navbarMenu">
+            <ul>
+                <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
+                {{#each menu.items}}
+                    <li
+                        {{#ifCond (toLower this.title) '==' (toLower @root.searchTerm)}}class="navActive"{{/ifCond}}
+                        {{#ifCond (toLower this.title) '==' @root.title}}class="navActive"{{/ifCond}}>
+                        <a href="{{this.link}}">{{this.title}}</a>
+                    </li>
+                {{/each}}
+                <div class="pull-right hide-on-small-only">
+                    <li>
+                        <input type="text" name="frm_search" id="frm_search" class="input-field" placeholder="Search the shop">
+                    </li>
+                    <li>
+                        <button class="btn waves-effect waves-light blue darken-3" id="btn_search" type="submit">Search</button>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>
