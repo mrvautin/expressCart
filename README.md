@@ -61,6 +61,10 @@ Sample homepage
 Admin page
 ![Admin page](https://mrvautin.com/content/images/2018/01/admin-settings.png)
 
+Popout cart
+![Popout cart](https://mrvautin.com/content/images/2018/02/popout-cart.png)
+
+
 ##### CSS
 
 You can add your own custom CSS into the `Custom CSS` box. This will be minified and added to each page.
