@@ -1,10 +1,10 @@
-<div class="col-xs-12 col-md-12 text-center">
+<div class="col-xs-12 col s12 text-center">
     <form method="POST" id="payment-form">
         <button
             type="submit"
             id="stripeButton"
             value="Process payment"
-            class="btn btn-success"
+            class="btn btn-success waves-effect waves-light blue darken-3"
             type="submit"
             data-key="{{paymentConfig.publicKey}}"
             data-amount="{{amountNoDecimal session.totalCartAmount}}"

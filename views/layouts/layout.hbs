@@ -38,6 +38,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
         <script src="/javascripts/jquery.bootpag.min.js"></script>
         <script src="/javascripts/cssbeautify.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 		<script src="/javascripts/expressCart{{config.env}}.js"></script>
         <script src="/javascripts/jquery.dotdotdot.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
@@ -61,7 +62,11 @@
         </script>
         {{#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
         {{#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}
+        {{#if admin}}
+        <link rel="stylesheet" href="/stylesheets/admin{{config.env}}.css">
+        {{else}}
         {{#if config.theme}}<link rel="stylesheet" href="/{{config.theme}}/style.css">{{/if}}
+        {{/if}}
         <!-- SEO data -->
 	</head>
     {{#if admin}}
@@ -117,20 +122,16 @@
         {{#unless admin}}
             {{#ifCond page '!=' 'checkout'}}
             {{#ifCond page '!=' 'pay'}}
-            <div class="container-fluid">
-                <div class="row">
-                    <div id="cart" class="col-md-12 pushy pushy-right">
-                        {{> partials/cart}}
-                    </div>
+                <div id="cart" class="col-md-12 pushy pushy-right">
+                    {{> (getTheme 'cart')}}
                 </div>
-            </div>
             {{/ifCond}}
             {{/ifCond}}
         {{/unless}}
 		<div class="container-fluid content-body" id="container">
             <div class="row">
                 {{#if admin}}
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="col-xs-12 col s12">
                     {{{body}}}
                 </div>
                 {{else}}
@@ -141,6 +142,7 @@
 		<input type="hidden" id="input_notify_message" value="{{message}}">
 		<input type="hidden" id="input_notify_messageType" value="{{messageType}}">
         <input type="hidden" id="cartCheckout" value="{{checkout}}">
+        <input type="hidden" id="cartTheme" value="{{config.theme}}">
 		<div id="notify_message"></div>
 		{{#if showFooter}}
             <footer class="footer">

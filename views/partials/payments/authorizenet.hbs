@@ -44,12 +44,12 @@
         });
     }
 </script>
-<div class="col-xs-12 col-md-12 text-center">
+<div class="col-sm-12 col s12 text-center">
     <form id="paymentForm" method="POST">
         <input type="hidden" name="dataValue" id="dataValue" />
         <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
         <button type="button"
-            class="AcceptUI btn btn-success"
+            class="AcceptUI btn btn-success waves-effect waves-light blue darken-3"
             data-billingAddressOptions='{"show":false, "required":false}'
             data-apiLoginID="{{paymentConfig.loginId}}"
             data-clientKey="{{paymentConfig.clientKey}}"

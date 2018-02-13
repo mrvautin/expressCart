@@ -58,7 +58,7 @@ router.get('/checkout', async (req, res, next) => {
 });
 
 router.get('/pay', async (req, res, next) => {
-    let config = common.getConfig();
+    const config = common.getConfig();
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -85,7 +85,9 @@ router.get('/pay', async (req, res, next) => {
 });
 
 router.get('/cartPartial', (req, res) => {
-    res.render('partials/cart', {
+    const config = common.getConfig();
+
+    res.render(`${config.themeViews}cart`, {
         pageCloseBtn: common.showCartCloseBtn(req.query.path),
         page: req.query.path,
         layout: false,

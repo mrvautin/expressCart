@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="col-xs-12 col-md-12">
+    <div class="col-xs-12 col s12">
         {{#if pageCloseBtn}}
         <div class="row {{checkout}}">
-            <div class="col-lg-12 text-right">
+            <div class="col-lg-12 col l12 text-right">
                 <button class="pushy-link btn btn-primary" type="button">X</button>
             </div>
         </div>
@@ -13,12 +13,12 @@
                 <div class="container-fluid">
                     {{#each session.cart}}
                     <div class="row cart-row">
-                        <div class="col-xs-4 col-md-2">
+                        <div class="col-xs-4 col-md-2 col s4 m2">
                             {{#if productImage}}
                             <img class="img-responsive" src="{{this.productImage}}" alt="{{this.title}} product image"> {{else}}
                             <img class="img-responsive" src="/uploads/placeholder.png" alt="{{this.title}} product image"> {{/if}}
                         </div>
-                        <div class="cart-item-row text-left col-xs-12 col-md-7">
+                        <div class="cart-item-row text-left col-xs-12 col-md-7 col s12 m7">
                             <p>
                                 <a class="cart-link" href="/product/{{this.link}}">{{this.title}}</a>
                             </p>
@@ -27,7 +27,7 @@
                             </p>
                             <p>
                                 <div class="form-group">
-                                    <div class="col-lg-5 no-pad-left">
+                                    <div class="col-lg-5 col l5 no-pad-left">
                                         <div class="input-group">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-sm btn-primary btn-qty-minus" type="button">-</button>
@@ -42,7 +42,7 @@
                                 </div>
                             </p>
                         </div>
-                        <div class="col-xs-12 col-lg-4 cart-item-row text-right no-pad-right">
+                        <div class="col-xs-12 col-lg-4 col s12 l4 cart-item-row text-right no-pad-right">
                             <strong>{{currencySymbol ../config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                 <div class="container-fluid">
                     {{#if session.cart}}
                     <div class="row">
-                        <div class="cart-contents-shipping col-md-12 no-pad-right">
+                        <div class="cart-contents-shipping col-md-12 col m12 no-pad-right">
                             {{#ifCond session.shippingCostApplied '===' true}}
                             <div class="text-right">
                                 Shipping:
@@ -81,11 +81,11 @@
         </div>
         <div class="row">
             {{#if session.cart}}
-            <div class="col-xs-6 col-lg-6 text-left">
+            <div class="col-xs-6 col s6 text-left align-right">
                 <button class="btn btn-danger" id="empty-cart" type="button">Empty cart</button>
             </div>
             {{#ifCond page '!=' 'pay'}}
-            <div class="text-right col-xs-6 col-md-6">
+            <div class="text-right align-right col-xs-6 col s6">
                 {{#ifCond page '==' 'checkout'}}
                 <a href="/pay" class="btn btn-default">Pay now</a>
                 {{else}}
