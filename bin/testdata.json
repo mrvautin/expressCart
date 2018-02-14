@@ -64,6 +64,32 @@
             },
             "productImage": "/uploads/scout-backpack/scout-backpack_a035275d-8975-4a05-8456-5e1ec35f020f_grande.jpg",
             "productOptions": "{\"colour\":{\"optName\":\"colour\",\"optLabel\":\"Select colour\",\"optType\":\"select\",\"optOptions\":[\"Navy\",\"Moss\",\"Nutmeg\",\"Khaki\"]}}"
+        },
+        {
+            "productPermalink" : "hudderton-backpack",
+            "productTitle" : "Hudderton Backpack",
+            "productPrice" : "49.95",
+            "productDescription" : "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\">Durable, rugged, and dependable designed with four zipper compartments. Two bellowed front pockets allow for easy access to smaller items, one large, spacious compartment with a padded laptop sleeve, and a tiny convenient pouch on top to keep keys and other small items secure. The Hudderton is built with organic downpour proof canvas, a durable full grain leather bottom to prevent wear and tear, and padded canvas shoulder straps for all-day comfort. From the commute to the trail the Hudderton is perfect for bag for the entire week.</p><ul style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\"><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">100% organic waxed 18 oz canvas</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Full grain genuine leather detail</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Soft interior cotton lining</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Brass hardware and YKK zippers</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Cotton Padded interior laptop sleeve</span></li><li style=\"margin-bottom: 0px;\">Lifetime&nbsp;Guarantee</li></ul>",
+            "productPublished" : "true",
+            "productTags" : "backpack",
+            "productOptions" : "",
+            "productAddedDate": {
+                "$date": "2016-07-10T05:46:26.974Z"
+            },
+            "productImage" : "/uploads/hudderton-backpack/hudderton-backpack_dc8afb13-448b-49d9-a042-5a163a97de8f_590x.jpg"
+        },
+        {
+            "productPermalink" : "Ayres",
+            "productTitle" : "Ayres Chambray",
+            "productPrice" : "77",
+            "productDescription" : "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\">Comfortable and practical, our chambray button down is perfect for travel or days spent on the go. The Ayres Chambray has a rich, washed out indigo color suitable to throw on for any event. Made with sustainable soft chambray featuring two chest pockets with sturdy and scratch resistant corozo buttons.</p><ul class=\"tabs-content\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\"><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">100% Organic Cotton Chambray, 4.9 oz Fabric.</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Natural Corozo Buttons.</span></li></ul>",
+            "productPublished" : "true",
+            "productTags" : "shirt",
+            "productOptions" : "{\"Size\":{\"optName\":\"Size\",\"optLabel\":\"Select size\",\"optType\":\"select\",\"optOptions\":[\"S\",\"M\",\"L\"]}}",
+            "productAddedDate": {
+                "$date": "2016-07-10T05:46:26.974Z"
+            },
+            "productImage" : "/uploads/Ayres Chambray/chambray_5f232530-4331-492a-872c-81c225d6bafd_590x.jpg"
         }
     ],
     "menu": {
