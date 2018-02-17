@@ -160,7 +160,7 @@ Set this value to your chosen currency symbol. Eg: $, £, €.
 
 Themes are a set of handlebars views and a stylesheet file. See `Cloth` theme as example.
 
-Themes are loaded from `/public/themes/`.
+Themes are loaded from `/views/themes/`.
 
 It would be great to have some themes contributed back for others to use.
 
