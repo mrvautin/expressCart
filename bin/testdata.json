@@ -96,12 +96,12 @@
         "items": [
             {
                 "title" : "Backpacks",
-                "link" : "backpack",
+                "link" : "/category/backpack",
                 "order" : 0
             },
             {
                 "title" : "Boots",
-                "link" : "boots",
+                "link" : "/category/boots",
                 "order" : 1
             }
         ]
