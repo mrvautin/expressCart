@@ -6,8 +6,8 @@
                 <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
                 {{#each menu.items}}
                     <li
-                        {{#ifCond (toLower this.title) '==' (toLower @root.searchTerm)}}class="navActive"{{/ifCond}}
-                        {{#ifCond (toLower this.title) '==' @root.title}}class="navActive"{{/ifCond}}>
+                        {{#menuMatch this.title @root.searchTerm}}{{/menuMatch}}
+                        {{#menuMatch this.title @root.title}}{{/menuMatch}}>
                         <a href="{{this.link}}">{{this.title}}</a>
                     </li>
                 {{/each}}

@@ -64,6 +64,8 @@ Admin page
 Popout cart
 ![Popout cart](https://mrvautin.com/content/images/2018/02/popout-cart.png)
 
+Great themes
+![Great themes](https://mrvautin.com/content/images/2018/02/expresscart-mono-theme.png)
 
 ##### CSS
 

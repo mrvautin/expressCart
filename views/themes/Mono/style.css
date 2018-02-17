@@ -1,0 +1,249 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css";
+
+a {
+    color: #000;
+}
+
+.row .col {
+    padding: 0;
+}
+
+fieldset {
+    border: none;
+}
+
+.pagelayout-wrapper{
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.search-bar-input, #frm_search, .search-bar-input .btn{
+    padding-top: 10px;
+    height: 45px;
+}
+
+#frm_search{
+    color: #000;
+    padding-left: 10px;
+}
+
+input:not([type]):focus:not([readonly]), input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=url]:not(.browser-default):focus:not([readonly]), input[type=time]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=datetime]:not(.browser-default):focus:not([readonly]), input[type=datetime-local]:not(.browser-default):focus:not([readonly]), input[type=tel]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=search]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]){
+    border-bottom: 1px solid #000;
+    -webkit-box-shadow: 0 1px 0 0 #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+
+input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-default):focus:not([readonly])+label, input[type=password]:not(.browser-default):focus:not([readonly])+label, input[type=email]:not(.browser-default):focus:not([readonly])+label, input[type=url]:not(.browser-default):focus:not([readonly])+label, input[type=time]:not(.browser-default):focus:not([readonly])+label, input[type=date]:not(.browser-default):focus:not([readonly])+label, input[type=datetime]:not(.browser-default):focus:not([readonly])+label, input[type=datetime-local]:not(.browser-default):focus:not([readonly])+label, input[type=tel]:not(.browser-default):focus:not([readonly])+label, input[type=number]:not(.browser-default):focus:not([readonly])+label, input[type=search]:not(.browser-default):focus:not([readonly])+label, textarea.materialize-textarea:focus:not([readonly])+label {
+    color: #000;
+}
+
+.searchMenuLocation-side {
+    padding-right: 0;
+}
+
+.productsWrapper{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.cart-body{
+    padding: 0;
+}
+
+.searchBarWrapper{
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.content-body {
+    margin-bottom: 100px;
+}
+
+.footer{
+    padding-top: 0;
+}
+
+.footer h4{
+    padding-top: 25px;
+    font-size: 20px;
+}
+
+.product-price {
+    padding-bottom: 0;
+}
+
+.title-image-container {
+    height: auto;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.thumbnail-image{
+    padding: 20px;
+}
+
+.image-next{
+    right: 5px;
+}
+
+.image-prev{
+    left: 5px;
+}
+
+.navbar{
+    -webkit-box-shadow: none;
+}
+
+.navbarMenuWrapper{
+    background-color: #f5f5f5;
+}
+
+.navbarMenu>ul>li>a:hover{
+    color: #000 !important;
+}
+
+.navbarMenu{
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.navbarMenu ul li{
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.navbarMenu ul li a{
+    color: #000;
+    font-size: 18px;
+}
+
+.product_wrapper>a:hover{
+    color: #000 !important;
+}
+
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
+    margin-bottom: 0;
+    height: 100px !important;
+}
+
+#navbar>.navbar-nav>li>a{
+    padding-top: 35px;
+}
+
+#pager{
+    margin-bottom: 20px;
+}
+
+.pagination>li>a{
+    color: #000;
+    background-color: #fff !important;
+}
+
+.pagination>li>a:hover{
+    color: #000;
+}
+
+.pag-active a{
+    color: #000 !important;
+}
+
+.navbar-brand{
+    color: #000 !important;
+    letter-spacing: 4px;
+    padding-left: 20px !important;
+    padding-top: 20px !important;
+    height: 100px !important;
+    font-size: 55px !important;
+}
+
+.navbar-brand-image, .navbar-brand{
+    height: 80px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.navbar-default .badge {
+    background-color: #000;
+}
+
+#btn_search{
+    margin-top: 15px;
+}
+
+.pushy-link, #empty-cart{
+    border-color: #000;
+    background-color: #000;
+}
+
+.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover,
+#empty-cart:hover, #empty-cart:focus, #empty-cart:active, #empty-cart:active:hover{
+    border-color: #000;
+    background-color: #000;
+}
+
+.navActive>a{
+    color: #000;
+    margin-bottom: 0px;
+    border-left: 5px solid #000;
+}
+
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a {
+    background-color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #838b8f;
+    font-size: 20px;
+}
+
+.body_text{
+    padding-top: 30px !important;
+}
+
+.product-option-text {
+    padding-top: 15px;
+    padding-bottom: 0;
+}
+
+@media only screen and (max-width: 768px){
+    .navbar-default .navbar-brand {
+        padding-top: 10px;
+    }
+
+    .navbar-default .navbar-nav>li>a{
+        font-size: 16px;
+    }
+
+    .searchBarWrapper{
+        padding-top: 10px;
+    }
+
+    .navbarMenuWrapper{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .navbarMenuOuter{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .navActive>a {
+        color: #fff !important;
+    }
+
+    .navbarMenu {
+        padding-right: 7.5px;
+        padding-left: 7.5px;
+    }
+
+    .navActive>a{
+        color: white !important;
+        background-color: #000;
+        border-bottom: none;
+    }
+
+    .footer {
+        padding-top: 10px;
+    }
+}

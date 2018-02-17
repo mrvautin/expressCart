@@ -1,7 +1,15 @@
-<nav class="navbarMenuWrapper">
+<nav class="col m2 navbarMenuWrapper">
     <div class="nav-wrapper">
-        <div class="col m8 offset-m2 navbarMenu">
+        <div class="col m12 navbarMenu">
             <ul>
+                <li>
+                    <div class="col m8">
+                        <input type="text" name="frm_search" id="frm_search" class="input-field" placeholder="Search...">
+                    </div>
+                    <div class="col m4">
+                        <a class="col m8 waves-effect waves-light btn black right" id="btn_search"><i class="material-icons white-text">search</i></a>
+                    </div>
+                </li>
                 <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
                 {{#each menu.items}}
                     <li
@@ -10,14 +18,6 @@
                         <a href="{{this.link}}">{{this.title}}</a>
                     </li>
                 {{/each}}
-                <div class="pull-right hide-on-small-only">
-                    <li>
-                        <input type="text" name="frm_search" id="frm_search" class="input-field" placeholder="Search the shop">
-                    </li>
-                    <li>
-                        <button class="btn waves-effect waves-light blue darken-3" id="btn_search" type="submit">Search</button>
-                    </li>
-                </div>
             </ul>
         </div>
     </div>

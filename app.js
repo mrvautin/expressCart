@@ -92,6 +92,15 @@ handlebars = handlebars.create({
 
             return'col-md-6 col-xl-6 col m6 xl6 product-item';
         },
+        menuMatch: function(title, search){
+            if(!title || !search){
+                return'';
+            }
+            if(title.toLowerCase().startsWith(search.toLowerCase())){
+                return'class="navActive"';
+            }
+            return'';
+        },
         getTheme: function(view){
             return`themes/${config.theme}/${view}`;
         },
