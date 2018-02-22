@@ -296,8 +296,9 @@ app.use((err, req, res, next) => {
 });
 
 // Nodejs version check
-if(parseInt(process.version.split('.')[0].replace('v', '')) <= 7){
-    console.log(colors.red('Please use Node.js version 7.x or above'));
+const nodeVersionMajor = parseInt(process.version.split('.')[0].replace('v', ''));
+if(nodeVersionMajor < 7){
+    console.log(colors.red(`Please use Node.js version 7.x or above. Current version: ${nodeVersionMajor}`));
     process.exit(2);
 }
 
