@@ -1,13 +1,13 @@
 <div class="col-md-offset-4 col-md-4 col-lg-offset-4 col-lg-4" style="padding-top: 100px" >
-	<form class="form-signin" action="login_action" method="post" role="form" data-toggle="validator">
+	<form class="form-signin"  method="post" role="form" data-toggle="validator">
 		<input type="hidden" name="frm_referringUrl" value="{{referringUrl}}">
 		<h2 class="form-signin-heading">Please sign in</h2>
 		<div class="form-group">
-			<input type="email" name="email" class="form-control" placeholder="email address" required autofocus>
+			<input type="email" id="email" name="email" class="form-control" placeholder="email address" required autofocus>
 		</div>
 		<div class="form-group">
-			<input type="password" name="password" class="form-control" placeholder="Password" required>
+			<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
 		</div>
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		<button class="btn btn-lg btn-primary btn-block" id="loginForm" type="submit">Sign in</button>
 	</form>
 </div>

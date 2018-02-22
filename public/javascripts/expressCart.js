@@ -344,6 +344,27 @@ $(document).ready(function (){
         }
     });
 
+    $('#loginForm').on('click', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/login_action',
+                data: {
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                }
+            })
+            .done(function(msg){
+                window.location = '/admin';
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+        e.preventDefault();
+    });
+
     // call update settings API
     $('#customerLogin').on('click', function(e){
         if(!e.isDefaultPrevented()){

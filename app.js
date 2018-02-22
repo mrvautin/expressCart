@@ -315,7 +315,13 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
 
     // select DB
     const dbUriObj = mongodbUri.parse(config.databaseConnectionString);
-    const db = client.db(dbUriObj.database);
+    let db;
+    // if in testing, set the testing DB
+    if(process.env.NODE_ENV === 'test'){
+        db = client.db('testingdb');
+    }else{
+        db = client.db(dbUriObj.database);
+    }
 
     // setup the collections
     db.users = db.collection('users');
@@ -326,17 +332,20 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     db.customers = db.collection('customers');
 
     // add db to app for routes
+    app.dbClient = client;
     app.db = db;
+    app.config = config;
+    app.port = app.get('port');
 
     // run indexing
     common.runIndexing(app)
-    .then(common.testData(db, app))
     .then(app.listen(app.get('port')))
     .then(() => {
         // lift the app
+        app.emit('appStarted');
         console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
     })
-    .catch(() => {
+    .catch((err) => {
         console.error(colors.red('Error setting up indexes:' + err));
         process.exit(2);
     });

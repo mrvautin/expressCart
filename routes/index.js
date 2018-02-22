@@ -6,10 +6,9 @@ const _ = require('lodash');
 const common = require('../lib/common');
 
 // These is the customer facing routes
-
 router.get('/payment/:orderId', async (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
 
     // render the payment complete message
     db.orders.findOne({_id: common.getId(req.params.orderId)}, async (err, result) => {
@@ -18,7 +17,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         }
         res.render(`${config.themeViews}payment_complete`, {
             title: 'Payment complete',
-            config: common.getConfig(),
+            config: req.app.config,
             session: req.session,
             pageCloseBtn: common.showCartCloseBtn('payment'),
             result: result,
@@ -32,7 +31,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
 });
 
 router.get('/checkout', async (req, res, next) => {
-    let config = common.getConfig();
+    let config = req.app.config;
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -45,7 +44,7 @@ router.get('/checkout', async (req, res, next) => {
     // render the checkout
     res.render(`${config.themeViews}checkout`, {
         title: 'Checkout',
-        config: common.getConfig(),
+        config: req.app.config,
         session: req.session,
         pageCloseBtn: common.showCartCloseBtn('checkout'),
         checkout: 'hidden',
@@ -58,7 +57,7 @@ router.get('/checkout', async (req, res, next) => {
 });
 
 router.get('/pay', async (req, res, next) => {
-    const config = common.getConfig();
+    const config = req.app.config;
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -71,7 +70,7 @@ router.get('/pay', async (req, res, next) => {
     // render the payment page
     res.render(`${config.themeViews}pay`, {
         title: 'Pay',
-        config: common.getConfig(),
+        config: req.app.config,
         paymentConfig: common.getPaymentConfig(),
         pageCloseBtn: common.showCartCloseBtn('pay'),
         session: req.session,
@@ -85,14 +84,14 @@ router.get('/pay', async (req, res, next) => {
 });
 
 router.get('/cartPartial', (req, res) => {
-    const config = common.getConfig();
+    const config = req.app.config;
 
     res.render(`${config.themeViews}cart`, {
         pageCloseBtn: common.showCartCloseBtn(req.query.path),
         page: req.query.path,
         layout: false,
         helpers: req.handlebars.helpers,
-        config: common.getConfig(),
+        config: req.app.config,
         session: req.session
     });
 });
@@ -100,7 +99,7 @@ router.get('/cartPartial', (req, res) => {
 // show an individual product
 router.get('/product/:id', (req, res) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
 
     db.products.findOne({$or: [{_id: common.getId(req.params.id)}, {productPermalink: req.params.id}]}, (err, result) => {
         // render 404 if page is not published
@@ -113,6 +112,12 @@ router.get('/product/:id', (req, res) => {
             let productOptions = {};
             if(result.productOptions){
                 productOptions = JSON.parse(result.productOptions);
+            }
+
+            // If JSON query param return json instead
+            if(req.query.json === 'true'){
+                res.status(200).json(result);
+                return;
             }
 
             // show the view
@@ -223,58 +228,59 @@ router.post('/product/addtocart', (req, res, next) => {
     db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
         if(err){
             console.error(colors.red('Error adding to cart', err));
+            return res.status(400).json({message: 'Error updating cart. Please try again.'});
         }
 
-        // We item is found, add it to the cart
-        if(product){
-            let productPrice = parseFloat(product.productPrice).toFixed(2);
+        // No product found
+        if(!product){
+            return res.status(400).json({message: 'Error updating cart. Please try again.'});
+        }
 
-            // Doc used to test if existing in the cart with the options. If not found, we add new.
-            let options = {};
-            if(req.body.productOptions){
-                options = JSON.parse(req.body.productOptions);
-            }
-            let findDoc = {
-                productId: req.body.productId,
-                options: options
-            };
+        let productPrice = parseFloat(product.productPrice).toFixed(2);
 
-            // if exists we add to the existing value
-            let cartIndex = _.findIndex(req.session.cart, findDoc);
-            if(cartIndex > -1){
-                req.session.cart[cartIndex].quantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
-                req.session.cart[cartIndex].totalItemPrice = productPrice * parseInt(req.session.cart[cartIndex].quantity);
-            }else{
-                // Doesnt exist so we add to the cart session
-                req.session.cartTotalItems = req.session.cartTotalItems + productQuantity;
+        // Doc used to test if existing in the cart with the options. If not found, we add new.
+        let options = {};
+        if(req.body.productOptions){
+            options = JSON.parse(req.body.productOptions);
+        }
+        let findDoc = {
+            productId: req.body.productId,
+            options: options
+        };
 
-                // new product deets
-                let productObj = {};
-                productObj.productId = req.body.productId;
-                productObj.title = product.productTitle;
-                productObj.quantity = productQuantity;
-                productObj.totalItemPrice = productPrice * productQuantity;
-                productObj.options = options;
-                productObj.productImage = product.productImage;
-                if(product.productPermalink){
-                    productObj.link = product.productPermalink;
-                }else{
-                    productObj.link = product._id;
-                }
-
-                // merge into the current cart
-                req.session.cart.push(productObj);
-            }
-
-            // update total cart amount
-            common.updateTotalCartAmount(req, res);
-
-            // update how many products in the shopping cart
-            req.session.cartTotalItems = Object.keys(req.session.cart).length;
-            res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
+        // if exists we add to the existing value
+        let cartIndex = _.findIndex(req.session.cart, findDoc);
+        if(cartIndex > -1){
+            req.session.cart[cartIndex].quantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
+            req.session.cart[cartIndex].totalItemPrice = productPrice * parseInt(req.session.cart[cartIndex].quantity);
         }else{
-            res.status(400).json({message: 'Error updating cart. Please try again.'});
+            // Doesnt exist so we add to the cart session
+            req.session.cartTotalItems = req.session.cartTotalItems + productQuantity;
+
+            // new product deets
+            let productObj = {};
+            productObj.productId = req.body.productId;
+            productObj.title = product.productTitle;
+            productObj.quantity = productQuantity;
+            productObj.totalItemPrice = productPrice * productQuantity;
+            productObj.options = options;
+            productObj.productImage = product.productImage;
+            if(product.productPermalink){
+                productObj.link = product.productPermalink;
+            }else{
+                productObj.link = product._id;
+            }
+
+            // merge into the current cart
+            req.session.cart.push(productObj);
         }
+
+        // update total cart amount
+        common.updateTotalCartAmount(req, res);
+
+        // update how many products in the shopping cart
+        req.session.cartTotalItems = Object.keys(req.session.cart).length;
+        return res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
     });
 });
 
@@ -283,7 +289,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     let db = req.app.db;
     let searchTerm = req.params.searchTerm;
     let productsIndex = req.app.productsIndex;
-    let config = common.getConfig();
+    let config = req.app.config;
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     let lunrIdArray = [];
@@ -301,12 +307,18 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
         common.getMenu(db)
     ])
     .then(([results, menu]) => {
+        // If JSON query param return json instead
+        if(req.query.json === 'true'){
+            res.status(200).json(results.data);
+            return;
+        }
+
         res.render(`${config.themeViews}index`, {
             title: 'Results',
             results: results.data,
             filtered: true,
             session: req.session,
-            metaDescription: common.getConfig().cartTitle + ' - Search term: ' + searchTerm,
+            metaDescription: req.app.config.cartTitle + ' - Search term: ' + searchTerm,
             searchTerm: searchTerm,
             pageCloseBtn: common.showCartCloseBtn('search'),
             message: common.clearSessionValue(req.session, 'message'),
@@ -331,7 +343,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     let db = req.app.db;
     let searchTerm = req.params.cat;
     let productsIndex = req.app.productsIndex;
-    let config = common.getConfig();
+    let config = req.app.config;
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     let lunrIdArray = [];
@@ -351,13 +363,19 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     .then(([results, menu]) => {
         const sortedMenu = common.sortMenu(menu);
 
+        // If JSON query param return json instead
+        if(req.query.json === 'true'){
+            res.status(200).json(results.data);
+            return;
+        }
+
         res.render(`${config.themeViews}index`, {
             title: 'Category',
             results: results.data,
             filtered: true,
             session: req.session,
             searchTerm: searchTerm,
-            metaDescription: common.getConfig().cartTitle + ' - Category: ' + searchTerm,
+            metaDescription: req.app.config.cartTitle + ' - Category: ' + searchTerm,
             pageCloseBtn: common.showCartCloseBtn('category'),
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
@@ -380,7 +398,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 // return sitemap
 router.get('/sitemap.xml', (req, res, next) => {
     let sm = require('sitemap');
-    let config = common.getConfig();
+    let config = req.app.config;
 
     common.addSitemapProducts(req, res, (err, products) => {
         if(err){
@@ -412,7 +430,7 @@ router.get('/sitemap.xml', (req, res, next) => {
 
 router.get('/page/:pageNum', (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
@@ -420,15 +438,21 @@ router.get('/page/:pageNum', (req, res, next) => {
         common.getMenu(db)
     ])
     .then(([results, menu]) => {
+        // If JSON query param return json instead
+        if(req.query.json === 'true'){
+            res.status(200).json(results.data);
+            return;
+        }
+
         res.render(`${config.themeViews}index`, {
             title: 'Shop',
             results: results.data,
             session: req.session,
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
-            metaDescription: common.getConfig().cartTitle + ' - Products page: ' + req.params.pageNum,
+            metaDescription: req.app.config.cartTitle + ' - Products page: ' + req.params.pageNum,
             pageCloseBtn: common.showCartCloseBtn('page'),
-            config: common.getConfig(),
+            config: req.app.config,
             productsPerPage: numberProducts,
             totalProductCount: results.totalProducts,
             pageNum: req.params.pageNum,
@@ -446,7 +470,7 @@ router.get('/page/:pageNum', (req, res, next) => {
 // The main entry point of the shop
 router.get('/:page?', (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
     let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     // if no page is specified, just render page 1 of the cart
@@ -456,6 +480,12 @@ router.get('/:page?', (req, res, next) => {
             common.getMenu(db)
         ])
         .then(([results, menu]) => {
+            // If JSON query param return json instead
+            if(req.query.json === 'true'){
+                res.status(200).json(results.data);
+                return;
+            }
+
             res.render(`${config.themeViews}index`, {
                 title: `${config.cartTitle} - Shop`,
                 theme: config.theme,
@@ -464,7 +494,7 @@ router.get('/:page?', (req, res, next) => {
                 message: common.clearSessionValue(req.session, 'message'),
                 messageType: common.clearSessionValue(req.session, 'messageType'),
                 pageCloseBtn: common.showCartCloseBtn('page'),
-                config: common.getConfig(),
+                config: req.app.config,
                 productsPerPage: numberProducts,
                 totalProductCount: results.totalProducts,
                 pageNum: 1,
@@ -497,8 +527,8 @@ router.get('/:page?', (req, res, next) => {
                     message: common.clearSessionValue(req.session, 'message'),
                     messageType: common.clearSessionValue(req.session, 'messageType'),
                     pageCloseBtn: common.showCartCloseBtn('page'),
-                    config: common.getConfig(),
-                    metaDescription: common.getConfig().cartTitle + ' - ' + page,
+                    config: req.app.config,
+                    metaDescription: req.app.config.cartTitle + ' - ' + page,
                     helpers: req.handlebars.helpers,
                     showFooter: 'showFooter',
                     menu: common.sortMenu(await common.getMenu(db))
@@ -506,7 +536,7 @@ router.get('/:page?', (req, res, next) => {
             }else{
                 res.status(404).render('error', {
                     title: '404 Error - Page not found',
-                    config: common.getConfig(),
+                    config: req.app.config,
                     message: '404 Error - Page not found',
                     helpers: req.handlebars.helpers,
                     showFooter: 'showFooter',

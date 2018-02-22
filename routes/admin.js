@@ -39,7 +39,7 @@ router.get('/admin/login', (req, res) => {
             res.render('login', {
                 title: 'Login',
                 referringUrl: req.header('Referer'),
-                config: common.getConfig(),
+                config: req.app.config,
                 message: common.clearSessionValue(req.session, 'message'),
                 messageType: common.clearSessionValue(req.session, 'messageType'),
                 helpers: req.handlebars.helpers,
@@ -59,17 +59,13 @@ router.post('/admin/login_action', (req, res) => {
 
     db.users.findOne({userEmail: req.body.email}, (err, user) => {
         if(err){
-            req.session.message = 'Cannot find user.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/login');
+            res.status(400).json({message: 'A user with that email does not exist.'});
             return;
         }
 
         // check if user exists with that email
         if(user === undefined || user === null){
-            req.session.message = 'A user with that email does not exist.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/login');
+            res.status(400).json({message: 'A user with that email does not exist.'});
         }else{
             // we have a user under that email so we compare the password
             bcrypt.compare(req.body.password, user.userPassword)
@@ -79,12 +75,10 @@ router.post('/admin/login_action', (req, res) => {
                     req.session.usersName = user.usersName;
                     req.session.userId = user._id.toString();
                     req.session.isAdmin = user.isAdmin;
-                    res.redirect('/admin');
+                    res.status(200).json({message: 'Login successful'});
                 }else{
                     // password is not correct
-                    req.session.message = 'Access denied. Check password and try again.';
-                    req.session.messageType = 'danger';
-                    res.redirect('/admin/login');
+                    res.status(400).json({message: 'Access denied. Check password and try again.'});
                 }
             });
         }
@@ -106,7 +100,7 @@ router.get('/admin/setup', (req, res) => {
             req.session.needsSetup = true;
             res.render('setup', {
                 title: 'Setup',
-                config: common.getConfig(),
+                config: req.app.config,
                 helpers: req.handlebars.helpers,
                 message: common.clearSessionValue(req.session, 'message'),
                 messageType: common.clearSessionValue(req.session, 'messageType'),
@@ -165,9 +159,9 @@ router.get('/admin/settings', common.restrict, (req, res) => {
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: common.getConfig(),
-        footerHtml: typeof common.getConfig().footerHtml !== 'undefined' ? escape.decode(common.getConfig().footerHtml) : null,
-        googleAnalytics: typeof common.getConfig().googleAnalytics !== 'undefined' ? escape.decode(common.getConfig().googleAnalytics) : null
+        config: req.app.config,
+        footerHtml: typeof req.app.config.footerHtml !== 'undefined' ? escape.decode(req.app.config.footerHtml) : null,
+        googleAnalytics: typeof req.app.config.googleAnalytics !== 'undefined' ? escape.decode(req.app.config.googleAnalytics) : null
     });
 });
 
@@ -218,7 +212,7 @@ router.get('/admin/settings/menu', common.restrict, async (req, res) => {
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: common.getConfig(),
+        config: req.app.config,
         menu: common.sortMenu(await common.getMenu(db))
     });
 });
@@ -239,7 +233,7 @@ router.get('/admin/settings/pages', common.restrict, (req, res) => {
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
-            config: common.getConfig(),
+            config: req.app.config,
             menu: common.sortMenu(await common.getMenu(db))
         });
     });
@@ -257,7 +251,7 @@ router.get('/admin/settings/pages/new', common.restrict, common.checkAccess, asy
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: common.getConfig(),
+        config: req.app.config,
         menu: common.sortMenu(await common.getMenu(db))
     });
 });
@@ -281,14 +275,14 @@ router.get('/admin/settings/pages/edit/:page', common.restrict, common.checkAcce
                 message: common.clearSessionValue(req.session, 'message'),
                 messageType: common.clearSessionValue(req.session, 'messageType'),
                 helpers: req.handlebars.helpers,
-                config: common.getConfig(),
+                config: req.app.config,
                 menu
             });
         }else{
             // 404 it!
             res.status(404).render('error', {
                 title: '404 Error - Page not found',
-                config: common.getConfig(),
+                config: req.app.config,
                 message: '404 Error - Page not found',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
@@ -478,7 +472,7 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
 
 // delete a file via ajax request
 router.post('/admin/testEmail', common.restrict, (req, res) => {
-    let config = common.getConfig();
+    let config = req.app.config;
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json({message: 'Test email sent'});

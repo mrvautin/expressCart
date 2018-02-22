@@ -15,7 +15,7 @@ router.get('/admin/users', common.restrict, (req, res) => {
             title: 'Users',
             users: users,
             admin: true,
-            config: common.getConfig(),
+            config: req.app.config,
             isAdmin: req.session.isAdmin,
             helpers: req.handlebars.helpers,
             session: req.session,
@@ -49,7 +49,7 @@ router.get('/admin/user/edit/:id', common.restrict, (req, res) => {
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
-            config: common.getConfig()
+            config: req.app.config
         });
     });
 });
@@ -63,7 +63,7 @@ router.get('/admin/user/new', common.restrict, (req, res) => {
         helpers: req.handlebars.helpers,
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
-        config: common.getConfig()
+        config: req.app.config
     });
 });
 

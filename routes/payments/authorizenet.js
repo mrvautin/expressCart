@@ -7,7 +7,7 @@ const router = express.Router();
 // The homepage of the site
 router.post('/checkout_action', (req, res, next) => {
     const db = req.app.db;
-    const config = common.getConfig();
+    const config = req.app.config;
     const authorizenetConfig = common.getPaymentConfig();
 
     let authorizeUrl = 'https://api.authorize.net/xml/v1/request.api';

@@ -74,7 +74,7 @@ router.get('/admin/customer/view/:id?', common.restrict, (req, res) => {
             session: req.session,
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
-            config: common.getConfig(),
+            config: req.app.config,
             editor: true,
             helpers: req.handlebars.helpers
         });
@@ -94,7 +94,7 @@ router.get('/admin/customers', common.restrict, (req, res) => {
             helpers: req.handlebars.helpers,
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
-            config: common.getConfig()
+            config: req.app.config
         });
     });
 });
@@ -119,7 +119,7 @@ router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) 
             title: 'Customer results',
             customers: customers,
             admin: true,
-            config: common.getConfig(),
+            config: req.app.config,
             session: req.session,
             searchTerm: searchTerm,
             message: common.clearSessionValue(req.session, 'message'),
@@ -130,7 +130,7 @@ router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) 
 });
 
 // login the customer and check the password
-router.post('/customer/login_action', (req, res) => {
+router.post('/customer/login_action', async (req, res) => {
     let db = req.app.db;
 
     db.customers.findOne({email: req.body.loginEmail}, (err, customer) => { // eslint-disable-line
@@ -178,7 +178,7 @@ router.get('/customer/forgotten', (req, res) => {
         title: 'Forgotten',
         route: 'customer',
         forgotType: 'customer',
-        config: common.getConfig(),
+        config: req.app.config,
         helpers: req.handlebars.helpers,
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
@@ -189,7 +189,7 @@ router.get('/customer/forgotten', (req, res) => {
 // forgotten password
 router.post('/customer/forgotten_action', (req, res) => {
     const db = req.app.db;
-    const config = common.getConfig();
+    const config = req.app.config;
     let passwordToken = randtoken.generate(30);
 
     // find the user
@@ -240,7 +240,7 @@ router.get('/customer/reset/:token', (req, res) => {
             title: 'Reset password',
             token: req.params.token,
             route: 'customer',
-            config: common.getConfig(),
+            config: req.app.config,
             message: common.clearSessionValue(req.session, 'message'),
             message_type: common.clearSessionValue(req.session, 'message_type'),
             show_footer: 'show_footer',

@@ -18,7 +18,7 @@ router.get('/admin/products', common.restrict, (req, res, next) => {
             top_results: topResults,
             session: req.session,
             admin: true,
-            config: common.getConfig(),
+            config: req.app.config,
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers
@@ -45,7 +45,7 @@ router.get('/admin/products/filter/:search', (req, res, next) => {
             title: 'Results',
             results: results,
             admin: true,
-            config: common.getConfig(),
+            config: req.app.config,
             session: req.session,
             searchTerm: searchTerm,
             message: common.clearSessionValue(req.session, 'message'),
@@ -69,7 +69,7 @@ router.get('/admin/product/new', common.restrict, common.checkAccess, (req, res)
         editor: true,
         admin: true,
         helpers: req.handlebars.helpers,
-        config: common.getConfig()
+        config: req.app.config
     });
 });
 
@@ -167,7 +167,7 @@ router.get('/admin/product/edit/:id', common.restrict, common.checkAccess, (req,
                 session: req.session,
                 message: common.clearSessionValue(req.session, 'message'),
                 messageType: common.clearSessionValue(req.session, 'messageType'),
-                config: common.getConfig(),
+                config: req.app.config,
                 editor: true,
                 helpers: req.handlebars.helpers
             });

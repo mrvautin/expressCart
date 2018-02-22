@@ -10,7 +10,7 @@ router.get('/checkout_cancel', (req, res, next) => {
 
 router.get('/checkout_return', (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
     let paymentId = req.session.paymentId;
     let payerId = req.query['PayerID'];
 
@@ -107,7 +107,7 @@ router.get('/checkout_return', (req, res, next) => {
 // The homepage of the site
 router.post('/checkout_action', (req, res, next) => {
     let db = req.app.db;
-    let config = common.getConfig();
+    let config = req.app.config;
     let paypalConfig = common.getPaymentConfig();
 
     // setup the payment object
