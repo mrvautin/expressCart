@@ -392,7 +392,7 @@ $(document).ready(function (){
                 location.reload();
             })
             .fail(function(msg){
-                showNotification(msg.responseJSON.err, 'danger');
+                showNotification(msg.responseJSON.message, 'danger');
             });
         }
         e.preventDefault();

@@ -137,14 +137,14 @@ router.post('/customer/login_action', async (req, res) => {
         if(err){
             // An error accurred
             return res.status(400).json({
-                err: 'Access denied. Check password and try again.'
+                message: 'Access denied. Check password and try again.'
             });
         }
 
         // check if customer exists with that email
         if(customer === undefined || customer === null){
             return res.status(400).json({
-                err: 'A customer with that email does not exist.'
+                message: 'A customer with that email does not exist.'
             });
         }
         // we have a customer under that email so we compare the password
@@ -153,7 +153,7 @@ router.post('/customer/login_action', async (req, res) => {
             if(!result){
                 // password is not correct
                 return res.status(400).json({
-                    err: 'Access denied. Check password and try again.'
+                    message: 'Access denied. Check password and try again.'
                 });
             }
 
@@ -166,7 +166,7 @@ router.post('/customer/login_action', async (req, res) => {
         })
         .catch((err) => {
             return res.status(400).json({
-                err: 'Access denied. Check password and try again.'
+                message: 'Access denied. Check password and try again.'
             });
         });
     });

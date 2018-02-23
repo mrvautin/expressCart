@@ -56,6 +56,7 @@
     "gulp-rename": "^1.2.2",
     "mongodb-uri": "^0.9.7",
     "run-sequence": "^2.2.1",
+    "supertest": "^3.0.0",
     "wait.for": "^0.6.6"
   },
   "main": "app.js",
