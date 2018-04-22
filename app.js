@@ -14,6 +14,7 @@ const common = require('./lib/common');
 const mongodbUri = require('mongodb-uri');
 let handlebars = require('express-handlebars');
 
+
 // Validate our settings schema
 const Ajv = require('ajv');
 const ajv = new Ajv({useDefaults: true});
