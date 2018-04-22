@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "deploy": "gulp deploy",
-    "test": "ava test/**/*.js --verbose"
+    "test": "snyk test && ava test/**/*.js --verbose"
   },
   "dependencies": {
     "ajv": "^6.0.0",
@@ -25,10 +25,10 @@
     "glob": "^7.1.2",
     "helmet": "^3.6.1",
     "html-entities": "^1.2.0",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.5",
     "lunr": "^2.1.5",
     "moment": "^2.15.2",
-    "mongodb": "2.2.3",
+    "mongodb": "^2.2.13",
     "morgan": "^1.9.0",
     "multer": "^1.1.0",
     "nodemailer": "^4.4.1",
@@ -57,7 +57,8 @@
     "mongodb-uri": "^0.9.7",
     "run-sequence": "^2.2.1",
     "supertest": "^3.0.0",
-    "wait.for": "^0.6.6"
+    "wait.for": "^0.6.6",
+    "snyk": "^1.73.0"
   },
   "main": "app.js",
   "keywords": [
