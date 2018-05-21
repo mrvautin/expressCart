@@ -25,16 +25,18 @@
                             &nbsp;{{#each this.options}} {{#if @last}} {{this}} {{else}} {{this}} / {{/if}} {{/each}}
                         </p>
                         <p>
-
                             <div class="col s12 no-pad-left">
                                 <span class="col s2">
                                     <button class="btn waves-effect waves-light blue darken-3 btn-qty-minus" type="button">-</button>
                                 </span>
-                                <div class="input-field col s8">
+                                <div class="input-field col s5">
                                     <input type="number" class="cart-product-quantity text-center" data-id="{{this.productId}}" id="{{@key}}" maxlength="2" value="{{this.quantity}}">
                                 </div>
-                                <span class="col s2">
+                                <span class="col s3">
                                     <button class="btn waves-effect waves-light blue darken-3 btn-qty-add" type="button">+</button>
+                                </span>
+                                <span class="col s1">
+                                    <button class="btn waves-effect waves-light red darken-3 btn-delete-from-cart" data-id="{{this.productId}}" type="button"><i class="fa fa-trash" data-id="{{this.productId}}" aria-hidden="true"></i></button>
                                 </span>
                             </div>
                         </p>

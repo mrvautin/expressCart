@@ -249,6 +249,12 @@ app.use((req, res, next) => {
     next();
 });
 
+// Ran on all routes
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store');
+    next();
+});
+
 // setup the routes
 app.use('/', index);
 app.use('/', customer);

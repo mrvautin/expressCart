@@ -219,6 +219,11 @@ router.post('/product/addtocart', (req, res, next) => {
     const db = req.app.db;
     let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
 
+    // Don't allow negative quantity
+    if(productQuantity < 0){
+        productQuantity = 1;
+    }
+
     // setup cart object if it doesn't exist
     if(!req.session.cart){
         req.session.cart = [];
