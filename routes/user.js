@@ -146,56 +146,61 @@ router.post('/admin/user/insert', common.restrict, (req, res) => {
     // set the account to admin if using the setup form. Eg: First user account
     let urlParts = url.parse(req.header('Referer'));
 
-    let isAdmin = false;
-    if(urlParts.path === '/admin/setup'){
-        isAdmin = true;
-    }
+    // Check number of users
+    db.users.count({}, (err, userCount) => {
+        let isAdmin = false;
 
-    let doc = {
-        usersName: req.body.usersName,
-        userEmail: req.body.userEmail,
-        userPassword: bcrypt.hashSync(req.body.userPassword, 10),
-        isAdmin: isAdmin
-    };
-
-    // check for existing user
-    db.users.findOne({'userEmail': req.body.userEmail}, (err, user) => {
-        if(user){
-            // user already exists with that email address
-            console.error(colors.red('Failed to insert user, possibly already exists: ' + err));
-            req.session.message = 'A user with that email address already exists';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/user/new');
-            return;
+        // if no users, setup user as admin
+        if(userCount === 0){
+            isAdmin = true;
         }
-        // email is ok to be used.
-        db.users.insert(doc, (err, doc) => {
-            // show the view
-            if(err){
-                if(doc){
-                    console.error(colors.red('Failed to insert user: ' + err));
-                    req.session.message = 'User exists';
-                    req.session.messageType = 'danger';
-                    res.redirect('/admin/user/edit/' + doc._id);
-                    return;
-                }
-                console.error(colors.red('Failed to insert user: ' + err));
-                req.session.message = 'New user creation failed';
+
+        let doc = {
+            usersName: req.body.usersName,
+            userEmail: req.body.userEmail,
+            userPassword: bcrypt.hashSync(req.body.userPassword, 10),
+            isAdmin: isAdmin
+        };
+
+        // check for existing user
+        db.users.findOne({'userEmail': req.body.userEmail}, (err, user) => {
+            if(user){
+                // user already exists with that email address
+                console.error(colors.red('Failed to insert user, possibly already exists: ' + err));
+                req.session.message = 'A user with that email address already exists';
                 req.session.messageType = 'danger';
                 res.redirect('/admin/user/new');
                 return;
             }
-            req.session.message = 'User account inserted';
-            req.session.messageType = 'success';
+            // email is ok to be used.
+            db.users.insert(doc, (err, doc) => {
+                // show the view
+                if(err){
+                    if(doc){
+                        console.error(colors.red('Failed to insert user: ' + err));
+                        req.session.message = 'User exists';
+                        req.session.messageType = 'danger';
+                        res.redirect('/admin/user/edit/' + doc._id);
+                        return;
+                    }
+                    console.error(colors.red('Failed to insert user: ' + err));
+                    req.session.message = 'New user creation failed';
+                    req.session.messageType = 'danger';
+                    res.redirect('/admin/user/new');
+                    return;
+                }
+                req.session.message = 'User account inserted';
+                req.session.messageType = 'success';
 
-            // if from setup we add user to session and redirect to login.
-            // Otherwise we show users screen
-            if(urlParts.path === '/admin/setup'){
-                req.session.user = req.body.userEmail;
-                res.redirect('/admin/login');
-                return;
-            }
-            res.redirect('/admin/users');
+                // if from setup we add user to session and redirect to login.
+                // Otherwise we show users screen
+                if(urlParts.path === '/admin/setup'){
+                    req.session.user = req.body.userEmail;
+                    res.redirect('/admin/login');
+                    return;
+                }
+                res.redirect('/admin/users');
+            });
         });
     });
 });
