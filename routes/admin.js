@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const glob = require('glob');
+const mime = require('mime-type/with-db');
 const router = express.Router();
 
 // Admin section
@@ -419,33 +420,54 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
     const db = req.app.db;
 
     if(req.file){
-        // check for upload select
-        let uploadDir = path.join('public/uploads', req.body.directory);
-
-        // Check directory and create (if needed)
-        common.checkDirectorySync(uploadDir);
-
         let file = req.file;
-        let source = fs.createReadStream(file.path);
-        let dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
 
-        // save the new file
-        source.pipe(dest);
-        source.on('end', () => { });
+        // Get the mime type of the file
+        const mimeType = mime.lookup(file.originalname);
+        
+        // Check for allowed mime type and file size
+        if(!common.allowedMimeType.includes(mimeType) || file.size > common.fileSizeLimit){
+            // Remove temp file
+            fs.unlinkSync(file.path);
 
-        // delete the temp file.
-        fs.unlink(file.path, (err) => {
-            if(err){
-                console.info(err.stack);
-            }
-        });
+            // Redirect to error
+            req.session.message = 'File type not allowed or too large. Please try again.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/product/edit/' + req.body.productId);
+            return;
+        }
 
         // get the product form the DB
         db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
             if(err){
                 console.info(err.stack);
+                // delete the temp file.
+                fs.unlinkSync(file.path);
+
+                // Redirect to error
+                req.session.message = 'File upload error. Please try again.';
+                req.session.messageType = 'danger';
+                res.redirect('/admin/product/edit/' + req.body.productId);
+                return;
             }
-            let imagePath = path.join('/uploads', req.body.directory, file.originalname.replace(/ /g, '_'));
+
+            const productPath = product.productPermalink;
+            let uploadDir = path.join('public/uploads', productPath);
+
+            // Check directory and create (if needed)
+            common.checkDirectorySync(uploadDir);
+
+            let source = fs.createReadStream(file.path);
+            let dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+
+            // save the new file
+            source.pipe(dest);
+            source.on('end', () => { });
+
+            // delete the temp file.
+            fs.unlinkSync(file.path);
+
+            let imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
@@ -464,6 +486,10 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
             }
         });
     }else{
+        // delete the temp file.
+        fs.unlinkSync(file.path);
+
+        // Redirect to error
         req.session.message = 'File upload error. Please select a file.';
         req.session.messageType = 'danger';
         res.redirect('/admin/product/edit/' + req.body.productId);
