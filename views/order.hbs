@@ -44,11 +44,11 @@
             {{#each result.orderProducts}}
                 <li class="list-group-item">
                     {{this.quantity}} x {{this.title}}
-                    {{#if productOptions}}
+                    {{#if this.options}}
                         &nbsp; > &nbsp;
                         <span class="text-warning"> Options: </span>
                         (
-                        {{#each productOptions}}
+                        {{#each this.options}}
                             {{#if @last}}
                                 {{this}}
                             {{else}}
