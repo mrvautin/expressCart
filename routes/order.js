@@ -61,14 +61,10 @@ router.get('/admin/order/view/:id', common.restrict, (req, res) => {
         if(err){
             console.info(err.stack);
         }
-        let productOptions = '';
-        if(result.options !== {}){
-            productOptions = result.options;
-        }
+        
         res.render('order', {
             title: 'View order',
             result: result,
-            productOptions: productOptions,
             config: req.app.config,
             session: req.session,
             message: common.clearSessionValue(req.session, 'message'),
