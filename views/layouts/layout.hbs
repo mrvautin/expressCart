@@ -39,7 +39,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
         <script src="/javascripts/jquery.bootpag.min.js"></script>
         <script src="/javascripts/cssbeautify.min.js"></script>
+        {{#unless admin}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        {{/unless}}
 		<script src="/javascripts/expressCart{{config.env}}.js"></script>
         <script src="/javascripts/jquery.dotdotdot.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js"></script>
