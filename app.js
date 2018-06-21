@@ -210,6 +210,12 @@ handlebars = handlebars.create({
                 return options.fn(this);
             }
             return options.inverse(this);
+        },
+        cartTotalItems: function(cart){
+            if(cart) {
+                return cart.reduce((a, b) => +a + +b.quantity, 0);
+            } 
+            return 0;
         }
     }
 });

@@ -107,7 +107,7 @@
                         {{#ifCond page '!=' 'checkout'}}
                         {{#ifCond page '!=' 'pay'}}
                             {{#if session.cart}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{objectLength session.cart}}</span></a></li>
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{cartTotalItems session.cart}}</span></a></li>
                                 {{else}}
                                 <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">0</span></a></li>
                             {{/if}}
