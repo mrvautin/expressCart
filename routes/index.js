@@ -284,8 +284,8 @@ router.post('/product/addtocart', (req, res, next) => {
         common.updateTotalCartAmount(req, res);
 
         // update how many products in the shopping cart
-        req.session.cartTotalItems = Object.keys(req.session.cart).length;
-        return res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
+        req.session.cartTotalItems = req.session.cart.reduce((a, b) => +a + +b.quantity, 0);
+        return res.status(200).json({message: 'Cart successfully updated', totalCartItems: req.session.cartTotalItems});
     });
 });
 
