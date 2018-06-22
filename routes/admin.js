@@ -187,11 +187,11 @@ router.post('/admin/settings/option/remove', common.restrict, common.checkAccess
             let optJson = JSON.parse(product.productOptions);
             delete optJson[req.body.optName];
 
-            db.products.update({_id: common.getImages(req.body.productId)}, {$set: {productOptions: JSON.stringify(optJson)}}, (err, numReplaced) => {
+            db.products.update({_id: common.getId(req.body.productId)}, {$set: {productOptions: JSON.stringify(optJson)}}, (err, numReplaced) => {
                 if(err){
                     console.info(err.stack);
                 }
-                if(numReplaced === 1){
+                if(numReplaced.result.nModified === 1){
                     res.status(200).json({message: 'Option successfully removed'});
                 }else{
                     res.status(400).json({message: 'Failed to remove option. Please try again.'});
