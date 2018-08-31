@@ -133,7 +133,7 @@ router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) 
 router.post('/customer/login_action', async (req, res) => {
     let db = req.app.db;
 
-    db.customers.findOne({email: req.body.loginEmail}, (err, customer) => { // eslint-disable-line
+    db.customers.findOne({email: common.mongoSanitize(req.body.loginEmail)}, (err, customer) => { // eslint-disable-line
         if(err){
             // An error accurred
             return res.status(400).json({

@@ -58,7 +58,7 @@ router.get('/admin/login', (req, res) => {
 router.post('/admin/login_action', (req, res) => {
     let db = req.app.db;
 
-    db.users.findOne({userEmail: req.body.email}, (err, user) => {
+    db.users.findOne({userEmail: common.mongoSanitize(req.body.email)}, (err, user) => {
         if(err){
             res.status(400).json({message: 'A user with that email does not exist.'});
             return;
