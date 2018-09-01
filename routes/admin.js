@@ -171,6 +171,7 @@ router.post('/admin/settings/update', common.restrict, common.checkAccess, (req,
     let result = common.updateConfig(req.body);
     if(result === true){
         res.status(200).json({message: 'Settings successfully updated'});
+        res.configDirty = true;
         return;
     }
     res.status(400).json({message: 'Permission denied'});
