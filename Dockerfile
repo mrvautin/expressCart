@@ -2,8 +2,11 @@ FROM mhart/alpine-node:8
 
 ENV NODE_VERSION 8.9.4
 
+RUN apk add --no-cache make gcc g++ python bash
+
 WORKDIR /var/expressCart
 
+COPY lib/ /var/expressCart/lib/
 COPY bin/ /var/expressCart/bin/
 COPY config/ /var/expressCart/config/
 COPY public/ /var/expressCart/public/
