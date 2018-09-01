@@ -122,7 +122,13 @@ Note: The `databaseConnectionString` property requires a full connection string.
 
 ## Configuration
 
-All settings are managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)) except the Payment gateway and database settings.
+Settings can be managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)) with the exception of the Payment gateway and database settings.
+
+All settings are stored in json files in the `/config` directory. The main application-level settings are stored in `/config/settings.json` while payment gateway settings are stored in files in the `/config` directory named after the payment gateway. For example, configuration for the Stripe payment gateway is stored in `/config/stripe.json`.
+
+##### Local configuration
+
+If you'd rather store settings in a file which isn't checked into version control, you can create a new settings file at `/config/settings-local.json` and store your complete settings there. When viewing or editing settings in the admin panel, expressCart will detect the existence of this file and update it accordingly.
 
 ##### Cart name and Cart description
 
