@@ -15,13 +15,13 @@ services:
       - mongodb
   mongodb:
     image: mongo:3.4.10
-    container_name: "mongodb"
+    container_name: "expresscart-mongodb"
     ports:
       - 27017
     volumes:
-      - mongo-data:/data/db
+      - expresscart-mongo-data:/data/db
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null
 volumes:
-  mongo-data:
+  expresscart-mongo-data:
