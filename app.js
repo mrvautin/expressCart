@@ -249,6 +249,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// update config when modified
+app.use((req, res, next) => {
+    next();
+    if (res.configDirty) {
+        config = common.getConfig();
+        app.config = config;
+    }
+});
+
 // Ran on all routes
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache, no-store');
