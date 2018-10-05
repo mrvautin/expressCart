@@ -172,6 +172,7 @@ router.post('/checkout_action', (req, res, next) => {
                 orderState: req.body.shipState,
                 orderPostcode: req.body.shipPostcode,
                 orderPhoneNumber: req.body.shipPhoneNumber,
+                orderComment: req.body.orderComment,
                 orderStatus: payment.state,
                 orderDate: new Date(),
                 orderProducts: req.session.cart
