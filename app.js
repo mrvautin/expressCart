@@ -252,7 +252,7 @@ app.use((req, res, next) => {
 // update config when modified
 app.use((req, res, next) => {
     next();
-    if (res.configDirty) {
+    if(res.configDirty){
         config = common.getConfig();
         app.config = config;
     }
