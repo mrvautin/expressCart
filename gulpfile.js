@@ -2,7 +2,6 @@ const gulp = require('gulp');
 const cleanCSS = require('gulp-clean-css');
 const minify = require('gulp-minify');
 const rename = require('gulp-rename');
-const runsequence = require('run-sequence');
 
 gulp.task('compressJS', () => {
     return gulp.src(['public/javascripts/*.js', '!public/javascripts/*.min.js'])
@@ -39,6 +38,6 @@ gulp.task('compressThemeCss', () => {
 });
 
 // run the tasks
-gulp.task('deploy', (callback) => {
-    runsequence('compressJS', 'compressCss', 'compressThemeCss', callback);
-});
+gulp.task('deploy', gulp.series('compressJS', 'compressCss', 'compressThemeCss', (done) => {
+    done();
+}));
