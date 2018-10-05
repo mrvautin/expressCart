@@ -1,5 +1,5 @@
 node_modules/
 data/
-config/settings.json
+/config/settings-local.json
 .vscode
 **.DS_Store
