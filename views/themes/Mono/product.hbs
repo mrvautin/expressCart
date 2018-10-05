@@ -52,6 +52,12 @@
                     </span>
                 </div>
             </div>
+            {{#if result.productComment}}
+            <div class="col-md-10">
+                Leave a comment?
+                <textarea class="form-control" id="product_comment"></textarea>
+            </div>
+            {{/if}}
             <div class="btnAddToCart">
                 <button class="btn waves-effect waves-light black col s10 product-add-to-cart" type="button">Add to cart</button>
             </div>

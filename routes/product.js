@@ -85,6 +85,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
         productPublished: req.body.frmProductPublished,
         productTags: req.body.frmProductTags,
         productOptions: req.body.productOptJson,
+        productComment: common.checkboxBool(req.body.frmProductComment),
         productAddedDate: new Date()
     };
 
@@ -103,6 +104,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
             req.session.productPrice = req.body.frmProductPrice;
             req.session.productPermalink = req.body.frmProductPermalink;
             req.session.productPermalink = req.body.productOptJson;
+            req.session.productComment = common.checkboxBool(req.body.frmProductComment);
             req.session.productTags = req.body.frmProductTags;
 
             // redirect to insert
@@ -118,6 +120,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
                     req.session.productPrice = req.body.frmProductPrice;
                     req.session.productPermalink = req.body.frmProductPermalink;
                     req.session.productPermalink = req.body.productOptJson;
+                    req.session.productComment = common.checkboxBool(req.body.frmProductComment);
                     req.session.productTags = req.body.frmProductTags;
 
                     req.session.message = 'Error: Inserting product';
@@ -207,6 +210,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                 req.session.productPermalink = req.body.frmProductPermalink;
                 req.session.productTags = req.body.frmProductTags;
                 req.session.productOptions = req.body.productOptJson;
+                req.session.productComment = common.checkboxBool(req.body.frmProductComment);
 
                 // redirect to insert
                 res.redirect('/admin/product/edit/' + req.body.frmProductId);
@@ -219,7 +223,8 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                         productPrice: req.body.frmProductPrice,
                         productPermalink: req.body.frmProductPermalink,
                         productTags: req.body.frmProductTags,
-                        productOptions: req.body.productOptJson
+                        productOptions: req.body.productOptJson,
+                        productComment: common.checkboxBool(req.body.frmProductComment)
                     };
 
                     // if no featured image

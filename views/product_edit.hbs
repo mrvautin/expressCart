@@ -100,6 +100,18 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="frmProductComment" class="col-sm-2 control-label">Allow comment</label>
+                <div class="col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input class="frmProductComment" type="checkbox" {{checkedState result.productComment}} id="frmProductComment"
+                                name="frmProductComment">
+                        </label>
+                    </div>
+                    <p class="help-block">Allow free form comments when adding products to cart</p>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="frmProductTags" class="col-sm-2 control-label">Product tag words</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="frmProductTags" name="frmProductTags" value="{{result.productTags}}">

@@ -218,6 +218,7 @@ router.post('/product/emptycart', (req, res, next) => {
 router.post('/product/addtocart', (req, res, next) => {
     const db = req.app.db;
     let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
+    const productComment = req.body.productComment ? req.body.productComment : null;
 
     // Don't allow negative quantity
     if(productQuantity < 0){
@@ -270,6 +271,7 @@ router.post('/product/addtocart', (req, res, next) => {
             productObj.totalItemPrice = productPrice * productQuantity;
             productObj.options = options;
             productObj.productImage = product.productImage;
+            productObj.productComment = productComment;
             if(product.productPermalink){
                 productObj.link = product.productPermalink;
             }else{

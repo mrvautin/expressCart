@@ -58,6 +58,9 @@
                         )
                     {{/if}}
                     <div class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
+                    {{#if productComment}}
+                    <h4><span class="text-danger">Comment:</span> {{this.productComment}}</h4>
+                    {{/if}}
                 </li>
             {{/each}}
         </ul>

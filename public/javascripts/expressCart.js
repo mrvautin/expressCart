@@ -468,7 +468,12 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/product/addtocart',
-            data: {productId: $('#productId').val(), productQuantity: $('#product_quantity').val(), productOptions: JSON.stringify(productOptions)}
+            data: {
+                productId: $('#productId').val(),
+                productQuantity: $('#product_quantity').val(),
+                productOptions: JSON.stringify(productOptions),
+                productComment: $('#product_comment').val()
+            }
         })
 		.done(function(msg){
             $('#cart-count').text(msg.totalCartItems);
