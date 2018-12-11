@@ -38,6 +38,7 @@
     "paypal-rest-sdk": "^1.6.9",
     "rand-token": "^0.4.0",
     "rimraf": "^2.6.2",
+    "sanitize-html": "^1.19.3",
     "sitemap": "^1.6.0",
     "strip-bom": "^3.0.0",
     "stripe": "^5.4.0",

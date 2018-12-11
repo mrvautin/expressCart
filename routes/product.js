@@ -81,10 +81,10 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
         productPermalink: req.body.frmProductPermalink,
         productTitle: req.body.frmProductTitle,
         productPrice: req.body.frmProductPrice,
-        productDescription: req.body.frmProductDescription,
+        productDescription: common.cleanHtml(req.body.frmProductDescription),
         productPublished: req.body.frmProductPublished,
         productTags: req.body.frmProductTags,
-        productOptions: req.body.productOptJson,
+        productOptions: common.cleanHtml(req.body.productOptJson),
         productComment: common.checkboxBool(req.body.frmProductComment),
         productAddedDate: new Date()
     };
@@ -198,6 +198,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                 res.redirect('/admin/product/edit/' + req.body.frmProductId);
                 return;
             }
+
             if(count > 0 && req.body.frmProductPermalink !== ''){
                 // permalink exits
                 req.session.message = 'Permalink already exists. Pick a new one.';
@@ -218,14 +219,16 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                 common.getImages(req.body.frmProductId, req, res, (images) => {
                     let productDoc = {
                         productTitle: req.body.frmProductTitle,
-                        productDescription: req.body.frmProductDescription,
+                        productDescription: common.cleanHtml(req.body.frmProductDescription),
                         productPublished: req.body.frmProductPublished,
                         productPrice: req.body.frmProductPrice,
                         productPermalink: req.body.frmProductPermalink,
-                        productTags: req.body.frmProductTags,
-                        productOptions: req.body.productOptJson,
+                        productTags: common.cleanHtml(req.body.frmProductTags),
+                        productOptions: common.cleanHtml(req.body.productOptJson),
                         productComment: common.checkboxBool(req.body.frmProductComment)
                     };
+
+                    console.log('test', productDoc);
 
                     // if no featured image
                     if(!product.productImage){
