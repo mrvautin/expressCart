@@ -79,7 +79,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
 
     let doc = {
         productPermalink: req.body.frmProductPermalink,
-        productTitle: req.body.frmProductTitle,
+        productTitle: common.cleanHtml(req.body.frmProductTitle),
         productPrice: req.body.frmProductPrice,
         productDescription: common.cleanHtml(req.body.frmProductDescription),
         productPublished: req.body.frmProductPublished,
@@ -218,7 +218,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
             }else{
                 common.getImages(req.body.frmProductId, req, res, (images) => {
                     let productDoc = {
-                        productTitle: req.body.frmProductTitle,
+                        productTitle: common.cleanHtml(req.body.frmProductTitle),
                         productDescription: common.cleanHtml(req.body.frmProductDescription),
                         productPublished: req.body.frmProductPublished,
                         productPrice: req.body.frmProductPrice,
