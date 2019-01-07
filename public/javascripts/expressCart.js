@@ -531,7 +531,8 @@ $(document).ready(function (){
     });
 
     $('.qty-btn-minus').on('click', function(){
-        $('#product_quantity').val(parseInt($('#product_quantity').val()) - 1);
+        var number = parseInt($('#product_quantity').val()) - 1;
+        $('#product_quantity').val(number >0 ? number:1);
     });
 
     $('.qty-btn-plus').on('click', function(){
