@@ -168,8 +168,10 @@ router.get('/product/:id', (req, res) => {
 // Updates a single product quantity
 router.post('/product/updatecart', (req, res, next) => {
     const db = req.app.db;
+    const config = req.app.config;
     let cartItems = JSON.parse(req.body.items);
     let hasError = false;
+    let stockError = false;
 
     async.eachSeries(cartItems, (cartItem, callback) => {
         let productQuantity = cartItem.itemQuantity ? cartItem.itemQuantity : 1;
@@ -183,6 +185,16 @@ router.post('/product/updatecart', (req, res, next) => {
                     console.error(colors.red('Error updating cart', err));
                 }
                 if(product){
+                    // If stock management on check there is sufficient stock for this product
+                    if(config.trackStock){
+                        if(productQuantity > product.productStock){
+                            hasError = true;
+                            stockError = true;
+                            callback(null);
+                            return;
+                        }
+                    }
+
                     let productPrice = parseFloat(product.productPrice).toFixed(2);
                     if(req.session.cart[cartItem.cartIndex]){
                         req.session.cart[cartItem.cartIndex].quantity = productQuantity;
@@ -203,7 +215,11 @@ router.post('/product/updatecart', (req, res, next) => {
         if(hasError === false){
             res.status(200).json({message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length});
         }else{
-            res.status(400).json({message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length});
+            if(stockError){
+                res.status(400).json({message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length});
+            }else{
+                res.status(400).json({message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length});
+            }
         }
     });
 });

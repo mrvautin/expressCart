@@ -142,9 +142,7 @@ $(document).ready(function (){
         cartUpdate(qtyElement);
     });
 
-
-    $(document).on('change', '.cart-product-quantity', function (e) {
-
+    $(document).on('change', '.cart-product-quantity', function (e){
         cartUpdate(e.target);
     });
 
@@ -735,7 +733,7 @@ function updateCart(){
         $('#cart-count').text(msg.totalCartItems);
     })
     .fail(function(msg){
-        showNotification(msg.responseJSON.message, 'danger');
+        showNotification(msg.responseJSON.message, 'danger', true);
     });
 }
 

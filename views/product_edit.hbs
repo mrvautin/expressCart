@@ -33,12 +33,14 @@
                     </select>
                 </div>
             </div>
+            {{#if config.trackStock}}
             <div class="form-group">
                 <label for="frmProductStock" class="col-sm-2 control-label">Stock level</label>
                 <div class="col-sm-6">
                     <input type="number" name="frmProductStock" class="form-control" value="{{result.productStock}}" step="any" />
                 </div>
             </div>
+            {{/if}}
             <div class="form-group">
                 <label for="editor" class="col-sm-2 control-label">Product description *</label>
                 <div class="col-sm-10">

@@ -86,7 +86,8 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
         productTags: req.body.frmProductTags,
         productOptions: common.cleanHtml(req.body.productOptJson),
         productComment: common.checkboxBool(req.body.frmProductComment),
-        productAddedDate: new Date()
+        productAddedDate: new Date(),
+        productStock: req.body.frmProductStock ? parseInt(req.body.frmProductStock) : null
     };
 
     db.products.count({'productPermalink': req.body.frmProductPermalink}, (err, product) => {
@@ -106,6 +107,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
             req.session.productPermalink = req.body.productOptJson;
             req.session.productComment = common.checkboxBool(req.body.frmProductComment);
             req.session.productTags = req.body.frmProductTags;
+            req.session.productStock = req.body.frmProductStock ? parseInt(req.body.frmProductStock) : null;
 
             // redirect to insert
             res.redirect('/admin/insert');
@@ -122,6 +124,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
                     req.session.productPermalink = req.body.productOptJson;
                     req.session.productComment = common.checkboxBool(req.body.frmProductComment);
                     req.session.productTags = req.body.frmProductTags;
+                    req.session.productStock = req.body.frmProductStock ? parseInt(req.body.frmProductStock) : null;
 
                     req.session.message = 'Error: Inserting product';
                     req.session.messageType = 'danger';
