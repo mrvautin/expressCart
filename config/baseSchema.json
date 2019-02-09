@@ -91,6 +91,12 @@
         },
         "theme": {
             "type": "string"
+        },
+        "themeViews": {
+            "type": "string"
+        },
+        "env": {
+            "type": "string"
         }
     },
     "required": [
