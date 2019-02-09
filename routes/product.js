@@ -212,6 +212,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                 req.session.productTags = req.body.frmProductTags;
                 req.session.productOptions = req.body.productOptJson;
                 req.session.productComment = common.checkboxBool(req.body.frmProductComment);
+                req.session.productStock = req.body.frmProductStock ? req.body.frmProductStock : null;
 
                 // redirect to insert
                 res.redirect('/admin/product/edit/' + req.body.frmProductId);
@@ -225,10 +226,9 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                         productPermalink: req.body.frmProductPermalink,
                         productTags: common.cleanHtml(req.body.frmProductTags),
                         productOptions: common.cleanHtml(req.body.productOptJson),
-                        productComment: common.checkboxBool(req.body.frmProductComment)
+                        productComment: common.checkboxBool(req.body.frmProductComment),
+                        productStock: req.body.frmProductStock ? parseInt(req.body.frmProductStock) : null
                     };
-
-                    console.log('test', productDoc);
 
                     // if no featured image
                     if(!product.productImage){

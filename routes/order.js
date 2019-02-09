@@ -61,7 +61,6 @@ router.get('/admin/order/view/:id', common.restrict, (req, res) => {
         if(err){
             console.info(err.stack);
         }
-        
         res.render('order', {
             title: 'View order',
             result: result,

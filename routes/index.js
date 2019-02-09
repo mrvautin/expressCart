@@ -11,16 +11,37 @@ router.get('/payment/:orderId', async (req, res, next) => {
     let config = req.app.config;
 
     // render the payment complete message
-    db.orders.findOne({_id: common.getId(req.params.orderId)}, async (err, result) => {
+    db.orders.findOne({_id: common.getId(req.params.orderId)}, async (err, order) => {
         if(err){
             console.info(err.stack);
         }
+
+        // If stock management is turned on payment approved update stock level
+        if(config.trackStock && req.session.paymentApproved){
+            order.orderProducts.forEach(async (product) => {
+                const dbProduct = await db.products.findOne({_id: common.getId(product.productId)});
+                let newStockLevel = dbProduct.productStock - product.quantity;
+                if(newStockLevel < 1){
+                    newStockLevel = 0;
+                }
+
+                // Update product stock
+                await db.products.update({
+                    _id: common.getId(product.productId)
+                }, {
+                    $set: {
+                        productStock: newStockLevel
+                    }
+                }, {multi: false});
+            });
+        }
+
         res.render(`${config.themeViews}payment_complete`, {
             title: 'Payment complete',
             config: req.app.config,
             session: req.session,
             pageCloseBtn: common.showCartCloseBtn('payment'),
-            result: result,
+            result: order,
             message: common.clearSessionValue(req.session, 'message'),
             messageType: common.clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
@@ -217,6 +238,7 @@ router.post('/product/emptycart', (req, res, next) => {
 // Add item to cart
 router.post('/product/addtocart', (req, res, next) => {
     const db = req.app.db;
+    const config = req.app.config;
     let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
     const productComment = req.body.productComment ? req.body.productComment : null;
 
@@ -240,6 +262,13 @@ router.post('/product/addtocart', (req, res, next) => {
         // No product found
         if(!product){
             return res.status(400).json({message: 'Error updating cart. Please try again.'});
+        }
+
+        // If stock management on check there is sufficient stock for this product
+        if(config.trackStock){
+            if(productQuantity > product.productStock){
+                return res.status(400).json({message: 'There is insufficient stock of this product.'});
+            }
         }
 
         let productPrice = parseFloat(product.productPrice).toFixed(2);

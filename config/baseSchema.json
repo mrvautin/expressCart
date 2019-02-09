@@ -97,6 +97,10 @@
         },
         "env": {
             "type": "string"
+        },
+        "trackStock": {
+            "type": "boolean",
+            "default": false
         }
     },
     "required": [
