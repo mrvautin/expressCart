@@ -757,9 +757,16 @@ function updateCartDiv(){
 function getSelectedOptions(){
     var options = {};
     $('.product-opt').each(function(){
-        options[$(this).attr('name')] = $(this).val();
+        if($(this).attr('name') === 'opt-'){
+            options[$(this).val().trim()] = $(this).prop('checked');
+            return;
+        }
+        var optionValue = $(this).val().trim();
+        if($(this).attr('type') === 'radio'){
+            optionValue = $('input[name="' + $(this).attr('name') + '"]:checked').val();
+        }
+        options[$(this).attr('name').substring(4, $(this).attr('name').length)] = optionValue;
     });
-
     return options;
 }
 

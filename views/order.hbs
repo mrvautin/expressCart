@@ -51,9 +51,9 @@
                         (
                         {{#each this.options}}
                             {{#if @last}}
-                                {{this}}
+                                {{@key}}: {{this}}
                             {{else}}
-                                {{this}} /
+                                {{@key}}: {{this}} /
                             {{/if}}
                         {{/each}}
                         )

@@ -22,7 +22,14 @@
                             <a class="cart-link" href="/product/{{this.link}}">{{this.title}}</a>
                         </p>
                         <p>
-                            &nbsp;{{#each this.options}} {{#if @last}} {{this}} {{else}} {{this}} / {{/if}} {{/each}}
+                            &nbsp;
+                            {{#each this.options}} 
+                                {{#if @last}} 
+                                    {{@key}}: {{this}} 
+                                    {{else}} 
+                                    {{@key}}: {{this}} / 
+                                {{/if}} 
+                            {{/each}}
                         </p>
                         <p>
                             <div class="col s12 no-pad-left">
