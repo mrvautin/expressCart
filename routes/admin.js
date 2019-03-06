@@ -1,5 +1,6 @@
 const express = require('express');
 const common = require('../lib/common');
+const helpers = require('../lib/helpers');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
@@ -26,6 +27,7 @@ router.get('/admin/logout', (req, res) => {
 // login form
 router.get('/admin/login', (req, res) => {
     let db = req.app.db;
+
 
     db.users.count({}, (err, userCount) => {
         if(err){
@@ -117,10 +119,23 @@ router.get('/admin/setup', (req, res) => {
 router.post('/admin/setup_action', (req, res) => {
     const db = req.app.db;
 
+    var password = req.body.userPassword;
+    // check if the this is strong password is neccessary
+    if(req.app.config.enableStrongPassword){
+      // validate password to ensure the password is very secure because this is an admin
+      var passwordStrength = helpers.passwordStrength(password);
+      if(!helpers.ACCEPTABLE_PASSWORD_STRENGTH.contains(passwordStrength)){
+        req.session.message = 'Password is too weak.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/setup');
+        return;
+      }
+    }
+
     let doc = {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
-        userPassword: bcrypt.hashSync(req.body.userPassword, 10),
+        userPassword: bcrypt.hashSync(password, 10),
         isAdmin: true
     };
 
@@ -425,7 +440,7 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
 
         // Get the mime type of the file
         const mimeType = mime.lookup(file.originalname);
-        
+
         // Check for allowed mime type and file size
         if(!common.allowedMimeType.includes(mimeType) || file.size > common.fileSizeLimit){
             // Remove temp file
