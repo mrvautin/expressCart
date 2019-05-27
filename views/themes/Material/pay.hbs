@@ -32,7 +32,7 @@
                         {{> themes/Material/shipping-form}}
                         {{#if session.customer}}
                         {{#ifCond config.paymentGateway '==' 'paypal'}}
-                            {{> payments/paypal}}
+                            {{> partials/payments/paypal}}
                         {{/ifCond}}
                         {{/if}}
                         {{#unless session.customer}}
