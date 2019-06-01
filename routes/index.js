@@ -4,6 +4,7 @@ const colors = require('colors');
 const async = require('async');
 const _ = require('lodash');
 const common = require('../lib/common');
+const ObjectId = require('mongodb').ObjectID;
 
 // These is the customer facing routes
 router.get('/payment/:orderId', async (req, res, next) => {
@@ -207,9 +208,14 @@ router.post('/product/updatecart', (req, res, next) => {
                 }
             });
         }
-    }, () => {
+    }, async () => {
         // update total cart amount
         common.updateTotalCartAmount(req, res);
+
+        // Update cart to the DB
+        await db.cart.update({sessionId: req.session.id}, {
+            $set: {cart: req.session.cart}
+        });
 
         // show response
         if(hasError === false){
@@ -226,6 +232,8 @@ router.post('/product/updatecart', (req, res, next) => {
 
 // Remove single product from cart
 router.post('/product/removefromcart', (req, res, next) => {
+    const db = req.app.db;
+
     // remove item from cart
     async.each(req.session.cart, (item, callback) => {
         if(item){
@@ -234,7 +242,11 @@ router.post('/product/removefromcart', (req, res, next) => {
             }
         }
         callback();
-    }, () => {
+    }, async () => {
+        // Update cart in DB
+        await db.cart.update({sessionId: req.session.id}, {
+            $set: {cart: req.session.cart}
+        });
         // update total cart amount
         common.updateTotalCartAmount(req, res);
         res.status(200).json({message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length});
@@ -242,9 +254,15 @@ router.post('/product/removefromcart', (req, res, next) => {
 });
 
 // Totally empty the cart
-router.post('/product/emptycart', (req, res, next) => {
+router.post('/product/emptycart', async (req, res, next) => {
+    const db = req.app.db;
+
+    // Remove from session
     delete req.session.cart;
     delete req.session.orderId;
+
+    // Remove cart from DB
+    await db.cart.removeOne({sessionId: req.session.id});
 
     // update total cart amount
     common.updateTotalCartAmount(req, res);
@@ -269,7 +287,7 @@ router.post('/product/addtocart', (req, res, next) => {
     }
 
     // Get the item from the DB
-    db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
+    db.products.findOne({_id: common.getId(req.body.productId)}, async (err, product) => {
         if(err){
             console.error(colors.red('Error adding to cart', err));
             return res.status(400).json({message: 'Error updating cart. Please try again.'});
@@ -281,9 +299,36 @@ router.post('/product/addtocart', (req, res, next) => {
         }
 
         // If stock management on check there is sufficient stock for this product
-        if(config.trackStock){
-            if(productQuantity > product.productStock){
-                return res.status(400).json({message: 'There is insufficient stock of this product.'});
+        if(config.trackStock && product.productStock){
+            const stockHeld = await db.cart.aggregate(
+                {
+                    $match: {
+                        cart: {$elemMatch: {productId: product._id.toString()}}
+                    }
+                },
+                {$unwind: '$cart'},
+                {
+                    $group: {
+                        _id: '$cart.productId',
+                        sumHeld: {$sum: '$cart.quantity'}
+                    }
+                },
+                {
+                    $project: {
+                        sumHeld: 1
+                    }
+                }
+            ).toArray();
+
+            // If there is stock
+            if(stockHeld.length > 0){
+                const totalHeld = _.find(stockHeld, {_id: product._id.toString()}).sumHeld;
+                const netStock = product.productStock - totalHeld;
+
+                // Check there is sufficient stock
+                if(productQuantity > netStock){
+                    return res.status(400).json({message: 'There is insufficient stock of this product.'});
+                }
             }
         }
 
@@ -301,12 +346,17 @@ router.post('/product/addtocart', (req, res, next) => {
 
         // if exists we add to the existing value
         let cartIndex = _.findIndex(req.session.cart, findDoc);
+        let cartQuantity = 0;
         if(cartIndex > -1){
-            req.session.cart[cartIndex].quantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
+            cartQuantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
+            req.session.cart[cartIndex].quantity = cartQuantity;
             req.session.cart[cartIndex].totalItemPrice = productPrice * parseInt(req.session.cart[cartIndex].quantity);
         }else{
             // Doesnt exist so we add to the cart session
             req.session.cartTotalItems = req.session.cartTotalItems + productQuantity;
+
+            // Set the card quantity
+            cartQuantity = productQuantity;
 
             // new product deets
             let productObj = {};
@@ -326,6 +376,11 @@ router.post('/product/addtocart', (req, res, next) => {
             // merge into the current cart
             req.session.cart.push(productObj);
         }
+
+        // Update cart to the DB
+        await db.cart.update({sessionId: req.session.id}, {
+            $set: {cart: req.session.cart}
+        }, {upsert: true});
 
         // update total cart amount
         common.updateTotalCartAmount(req, res);

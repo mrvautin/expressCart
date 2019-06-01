@@ -5,11 +5,13 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const moment = require('moment');
+const _ = require('lodash');
 const MongoStore = require('connect-mongodb-session')(session);
 const MongoClient = require('mongodb').MongoClient;
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
+const cron = require('node-cron');
 const common = require('./lib/common');
 const mongodbUri = require('mongodb-uri');
 let handlebars = require('express-handlebars');
@@ -234,7 +236,7 @@ app.use(session({
     cookie: {
         path: '/',
         httpOnly: true,
-        maxAge: 3600000 * 24
+        maxAge: 900000
     },
     store: store
 }));
@@ -346,12 +348,28 @@ MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
     db.pages = db.collection('pages');
     db.menu = db.collection('menu');
     db.customers = db.collection('customers');
+    db.cart = db.collection('cart');
+    db.sessions = db.collection('sessions');
 
     // add db to app for routes
     app.dbClient = client;
     app.db = db;
     app.config = config;
     app.port = app.get('port');
+
+    // Fire up the cron job to clear temp held stock
+    cron.schedule('*/1 * * * *', async () => {
+        const validSessions = await db.sessions.find({}).toArray();
+        const validSessionIds = [];
+        _.forEach(validSessions, (value) => {
+            validSessionIds.push(value._id);
+        });
+
+        // Remove any invalid cart holds
+        await db.cart.remove({
+            sessionId: {$nin: validSessionIds}
+        });
+    });
 
     // run indexing
     common.runIndexing(app)
