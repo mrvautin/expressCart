@@ -7,13 +7,12 @@ const session = require('express-session');
 const moment = require('moment');
 const _ = require('lodash');
 const MongoStore = require('connect-mongodb-session')(session);
-const MongoClient = require('mongodb').MongoClient;
 const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
 const cron = require('node-cron');
 const common = require('./lib/common');
-const mongodbUri = require('mongodb-uri');
+const { initDb } = require('./lib/db');
 let handlebars = require('express-handlebars');
 
 // Validate our settings schema
@@ -324,35 +323,15 @@ app.on('uncaughtException', (err) => {
     process.exit(2);
 });
 
-MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
+// MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
+initDb(config.databaseConnectionString, (err, db) => {
     // On connection error we display then exit
     if(err){
         console.log(colors.red('Error connecting to MongoDB: ' + err));
         process.exit(2);
     }
 
-    // select DB
-    const dbUriObj = mongodbUri.parse(config.databaseConnectionString);
-    let db;
-    // if in testing, set the testing DB
-    if(process.env.NODE_ENV === 'test'){
-        db = client.db('testingdb');
-    }else{
-        db = client.db(dbUriObj.database);
-    }
-
-    // setup the collections
-    db.users = db.collection('users');
-    db.products = db.collection('products');
-    db.orders = db.collection('orders');
-    db.pages = db.collection('pages');
-    db.menu = db.collection('menu');
-    db.customers = db.collection('customers');
-    db.cart = db.collection('cart');
-    db.sessions = db.collection('sessions');
-
     // add db to app for routes
-    app.dbClient = client;
     app.db = db;
     app.config = config;
     app.port = app.get('port');
