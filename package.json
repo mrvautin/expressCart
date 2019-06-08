@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "deploy": "gulp deploy",
+    "testdata": "node lib/testdata.js",
     "test": "ava test/**/*.js --verbose"
   },
   "dependencies": {
