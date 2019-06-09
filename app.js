@@ -349,6 +349,11 @@ initDb(config.databaseConnectionString, (err, db) => {
         });
     });
 
+    // Set trackStock for testing
+    if(process.env.NODE_ENV === 'test'){
+        config.trackStock = true;
+    }
+
     // run indexing
     common.runIndexing(app)
     .then(app.listen(app.get('port')))
