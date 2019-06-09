@@ -323,7 +323,6 @@ app.on('uncaughtException', (err) => {
     process.exit(2);
 });
 
-// MongoClient.connect(config.databaseConnectionString, {}, (err, client) => {
 initDb(config.databaseConnectionString, (err, db) => {
     // On connection error we display then exit
     if(err){
@@ -357,6 +356,7 @@ initDb(config.databaseConnectionString, (err, db) => {
         // lift the app
         app.emit('appStarted');
         console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
+        return;
     })
     .catch((err) => {
         console.error(colors.red('Error setting up indexes:' + err));
