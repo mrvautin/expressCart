@@ -3,7 +3,6 @@ const fs = require('fs');
 const app = require('../app');
 const common = require('../lib/common');
 const request = require('supertest');
-const agent = request.agent(app);
 
 // Get test data to compare in tests
 const rawTestData = fs.readFileSync('./bin/testdata.json', 'utf-8');
@@ -121,6 +120,19 @@ test.serial('[Success] Add product to cart', async t => {
         .expect(200)
         
     t.deepEqual(res.body.message, 'Cart successfully updated');
+});
+
+test.serial('[Fail] Add product to cart with not enough stock', async t => {
+    const res = await request(app)
+        .post('/product/addtocart')
+        .send({
+            productId: products[0]._id,
+            productQuantity: 100,
+            productOptions: JSON.stringify(products[0].productOptions)
+        })
+        .expect(400)
+        
+    t.deepEqual(res.body.message, 'There is insufficient stock of this product.');
 });
 
 test.serial('[Fail] Add incorrect product to cart', async t => {
