@@ -7,7 +7,7 @@
     "start": "node app.js",
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
-    "test": "ava test/**/*.js --verbose"
+    "test": "ava test/test.js --verbose"
   },
   "dependencies": {
     "ajv": "^6.10.0",
