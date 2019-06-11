@@ -12,7 +12,7 @@ const helmet = require('helmet');
 const colors = require('colors');
 const cron = require('node-cron');
 const common = require('./lib/common');
-const { initDb } = require('./lib/db');
+const{initDb} = require('./lib/db');
 let handlebars = require('express-handlebars');
 
 // Validate our settings schema
@@ -323,7 +323,7 @@ app.on('uncaughtException', (err) => {
     process.exit(2);
 });
 
-initDb(config.databaseConnectionString, (err, db) => {
+initDb(config.databaseConnectionString, async (err, db) => {
     // On connection error we display then exit
     if(err){
         console.log(colors.red('Error connecting to MongoDB: ' + err));
@@ -354,19 +354,24 @@ initDb(config.databaseConnectionString, (err, db) => {
         config.trackStock = true;
     }
 
-    // run indexing
-    common.runIndexing(app)
-    .then(app.listen(app.get('port')))
-    .then(() => {
-        // lift the app
+    // We index when not in test env
+    if(process.env.NODE_ENV !== 'test'){
+        try{
+            await common.runIndexing(app);
+        }catch(ex){
+            console.error(colors.red('Error setting up indexes:' + err));
+        }
+    }
+
+    // Start the app
+    try{
+        await app.listen(app.get('port'));
         app.emit('appStarted');
         console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
-        return;
-    })
-    .catch((err) => {
-        console.error(colors.red('Error setting up indexes:' + err));
+    }catch(ex){
+        console.error(colors.red('Error starting expressCart app:' + err));
         process.exit(2);
-    });
+    }
 });
 
 module.exports = app;
