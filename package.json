@@ -7,7 +7,7 @@
     "start": "node app.js",
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
-    "test": "NODE_ENV=test ava test/test.js --verbose"
+    "test": "NODE_ENV=test ava --verbose"
   },
   "dependencies": {
     "ajv": "^6.10.0",
@@ -61,6 +61,7 @@
     "gulp-rename": "^1.4.0",
     "mongodb-uri": "^0.9.7",
     "supertest": "^3.4.2",
+    "supertest-session": "^4.0.0",
     "wait.for": "^0.6.6"
   },
   "main": "app.js",

@@ -4,7 +4,6 @@ const colors = require('colors');
 const async = require('async');
 const _ = require('lodash');
 const common = require('../lib/common');
-const ObjectId = require('mongodb').ObjectID;
 
 // These is the customer facing routes
 router.get('/payment/:orderId', async (req, res, next) => {
@@ -233,11 +232,13 @@ router.post('/product/updatecart', (req, res, next) => {
 // Remove single product from cart
 router.post('/product/removefromcart', (req, res, next) => {
     const db = req.app.db;
+    let itemRemoved = false;
 
     // remove item from cart
     async.each(req.session.cart, (item, callback) => {
         if(item){
-            if(item.productId === req.body.cart_index){
+            if(item.productId === req.body.cartId){
+                itemRemoved = true;
                 req.session.cart = _.pull(req.session.cart, item);
             }
         }
@@ -249,7 +250,11 @@ router.post('/product/removefromcart', (req, res, next) => {
         });
         // update total cart amount
         common.updateTotalCartAmount(req, res);
-        res.status(200).json({message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length});
+
+        if(itemRemoved === false){
+            return res.status(400).json({message: 'Product not found in cart'});
+        }
+        return res.status(200).json({message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length});
     });
 });
 
