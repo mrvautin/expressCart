@@ -662,7 +662,7 @@ function deleteFromCart(element){
     $.ajax({
         method: 'POST',
         url: '/product/removefromcart',
-        data: {cart_index: element.attr('data-id')}
+        data: {cartId: element.attr('data-id')}
     })
     .done(function(msg){
         $('#cart-count').text(msg.totalCartItems);
