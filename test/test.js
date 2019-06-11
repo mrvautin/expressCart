@@ -16,7 +16,7 @@ let customers;
 let users;
 let request = null;
 
-function setup(db){
+function setup(db, app){
     return Promise.all([
         db.cart.remove({}, {}),
         db.users.remove({}, {}),
@@ -29,7 +29,8 @@ function setup(db){
             db.users.insertMany(jsonData.users),
             db.customers.insertMany(jsonData.customers),
             db.products.insertMany(common.fixProductDates(jsonData.products)),
-            db.menu.insertOne(jsonData.menu)
+            db.menu.insertOne(jsonData.menu),
+            common.runIndexing(app)
         ]);
     });
 }
@@ -44,7 +45,7 @@ test.before(async () => {
             config = app.config;
             db = app.db;
 
-            await setup(db);
+            await setup(db, app);
 
             // Get some data from DB to use in compares
             products = await db.products.find({}).toArray();
@@ -167,4 +168,13 @@ test.serial('[Fail] Try remove an item which is not in the cart', async t => {
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Product not found in cart');
+});
+
+test.serial('[Success] Search products', async t => {
+    const res = await request
+        .get('/category/backpack?json=true')
+        .expect(200);
+
+    // Should be two backpack products
+    t.deepEqual(res.body.length, 2);
 });
