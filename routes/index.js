@@ -463,8 +463,6 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
         lunrIdArray.push(common.getId(id.ref));
     });
 
-    console.log('productsIndex', productsIndex);
-
     let pageNum = 1;
     if(req.params.pageNum){
         pageNum = req.params.pageNum;

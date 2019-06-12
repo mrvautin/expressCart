@@ -175,7 +175,6 @@ test.serial('[Success] Search products', async t => {
         .get('/category/backpack?json=true')
         .expect(200);
 
-    console.log('res.body', res.body);
     // Should be two backpack products
     t.deepEqual(res.body.length, 2);
 });
