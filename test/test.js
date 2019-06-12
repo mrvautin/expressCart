@@ -178,3 +178,60 @@ test.serial('[Success] Search products', async t => {
     // Should be two backpack products
     t.deepEqual(res.body.length, 2);
 });
+
+test.serial.only('[Success] Check for sitemap.xml', async t => {
+    const res = await request
+        .get('/sitemap.xml')
+        .expect(200);
+
+    if(!res.text){
+        t.fail();
+    }
+
+    // Document should start with XML tag
+    t.deepEqual(res.text.substring(0, 5), '<?xml');
+});
+
+test.serial.only('[Success] Create a customer', async t => {
+    const customer = {
+        email: 'sarah.jones@test.com',
+        firstName: 'Sarah',
+        lastName: 'Jones',
+        address1: '1 Sydney Street',
+        address2: '',
+        country: 'Australia',
+        state: 'NSW',
+        postcode: '2000',
+        phone: '0400000000',
+        password: 'password'
+    };
+
+    const res = await request
+        .post('/customer/create')
+        .send(customer)
+        .expect(200);
+
+    t.deepEqual(res.body.message, 'Successfully logged in');
+});
+
+test.serial.only('[Fail] Try create a duplicate customer', async t => {
+    const customer = {
+        email: 'sarah.jones@test.com',
+        firstName: 'Sarah',
+        lastName: 'Jones',
+        address1: '1 Sydney Street',
+        address2: '',
+        country: 'Australia',
+        state: 'NSW',
+        postcode: '2000',
+        phone: '0400000000',
+        password: 'password'
+    };
+
+    const res = await request
+        .post('/customer/create')
+        .send(customer)
+        .expect(400);
+
+    t.deepEqual(res.body.err, 'A customer already exists with that email address');
+});

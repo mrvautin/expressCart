@@ -26,7 +26,7 @@ router.post('/customer/create', (req, res) => {
     // check for existing customer
     db.customers.findOne({email: req.body.email}, (err, customer) => {
         if(customer){
-            res.status(404).json({
+            res.status(400).json({
                 err: 'A customer already exists with that email address'
             });
             return;
