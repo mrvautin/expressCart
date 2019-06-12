@@ -29,8 +29,7 @@ function setup(db, app){
             db.users.insertMany(jsonData.users),
             db.customers.insertMany(jsonData.customers),
             db.products.insertMany(common.fixProductDates(jsonData.products)),
-            db.menu.insertOne(jsonData.menu),
-            common.runIndexing(app)
+            db.menu.insertOne(jsonData.menu)
         ]);
     });
 }
@@ -46,6 +45,7 @@ test.before(async () => {
             db = app.db;
 
             await setup(db, app);
+            await common.runIndexing(app);
 
             // Get some data from DB to use in compares
             products = await db.products.find({}).toArray();
