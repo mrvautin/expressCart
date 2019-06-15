@@ -179,7 +179,7 @@ test.serial('[Success] Search products', async t => {
     t.deepEqual(res.body.length, 2);
 });
 
-test.serial.only('[Success] Check for sitemap.xml', async t => {
+test.serial('[Success] Check for sitemap.xml', async t => {
     const res = await request
         .get('/sitemap.xml')
         .expect(200);
@@ -192,7 +192,7 @@ test.serial.only('[Success] Check for sitemap.xml', async t => {
     t.deepEqual(res.text.substring(0, 5), '<?xml');
 });
 
-test.serial.only('[Success] Create a customer', async t => {
+test.serial('[Success] Create a customer', async t => {
     const customer = {
         email: 'sarah.jones@test.com',
         firstName: 'Sarah',
@@ -214,7 +214,7 @@ test.serial.only('[Success] Create a customer', async t => {
     t.deepEqual(res.body.message, 'Successfully logged in');
 });
 
-test.serial.only('[Fail] Try create a duplicate customer', async t => {
+test.serial('[Fail] Try create a duplicate customer', async t => {
     const customer = {
         email: 'sarah.jones@test.com',
         firstName: 'Sarah',
