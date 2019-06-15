@@ -100,6 +100,44 @@
             "isAdmin" : true
         }
     ],
+    "orders": [
+        {
+            "orderPaymentId" : "ch_1ElPw5L7TBqK1az83hbmOFuJ",
+            "orderPaymentGateway" : "Stripe",
+            "orderPaymentMessage" : "Payment complete.",
+            "orderTotal" : 310,
+            "orderEmail" : "test@test.com",
+            "orderFirstname" : "Testy",
+            "orderLastname" : "Cles",
+            "orderAddr1" : "1 test street",
+            "orderAddr2" : "testvile",
+            "orderCountry" : "Netherlands",
+            "orderState" : "SA",
+            "orderPostcode" : "2000TW",
+            "orderPhoneNumber" : "123456789",
+            "orderComment" : "",
+            "orderStatus" : "Paid",
+            "orderProducts" : []
+        },
+        {
+            "orderPaymentId" : "ch_1ElPw5L7TBqK1az83hbmOFuJ",
+            "orderPaymentGateway" : "Stripe",
+            "orderPaymentMessage" : "Payment complete.",
+            "orderTotal" : 310,
+            "orderEmail" : "test@test.com",
+            "orderFirstname" : "Testy",
+            "orderLastname" : "Cles",
+            "orderAddr1" : "1 test street",
+            "orderAddr2" : "testvile",
+            "orderCountry" : "Netherlands",
+            "orderState" : "SA",
+            "orderPostcode" : "2000TW",
+            "orderPhoneNumber" : "123456789",
+            "orderComment" : "",
+            "orderStatus" : "Declined",
+            "orderProducts" : []
+        }
+    ],
     "menu": {
         "items": [
             {

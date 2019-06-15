@@ -1,5 +1,6 @@
 const test = require('ava');
 const fs = require('fs');
+const _ = require('lodash');
 const app = require('../app');
 const common = require('../lib/common');
 const session = require('supertest-session');
@@ -14,22 +15,22 @@ let config;
 let products;
 let customers;
 let users;
+let orders;
 let request = null;
 
-function setup(db, app){
+function setup(db){
     return Promise.all([
         db.cart.remove({}, {}),
         db.users.remove({}, {}),
         db.customers.remove({}, {}),
         db.products.remove({}, {}),
-        db.menu.remove({}, {})
+        db.orders.remove({}, {})
     ])
     .then(() => {
         return Promise.all([
             db.users.insertMany(jsonData.users),
             db.customers.insertMany(jsonData.customers),
-            db.products.insertMany(common.fixProductDates(jsonData.products)),
-            db.menu.insertOne(jsonData.menu)
+            db.products.insertMany(common.fixProductDates(jsonData.products))
         ]);
     });
 }
@@ -44,13 +45,33 @@ test.before(async () => {
             config = app.config;
             db = app.db;
 
-            await setup(db, app);
+            await setup(db);
             await common.runIndexing(app);
 
             // Get some data from DB to use in compares
             products = await db.products.find({}).toArray();
             customers = await db.customers.find({}).toArray();
             users = await db.users.find({}).toArray();
+
+            // Insert orders using product ID's
+            _(jsonData.orders).each(async (order) => {
+                order.orderProducts.push({
+                    productId: products[0]._id,
+                    title: products[0].productTitle,
+                    quantity: 1,
+                    totalItemPrice: products[0].productPrice,
+                    options: {
+                        size: '7.5'
+                    },
+                    productImage: products[0].productImage,
+                    productComment: null
+                });
+                order.orderDate = new Date();
+                await db.orders.insert(order);
+            });
+
+            // Get orders
+            orders = await db.orders.find({}).toArray();
             resolve();
         });
     });
@@ -76,6 +97,16 @@ test.serial('[Success] User Login', async t => {
         })
         .expect(200);
     t.deepEqual(res.body.message, 'Login successful');
+});
+
+test.serial('[Success] Create API key', async t => {
+    const res = await request
+        .post('/admin/createApiKey')
+        .expect(200);
+
+    users[0].apiKey = res.body.apiKey;
+    t.deepEqual(res.body.message, 'API Key generated');
+    t.deepEqual(res.body.apiKey.length, 24);
 });
 
 test.serial('[Fail] Incorrect user password', async t => {
@@ -212,6 +243,35 @@ test.serial('[Success] Create a customer', async t => {
         .expect(200);
 
     t.deepEqual(res.body.message, 'Successfully logged in');
+});
+
+test.serial('[Success] Get orders', async t => {
+    const res = await request
+        .get('/admin/orders')
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned order length
+    t.deepEqual(orders.length, res.body.orders.length);
+});
+
+test.serial('[Fail] Try get orderes with a bogus apiKey', async t => {
+    const res = await request
+        .get('/admin/orders')
+        .set('apiKey', '123456789012345678901234')
+        .expect(400);
+
+    t.deepEqual(res.body.message, 'Access denied');
+});
+
+test.serial('[Success] Get orders by <Paid> status', async t => {
+    const res = await request
+        .get('/admin/orders/bystatus/Paid')
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned order length
+    t.deepEqual(1, res.body.orders.length);
 });
 
 test.serial('[Fail] Try create a duplicate customer', async t => {
