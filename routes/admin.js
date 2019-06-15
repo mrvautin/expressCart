@@ -8,6 +8,7 @@ const path = require('path');
 const multer = require('multer');
 const glob = require('glob');
 const mime = require('mime-type/with-db');
+const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 
 // Admin section
@@ -164,6 +165,27 @@ router.get('/admin/settings', common.restrict, (req, res) => {
         footerHtml: typeof req.app.config.footerHtml !== 'undefined' ? escape.decode(req.app.config.footerHtml) : null,
         googleAnalytics: typeof req.app.config.googleAnalytics !== 'undefined' ? escape.decode(req.app.config.googleAnalytics) : null
     });
+});
+
+// settings update
+router.post('/admin/createApiKey', common.restrict, common.checkAccess, async (req, res) => {
+    const db = req.app.db;
+    let result = await db.users.findOneAndUpdate({
+        _id: ObjectId(req.session.userId),
+        isAdmin: true
+    }, {
+        $set: {
+            apiKey: new ObjectId()
+        }
+    }, {
+        returnOriginal: false
+    });
+
+    if(result.value && result.value.apiKey){
+        res.status(200).json({message: 'API Key generated', apiKey: result.value.apiKey});
+        return;
+    }
+    res.status(400).json({message: 'Failed to generate API Key'});
 });
 
 // settings update

@@ -204,6 +204,21 @@ $(document).ready(function (){
         });
     });
 
+    $(document).on('click', '#btnGenerateAPIkey', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: '/admin/createApiKey'
+		})
+		.done(function(msg){
+            $('#apiKey').val(msg.apiKey);
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
     $(document).on('click', '.product_opt_remove', function(e){
         e.preventDefault();
         var name = $(this).closest('li').find('.opt-name').html();

@@ -30,6 +30,15 @@
                     </div>
                 {{/ifCond}}
             {{/isAnAdmin}}
+			<div class="form-group">
+				<label>API Key</label>
+				<div class="input-group">
+					<input type="text" class="form-control" id="apiKey" value="{{user.apiKey}}" aria-label="..." readonly>
+					<div class="input-group-btn">
+						<button id="btnGenerateAPIkey" class="btn btn-success">Generate</button>
+					</div>
+				</div>
+			</div><br/>
 		  	<div class="form-group">
     			<div class="pull-right">
       				<button type="submit" class="btn btn-success">Update</button>
