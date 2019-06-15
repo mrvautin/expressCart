@@ -34,7 +34,7 @@ router.post('/checkout_action', (req, res, next) => {
         }
     };
 
-    axios.post(authorizeUrl, chargeJson, {responseType: 'text'})
+    axios.post(authorizeUrl, chargeJson, { responseType: 'text' })
     .then((response) => {
         // This is crazy but the Authorize.net API returns a string with BOM and totally
         // screws the JSON response being parsed. So many hours wasted!
@@ -43,7 +43,7 @@ router.post('/checkout_action', (req, res, next) => {
         if(!txn){
             console.log('Declined request payload', chargeJson);
             console.log('Declined response payload', response.data);
-            res.status(400).json({err: 'Your payment has declined. Please try again'});
+            res.status(400).json({ err: 'Your payment has declined. Please try again' });
             return;
         }
 
@@ -117,7 +117,7 @@ router.post('/checkout_action', (req, res, next) => {
                     common.sendEmail(req.session.paymentEmailAddr, `Your payment with ${config.cartTitle}`, common.getEmailTemplate(paymentResults));
 
                     // redirect to outcome
-                    res.status(200).json({orderId: newId});
+                    res.status(200).json({ orderId: newId });
                 }else{
                     // redirect to failure
                     req.session.messageType = 'danger';
@@ -125,14 +125,14 @@ router.post('/checkout_action', (req, res, next) => {
                     req.session.paymentApproved = false;
                     req.session.paymentDetails = `<p><strong>Order ID: </strong>${newId}
                     </p><p><strong>Transaction ID: </strong> ${txn.transHash}</p>`;
-                    res.status(400).json({err: true, orderId: newId});
+                    res.status(400).json({ err: true, orderId: newId });
                 }
             });
         });
     })
     .catch((err) => {
         console.log('Error sending payment to API', err);
-        res.status(400).json({err: 'Your payment has declined. Please try again'});
+        res.status(400).json({ err: 'Your payment has declined. Please try again' });
     });
 });
 
