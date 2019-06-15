@@ -1,5 +1,6 @@
 let express = require('express');
 let common = require('../../lib/common');
+const { indexOrders } = require('../lib/indexing');
 let numeral = require('numeral');
 let stripe = require('stripe')(common.getPaymentConfig().secretKey);
 let router = express.Router();
@@ -64,7 +65,7 @@ router.post('/checkout_action', (req, res, next) => {
             let newId = newDoc.insertedIds['0'];
 
             // add to lunr index
-            common.indexOrders(req.app)
+            indexOrders(req.app)
             .then(() => {
                 // if approved, send email etc
                 if(charge.paid === true){

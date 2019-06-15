@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const stripBom = require('strip-bom');
 const common = require('../../lib/common');
+const { indexOrders } = require('../lib/indexing');
 const router = express.Router();
 
 // The homepage of the site
@@ -84,7 +85,7 @@ router.post('/checkout_action', (req, res, next) => {
             let newId = newDoc.insertedIds['0'];
 
             // add to lunr index
-            common.indexOrders(req.app)
+            indexOrders(req.app)
             .then(() => {
                 // if approved, send email etc
                 if(orderStatus === 'Paid'){

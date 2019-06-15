@@ -1,6 +1,7 @@
 const express = require('express');
 const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
+const { indexOrders } = require('../lib/indexing');
 const router = express.Router();
 
 // Show orders
@@ -140,7 +141,7 @@ router.get('/admin/order/delete/:id', restrict, (req, res) => {
             console.info(err.stack);
         }
         // remove the index
-        common.indexOrders(req.app)
+        indexOrders(req.app)
         .then(() => {
             // redirect home
             req.session.message = 'Order successfully deleted';

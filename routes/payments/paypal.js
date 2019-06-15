@@ -1,5 +1,6 @@
 let express = require('express');
 let common = require('../../lib/common');
+const { indexOrders } = require('../lib/indexing');
 let paypal = require('paypal-rest-sdk');
 let router = express.Router();
 
@@ -76,7 +77,7 @@ router.get('/checkout_return', (req, res, next) => {
                 }
 
                 // add to lunr index
-                common.indexOrders(req.app)
+                indexOrders(req.app)
                 .then(() => {
                     // set the results
                     req.session.messageType = 'success';
