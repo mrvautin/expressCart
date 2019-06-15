@@ -47,6 +47,10 @@ The easiest way to get up and running is using Docker. Once the Docker CLI is in
 
 Sometimes you might want some default sample/test data. To create this, run `npm run testdata`. Remember to only run this initially or anytime you want to reset the data as this function deletes ALL existing data.
 
+## API
+
+There is currently a limited API for certain functions of the app. Using the API can be done by firstly generating an API key via the Admin login. `Admin > My Account > API Key (Generate) button`. Once an API Key is generated it will need to be supplied in a header called `apiKey` to authenticate requests. 
+
 ## Admin
 
 Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)
@@ -133,6 +137,8 @@ All settings are stored in json files in the `/config` directory. The main appli
 ##### Local configuration
 
 If you'd rather store settings in a file which isn't checked into version control, you can create a new settings file at `/config/settings-local.json` and store your complete settings there. When viewing or editing settings in the admin panel, expressCart will detect the existence of this file and update it accordingly.
+
+This can also be used for payment modules too. Any settings in the `/config/<gateway>-local.json` file will override the `/config/<gateway>.json` file.
 
 ##### Cart name and Cart description
 
