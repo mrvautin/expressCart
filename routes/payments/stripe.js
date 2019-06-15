@@ -1,6 +1,6 @@
 let express = require('express');
 let common = require('../../lib/common');
-const { indexOrders } = require('../lib/indexing');
+const { indexOrders } = require('../../lib/indexing');
 let numeral = require('numeral');
 let stripe = require('stripe')(common.getPaymentConfig().secretKey);
 let router = express.Router();

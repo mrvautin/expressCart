@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const stripBom = require('strip-bom');
 const common = require('../../lib/common');
-const { indexOrders } = require('../lib/indexing');
+const { indexOrders } = require('../../lib/indexing');
 const router = express.Router();
 
 // The homepage of the site

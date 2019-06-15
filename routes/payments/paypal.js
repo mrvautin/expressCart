@@ -1,6 +1,6 @@
 let express = require('express');
 let common = require('../../lib/common');
-const { indexOrders } = require('../lib/indexing');
+const { indexOrders } = require('../../lib/indexing');
 let paypal = require('paypal-rest-sdk');
 let router = express.Router();
 
