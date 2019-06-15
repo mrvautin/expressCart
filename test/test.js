@@ -252,7 +252,7 @@ test.serial('[Success] Get orders', async t => {
         .expect(200);
 
     // Check the returned order length
-    t.deepEqual(orders.length, res.body.orders.length);
+    t.deepEqual(jsonData.orders.length, res.body.orders.length);
 });
 
 test.serial('[Fail] Try get orderes with a bogus apiKey', async t => {
