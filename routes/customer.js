@@ -63,14 +63,19 @@ router.post('/customer/create', (req, res) => {
 router.get('/admin/customer/view/:id?', restrict, (req, res) => {
     const db = req.app.db;
 
-    db.customers.findOne({ _id: common.getId(req.params.id) }, (err, result) => {
+    db.customers.findOne({ _id: common.getId(req.params.id) }, (err, customer) => {
         if(err){
             console.info(err.stack);
         }
 
-        res.render('customer', {
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json(customer);
+        }
+
+        return res.render('customer', {
             title: 'View customer',
-            result: result,
+            result: customer,
             admin: true,
             session: req.session,
             message: common.clearSessionValue(req.session, 'message'),
@@ -87,7 +92,12 @@ router.get('/admin/customers', restrict, (req, res) => {
     const db = req.app.db;
 
     db.customers.find({}).limit(20).sort({ created: -1 }).toArray((err, customers) => {
-        res.render('customers', {
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json(customers);
+        }
+
+        return res.render('customers', {
             title: 'Customers - List',
             admin: true,
             customers: customers,
@@ -116,7 +126,15 @@ router.get('/admin/customers/filter/:search', restrict, (req, res, next) => {
         if(err){
             console.error(colors.red('Error searching', err));
         }
-        res.render('customers', {
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json({
+                customers
+            });
+        }
+
+        return res.render('customers', {
             title: 'Customer results',
             customers: customers,
             admin: true,

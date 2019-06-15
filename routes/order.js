@@ -135,7 +135,7 @@ router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
 router.get('/admin/order/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
 
-    // remove the article
+    // remove the order
     db.orders.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
         if(err){
             console.info(err.stack);
@@ -157,8 +157,9 @@ router.post('/admin/order/statusupdate', restrict, checkAccess, (req, res) => {
     db.orders.update({ _id: common.getId(req.body.order_id) }, { $set: { orderStatus: req.body.status } }, { multi: false }, (err, numReplaced) => {
         if(err){
             console.info(err.stack);
+            return res.status(400).json({ message: 'Failed to update the order status' });
         }
-        res.status(200).json({ message: 'Status successfully updated' });
+        return res.status(200).json({ message: 'Status successfully updated' });
     });
 });
 

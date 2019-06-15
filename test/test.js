@@ -254,7 +254,7 @@ test.serial('[Success] Get orders', async t => {
     t.deepEqual(jsonData.orders.length, res.body.orders.length);
 });
 
-test.serial('[Fail] Try get orderes with a bogus apiKey', async t => {
+test.serial('[Fail] Try get orders with a bogus apiKey', async t => {
     const res = await request
         .get('/admin/orders')
         .set('apiKey', '123456789012345678901234')
@@ -303,4 +303,34 @@ test.serial('[Fail] Try create a duplicate customer', async t => {
         .expect(400);
 
     t.deepEqual(res.body.err, 'A customer already exists with that email address');
+});
+
+test.serial('[Success] Get customer list', async t => {
+    const res = await request
+        .get('/admin/customers')
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned customers length
+    t.deepEqual(2, res.body.length);
+});
+
+test.serial('[Success] Filter customers', async t => {
+    const res = await request
+        .get('/admin/customers')
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned customers length
+    t.deepEqual(2, res.body.length);
+});
+
+test.serial('[Success] Get single customer', async t => {
+    const res = await request
+        .get('/admin/customer/view/' + customers[0]._id)
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned customer matches ID
+    t.deepEqual(customers[0]._id.toString(), res.body._id);
 });
