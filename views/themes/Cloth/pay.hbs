@@ -1,4 +1,11 @@
 <div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/checkout">Checkout</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Pay</li>
+        </ol>
+    </nav>
     <div class="row">
         {{#if paymentMessage}}
             <p class="text-danger text-center">{{paymentMessage}}</p>
