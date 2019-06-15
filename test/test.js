@@ -45,7 +45,6 @@ test.before(async () => {
             db = app.db;
 
             await setup(db);
-            await runIndexing(app);
 
             // Get some data from DB to use in compares
             products = await db.products.find({}).toArray();
@@ -68,6 +67,9 @@ test.before(async () => {
                 order.orderDate = new Date();
                 await db.orders.insert(order);
             });
+
+            // Index everything
+            await runIndexing(app);
 
             resolve();
         });
@@ -269,6 +271,16 @@ test.serial('[Success] Get orders by <Paid> status', async t => {
 
     // Check the returned order length
     t.deepEqual(1, res.body.orders.length);
+});
+
+test.serial('[Success] Filter orders', async t => {
+    const res = await request
+        .get('/admin/orders/filter/Cles')
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned order length
+    t.deepEqual(2, res.body.orders.length);
 });
 
 test.serial('[Fail] Try create a duplicate customer', async t => {
