@@ -1,5 +1,4 @@
 const express = require('express');
-const _ = require('lodash');
 const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
 const escape = require('html-entities').AllHtmlEntities;
