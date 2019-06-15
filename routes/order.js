@@ -11,7 +11,15 @@ router.get('/admin/orders', common.restrict, (req, res, next) => {
         if(err){
             console.info(err.stack);
         }
-        res.render('orders', {
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json({
+                orders
+            });
+        }
+
+        return res.render('orders', {
             title: 'Cart',
             orders: orders,
             admin: true,
@@ -39,7 +47,15 @@ router.get('/admin/orders/bystatus/:orderstatus', common.restrict, (req, res, ne
         if(err){
             console.info(err.stack);
         }
-        res.render('orders', {
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json({
+                orders
+            });
+        }
+
+        return res.render('orders', {
             title: 'Cart',
             orders: orders,
             admin: true,
@@ -91,7 +107,15 @@ router.get('/admin/orders/filter/:search', common.restrict, (req, res, next) => 
         if(err){
             console.info(err.stack);
         }
-        res.render('orders', {
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            return res.status(200).json({
+                orders
+            });
+        }
+
+        return res.render('orders', {
             title: 'Order results',
             orders: orders,
             admin: true,
