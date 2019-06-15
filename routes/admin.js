@@ -1,4 +1,5 @@
 const express = require('express');
+const _ = require('lodash');
 const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
 const escape = require('html-entities').AllHtmlEntities;
@@ -191,7 +192,7 @@ router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
 
 // settings update
 router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
-    let result = common.updateConfig(req.body);
+    const result = common.updateConfig(req.body);
     if(result === true){
         res.status(200).json({ message: 'Settings successfully updated' });
         res.configDirty = true;

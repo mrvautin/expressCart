@@ -101,6 +101,9 @@
         "trackStock": {
             "type": "boolean",
             "default": false
+        },
+        "orderHook": {
+            "format": "uri-template"
         }
     },
     "required": [

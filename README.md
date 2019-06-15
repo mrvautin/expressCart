@@ -51,6 +51,12 @@ Sometimes you might want some default sample/test data. To create this, run `npm
 
 There is currently a limited API for certain functions of the app. Using the API can be done by firstly generating an API key via the Admin login. `Admin > My Account > API Key (Generate) button`. Once an API Key is generated it will need to be supplied in a header called `apiKey` to authenticate requests. 
 
+## Hooks / Integrations
+
+On the completion of a order if a `orderHook` URL is configured, expressCart will POST the data to the configured URL. This is handy or IFTTT or Zapier Webhooks where you may want to use the integration methods to retrieve the order details in other systems.
+
+Example use might be to send all orders to a Google Docs spreadsheet or an accounting package or a packing slip software etc.
+
 ## Admin
 
 Visit: [http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)

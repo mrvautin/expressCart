@@ -20,14 +20,14 @@ let handlebars = require('express-handlebars');
 const Ajv = require('ajv');
 const ajv = new Ajv({ useDefaults: true });
 
-const baseConfig = ajv.validate(require('./config/baseSchema'), require('./config/settings.json'));
+// get config
+let config = common.getConfig();
+
+const baseConfig = ajv.validate(require('./config/baseSchema'), config);
 if(baseConfig === false){
     console.log(colors.red(`settings.json incorrect: ${ajv.errorsText()}`));
     process.exit(2);
 }
-
-// get config
-let config = common.getConfig();
 
 // Validate the payment gateway config
 if(config.paymentGateway === 'paypal'){
