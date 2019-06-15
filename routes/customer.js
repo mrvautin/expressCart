@@ -4,6 +4,7 @@ const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
 const common = require('../lib/common');
+const { restrict } = require('../lib/auth');
 
 // insert a customer
 router.post('/customer/create', (req, res) => {
@@ -24,7 +25,7 @@ router.post('/customer/create', (req, res) => {
     };
 
     // check for existing customer
-    db.customers.findOne({email: req.body.email}, (err, customer) => {
+    db.customers.findOne({ email: req.body.email }, (err, customer) => {
         if(customer){
             res.status(400).json({
                 err: 'A customer already exists with that email address'
@@ -59,10 +60,10 @@ router.post('/customer/create', (req, res) => {
 });
 
 // render the customer view
-router.get('/admin/customer/view/:id?', common.restrict, (req, res) => {
+router.get('/admin/customer/view/:id?', restrict, (req, res) => {
     const db = req.app.db;
 
-    db.customers.findOne({_id: common.getId(req.params.id)}, (err, result) => {
+    db.customers.findOne({ _id: common.getId(req.params.id) }, (err, result) => {
         if(err){
             console.info(err.stack);
         }
@@ -82,10 +83,10 @@ router.get('/admin/customer/view/:id?', common.restrict, (req, res) => {
 });
 
 // customers list
-router.get('/admin/customers', common.restrict, (req, res) => {
+router.get('/admin/customers', restrict, (req, res) => {
     const db = req.app.db;
 
-    db.customers.find({}).limit(20).sort({created: -1}).toArray((err, customers) => {
+    db.customers.find({}).limit(20).sort({ created: -1 }).toArray((err, customers) => {
         res.render('customers', {
             title: 'Customers - List',
             admin: true,
@@ -100,7 +101,7 @@ router.get('/admin/customers', common.restrict, (req, res) => {
 });
 
 // Filtered customers list
-router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) => {
+router.get('/admin/customers/filter/:search', restrict, (req, res, next) => {
     const db = req.app.db;
     let searchTerm = req.params.search;
     let customersIndex = req.app.customersIndex;
@@ -111,7 +112,7 @@ router.get('/admin/customers/filter/:search', common.restrict, (req, res, next) 
     });
 
     // we search on the lunr indexes
-    db.customers.find({_id: {$in: lunrIdArray}}).sort({created: -1}).toArray((err, customers) => {
+    db.customers.find({ _id: { $in: lunrIdArray } }).sort({ created: -1 }).toArray((err, customers) => {
         if(err){
             console.error(colors.red('Error searching', err));
         }
@@ -193,11 +194,11 @@ router.post('/customer/forgotten_action', (req, res) => {
     let passwordToken = randtoken.generate(30);
 
     // find the user
-    db.customers.findOne({email: req.body.email}, (err, customer) => {
+    db.customers.findOne({ email: req.body.email }, (err, customer) => {
         // if we have a customer, set a token, expiry and email it
         if(customer){
             let tokenExpiry = Date.now() + 3600000;
-            db.customers.update({email: req.body.email}, {$set: {resetToken: passwordToken, resetTokenExpiry: tokenExpiry}}, {multi: false}, (err, numReplaced) => {
+            db.customers.update({ email: req.body.email }, { $set: { resetToken: passwordToken, resetTokenExpiry: tokenExpiry } }, { multi: false }, (err, numReplaced) => {
                 // send forgotten password email
                 let mailOpts = {
                     to: req.body.email,
@@ -227,7 +228,7 @@ router.get('/customer/reset/:token', (req, res) => {
     const db = req.app.db;
 
     // Find the customer using the token
-    db.customers.findOne({resetToken: req.params.token, resetTokenExpiry: {$gt: Date.now()}}, (err, customer) => {
+    db.customers.findOne({ resetToken: req.params.token, resetTokenExpiry: { $gt: Date.now() } }, (err, customer) => {
         if(!customer){
             req.session.message = 'Password reset token is invalid or has expired';
             req.session.message_type = 'danger';
@@ -254,7 +255,7 @@ router.post('/customer/reset/:token', (req, res) => {
     const db = req.app.db;
 
     // get the customer
-    db.customers.findOne({resetToken: req.params.token, resetTokenExpiry: {$gt: Date.now()}}, (err, customer) => {
+    db.customers.findOne({ resetToken: req.params.token, resetTokenExpiry: { $gt: Date.now() } }, (err, customer) => {
         if(!customer){
             req.session.message = 'Password reset token is invalid or has expired';
             req.session.message_type = 'danger';
@@ -263,7 +264,7 @@ router.post('/customer/reset/:token', (req, res) => {
 
         // update the password and remove the token
         let newPassword = bcrypt.hashSync(req.body.password, 10);
-        db.customers.update({email: customer.email}, {$set: {password: newPassword, resetToken: undefined, resetTokenExpiry: undefined}}, {multi: false}, (err, numReplaced) => {
+        db.customers.update({ email: customer.email }, { $set: { password: newPassword, resetToken: undefined, resetTokenExpiry: undefined } }, { multi: false }, (err, numReplaced) => {
             let mailOpts = {
                 to: customer.email,
                 subject: 'Password successfully reset',

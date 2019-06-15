@@ -17,7 +17,7 @@
     },
     "rules": {
         "quotes": ["error", "single"],
-        "prefer-arrow-callback": 2,
+        "prefer-arrow-callback": [ "error", { "allowNamedFunctions": true } ],
         "consistent-return": 2,
         "no-var"           : 2,
         "new-cap"          : 0,
@@ -27,11 +27,16 @@
         "space-unary-ops"  : 2,
         "no-undef": 1,
         "no-unused-vars": 1,
-        "keyword-spacing": ["error", { "before": false, "after": false }],
+        "keyword-spacing": [
+            "error", { 
+                "before": false, "after": false, "overrides": {
+                "const": { "after": true }
+            }
+        }],
         "space-before-function-paren": 0,
         "space-before-blocks": ["error", "never"],
         "camelcase": 0,
         "handle-callback-err": ["error", "none"],
-        "object-curly-spacing": ["error", "never"]
+        "object-curly-spacing": ["error", "always"]
     }
 }

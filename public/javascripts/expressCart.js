@@ -120,7 +120,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/product/published_state',
-            data: {id: this.id, state: this.checked}
+            data: { id: this.id, state: this.checked }
         })
 		.done(function(msg){
             showNotification(msg.message, 'success');
@@ -226,7 +226,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/settings/option/remove/',
-            data: {productId: $('#frmProductId').val(), optName: name}
+            data: { productId: $('#frmProductId').val(), optName: name }
         })
         .done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -467,7 +467,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/order/statusupdate',
-            data: {order_id: $('#order_id').val(), status: $('#orderStatus').val()}
+            data: { order_id: $('#order_id').val(), status: $('#orderStatus').val() }
         })
 		.done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -524,7 +524,7 @@ $(document).ready(function (){
             $.ajax({
                 method: 'POST',
                 url: '/product/addtocart',
-                data: {productId: $(this).attr('data-id')}
+                data: { productId: $(this).attr('data-id') }
             })
             .done(function(msg){
                 $('#cart-count').text(msg.totalCartItems);
@@ -567,7 +567,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/product/setasmainimage',
-            data: {product_id: $('#frmProductId').val(), productImage: $(this).attr('data-id')}
+            data: { product_id: $('#frmProductId').val(), productImage: $(this).attr('data-id') }
         })
 		.done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -581,7 +581,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/product/deleteimage',
-            data: {product_id: $('#frmProductId').val(), productImage: $(this).attr('data-id')}
+            data: { product_id: $('#frmProductId').val(), productImage: $(this).attr('data-id') }
         })
 		.done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -597,7 +597,7 @@ $(document).ready(function (){
             $.ajax({
                 method: 'POST',
                 url: '/admin/api/validate_permalink',
-                data: {'permalink': $('#frmProductPermalink').val(), 'docId': $('#frmProductId').val()}
+                data: { 'permalink': $('#frmProductPermalink').val(), 'docId': $('#frmProductId').val() }
             })
             .done(function(msg){
                 showNotification(msg, 'success');
@@ -677,7 +677,7 @@ function deleteFromCart(element){
     $.ajax({
         method: 'POST',
         url: '/product/removefromcart',
-        data: {cartId: element.attr('data-id')}
+        data: { cartId: element.attr('data-id') }
     })
     .done(function(msg){
         $('#cart-count').text(msg.totalCartItems);
@@ -740,7 +740,7 @@ function updateCart(){
     $.ajax({
         method: 'POST',
         url: '/product/updatecart',
-        data: {items: JSON.stringify(cartItems)}
+        data: { items: JSON.stringify(cartItems) }
     })
     .done(function(msg){
         // update cart items
@@ -758,7 +758,7 @@ function updateCartDiv(){
     $.ajax({
         method: 'GET',
         url: '/cartPartial',
-        data: {path: path}
+        data: { path: path }
     })
     .done(function(msg){
         // update cart div

@@ -1,13 +1,14 @@
 const express = require('express');
 const common = require('../lib/common');
+const { restrict, checkAccess } = require('../lib/auth');
 const router = express.Router();
 
 // Show orders
-router.get('/admin/orders', common.restrict, (req, res, next) => {
+router.get('/admin/orders', restrict, (req, res, next) => {
     const db = req.app.db;
 
     // Top 10 products
-    db.orders.find({}).sort({'orderDate': -1}).limit(10).toArray((err, orders) => {
+    db.orders.find({}).sort({ 'orderDate': -1 }).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -33,7 +34,7 @@ router.get('/admin/orders', common.restrict, (req, res, next) => {
 });
 
 // Admin section
-router.get('/admin/orders/bystatus/:orderstatus', common.restrict, (req, res, next) => {
+router.get('/admin/orders/bystatus/:orderstatus', restrict, (req, res, next) => {
     const db = req.app.db;
 
     if(typeof req.params.orderstatus === 'undefined'){
@@ -43,7 +44,7 @@ router.get('/admin/orders/bystatus/:orderstatus', common.restrict, (req, res, ne
 
     // case insensitive search
     let regex = new RegExp(['^', req.params.orderstatus, '$'].join(''), 'i');
-    db.orders.find({orderStatus: regex}).sort({'orderDate': -1}).limit(10).toArray((err, orders) => {
+    db.orders.find({ orderStatus: regex }).sort({ 'orderDate': -1 }).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -71,9 +72,9 @@ router.get('/admin/orders/bystatus/:orderstatus', common.restrict, (req, res, ne
 });
 
 // render the editor
-router.get('/admin/order/view/:id', common.restrict, (req, res) => {
+router.get('/admin/order/view/:id', restrict, (req, res) => {
     const db = req.app.db;
-    db.orders.findOne({_id: common.getId(req.params.id)}, (err, result) => {
+    db.orders.findOne({ _id: common.getId(req.params.id) }, (err, result) => {
         if(err){
             console.info(err.stack);
         }
@@ -92,7 +93,7 @@ router.get('/admin/order/view/:id', common.restrict, (req, res) => {
 });
 
 // Admin section
-router.get('/admin/orders/filter/:search', common.restrict, (req, res, next) => {
+router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
     const db = req.app.db;
     let searchTerm = req.params.search;
     let ordersIndex = req.app.ordersIndex;
@@ -103,7 +104,7 @@ router.get('/admin/orders/filter/:search', common.restrict, (req, res, next) => 
     });
 
     // we search on the lunr indexes
-    db.orders.find({_id: {$in: lunrIdArray}}).toArray((err, orders) => {
+    db.orders.find({ _id: { $in: lunrIdArray } }).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -130,11 +131,11 @@ router.get('/admin/orders/filter/:search', common.restrict, (req, res, next) => 
 });
 
 // order product
-router.get('/admin/order/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/order/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
 
     // remove the article
-    db.orders.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
+    db.orders.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
         if(err){
             console.info(err.stack);
         }
@@ -150,13 +151,13 @@ router.get('/admin/order/delete/:id', common.restrict, (req, res) => {
 });
 
 // update order status
-router.post('/admin/order/statusupdate', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/order/statusupdate', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
-    db.orders.update({_id: common.getId(req.body.order_id)}, {$set: {orderStatus: req.body.status}}, {multi: false}, (err, numReplaced) => {
+    db.orders.update({ _id: common.getId(req.body.order_id) }, { $set: { orderStatus: req.body.status } }, { multi: false }, (err, numReplaced) => {
         if(err){
             console.info(err.stack);
         }
-        res.status(200).json({message: 'Status successfully updated'});
+        res.status(200).json({ message: 'Status successfully updated' });
     });
 });
 

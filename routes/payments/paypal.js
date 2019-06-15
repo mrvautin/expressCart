@@ -14,7 +14,7 @@ router.get('/checkout_return', (req, res, next) => {
     let paymentId = req.session.paymentId;
     let payerId = req.query['PayerID'];
 
-    let details = {'payer_id': payerId};
+    let details = { 'payer_id': payerId };
     paypal.payment.execute(paymentId, details, (error, payment) => {
         let paymentApproved = false;
         let paymentMessage = '';
@@ -66,11 +66,11 @@ router.get('/checkout_return', (req, res, next) => {
         }
 
         // update the order status
-        db.orders.update({_id: common.getId(paymentOrderId)}, {$set: {orderStatus: paymentStatus}}, {multi: false}, (err, numReplaced) => {
+        db.orders.update({ _id: common.getId(paymentOrderId) }, { $set: { orderStatus: paymentStatus } }, { multi: false }, (err, numReplaced) => {
             if(err){
                 console.info(err.stack);
             }
-            db.orders.findOne({_id: common.getId(paymentOrderId)}, (err, order) => {
+            db.orders.findOne({ _id: common.getId(paymentOrderId) }, (err, order) => {
                 if(err){
                     console.info(err.stack);
                 }

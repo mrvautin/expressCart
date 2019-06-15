@@ -12,12 +12,13 @@ const helmet = require('helmet');
 const colors = require('colors');
 const cron = require('node-cron');
 const common = require('./lib/common');
-const{initDb} = require('./lib/db');
+const { runIndexing } = require('./lib/indexing');
+const { initDb } = require('./lib/db');
 let handlebars = require('express-handlebars');
 
 // Validate our settings schema
 const Ajv = require('ajv');
-const ajv = new Ajv({useDefaults: true});
+const ajv = new Ajv({ useDefaults: true });
 
 const baseConfig = ajv.validate(require('./config/baseSchema'), require('./config/settings.json'));
 if(baseConfig === false){
@@ -226,7 +227,7 @@ app.use(helmet());
 app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
     resave: true,
@@ -345,7 +346,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
 
         // Remove any invalid cart holds
         await db.cart.remove({
-            sessionId: {$nin: validSessionIds}
+            sessionId: { $nin: validSessionIds }
         });
     });
 
@@ -357,7 +358,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
     // We index when not in test env
     if(process.env.NODE_ENV !== 'test'){
         try{
-            await common.runIndexing(app);
+            await runIndexing(app);
         }catch(ex){
             console.error(colors.red('Error setting up indexes:' + err));
         }

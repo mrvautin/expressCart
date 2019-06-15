@@ -2,7 +2,7 @@ const test = require('ava');
 const fs = require('fs');
 const _ = require('lodash');
 const app = require('../app');
-const common = require('../lib/common');
+const { runIndexing, fixProductDates } = require('../lib/indexing');
 const session = require('supertest-session');
 
 // Get test data to compare in tests
@@ -15,7 +15,6 @@ let config;
 let products;
 let customers;
 let users;
-let orders;
 let request = null;
 
 function setup(db){
@@ -30,7 +29,7 @@ function setup(db){
         return Promise.all([
             db.users.insertMany(jsonData.users),
             db.customers.insertMany(jsonData.customers),
-            db.products.insertMany(common.fixProductDates(jsonData.products))
+            db.products.insertMany(fixProductDates(jsonData.products))
         ]);
     });
 }
@@ -46,7 +45,7 @@ test.before(async () => {
             db = app.db;
 
             await setup(db);
-            await common.runIndexing(app);
+            await runIndexing(app);
 
             // Get some data from DB to use in compares
             products = await db.products.find({}).toArray();
@@ -70,8 +69,6 @@ test.before(async () => {
                 await db.orders.insert(order);
             });
 
-            // Get orders
-            orders = await db.orders.find({}).toArray();
             resolve();
         });
     });

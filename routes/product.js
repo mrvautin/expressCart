@@ -1,15 +1,16 @@
 const express = require('express');
 const common = require('../lib/common');
+const { restrict, checkAccess } = require('../lib/auth');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-router.get('/admin/products', common.restrict, (req, res, next) => {
+router.get('/admin/products', restrict, (req, res, next) => {
     const db = req.app.db;
     // get the top results
-    db.products.find({}).sort({'productAddedDate': -1}).limit(10).toArray((err, topResults) => {
+    db.products.find({}).sort({ 'productAddedDate': -1 }).limit(10).toArray((err, topResults) => {
         if(err){
             console.info(err.stack);
         }
@@ -37,7 +38,7 @@ router.get('/admin/products/filter/:search', (req, res, next) => {
     });
 
     // we search on the lunr indexes
-    db.products.find({_id: {$in: lunrIdArray}}).toArray((err, results) => {
+    db.products.find({ _id: { $in: lunrIdArray } }).toArray((err, results) => {
         if(err){
             console.error(colors.red('Error searching', err));
         }
@@ -56,7 +57,7 @@ router.get('/admin/products/filter/:search', (req, res, next) => {
 });
 
 // insert form
-router.get('/admin/product/new', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/product/new', restrict, checkAccess, (req, res) => {
     res.render('product_new', {
         title: 'New product',
         session: req.session,
@@ -74,7 +75,7 @@ router.get('/admin/product/new', common.restrict, common.checkAccess, (req, res)
 });
 
 // insert new product form action
-router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -90,7 +91,7 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
         productStock: req.body.frmProductStock ? parseInt(req.body.frmProductStock) : null
     };
 
-    db.products.count({'productPermalink': req.body.frmProductPermalink}, (err, product) => {
+    db.products.count({ 'productPermalink': req.body.frmProductPermalink }, (err, product) => {
         if(err){
             console.info(err.stack);
         }
@@ -151,11 +152,11 @@ router.post('/admin/product/insert', common.restrict, common.checkAccess, (req, 
 });
 
 // render the editor
-router.get('/admin/product/edit/:id', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/product/edit/:id', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     common.getImages(req.params.id, req, res, (images) => {
-        db.products.findOne({_id: common.getId(req.params.id)}, (err, result) => {
+        db.products.findOne({ _id: common.getId(req.params.id) }, (err, result) => {
             if(err){
                 console.info(err.stack);
             }
@@ -182,10 +183,10 @@ router.get('/admin/product/edit/:id', common.restrict, common.checkAccess, (req,
 });
 
 // Update an existing product form action
-router.post('/admin/product/update', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
-    db.products.findOne({_id: common.getId(req.body.frmProductId)}, (err, product) => {
+    db.products.findOne({ _id: common.getId(req.body.frmProductId) }, (err, product) => {
         if(err){
             console.info(err.stack);
             req.session.message = 'Failed updating product.';
@@ -193,7 +194,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
             res.redirect('/admin/product/edit/' + req.body.frmProductId);
             return;
         }
-        db.products.count({'productPermalink': req.body.frmProductPermalink, _id: {$ne: common.getId(product._id)}}, (err, count) => {
+        db.products.count({ 'productPermalink': req.body.frmProductPermalink, _id: { $ne: common.getId(product._id) } }, (err, count) => {
             if(err){
                 console.info(err.stack);
                 req.session.message = 'Failed updating product.';
@@ -244,7 +245,7 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
                         productDoc['productImage'] = product.productImage;
                     }
 
-                    db.products.update({_id: common.getId(req.body.frmProductId)}, {$set: productDoc}, {}, (err, numReplaced) => {
+                    db.products.update({ _id: common.getId(req.body.frmProductId) }, { $set: productDoc }, {}, (err, numReplaced) => {
                         if(err){
                             console.error(colors.red('Failed to save product: ' + err));
                             req.session.message = 'Failed to save. Please try again';
@@ -267,11 +268,11 @@ router.post('/admin/product/update', common.restrict, common.checkAccess, (req, 
 });
 
 // delete product
-router.get('/admin/product/delete/:id', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/product/delete/:id', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     // remove the article
-    db.products.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
+    db.products.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
         if(err){
             console.info(err.stack);
         }
@@ -294,10 +295,10 @@ router.get('/admin/product/delete/:id', common.restrict, common.checkAccess, (re
 });
 
 // update the published state based on an ajax call from the frontend
-router.post('/admin/product/published_state', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/product/published_state', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
-    db.products.update({_id: common.getId(req.body.id)}, {$set: {productPublished: req.body.state}}, {multi: false}, (err, numReplaced) => {
+    db.products.update({ _id: common.getId(req.body.id) }, { $set: { productPublished: req.body.state } }, { multi: false }, (err, numReplaced) => {
         if(err){
             console.error(colors.red('Failed to update the published state: ' + err));
             res.status(400).json('Published state not updated');
@@ -308,40 +309,40 @@ router.post('/admin/product/published_state', common.restrict, common.checkAcces
 });
 
 // set as main product image
-router.post('/admin/product/setasmainimage', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/product/setasmainimage', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     // update the productImage to the db
-    db.products.update({_id: common.getId(req.body.product_id)}, {$set: {productImage: req.body.productImage}}, {multi: false}, (err, numReplaced) => {
+    db.products.update({ _id: common.getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false }, (err, numReplaced) => {
         if(err){
-            res.status(400).json({message: 'Unable to set as main image. Please try again.'});
+            res.status(400).json({ message: 'Unable to set as main image. Please try again.' });
         }else{
-            res.status(200).json({message: 'Main image successfully set'});
+            res.status(200).json({ message: 'Main image successfully set' });
         }
     });
 });
 
 // deletes a product image
-router.post('/admin/product/deleteimage', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/product/deleteimage', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     // get the productImage from the db
-    db.products.findOne({_id: common.getId(req.body.product_id)}, (err, product) => {
+    db.products.findOne({ _id: common.getId(req.body.product_id) }, (err, product) => {
         if(err){
             console.info(err.stack);
         }
         if(req.body.productImage === product.productImage){
             // set the produt_image to null
-            db.products.update({_id: common.getId(req.body.product_id)}, {$set: {productImage: null}}, {multi: false}, (err, numReplaced) => {
+            db.products.update({ _id: common.getId(req.body.product_id) }, { $set: { productImage: null } }, { multi: false }, (err, numReplaced) => {
                 if(err){
                     console.info(err.stack);
                 }
                 // remove the image from disk
                 fs.unlink(path.join('public', req.body.productImage), (err) => {
                     if(err){
-                        res.status(400).json({message: 'Image not removed, please try again.'});
+                        res.status(400).json({ message: 'Image not removed, please try again.' });
                     }else{
-                        res.status(200).json({message: 'Image successfully deleted'});
+                        res.status(200).json({ message: 'Image successfully deleted' });
                     }
                 });
             });
@@ -349,9 +350,9 @@ router.post('/admin/product/deleteimage', common.restrict, common.checkAccess, (
             // remove the image from disk
             fs.unlink(path.join('public', req.body.productImage), (err) => {
                 if(err){
-                    res.status(400).json({message: 'Image not removed, please try again.'});
+                    res.status(400).json({ message: 'Image not removed, please try again.' });
                 }else{
-                    res.status(200).json({message: 'Image successfully deleted'});
+                    res.status(200).json({ message: 'Image successfully deleted' });
                 }
             });
         }

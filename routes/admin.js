@@ -1,5 +1,6 @@
 const express = require('express');
 const common = require('../lib/common');
+const { restrict, checkAccess } = require('../lib/auth');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
@@ -12,7 +13,7 @@ const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 
 // Admin section
-router.get('/admin', common.restrict, (req, res, next) => {
+router.get('/admin', restrict, (req, res, next) => {
     res.redirect('/admin/orders');
 });
 
@@ -59,15 +60,15 @@ router.get('/admin/login', (req, res) => {
 router.post('/admin/login_action', (req, res) => {
     let db = req.app.db;
 
-    db.users.findOne({userEmail: common.mongoSanitize(req.body.email)}, (err, user) => {
+    db.users.findOne({ userEmail: common.mongoSanitize(req.body.email) }, (err, user) => {
         if(err){
-            res.status(400).json({message: 'A user with that email does not exist.'});
+            res.status(400).json({ message: 'A user with that email does not exist.' });
             return;
         }
 
         // check if user exists with that email
         if(user === undefined || user === null){
-            res.status(400).json({message: 'A user with that email does not exist.'});
+            res.status(400).json({ message: 'A user with that email does not exist.' });
         }else{
             // we have a user under that email so we compare the password
             bcrypt.compare(req.body.password, user.userPassword)
@@ -77,10 +78,10 @@ router.post('/admin/login_action', (req, res) => {
                     req.session.usersName = user.usersName;
                     req.session.userId = user._id.toString();
                     req.session.isAdmin = user.isAdmin;
-                    res.status(200).json({message: 'Login successful'});
+                    res.status(200).json({ message: 'Login successful' });
                 }else{
                     // password is not correct
-                    res.status(400).json({message: 'Access denied. Check password and try again.'});
+                    res.status(400).json({ message: 'Access denied. Check password and try again.' });
                 }
             });
         }
@@ -152,7 +153,7 @@ router.post('/admin/setup_action', (req, res) => {
 });
 
 // settings update
-router.get('/admin/settings', common.restrict, (req, res) => {
+router.get('/admin/settings', restrict, (req, res) => {
     res.render('settings', {
         title: 'Cart settings',
         session: req.session,
@@ -168,7 +169,7 @@ router.get('/admin/settings', common.restrict, (req, res) => {
 });
 
 // settings update
-router.post('/admin/createApiKey', common.restrict, common.checkAccess, async (req, res) => {
+router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     let result = await db.users.findOneAndUpdate({
         _id: ObjectId(req.session.userId),
@@ -182,27 +183,27 @@ router.post('/admin/createApiKey', common.restrict, common.checkAccess, async (r
     });
 
     if(result.value && result.value.apiKey){
-        res.status(200).json({message: 'API Key generated', apiKey: result.value.apiKey});
+        res.status(200).json({ message: 'API Key generated', apiKey: result.value.apiKey });
         return;
     }
-    res.status(400).json({message: 'Failed to generate API Key'});
+    res.status(400).json({ message: 'Failed to generate API Key' });
 });
 
 // settings update
-router.post('/admin/settings/update', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
     let result = common.updateConfig(req.body);
     if(result === true){
-        res.status(200).json({message: 'Settings successfully updated'});
+        res.status(200).json({ message: 'Settings successfully updated' });
         res.configDirty = true;
         return;
     }
-    res.status(400).json({message: 'Permission denied'});
+    res.status(400).json({ message: 'Permission denied' });
 });
 
 // settings update
-router.post('/admin/settings/option/remove', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/option/remove', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
-    db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
+    db.products.findOne({ _id: common.getId(req.body.productId) }, (err, product) => {
         if(err){
             console.info(err.stack);
         }
@@ -210,24 +211,24 @@ router.post('/admin/settings/option/remove', common.restrict, common.checkAccess
             let optJson = JSON.parse(product.productOptions);
             delete optJson[req.body.optName];
 
-            db.products.update({_id: common.getId(req.body.productId)}, {$set: {productOptions: JSON.stringify(optJson)}}, (err, numReplaced) => {
+            db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productOptions: JSON.stringify(optJson) } }, (err, numReplaced) => {
                 if(err){
                     console.info(err.stack);
                 }
                 if(numReplaced.result.nModified === 1){
-                    res.status(200).json({message: 'Option successfully removed'});
+                    res.status(200).json({ message: 'Option successfully removed' });
                 }else{
-                    res.status(400).json({message: 'Failed to remove option. Please try again.'});
+                    res.status(400).json({ message: 'Failed to remove option. Please try again.' });
                 }
             });
         }else{
-            res.status(400).json({message: 'Product not found. Try saving before removing.'});
+            res.status(400).json({ message: 'Product not found. Try saving before removing.' });
         }
     });
 });
 
 // settings update
-router.get('/admin/settings/menu', common.restrict, async (req, res) => {
+router.get('/admin/settings/menu', restrict, async (req, res) => {
     const db = req.app.db;
     res.render('settings_menu', {
         title: 'Cart menu',
@@ -242,7 +243,7 @@ router.get('/admin/settings/menu', common.restrict, async (req, res) => {
 });
 
 // settings page list
-router.get('/admin/settings/pages', common.restrict, (req, res) => {
+router.get('/admin/settings/pages', restrict, (req, res) => {
     const db = req.app.db;
     db.pages.find({}).toArray(async (err, pages) => {
         if(err){
@@ -264,7 +265,7 @@ router.get('/admin/settings/pages', common.restrict, (req, res) => {
 });
 
 // settings pages new
-router.get('/admin/settings/pages/new', common.restrict, common.checkAccess, async (req, res) => {
+router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     res.render('settings_page_edit', {
@@ -281,9 +282,9 @@ router.get('/admin/settings/pages/new', common.restrict, common.checkAccess, asy
 });
 
 // settings pages editor
-router.get('/admin/settings/pages/edit/:page', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
-    db.pages.findOne({_id: common.getId(req.params.page)}, async (err, page) => {
+    db.pages.findOne({ _id: common.getId(req.params.page) }, async (err, page) => {
         if(err){
             console.info(err.stack);
         }
@@ -317,7 +318,7 @@ router.get('/admin/settings/pages/edit/:page', common.restrict, common.checkAcce
 });
 
 // settings update page
-router.post('/admin/settings/pages/update', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/pages/update', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
     let doc = {
@@ -329,37 +330,37 @@ router.post('/admin/settings/pages/update', common.restrict, common.checkAccess,
 
     if(req.body.page_id){
         // existing page
-        db.pages.findOne({_id: common.getId(req.body.page_id)}, (err, page) => {
+        db.pages.findOne({ _id: common.getId(req.body.page_id) }, (err, page) => {
             if(err){
                 console.info(err.stack);
             }
             if(page){
-                db.pages.update({_id: common.getId(req.body.page_id)}, {$set: doc}, {}, (err, numReplaced) => {
+                db.pages.update({ _id: common.getId(req.body.page_id) }, { $set: doc }, {}, (err, numReplaced) => {
                     if(err){
                         console.info(err.stack);
                     }
-                    res.status(200).json({message: 'Page updated successfully', page_id: req.body.page_id});
+                    res.status(200).json({ message: 'Page updated successfully', page_id: req.body.page_id });
                 });
             }else{
-                res.status(400).json({message: 'Page not found'});
+                res.status(400).json({ message: 'Page not found' });
             }
         });
     }else{
         // insert page
         db.pages.insert(doc, (err, newDoc) => {
             if(err){
-                res.status(400).json({message: 'Error creating page. Please try again.'});
+                res.status(400).json({ message: 'Error creating page. Please try again.' });
             }else{
-                res.status(200).json({message: 'New page successfully created', page_id: newDoc._id});
+                res.status(200).json({ message: 'New page successfully created', page_id: newDoc._id });
             }
         });
     }
 });
 
 // settings delete page
-router.get('/admin/settings/pages/delete/:page', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
-    db.pages.remove({_id: common.getId(req.params.page)}, {}, (err, numRemoved) => {
+    db.pages.remove({ _id: common.getId(req.params.page) }, {}, (err, numRemoved) => {
         if(err){
             req.session.message = 'Error deleting page. Please try again.';
             req.session.messageType = 'danger';
@@ -373,7 +374,7 @@ router.get('/admin/settings/pages/delete/:page', common.restrict, common.checkAc
 });
 
 // new menu item
-router.post('/admin/settings/menu/new', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
     let result = common.newMenu(req, res);
     if(result === false){
         req.session.message = 'Failed creating menu.';
@@ -383,7 +384,7 @@ router.post('/admin/settings/menu/new', common.restrict, common.checkAccess, (re
 });
 
 // update existing menu item
-router.post('/admin/settings/menu/update', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
     let result = common.updateMenu(req, res);
     if(result === false){
         req.session.message = 'Failed updating menu.';
@@ -393,7 +394,7 @@ router.post('/admin/settings/menu/update', common.restrict, common.checkAccess, 
 });
 
 // delete menu item
-router.get('/admin/settings/menu/delete/:menuid', common.restrict, common.checkAccess, (req, res) => {
+router.get('/admin/settings/menu/delete/:menuid', restrict, checkAccess, (req, res) => {
     let result = common.deleteMenu(req, res, req.params.menuid);
     if(result === false){
         req.session.message = 'Failed deleting menu.';
@@ -403,10 +404,10 @@ router.get('/admin/settings/menu/delete/:menuid', common.restrict, common.checkA
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/save_order', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res) => {
     let result = common.orderMenu(req, res);
     if(result === false){
-        res.status(400).json({message: 'Failed saving menu order'});
+        res.status(400).json({ message: 'Failed saving menu order' });
         return;
     }
     res.status(200);
@@ -420,9 +421,9 @@ router.post('/admin/api/validate_permalink', (req, res) => {
 
     let query = {};
     if(typeof req.body.docId === 'undefined' || req.body.docId === ''){
-        query = {productPermalink: req.body.permalink};
+        query = { productPermalink: req.body.permalink };
     }else{
-        query = {productPermalink: req.body.permalink, _id: {$ne: common.getId(req.body.docId)}};
+        query = { productPermalink: req.body.permalink, _id: { $ne: common.getId(req.body.docId) } };
     }
 
     db.products.count(query, (err, products) => {
@@ -430,16 +431,16 @@ router.post('/admin/api/validate_permalink', (req, res) => {
             console.info(err.stack);
         }
         if(products > 0){
-            res.status(400).json({message: 'Permalink already exists'});
+            res.status(400).json({ message: 'Permalink already exists' });
         }else{
-            res.status(200).json({message: 'Permalink validated successfully'});
+            res.status(200).json({ message: 'Permalink validated successfully' });
         }
     });
 });
 
 // upload the file
-let upload = multer({dest: 'public/uploads/'});
-router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.single('upload_file'), (req, res, next) => {
+let upload = multer({ dest: 'public/uploads/' });
+router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_file'), (req, res, next) => {
     const db = req.app.db;
 
     if(req.file){
@@ -461,7 +462,7 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
         }
 
         // get the product form the DB
-        db.products.findOne({_id: common.getId(req.body.productId)}, (err, product) => {
+        db.products.findOne({ _id: common.getId(req.body.productId) }, (err, product) => {
             if(err){
                 console.info(err.stack);
                 // delete the temp file.
@@ -494,7 +495,7 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
-                db.products.update({_id: common.getId(req.body.productId)}, {$set: {productImage: imagePath}}, {multi: false}, (err, numReplaced) => {
+                db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false }, (err, numReplaced) => {
                     if(err){
                         console.info(err.stack);
                     }
@@ -517,33 +518,33 @@ router.post('/admin/file/upload', common.restrict, common.checkAccess, upload.si
 });
 
 // delete a file via ajax request
-router.post('/admin/testEmail', common.restrict, (req, res) => {
+router.post('/admin/testEmail', restrict, (req, res) => {
     let config = req.app.config;
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
-    res.status(200).json({message: 'Test email sent'});
+    res.status(200).json({ message: 'Test email sent' });
 });
 
 // delete a file via ajax request
-router.post('/admin/file/delete', common.restrict, common.checkAccess, (req, res) => {
+router.post('/admin/file/delete', restrict, checkAccess, (req, res) => {
     req.session.message = null;
     req.session.messageType = null;
 
     fs.unlink('public/' + req.body.img, (err) => {
         if(err){
             console.error(colors.red('File delete error: ' + err));
-            res.writeHead(400, {'Content-Type': 'application/text'});
+            res.writeHead(400, { 'Content-Type': 'application/text' });
             res.end('Failed to delete file: ' + err);
         }else{
-            res.writeHead(200, {'Content-Type': 'application/text'});
+            res.writeHead(200, { 'Content-Type': 'application/text' });
             res.end('File deleted successfully');
         }
     });
 });
 
-router.get('/admin/files', common.restrict, (req, res) => {
+router.get('/admin/files', restrict, (req, res) => {
     // loop files in /public/uploads/
-    glob('public/uploads/**', {nosort: true}, (er, files) => {
+    glob('public/uploads/**', { nosort: true }, (er, files) => {
         // sort array
         files.sort();
 

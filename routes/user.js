@@ -1,11 +1,12 @@
 const express = require('express');
 const common = require('../lib/common');
+const { restrict } = require('../lib/auth');
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
 const url = require('url');
 const router = express.Router();
 
-router.get('/admin/users', common.restrict, (req, res) => {
+router.get('/admin/users', restrict, (req, res) => {
     const db = req.app.db;
     db.users.find({}).toArray((err, users) => {
         if(err){
@@ -26,9 +27,9 @@ router.get('/admin/users', common.restrict, (req, res) => {
 });
 
 // edit user
-router.get('/admin/user/edit/:id', common.restrict, (req, res) => {
+router.get('/admin/user/edit/:id', restrict, (req, res) => {
     const db = req.app.db;
-    db.users.findOne({_id: common.getId(req.params.id)}, (err, user) => {
+    db.users.findOne({ _id: common.getId(req.params.id) }, (err, user) => {
         if(err){
             console.info(err.stack);
         }
@@ -55,7 +56,7 @@ router.get('/admin/user/edit/:id', common.restrict, (req, res) => {
 });
 
 // users new
-router.get('/admin/user/new', common.restrict, (req, res) => {
+router.get('/admin/user/new', restrict, (req, res) => {
     res.render('user_new', {
         title: 'User - New',
         admin: true,
@@ -68,10 +69,10 @@ router.get('/admin/user/new', common.restrict, (req, res) => {
 });
 
 // delete user
-router.get('/admin/user/delete/:id', common.restrict, (req, res) => {
+router.get('/admin/user/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
     if(req.session.isAdmin === true){
-        db.users.remove({_id: common.getId(req.params.id)}, {}, (err, numRemoved) => {
+        db.users.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
             if(err){
                 console.info(err.stack);
             }
@@ -87,13 +88,13 @@ router.get('/admin/user/delete/:id', common.restrict, (req, res) => {
 });
 
 // update a user
-router.post('/admin/user/update', common.restrict, (req, res) => {
+router.post('/admin/user/update', restrict, (req, res) => {
     const db = req.app.db;
 
     let isAdmin = req.body.user_admin === 'on';
 
     // get the user we want to update
-    db.users.findOne({_id: common.getId(req.body.userId)}, (err, user) => {
+    db.users.findOne({ _id: common.getId(req.body.userId) }, (err, user) => {
         if(err){
             console.info(err.stack);
         }
@@ -120,10 +121,10 @@ router.post('/admin/user/update', common.restrict, (req, res) => {
             updateDoc.userPassword = bcrypt.hashSync(req.body.userPassword);
         }
 
-        db.users.update({_id: common.getId(req.body.userId)},
+        db.users.update({ _id: common.getId(req.body.userId) },
             {
                 $set: updateDoc
-            }, {multi: false}, (err, numReplaced) => {
+            }, { multi: false }, (err, numReplaced) => {
                 if(err){
                     console.error(colors.red('Failed updating user: ' + err));
                     req.session.message = 'Failed to update user';
@@ -140,7 +141,7 @@ router.post('/admin/user/update', common.restrict, (req, res) => {
 });
 
 // insert a user
-router.post('/admin/user/insert', common.restrict, (req, res) => {
+router.post('/admin/user/insert', restrict, (req, res) => {
     const db = req.app.db;
 
     // set the account to admin if using the setup form. Eg: First user account
@@ -163,7 +164,7 @@ router.post('/admin/user/insert', common.restrict, (req, res) => {
         };
 
         // check for existing user
-        db.users.findOne({'userEmail': req.body.userEmail}, (err, user) => {
+        db.users.findOne({ 'userEmail': req.body.userEmail }, (err, user) => {
             if(user){
                 // user already exists with that email address
                 console.error(colors.red('Failed to insert user, possibly already exists: ' + err));
