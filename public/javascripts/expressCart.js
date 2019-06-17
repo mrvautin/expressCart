@@ -103,7 +103,7 @@ $(document).ready(function (){
         $(this).addClass('table table-hover');
     });
 
-    $('#frmProductTags').tokenfield();
+    $('#productTags').tokenfield();
 
     $(document).on('click', '.dashboard_list', function(e){
         window.document.location = $(this).attr('href');
@@ -245,8 +245,8 @@ $(document).ready(function (){
         var optOptions = $('#product_optOptions').val();
 
         var optJson = {};
-        if($('#productOptJson').val() !== ''){
-            optJson = JSON.parse($('#productOptJson').val());
+        if($('#productOptions').val() !== ''){
+            optJson = JSON.parse($('#productOptions').val());
         }
 
         var html = '<li class="list-group-item">';
@@ -271,7 +271,7 @@ $(document).ready(function (){
         };
 
         // write new json back to field
-        $('#productOptJson').val(JSON.stringify(optJson));
+        $('#productOptions').val(JSON.stringify(optJson));
 
         // clear inputs
         $('#product_optName').val('');
@@ -593,14 +593,15 @@ $(document).ready(function (){
 
 	// Call to API to check if a permalink is available
     $(document).on('click', '#validate_permalink', function(e){
-        if($('#frmProductPermalink').val() !== ''){
+        if($('#productPermalink').val() !== ''){
             $.ajax({
                 method: 'POST',
                 url: '/admin/api/validate_permalink',
-                data: { 'permalink': $('#frmProductPermalink').val(), 'docId': $('#frmProductId').val() }
+                data: { 'permalink': $('#productPermalink').val(), 'docId': $('#frmProductId').val() }
             })
             .done(function(msg){
-                showNotification(msg, 'success');
+                console.log('msg', msg);
+                showNotification(msg.message, 'success');
             })
             .fail(function(msg){
                 showNotification(msg.responseJSON.message, 'danger');
@@ -654,8 +655,8 @@ $(document).ready(function (){
 
     // create a permalink from the product title if no permalink has already been set
     $(document).on('click', '#frm_edit_product_save', function(e){
-        if($('#frmProductPermalink').val() === '' && $('#frmProductTitle').val() !== ''){
-            $('#frmProductPermalink').val(slugify($('#frmProductTitle').val()));
+        if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
+            $('#productPermalink').val(slugify($('#productTitle').val()));
         }
     });
 

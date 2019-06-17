@@ -9,24 +9,24 @@
                 <h2>New product</h2>
             </div>
             <div class="form-group">
-                <label for="frmProductTitle" class="col-sm-2 control-label">Product title *</label>
+                <label for="productTitle" class="col-sm-2 control-label">Product title *</label>
                 <div class="col-sm-10">
-                    <input type="text" id="frmProductTitle" name="frmProductTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
+                    <input type="text" id="productTitle" name="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
                 </div>
             </div>
             <div class="form-group">
-                <label for="frmProductPrice" class="col-sm-2 control-label">Product price *</label>
+                <label for="productPrice" class="col-sm-2 control-label">Product price *</label>
                 <div class="col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input type="number" name="frmProductPrice" class="form-control" step="any" value="{{productPrice}}" required/>
+                        <input type="number" name="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="frmProductPublished" class="col-sm-2 control-label">Status</label>
+                <label for="productPublished" class="col-sm-2 control-label">Status</label>
                 <div class="col-sm-6">
-                    <select class="form-control" id="frmProductPublished" name="frmProductPublished">
+                    <select class="form-control" id="productPublished" name="productPublished">
                         <option value="true" selected>Published</option>
                         <option value="false">Draft</option>
                     </select>
@@ -34,23 +34,23 @@
             </div>
             {{#if config.trackStock}}
             <div class="form-group">
-                <label for="frmProductStock" class="col-sm-2 control-label">Stock level</label>
+                <label for="productStock" class="col-sm-2 control-label">Stock level</label>
                 <div class="col-sm-6">
-                    <input type="number" name="frmProductStock" class="form-control" value="{{productStock}}" step="any" />
+                    <input type="number" name="productStock" class="form-control" value="{{productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
             <div class="form-group" id="editor-wrapper">
                 <label for="editor" class="col-sm-2 control-label">Product description *</label>
                 <div class="col-sm-10">
-                    <textarea id="editor" minlength="5" rows="10" name="frmProductDescription" class="form-control" required>{{productDescription}}</textarea>
+                    <textarea id="editor" minlength="5" rows="10" name="productDescription" class="form-control" required>{{productDescription}}</textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Permalink</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="frmProductPermalink" id="frmProductPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
+                        <input type="text" class="form-control" name="productPermalink" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="validate_permalink" type="button">Validate</button>
                         </span>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" id="productOptJson" name="productOptJson" value="{{result.productOptions}}" />
+                <input type="hidden" id="productOptions" name="productOptions" value="{{result.productOptions}}" />
                 <label for="editor" class="col-sm-2 control-label">Product options</label>
                 <div class="col-lg-10">
                     <ul class="list-group" id="product_opt_wrapper">
@@ -107,21 +107,21 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="frmProductComment" class="col-sm-2 control-label">Allow comment</label>
+                <label for="productComment" class="col-sm-2 control-label">Allow comment</label>
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
-                            <input class="frmProductComment" type="checkbox" {{checkedState result.productComment}} id="frmProductComment"
-                                name="frmProductComment">
+                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment"
+                                name="productComment">
                         </label>
                     </div>
                     <p class="help-block">Allow free form comments when adding products to cart</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="frmProductTags" class="col-sm-2 control-label">Product tag words</label>
+                <label for="productTags" class="col-sm-2 control-label">Product tag words</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="frmProductTags" name="frmProductTags">
+                    <input type="text" class="form-control" id="productTags" name="productTags">
                     <p class="help-block">Tag words used to indexed products, making them easier to find and filter.</p>
                 </div>
             </div>

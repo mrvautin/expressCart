@@ -13,6 +13,7 @@ const colors = require('colors');
 const cron = require('node-cron');
 const common = require('./lib/common');
 const { runIndexing } = require('./lib/indexing');
+const { addSchemas } = require('./lib/schema');
 const { initDb } = require('./lib/db');
 let handlebars = require('express-handlebars');
 
@@ -78,7 +79,7 @@ app.set('view engine', 'hbs');
 // helpers for the handlebar templating platform
 handlebars = handlebars.create({
     helpers: {
-        perRowClass: function(numProducts){
+        perRowClass: (numProducts) => {
             if(parseInt(numProducts) === 1){
                 return'col-md-12 col-xl-12 col m12 xl12 product-item';
             }
@@ -94,7 +95,7 @@ handlebars = handlebars.create({
 
             return'col-md-6 col-xl-6 col m6 xl6 product-item';
         },
-        menuMatch: function(title, search){
+        menuMatch: (title, search) => {
             if(!title || !search){
                 return'';
             }
@@ -103,22 +104,22 @@ handlebars = handlebars.create({
             }
             return'';
         },
-        getTheme: function(view){
+        getTheme: (view) => {
             return`themes/${config.theme}/${view}`;
         },
-        formatAmount: function(amt){
+        formatAmount: (amt) => {
             if(amt){
                 return numeral(amt).format('0.00');
             }
             return'0.00';
         },
-        amountNoDecimal: function(amt){
+        amountNoDecimal: (amt) => {
             if(amt){
                 return handlebars.helpers.formatAmount(amt).replace('.', '');
             }
             return handlebars.helpers.formatAmount(amt);
         },
-        getStatusColor: function (status){
+        getStatusColor: (status) => {
             switch(status){
             case'Paid':
                 return'success';
@@ -138,52 +139,58 @@ handlebars = handlebars.create({
                 return'danger';
             }
         },
-        checkProductOptions: function (opts){
+        checkProductOptions: (opts) => {
             if(opts){
                 return'true';
             }
             return'false';
         },
-        currencySymbol: function(value){
+        currencySymbol: (value) => {
             if(typeof value === 'undefined' || value === ''){
                 return'$';
             }
             return value;
         },
-        objectLength: function(obj){
+        objectLength: (obj) => {
             if(obj){
                 return Object.keys(obj).length;
             }
             return 0;
         },
-        checkedState: function (state){
+        stringify: (obj) => {
+            if(obj){
+                return JSON.stringify(obj);
+            }
+            return'';
+        },
+        checkedState: (state) => {
             if(state === 'true' || state === true){
                 return'checked';
             }
             return'';
         },
-        selectState: function (state, value){
+        selectState: (state, value) => {
             if(state === value){
                 return'selected';
             }
             return'';
         },
-        isNull: function (value, options){
+        isNull: (value, options) => {
             if(typeof value === 'undefined' || value === ''){
                 return options.fn(this);
             }
             return options.inverse(this);
         },
-        toLower: function (value){
+        toLower: (value) => {
             if(value){
                 return value.toLowerCase();
             }
             return null;
         },
-        formatDate: function (date, format){
+        formatDate: (date, format) => {
             return moment(date).format(format);
         },
-        ifCond: function (v1, operator, v2, options){
+        ifCond: (v1, operator, v2, options) => {
             switch(operator){
             case'==':
                 return(v1 === v2) ? options.fn(this) : options.inverse(this);
@@ -207,7 +214,7 @@ handlebars = handlebars.create({
                 return options.inverse(this);
             }
         },
-        isAnAdmin: function (value, options){
+        isAnAdmin: (value, options) => {
             if(value === 'true' || value === true){
                 return options.fn(this);
             }
@@ -354,6 +361,9 @@ initDb(config.databaseConnectionString, async (err, db) => {
     if(process.env.NODE_ENV === 'test'){
         config.trackStock = true;
     }
+
+    // Process schemas
+    await addSchemas();
 
     // We index when not in test env
     if(process.env.NODE_ENV !== 'test'){

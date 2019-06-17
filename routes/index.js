@@ -147,10 +147,7 @@ router.get('/product/:id', (req, res) => {
         if(err || result == null || result.productPublished === 'false'){
             res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         }else{
-            let productOptions = {};
-            if(result.productOptions){
-                productOptions = JSON.parse(result.productOptions);
-            }
+            let productOptions = result.productOptions;
 
             // If JSON query param return json instead
             if(req.query.json === 'true'){

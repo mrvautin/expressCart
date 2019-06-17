@@ -12,17 +12,17 @@
                         {{#ifCond this.optType '==' "select"}}
                             <strong>{{this.optName}}</strong>
                             <select name="opt-{{this.optName}}" class="form-control product-opt">
-                                {{#each this.optOptions}}
+                                {{#each ../this.optOptions}}
                                     <option value="{{this}}">{{this}}</option>
                                 {{/each}}
                             </select>
                         {{/ifCond}}
                         {{#ifCond this.optType '==' "radio"}}
-                            {{#each this.optOptions}}
+                            {{#each ../this.optOptions}}
                                 <strong>{{this.optName}}</strong>
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" class="product-opt" name="opt-{{../this.optName}}" value="{{this}}">
+                                        <input type="radio" class="product-opt" name="opt-{{../../this.optName}}" value="{{this}}">
                                         {{this}}
                                     </label>
                                 </div>
@@ -31,7 +31,7 @@
                         {{#ifCond this.optType '==' "checkbox"}}
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" class="product-opt" name="opt-{{../this.optName}}" value="{{this.optName}}"><strong>{{this.optName}}</strong>
+                                    <input type="checkbox" class="product-opt" name="opt-{{../this.optName}}" value="{{../this.optName}}"><strong>{{../this.optName}}</strong>
                                 </label>
                             </div>
                         {{/ifCond}}
