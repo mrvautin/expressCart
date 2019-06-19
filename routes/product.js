@@ -1,6 +1,7 @@
 const express = require('express');
 const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
+const { indexProducts } = require('../lib/indexing');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -137,7 +138,7 @@ router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
                     let newId = newDoc.insertedIds[0];
 
                     // add to lunr index
-                    common.indexProducts(req.app)
+                    indexProducts(req.app)
                     .then(() => {
                         req.session.message = 'New product successfully created';
                         req.session.messageType = 'success';
@@ -253,7 +254,7 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                             res.redirect('/admin/product/edit/' + req.body.frmProductId);
                         }else{
                             // Update the index
-                            common.indexProducts(req.app)
+                            indexProducts(req.app)
                             .then(() => {
                                 req.session.message = 'Successfully saved';
                                 req.session.messageType = 'success';
@@ -283,7 +284,7 @@ router.get('/admin/product/delete/:id', restrict, checkAccess, (req, res) => {
             }
 
             // remove the index
-            common.indexProducts(req.app)
+            indexProducts(req.app)
             .then(() => {
                 // redirect home
                 req.session.message = 'Product successfully deleted';
