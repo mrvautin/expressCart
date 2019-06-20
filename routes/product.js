@@ -2,10 +2,7 @@ const express = require('express');
 const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
 const { indexProducts } = require('../lib/indexing');
-<<<<<<< HEAD
 const { validateJson } = require('../lib/schema');
-=======
->>>>>>> 0972565124e88e2dc57744e72b8734ffc85d1532
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
