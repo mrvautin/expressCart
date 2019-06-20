@@ -198,7 +198,7 @@ router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
 
                 // If API request, return json
                 if(req.apiAuthenticated){
-                    res.status(200).json({ error: 'New product successfully created' });
+                    res.status(200).json({ message: 'New product successfully created' });
                     return;
                 }
 
@@ -244,24 +244,44 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, (req, res) => {
 router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
-    db.products.findOne({ _id: common.getId(req.body.frmProductId) }, (err, product) => {
+    db.products.findOne({ _id: common.getId(req.body.productId) }, (err, product) => {
         if(err){
             console.info(err.stack);
             req.session.message = 'Failed updating product.';
             req.session.messageType = 'danger';
-            res.redirect('/admin/product/edit/' + req.body.frmProductId);
+
+            // If API request, return json
+            if(req.apiAuthenticated){
+                res.status(400).json({ messge: 'Failed to update product' });
+                return;
+            }
+
+            res.redirect('/admin/product/edit/' + req.body.productId);
             return;
         }
         db.products.count({ 'productPermalink': req.body.productPermalink, _id: { $ne: common.getId(product._id) } }, (err, count) => {
             if(err){
                 console.info(err.stack);
+
+                // If API request, return json
+                if(req.apiAuthenticated){
+                    res.status(400).json({ messge: 'Failed to update product' });
+                    return;
+                }
+
                 req.session.message = 'Failed updating product.';
                 req.session.messageType = 'danger';
-                res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                res.redirect('/admin/product/edit/' + req.body.productId);
                 return;
             }
 
             if(count > 0 && req.body.productPermalink !== ''){
+                // If API request, return json
+                if(req.apiAuthenticated){
+                    res.status(400).json({ messge: 'Permalink already exists. Pick a new one' });
+                    return;
+                }
+
                 // permalink exits
                 req.session.message = 'Permalink already exists. Pick a new one.';
                 req.session.messageType = 'danger';
@@ -277,9 +297,9 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                 req.session.productStock = req.body.productStock ? req.body.productStock : null;
 
                 // redirect to insert
-                res.redirect('/admin/product/edit/' + req.body.frmProductId);
-            }else{        
-                common.getImages(req.body.frmProductId, req, res, (images) => {
+                res.redirect('/admin/product/edit/' + req.body.productId);
+            }else{
+                common.getImages(req.body.productId, req, res, (images) => {
                     // Process supplied options
                     let productOptions = req.body.productOptions;
                     if(productOptions && typeof productOptions !== 'object'){
@@ -291,6 +311,7 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                     }
 
                     let productDoc = {
+                        productId: req.body.productId,
                         productPermalink: req.body.productPermalink,
                         productTitle: common.cleanHtml(req.body.productTitle),
                         productPrice: common.safeParseInt(req.body.productPrice),
@@ -311,7 +332,6 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                             return;
                         }
 
-                        console.log('schemaResult errors', schemaResult.errors);
                         req.session.message = 'Form invalid. Please check values and try again.';
                         req.session.messageType = 'danger';
 
@@ -326,9 +346,12 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                         req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
 
                         // redirect to insert
-                        res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                        res.redirect('/admin/product/edit/' + req.body.productId);
                         return;
                     }
+
+                    // Remove productId from doc
+                    delete productDoc.productId;
 
                     // if no featured image
                     if(!product.productImage){
@@ -341,19 +364,31 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                         productDoc['productImage'] = product.productImage;
                     }
 
-                    db.products.update({ _id: common.getId(req.body.frmProductId) }, { $set: productDoc }, {}, (err, numReplaced) => {
+                    db.products.update({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {}, (err, numReplaced) => {
                         if(err){
+                            // If API request, return json
+                            if(req.apiAuthenticated){
+                                res.status(400).json({ messge: 'Failed to save. Please try again' });
+                                return;
+                            }
+
                             console.error(colors.red('Failed to save product: ' + err));
                             req.session.message = 'Failed to save. Please try again';
                             req.session.messageType = 'danger';
-                            res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                            res.redirect('/admin/product/edit/' + req.body.productId);
                         }else{
                             // Update the index
                             indexProducts(req.app)
                             .then(() => {
+                                // If API request, return json
+                                if(req.apiAuthenticated){
+                                    res.status(200).json({ message: 'Successfully saved', product: productDoc });
+                                    return;
+                                }
+
                                 req.session.message = 'Successfully saved';
                                 req.session.messageType = 'success';
-                                res.redirect('/admin/product/edit/' + req.body.frmProductId);
+                                res.redirect('/admin/product/edit/' + req.body.productId);
                             });
                         }
                     });

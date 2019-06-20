@@ -2,6 +2,9 @@
     "id": "/editProduct",
     "type": "object",
     "properties": {
+        "productId": {
+            "type": "string"
+        },
         "productPermalink": {
             "type": "string"
         },
@@ -31,10 +34,6 @@
         }
     },
     "required": [
-        "productPermalink",
-        "productTitle",
-        "productPrice",
-        "productDescription",
-        "productPublished"
+        "productId"
     ]
 }

@@ -334,3 +334,65 @@ test.serial('[Success] Get single customer', async t => {
     // Check the returned customer matches ID
     t.deepEqual(customers[0]._id.toString(), res.body._id);
 });
+
+test.serial('[Success] Add a product', async t => {
+    const product = {
+        productPermalink: 'test-jacket',
+        productTitle: 'Test Jacket',
+        productPrice: 100,
+        productDescription: 'Test desc',
+        productPublished: true,
+        productTags: 'organic, jacket',
+        productOptions: {
+            Size: {
+                optName: 'Size',
+                optLabel: 'Select size',
+                optType: 'select',
+                optOptions: ['S', 'M', 'L', 'XL']
+            }
+        },
+        productComment: 'test comment',
+        productStock: 50
+    };
+
+    const res = await request
+        .post('/admin/product/insert')
+        .send(product)
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'New product successfully created');
+});
+
+test.serial('[Success] Update a product', async t => {
+    const product = {
+        productId: products[0]._id,
+        productTitle: 'Test Jacket',
+        productPrice: 200,
+        productDescription: 'Test desc',
+        productPublished: true,
+        productTags: 'organic, jacket',
+        productOptions: {
+            Size: {
+                optName: 'Size',
+                optLabel: 'Select size',
+                optType: 'select',
+                optOptions: ['S', 'M', 'L', 'XL']
+            }
+        },
+        productComment: 'test comment',
+        productStock: 50
+    };
+
+    const res = await request
+        .post('/admin/product/update')
+        .send(product)
+        .set('apiKey', users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Successfully saved');
+    t.deepEqual(res.body.product.productTitle, product.productTitle);
+    t.deepEqual(res.body.product.productPrice, product.productPrice);
+});
