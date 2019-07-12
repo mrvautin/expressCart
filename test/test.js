@@ -275,7 +275,7 @@ test.serial('[Success] Get orders by <Paid> status', async t => {
 
 test.serial('[Success] Filter orders', async t => {
     const res = await request
-        .get('/admin/orders/filter/Cles')
+        .get('/admin/orders/filter/test@test.com')
         .set('apiKey', users[0].apiKey)
         .expect(200);
 
