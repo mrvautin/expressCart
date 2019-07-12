@@ -9,7 +9,7 @@ router.get('/admin/orders', restrict, (req, res, next) => {
     const db = req.app.db;
 
     // Top 10 products
-    db.orders.find({}).sort({ 'orderDate': -1 }).limit(10).toArray((err, orders) => {
+    db.orders.find({}).sort({ orderDate: -1 }).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -44,8 +44,8 @@ router.get('/admin/orders/bystatus/:orderstatus', restrict, (req, res, next) => 
     }
 
     // case insensitive search
-    let regex = new RegExp(['^', req.params.orderstatus, '$'].join(''), 'i');
-    db.orders.find({ orderStatus: regex }).sort({ 'orderDate': -1 }).limit(10).toArray((err, orders) => {
+    const regex = new RegExp(['^', req.params.orderstatus, '$'].join(''), 'i');
+    db.orders.find({ orderStatus: regex }).sort({ orderDate: -1 }).limit(10).toArray((err, orders) => {
         if(err){
             console.info(err.stack);
         }
@@ -96,10 +96,12 @@ router.get('/admin/order/view/:id', restrict, (req, res) => {
 // Admin section
 router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
     const db = req.app.db;
-    let searchTerm = req.params.search;
-    let ordersIndex = req.app.ordersIndex;
+    const searchTerm = req.params.search;
+    const ordersIndex = req.app.ordersIndex;
 
-    let lunrIdArray = [];
+    console.log('searchTerm', searchTerm);
+
+    const lunrIdArray = [];
     ordersIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(common.getId(id.ref));
     });
@@ -112,11 +114,13 @@ router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
 
         // If API request, return json
         if(req.apiAuthenticated){
+            console.log('returning json');
             return res.status(200).json({
                 orders
             });
         }
 
+        console.log('returning view');
         return res.render('orders', {
             title: 'Order results',
             orders: orders,
