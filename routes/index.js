@@ -19,8 +19,8 @@ const {
 
 // These is the customer facing routes
 router.get('/payment/:orderId', async (req, res, next) => {
-    let db = req.app.db;
-    let config = req.app.config;
+    const db = req.app.db;
+    const config = req.app.config;
 
     // render the payment complete message
     db.orders.findOne({ _id: getId(req.params.orderId) }, async (err, order) => {
@@ -69,7 +69,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
 });
 
 router.get('/checkout', async (req, res, next) => {
-    let config = req.app.config;
+    const config = req.app.config;
 
     // if there is no items in the cart then render a failure
     if(!req.session.cart){
@@ -136,8 +136,8 @@ router.get('/cartPartial', (req, res) => {
 
 // show an individual product
 router.get('/product/:id', (req, res) => {
-    let db = req.app.db;
-    let config = req.app.config;
+    const db = req.app.db;
+    const config = req.app.config;
 
     db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] }, (err, result) => {
         // render 404 if page is not published
@@ -147,7 +147,7 @@ router.get('/product/:id', (req, res) => {
         if(err || result == null || result.productPublished === 'false'){
             res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         }else{
-            let productOptions = result.productOptions;
+            const productOptions = result.productOptions;
 
             // If JSON query param return json instead
             if(req.query.json === 'true'){
@@ -183,12 +183,12 @@ router.get('/product/:id', (req, res) => {
 router.post('/product/updatecart', (req, res, next) => {
     const db = req.app.db;
     const config = req.app.config;
-    let cartItems = JSON.parse(req.body.items);
+    const cartItems = JSON.parse(req.body.items);
     let hasError = false;
     let stockError = false;
 
     async.eachSeries(cartItems, (cartItem, callback) => {
-        let productQuantity = cartItem.itemQuantity ? cartItem.itemQuantity : 1;
+        const productQuantity = cartItem.itemQuantity ? cartItem.itemQuantity : 1;
         if(cartItem.itemQuantity === 0){
             // quantity equals zero so we remove the item
             req.session.cart.splice(cartItem.cartIndex, 1);
@@ -209,7 +209,7 @@ router.post('/product/updatecart', (req, res, next) => {
                         }
                     }
 
-                    let productPrice = parseFloat(product.productPrice).toFixed(2);
+                    const productPrice = parseFloat(product.productPrice).toFixed(2);
                     if(req.session.cart[cartItem.cartIndex]){
                         req.session.cart[cartItem.cartIndex].quantity = productQuantity;
                         req.session.cart[cartItem.cartIndex].totalItemPrice = productPrice * productQuantity;
@@ -351,20 +351,20 @@ router.post('/product/addtocart', (req, res, next) => {
             }
         }
 
-        let productPrice = parseFloat(product.productPrice).toFixed(2);
+        const productPrice = parseFloat(product.productPrice).toFixed(2);
 
         // Doc used to test if existing in the cart with the options. If not found, we add new.
         let options = {};
         if(req.body.productOptions){
             options = JSON.parse(req.body.productOptions);
         }
-        let findDoc = {
+        const findDoc = {
             productId: req.body.productId,
             options: options
         };
 
         // if exists we add to the existing value
-        let cartIndex = _.findIndex(req.session.cart, findDoc);
+        const cartIndex = _.findIndex(req.session.cart, findDoc);
         let cartQuantity = 0;
         if(cartIndex > -1){
             cartQuantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
@@ -378,7 +378,7 @@ router.post('/product/addtocart', (req, res, next) => {
             cartQuantity = productQuantity;
 
             // new product deets
-            let productObj = {};
+            const productObj = {};
             productObj.productId = req.body.productId;
             productObj.title = product.productTitle;
             productObj.quantity = productQuantity;
@@ -412,13 +412,13 @@ router.post('/product/addtocart', (req, res, next) => {
 
 // search products
 router.get('/search/:searchTerm/:pageNum?', (req, res) => {
-    let db = req.app.db;
-    let searchTerm = req.params.searchTerm;
-    let productsIndex = req.app.productsIndex;
-    let config = req.app.config;
-    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+    const db = req.app.db;
+    const searchTerm = req.params.searchTerm;
+    const productsIndex = req.app.productsIndex;
+    const config = req.app.config;
+    const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    let lunrIdArray = [];
+    const lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(getId(id.ref));
     });
@@ -466,13 +466,13 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
 
 // search products
 router.get('/category/:cat/:pageNum?', (req, res) => {
-    let db = req.app.db;
-    let searchTerm = req.params.cat;
-    let productsIndex = req.app.productsIndex;
-    let config = req.app.config;
-    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+    const db = req.app.db;
+    const searchTerm = req.params.cat;
+    const productsIndex = req.app.productsIndex;
+    const config = req.app.config;
+    const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
-    let lunrIdArray = [];
+    const lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(getId(id.ref));
     });
@@ -523,14 +523,14 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
 // return sitemap
 router.get('/sitemap.xml', (req, res, next) => {
-    let sm = require('sitemap');
-    let config = req.app.config;
+    const sm = require('sitemap');
+    const config = req.app.config;
 
     addSitemapProducts(req, res, (err, products) => {
         if(err){
             console.error(colors.red('Error generating sitemap.xml', err));
         }
-        let sitemap = sm.createSitemap(
+        const sitemap = sm.createSitemap(
             {
                 hostname: config.baseUrl,
                 cacheTime: 600000,
@@ -539,8 +539,8 @@ router.get('/sitemap.xml', (req, res, next) => {
                 ]
             });
 
-        let currentUrls = sitemap.urls;
-        let mergedUrls = currentUrls.concat(products);
+        const currentUrls = sitemap.urls;
+        const mergedUrls = currentUrls.concat(products);
         sitemap.urls = mergedUrls;
         // render the sitemap
         sitemap.toXML((err, xml) => {
@@ -555,9 +555,9 @@ router.get('/sitemap.xml', (req, res, next) => {
 });
 
 router.get('/page/:pageNum', (req, res, next) => {
-    let db = req.app.db;
-    let config = req.app.config;
-    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+    const db = req.app.db;
+    const config = req.app.config;
+    const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
         getData(req, req.params.pageNum),
@@ -595,9 +595,9 @@ router.get('/page/:pageNum', (req, res, next) => {
 
 // The main entry point of the shop
 router.get('/:page?', (req, res, next) => {
-    let db = req.app.db;
-    let config = req.app.config;
-    let numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+    const db = req.app.db;
+    const config = req.app.config;
+    const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){

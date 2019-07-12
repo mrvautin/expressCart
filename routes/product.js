@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/admin/products', restrict, (req, res, next) => {
     const db = req.app.db;
     // get the top results
-    db.products.find({}).sort({ 'productAddedDate': -1 }).limit(10).toArray((err, topResults) => {
+    db.products.find({}).sort({ productAddedDate: -1 }).limit(10).toArray((err, topResults) => {
         if(err){
             console.info(err.stack);
         }
@@ -31,10 +31,10 @@ router.get('/admin/products', restrict, (req, res, next) => {
 
 router.get('/admin/products/filter/:search', (req, res, next) => {
     const db = req.app.db;
-    let searchTerm = req.params.search;
-    let productsIndex = req.app.productsIndex;
+    const searchTerm = req.params.search;
+    const productsIndex = req.app.productsIndex;
 
-    let lunrIdArray = [];
+    const lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(common.getId(id.ref));
     });
@@ -90,7 +90,7 @@ router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
         }
     }
 
-    let doc = {
+    const doc = {
         productPermalink: req.body.productPermalink,
         productTitle: common.cleanHtml(req.body.productTitle),
         productPrice: common.safeParseInt(req.body.productPrice),
@@ -131,7 +131,7 @@ router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
         return;
     }
 
-    db.products.count({ 'productPermalink': req.body.productPermalink }, (err, product) => {
+    db.products.count({ productPermalink: req.body.productPermalink }, (err, product) => {
         if(err){
             console.info(err.stack);
         }
@@ -188,7 +188,7 @@ router.post('/admin/product/insert', restrict, checkAccess, (req, res) => {
                 return;
             }
             // get the new ID
-            let newId = newDoc.insertedIds[0];
+            const newId = newDoc.insertedIds[0];
 
             // add to lunr index
             indexProducts(req.app)
@@ -259,7 +259,7 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
             res.redirect('/admin/product/edit/' + req.body.productId);
             return;
         }
-        db.products.count({ 'productPermalink': req.body.productPermalink, _id: { $ne: common.getId(product._id) } }, (err, count) => {
+        db.products.count({ productPermalink: req.body.productPermalink, _id: { $ne: common.getId(product._id) } }, (err, count) => {
             if(err){
                 console.info(err.stack);
 
@@ -310,7 +310,7 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                         }
                     }
 
-                    let productDoc = {
+                    const productDoc = {
                         productId: req.body.productId,
                         productPermalink: req.body.productPermalink,
                         productTitle: common.cleanHtml(req.body.productTitle),

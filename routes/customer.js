@@ -10,7 +10,7 @@ const { restrict } = require('../lib/auth');
 router.post('/customer/create', (req, res) => {
     const db = req.app.db;
 
-    let doc = {
+    const doc = {
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -113,10 +113,10 @@ router.get('/admin/customers', restrict, (req, res) => {
 // Filtered customers list
 router.get('/admin/customers/filter/:search', restrict, (req, res, next) => {
     const db = req.app.db;
-    let searchTerm = req.params.search;
-    let customersIndex = req.app.customersIndex;
+    const searchTerm = req.params.search;
+    const customersIndex = req.app.customersIndex;
 
-    let lunrIdArray = [];
+    const lunrIdArray = [];
     customersIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(common.getId(id.ref));
     });
@@ -150,7 +150,7 @@ router.get('/admin/customers/filter/:search', restrict, (req, res, next) => {
 
 // login the customer and check the password
 router.post('/customer/login_action', async (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.customers.findOne({email: common.mongoSanitize(req.body.loginEmail)}, (err, customer) => { // eslint-disable-line
         if(err){
@@ -209,16 +209,16 @@ router.get('/customer/forgotten', (req, res) => {
 router.post('/customer/forgotten_action', (req, res) => {
     const db = req.app.db;
     const config = req.app.config;
-    let passwordToken = randtoken.generate(30);
+    const passwordToken = randtoken.generate(30);
 
     // find the user
     db.customers.findOne({ email: req.body.email }, (err, customer) => {
         // if we have a customer, set a token, expiry and email it
         if(customer){
-            let tokenExpiry = Date.now() + 3600000;
+            const tokenExpiry = Date.now() + 3600000;
             db.customers.update({ email: req.body.email }, { $set: { resetToken: passwordToken, resetTokenExpiry: tokenExpiry } }, { multi: false }, (err, numReplaced) => {
                 // send forgotten password email
-                let mailOpts = {
+                const mailOpts = {
                     to: req.body.email,
                     subject: 'Forgotten password request',
                     body: `You are receiving this because you (or someone else) have requested the reset of the password for your user account.\n\n
@@ -281,9 +281,9 @@ router.post('/customer/reset/:token', (req, res) => {
         }
 
         // update the password and remove the token
-        let newPassword = bcrypt.hashSync(req.body.password, 10);
+        const newPassword = bcrypt.hashSync(req.body.password, 10);
         db.customers.update({ email: customer.email }, { $set: { password: newPassword, resetToken: undefined, resetTokenExpiry: undefined } }, { multi: false }, (err, numReplaced) => {
-            let mailOpts = {
+            const mailOpts = {
                 to: customer.email,
                 subject: 'Password successfully reset',
                 body: 'This is a confirmation that the password for your account ' + customer.email + ' has just been changed successfully.\n'

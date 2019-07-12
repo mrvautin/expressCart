@@ -72,7 +72,7 @@ app.engine('hbs', handlebars({
     extname: 'hbs',
     layoutsDir: path.join(__dirname, 'views', 'layouts'),
     defaultLayout: 'layout.hbs',
-    partialsDir: [ path.join(__dirname, 'views') ]
+    partialsDir: [path.join(__dirname, 'views')]
 }));
 app.set('view engine', 'hbs');
 
@@ -224,7 +224,7 @@ handlebars = handlebars.create({
 });
 
 // session store
-let store = new MongoStore({
+const store = new MongoStore({
     uri: config.databaseConnectionString,
     collection: 'sessions'
 });
@@ -286,7 +286,7 @@ app.use('/authorizenet', authorizenet);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-    let err = new Error('Not Found');
+    const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });

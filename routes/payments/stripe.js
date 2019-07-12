@@ -1,15 +1,15 @@
-let express = require('express');
-let common = require('../../lib/common');
+const express = require('express');
+const common = require('../../lib/common');
 const { indexOrders } = require('../../lib/indexing');
-let numeral = require('numeral');
-let stripe = require('stripe')(common.getPaymentConfig().secretKey);
-let router = express.Router();
+const numeral = require('numeral');
+const stripe = require('stripe')(common.getPaymentConfig().secretKey);
+const router = express.Router();
 
 // The homepage of the site
 router.post('/checkout_action', (req, res, next) => {
-    let db = req.app.db;
-    let config = req.app.config;
-    let stripeConfig = common.getPaymentConfig();
+    const db = req.app.db;
+    const config = req.app.config;
+    const stripeConfig = common.getPaymentConfig();
 
     // charge via stripe
     stripe.charges.create({
@@ -35,7 +35,7 @@ router.post('/checkout_action', (req, res, next) => {
         }
 
         // new order doc
-        let orderDoc = {
+        const orderDoc = {
             orderPaymentId: charge.id,
             orderPaymentGateway: 'Stripe',
             orderPaymentMessage: charge.outcome.seller_message,
@@ -62,7 +62,7 @@ router.post('/checkout_action', (req, res, next) => {
             }
 
             // get the new ID
-            let newId = newDoc.insertedIds['0'];
+            const newId = newDoc.insertedIds['0'];
 
             // add to lunr index
             indexOrders(req.app)
@@ -77,7 +77,7 @@ router.post('/checkout_action', (req, res, next) => {
                     req.session.paymentDetails = '<p><strong>Order ID: </strong>' + newId + '</p><p><strong>Transaction ID: </strong>' + charge.id + '</p>';
 
                     // set payment results for email
-                    let paymentResults = {
+                    const paymentResults = {
                         message: req.session.message,
                         messageType: req.session.messageType,
                         paymentEmailAddr: req.session.paymentEmailAddr,

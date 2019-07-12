@@ -3,7 +3,6 @@ const common = require('../lib/common');
 const { restrict } = require('../lib/auth');
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
-const url = require('url');
 const router = express.Router();
 
 router.get('/admin/users', restrict, (req, res) => {
@@ -114,7 +113,7 @@ router.post('/admin/user/update', restrict, (req, res) => {
         }
 
         // create the update doc
-        let updateDoc = {};
+        const updateDoc = {};
         updateDoc.isAdmin = isAdmin;
         updateDoc.usersName = req.body.usersName;
         if(req.body.userPassword){
@@ -145,7 +144,7 @@ router.post('/admin/user/insert', restrict, (req, res) => {
     const db = req.app.db;
 
     // set the account to admin if using the setup form. Eg: First user account
-    let urlParts = url.parse(req.header('Referer'));
+    const urlParts = new URL(req.header('Referer'));
 
     // Check number of users
     db.users.count({}, (err, userCount) => {
@@ -156,7 +155,7 @@ router.post('/admin/user/insert', restrict, (req, res) => {
             isAdmin = true;
         }
 
-        let doc = {
+        const doc = {
             usersName: req.body.usersName,
             userEmail: req.body.userEmail,
             userPassword: bcrypt.hashSync(req.body.userPassword, 10),
@@ -164,7 +163,7 @@ router.post('/admin/user/insert', restrict, (req, res) => {
         };
 
         // check for existing user
-        db.users.findOne({ 'userEmail': req.body.userEmail }, (err, user) => {
+        db.users.findOne({ userEmail: req.body.userEmail }, (err, user) => {
             if(user){
                 // user already exists with that email address
                 console.error(colors.red('Failed to insert user, possibly already exists: ' + err));

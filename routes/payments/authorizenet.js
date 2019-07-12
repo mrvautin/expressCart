@@ -55,7 +55,7 @@ router.post('/checkout_action', (req, res, next) => {
             orderStatus = 'Declined';
         }
 
-        let orderDoc = {
+        const orderDoc = {
             orderPaymentId: txn.transHash,
             orderPaymentGateway: 'AuthorizeNet',
             orderPaymentMessage: 'Your payment was successfully completed',
@@ -82,7 +82,7 @@ router.post('/checkout_action', (req, res, next) => {
             }
 
             // get the new ID
-            let newId = newDoc.insertedIds['0'];
+            const newId = newDoc.insertedIds['0'];
 
             // add to lunr index
             indexOrders(req.app)
@@ -98,7 +98,7 @@ router.post('/checkout_action', (req, res, next) => {
                     <p><strong>Transaction ID: </strong>${txn.transHash}</p>`;
 
                     // set payment results for email
-                    let paymentResults = {
+                    const paymentResults = {
                         message: req.session.message,
                         messageType: req.session.messageType,
                         paymentEmailAddr: req.session.paymentEmailAddr,

@@ -18,7 +18,7 @@ gulp.task('compressCss', () => {
     return gulp.src(['public/stylesheets/*.css',
             '!public/stylesheets/*.min.css'
         ])
-        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(rename({
             dirname: 'public/stylesheets',
             extname: '.min.css'
@@ -30,7 +30,7 @@ gulp.task('compressThemeCss', () => {
     return gulp.src(['views/themes/**/*.css',
             '!views/themes/**/*.min.css'
         ])
-        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(rename({
             extname: '.min.css'
         }))

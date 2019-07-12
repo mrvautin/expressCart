@@ -27,7 +27,7 @@ router.get('/admin/logout', (req, res) => {
 
 // login form
 router.get('/admin/login', (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.users.count({}, (err, userCount) => {
         if(err){
@@ -58,7 +58,7 @@ router.get('/admin/login', (req, res) => {
 
 // login the user and check the password
 router.post('/admin/login_action', (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.users.findOne({ userEmail: common.mongoSanitize(req.body.email) }, (err, user) => {
         if(err){
@@ -90,7 +90,7 @@ router.post('/admin/login_action', (req, res) => {
 
 // setup form is shown when there are no users setup in the DB
 router.get('/admin/setup', (req, res) => {
-    let db = req.app.db;
+    const db = req.app.db;
 
     db.users.count({}, (err, userCount) => {
         if(err){
@@ -119,7 +119,7 @@ router.get('/admin/setup', (req, res) => {
 router.post('/admin/setup_action', (req, res) => {
     const db = req.app.db;
 
-    let doc = {
+    const doc = {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
         userPassword: bcrypt.hashSync(req.body.userPassword, 10),
@@ -171,7 +171,7 @@ router.get('/admin/settings', restrict, (req, res) => {
 // settings update
 router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    let result = await db.users.findOneAndUpdate({
+    const result = await db.users.findOneAndUpdate({
         _id: ObjectId(req.session.userId),
         isAdmin: true
     }, {
@@ -208,7 +208,7 @@ router.post('/admin/settings/option/remove', restrict, checkAccess, (req, res) =
             console.info(err.stack);
         }
         if(product && product.productOptions){
-            let optJson = JSON.parse(product.productOptions);
+            const optJson = JSON.parse(product.productOptions);
             delete optJson[req.body.optName];
 
             db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productOptions: JSON.stringify(optJson) } }, (err, numReplaced) => {
@@ -321,7 +321,7 @@ router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, (req, res)
 router.post('/admin/settings/pages/update', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
-    let doc = {
+    const doc = {
         pageName: req.body.pageName,
         pageSlug: req.body.pageSlug,
         pageEnabled: req.body.pageEnabled,
@@ -375,7 +375,7 @@ router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, (req, re
 
 // new menu item
 router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
-    let result = common.newMenu(req, res);
+    const result = common.newMenu(req, res);
     if(result === false){
         req.session.message = 'Failed creating menu.';
         req.session.messageType = 'danger';
@@ -385,7 +385,7 @@ router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
 
 // update existing menu item
 router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    let result = common.updateMenu(req, res);
+    const result = common.updateMenu(req, res);
     if(result === false){
         req.session.message = 'Failed updating menu.';
         req.session.messageType = 'danger';
@@ -395,7 +395,7 @@ router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => 
 
 // delete menu item
 router.get('/admin/settings/menu/delete/:menuid', restrict, checkAccess, (req, res) => {
-    let result = common.deleteMenu(req, res, req.params.menuid);
+    const result = common.deleteMenu(req, res, req.params.menuid);
     if(result === false){
         req.session.message = 'Failed deleting menu.';
         req.session.messageType = 'danger';
@@ -405,7 +405,7 @@ router.get('/admin/settings/menu/delete/:menuid', restrict, checkAccess, (req, r
 
 // We call this via a Ajax call to save the order from the sortable list
 router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res) => {
-    let result = common.orderMenu(req, res);
+    const result = common.orderMenu(req, res);
     if(result === false){
         res.status(400).json({ message: 'Failed saving menu order' });
         return;
@@ -439,12 +439,12 @@ router.post('/admin/api/validate_permalink', (req, res) => {
 });
 
 // upload the file
-let upload = multer({ dest: 'public/uploads/' });
+const upload = multer({ dest: 'public/uploads/' });
 router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_file'), (req, res, next) => {
     const db = req.app.db;
 
     if(req.file){
-        let file = req.file;
+        const file = req.file;
 
         // Get the mime type of the file
         const mimeType = mime.lookup(file.originalname);
@@ -476,13 +476,13 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
             }
 
             const productPath = product.productPermalink;
-            let uploadDir = path.join('public/uploads', productPath);
+            const uploadDir = path.join('public/uploads', productPath);
 
             // Check directory and create (if needed)
             common.checkDirectorySync(uploadDir);
 
-            let source = fs.createReadStream(file.path);
-            let dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+            const source = fs.createReadStream(file.path);
+            const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
 
             // save the new file
             source.pipe(dest);
@@ -491,7 +491,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
             // delete the temp file.
             fs.unlinkSync(file.path);
 
-            let imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
+            const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
@@ -519,7 +519,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
 
 // delete a file via ajax request
 router.post('/admin/testEmail', restrict, (req, res) => {
-    let config = req.app.config;
+    const config = req.app.config;
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json({ message: 'Test email sent' });
@@ -549,15 +549,15 @@ router.get('/admin/files', restrict, (req, res) => {
         files.sort();
 
         // declare the array of objects
-        let fileList = [];
-        let dirList = [];
+        const fileList = [];
+        const dirList = [];
 
         // loop these files
         for(let i = 0; i < files.length; i++){
             // only want files
             if(fs.lstatSync(files[i]).isDirectory() === false){
                 // declare the file object and set its values
-                let file = {
+                const file = {
                     id: i,
                     path: files[i].substring(6)
                 };
@@ -565,7 +565,7 @@ router.get('/admin/files', restrict, (req, res) => {
                 // push the file object into the array
                 fileList.push(file);
             }else{
-                let dir = {
+                const dir = {
                     id: i,
                     path: files[i].substring(6)
                 };
