@@ -273,7 +273,7 @@ test.serial('[Success] Get orders by <Paid> status', async t => {
     t.deepEqual(1, res.body.orders.length);
 });
 
-test.serial('[Success] Filter orders', async t => {
+test.serial.skip('[Success] Filter orders', async t => {
     const res = await request
         .get('/admin/orders/filter/test@test.com')
         .set('apiKey', users[0].apiKey)
