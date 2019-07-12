@@ -99,8 +99,6 @@ router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
     const searchTerm = req.params.search;
     const ordersIndex = req.app.ordersIndex;
 
-    console.log('searchTerm', searchTerm);
-
     const lunrIdArray = [];
     ordersIndex.search(searchTerm).forEach((id) => {
         lunrIdArray.push(common.getId(id.ref));
@@ -114,13 +112,11 @@ router.get('/admin/orders/filter/:search', restrict, (req, res, next) => {
 
         // If API request, return json
         if(req.apiAuthenticated){
-            console.log('returning json');
             return res.status(200).json({
                 orders
             });
         }
 
-        console.log('returning view');
         return res.render('orders', {
             title: 'Order results',
             orders: orders,
