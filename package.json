@@ -9,6 +9,9 @@
     "testdata": "node lib/testdata.js",
     "test": "NODE_ENV=test ava --verbose"
   },
+  "engines": {
+    "node": "10.16.0"
+  },
   "dependencies": {
     "ajv": "^6.10.1",
     "ajv-keywords": "^3.4.1",
