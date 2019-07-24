@@ -1,6 +1,7 @@
 {{> partials/menu}}
 <div class="col-lg-9">
     <form method="post" class="form-horizontal" id="insert_form" action="/admin/product/update" data-toggle="validator">
+        <input type="hidden" value="{{result._id}}" id="frmProductId">
         <div class="col-lg-12">
             <div class="page-header">
                 <div class="pull-right">
