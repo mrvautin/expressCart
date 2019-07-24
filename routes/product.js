@@ -364,6 +364,13 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                         productDoc['productImage'] = product.productImage;
                     }
 
+                    // rename upload images directory when changing permalink
+                    if (product.productPermalink !== productDoc.productPermalink) {
+                        const oldUploadImagesDir = path.join(__dirname, '../public/uploads', product.productPermalink);
+                        const newUploadImagesDir = path.join(__dirname, '../public/uploads', productDoc.productPermalink);
+                        fs.renameSync(oldUploadImagesDir, newUploadImagesDir);
+                    }
+
                     db.products.update({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {}, (err, numReplaced) => {
                         if(err){
                             // If API request, return json
