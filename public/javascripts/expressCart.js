@@ -10,7 +10,6 @@ $(document).ready(function (){
             e.preventDefault();
             $('.menu-side li:not(".active")').slideToggle();
         });
-
         $('.menu-side li:not(".active")').hide();
         $('.menu-side>.active').html('<i class="fa fa-bars" aria-hidden="true"></i>');
         $('.menu-side>.active').addClass('menu-side-mobile');
@@ -21,6 +20,7 @@ $(document).ready(function (){
         }
 
         $('#offcanvasClose').hide();
+        updateCart();
     }
 
     $('.shipping-form input').each(function(e){
@@ -43,6 +43,7 @@ $(document).ready(function (){
 
     $('.menu-btn').on('click', function(e){
         e.preventDefault();
+        updateCart();
     });
 
     $('#sendTestEmail').on('click', function(e){
@@ -109,6 +110,7 @@ $(document).ready(function (){
         window.document.location = $(this).attr('href');
     }).hover(function(){
         $(this).toggleClass('hover');
+        updateCart();
     });
 
     $('.product-title').dotdotdot({
@@ -198,6 +200,7 @@ $(document).ready(function (){
         })
         .done(function(msg){
             showNotification(msg.message, 'success', true);
+            updateCart();
         })
         .fail(function(msg){
             showNotification(msg.responseJSON.message, 'danger');
@@ -261,7 +264,7 @@ $(document).ready(function (){
 
         // append data
         $('#product_opt_wrapper').append(html);
-
+        updateCart();
         // add to the stored json string
         optJson[optName] = {
             optName: optName,
@@ -496,7 +499,7 @@ $(document).ready(function (){
         })
 		.done(function(msg){
             $('#cart-count').text(msg.totalCartItems);
-            updateCartDiv();
+            updateCart();
             showNotification(msg.message, 'success');
         })
         .fail(function(msg){
@@ -528,7 +531,7 @@ $(document).ready(function (){
             })
             .done(function(msg){
                 $('#cart-count').text(msg.totalCartItems);
-                updateCartDiv();
+                updateCart();
                 showNotification(msg.message, 'success');
             })
             .fail(function(msg){
@@ -544,7 +547,7 @@ $(document).ready(function (){
         })
 		.done(function(msg){
             $('#cart-count').text(msg.totalCartItems);
-            updateCartDiv();
+            updateCart();
             showNotification(msg.message, 'success', true);
         });
     });
@@ -763,6 +766,7 @@ function updateCartDiv(){
     })
     .done(function(msg){
         // update cart div
+        //sessionStorage.setItem(Object.keys(req.session.cart),)
         $('#cart').html(msg);
     })
     .fail(function(msg){
