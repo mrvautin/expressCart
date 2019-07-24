@@ -190,7 +190,7 @@ handlebars = handlebars.create({
         formatDate: (date, format) => {
             return moment(date).format(format);
         },
-        ifCond: (v1, operator, v2, options) => {
+        ifCond: function (v1, operator, v2, options) {
             switch(operator){
             case'==':
                 return(v1 === v2) ? options.fn(this) : options.inverse(this);

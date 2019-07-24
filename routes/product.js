@@ -353,22 +353,16 @@ router.post('/admin/product/update', restrict, checkAccess, (req, res) => {
                     // Remove productId from doc
                     delete productDoc.productId;
 
-                    // if no featured image
-                    if(!product.productImage){
-                        if(images.length > 0){
-                            productDoc['productImage'] = images[0].path;
-                        }else{
-                            productDoc['productImage'] = '/uploads/placeholder.png';
-                        }
-                    }else{
-                        productDoc['productImage'] = product.productImage;
-                    }
-
                     // rename upload images directory when changing permalink
                     if (product.productPermalink !== productDoc.productPermalink) {
                         const oldUploadImagesDir = path.join(__dirname, '../public/uploads', product.productPermalink);
                         const newUploadImagesDir = path.join(__dirname, '../public/uploads', productDoc.productPermalink);
                         fs.renameSync(oldUploadImagesDir, newUploadImagesDir);
+
+                        // if no featured image
+                        if(!product.productImage) {
+                            productDoc['productImage'] = newUploadImagesDir + product.productImage.split('/').pop();
+                        }
                     }
 
                     db.products.update({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {}, (err, numReplaced) => {
