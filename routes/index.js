@@ -144,7 +144,7 @@ router.get('/product/:id', (req, res) => {
         if(err){
             res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         }
-        if(err || result == null || result.productPublished === 'false'){
+        if(err || result == null || result.productPublished === false){
             res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         }else{
             const productOptions = result.productOptions;

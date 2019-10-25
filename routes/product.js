@@ -429,7 +429,7 @@ router.get('/admin/product/delete/:id', restrict, checkAccess, (req, res) => {
 router.post('/admin/product/published_state', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
 
-    db.products.update({ _id: common.getId(req.body.id) }, { $set: { productPublished: req.body.state } }, { multi: false }, (err, numReplaced) => {
+    db.products.update({ _id: common.getId(req.body.id) }, { $set: { productPublished: common.convertBool(req.body.state) } }, { multi: false }, (err, numReplaced) => {
         if(err){
             console.error(colors.red('Failed to update the published state: ' + err));
             res.status(400).json('Published state not updated');
