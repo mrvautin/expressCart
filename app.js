@@ -243,7 +243,7 @@ app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: 'pAgGxo8Hzg7PFlv1HpO8Eg0Y6xtP7zYx',
+    secret: 'UPDATE_TO_RANDOM_STRING',
     cookie: {
         path: '/',
         httpOnly: true,
