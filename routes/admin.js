@@ -409,7 +409,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
             return;
         }
 
-        const productPath = product.productPermalink;
+        const productPath = product._id.toString();
         const uploadDir = path.join('public/uploads', productPath);
 
         // Check directory and create (if needed)
