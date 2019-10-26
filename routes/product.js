@@ -123,6 +123,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         return;
     }
 
+    // Check permalink doesn't already exist
     const product = await db.products.count({ productPermalink: req.body.productPermalink });
     if(product > 0 && req.body.productPermalink !== ''){
         // permalink exits
@@ -151,9 +152,9 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     }
 
     try{
-        const newDoc = await db.products.insert(doc);
+        const newDoc = await db.products.insertOne(doc);
         // get the new ID
-        const newId = newDoc.insertedIds[0];
+        const newId = newDoc.insertedId;
 
         // add to lunr index
         indexProducts(req.app)
