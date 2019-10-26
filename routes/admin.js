@@ -26,97 +26,81 @@ router.get('/admin/logout', (req, res) => {
 });
 
 // login form
-router.get('/admin/login', (req, res) => {
+router.get('/admin/login', async (req, res) => {
     const db = req.app.db;
 
-    db.users.count({}, (err, userCount) => {
-        if(err){
-            // if there are no users set the "needsSetup" session
-            req.session.needsSetup = true;
-            res.redirect('/admin/setup');
-        }
-        // we check for a user. If one exists, redirect to login form otherwise setup
-        if(userCount > 0){
-            // set needsSetup to false as a user exists
-            req.session.needsSetup = false;
-            res.render('login', {
-                title: 'Login',
-                referringUrl: req.header('Referer'),
-                config: req.app.config,
-                message: common.clearSessionValue(req.session, 'message'),
-                messageType: common.clearSessionValue(req.session, 'messageType'),
-                helpers: req.handlebars.helpers,
-                showFooter: 'showFooter'
-            });
-        }else{
-            // if there are no users set the "needsSetup" session
-            req.session.needsSetup = true;
-            res.redirect('/admin/setup');
-        }
-    });
+    const userCount = await db.users.count({});
+    // we check for a user. If one exists, redirect to login form otherwise setup
+    if(userCount && userCount > 0){
+        // set needsSetup to false as a user exists
+        req.session.needsSetup = false;
+        res.render('login', {
+            title: 'Login',
+            referringUrl: req.header('Referer'),
+            config: req.app.config,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            helpers: req.handlebars.helpers,
+            showFooter: 'showFooter'
+        });
+    }else{
+        // if there are no users set the "needsSetup" session
+        req.session.needsSetup = true;
+        res.redirect('/admin/setup');
+    }
 });
 
 // login the user and check the password
-router.post('/admin/login_action', (req, res) => {
+router.post('/admin/login_action', async (req, res) => {
     const db = req.app.db;
 
-    db.users.findOne({ userEmail: common.mongoSanitize(req.body.email) }, (err, user) => {
-        if(err){
-            res.status(400).json({ message: 'A user with that email does not exist.' });
+    const user = await db.users.findOne({ userEmail: common.mongoSanitize(req.body.email) });
+    if(!user || user === null){
+        res.status(400).json({ message: 'A user with that email does not exist.' });
+        return;
+    }
+
+    // we have a user under that email so we compare the password
+    bcrypt.compare(req.body.password, user.userPassword)
+    .then((result) => {
+        if(result){
+            req.session.user = req.body.email;
+            req.session.usersName = user.usersName;
+            req.session.userId = user._id.toString();
+            req.session.isAdmin = user.isAdmin;
+            res.status(200).json({ message: 'Login successful' });
             return;
         }
-
-        // check if user exists with that email
-        if(user === undefined || user === null){
-            res.status(400).json({ message: 'A user with that email does not exist.' });
-        }else{
-            // we have a user under that email so we compare the password
-            bcrypt.compare(req.body.password, user.userPassword)
-            .then((result) => {
-                if(result){
-                    req.session.user = req.body.email;
-                    req.session.usersName = user.usersName;
-                    req.session.userId = user._id.toString();
-                    req.session.isAdmin = user.isAdmin;
-                    res.status(200).json({ message: 'Login successful' });
-                }else{
-                    // password is not correct
-                    res.status(400).json({ message: 'Access denied. Check password and try again.' });
-                }
-            });
-        }
+        // password is not correct
+        res.status(400).json({ message: 'Access denied. Check password and try again.' });
     });
 });
 
 // setup form is shown when there are no users setup in the DB
-router.get('/admin/setup', (req, res) => {
+router.get('/admin/setup', async (req, res) => {
     const db = req.app.db;
 
-    db.users.count({}, (err, userCount) => {
-        if(err){
-            console.error(colors.red('Error getting users for setup', err));
-        }
-        // dont allow the user to "re-setup" if a user exists.
-        // set needsSetup to false as a user exists
-        req.session.needsSetup = false;
-        if(userCount === 0){
-            req.session.needsSetup = true;
-            res.render('setup', {
-                title: 'Setup',
-                config: req.app.config,
-                helpers: req.handlebars.helpers,
-                message: common.clearSessionValue(req.session, 'message'),
-                messageType: common.clearSessionValue(req.session, 'messageType'),
-                showFooter: 'showFooter'
-            });
-        }else{
-            res.redirect('/admin/login');
-        }
-    });
+    const userCount = await db.users.count({});
+    // dont allow the user to "re-setup" if a user exists.
+    // set needsSetup to false as a user exists
+    req.session.needsSetup = false;
+    if(userCount && userCount === 0){
+        req.session.needsSetup = true;
+        res.render('setup', {
+            title: 'Setup',
+            config: req.app.config,
+            helpers: req.handlebars.helpers,
+            message: common.clearSessionValue(req.session, 'message'),
+            messageType: common.clearSessionValue(req.session, 'messageType'),
+            showFooter: 'showFooter'
+        });
+        return;
+    }
+    res.redirect('/admin/login');
 });
 
 // insert a user
-router.post('/admin/setup_action', (req, res) => {
+router.post('/admin/setup_action', async (req, res) => {
     const db = req.app.db;
 
     const doc = {
@@ -127,29 +111,24 @@ router.post('/admin/setup_action', (req, res) => {
     };
 
     // check for users
-    db.users.count({}, (err, userCount) => {
-        if(err){
-            console.info(err.stack);
-        }
-        if(userCount === 0){
-            // email is ok to be used.
-            db.users.insert(doc, (err, doc) => {
-                // show the view
-                if(err){
-                    console.error(colors.red('Failed to insert user: ' + err));
-                    req.session.message = 'Setup failed';
-                    req.session.messageType = 'danger';
-                    res.redirect('/admin/setup');
-                }else{
-                    req.session.message = 'User account inserted';
-                    req.session.messageType = 'success';
-                    res.redirect('/admin/login');
-                }
-            });
-        }else{
+    const userCount = await db.users.count({});
+    if(userCount && userCount === 0){
+        // email is ok to be used.
+        try{
+            await db.users.insert(doc);
+            req.session.message = 'User account inserted';
+            req.session.messageType = 'success';
             res.redirect('/admin/login');
+            return;
+        }catch(ex){
+            console.error(colors.red('Failed to insert user: ' + ex));
+            req.session.message = 'Setup failed';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/setup');
+            return;
         }
-    });
+    }
+    res.redirect('/admin/login');
 });
 
 // settings update
@@ -201,33 +180,6 @@ router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
 });
 
 // settings update
-router.post('/admin/settings/option/remove', restrict, checkAccess, (req, res) => {
-    const db = req.app.db;
-    db.products.findOne({ _id: common.getId(req.body.productId) }, (err, product) => {
-        if(err){
-            console.info(err.stack);
-        }
-        if(product && product.productOptions){
-            const optJson = JSON.parse(product.productOptions);
-            delete optJson[req.body.optName];
-
-            db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productOptions: JSON.stringify(optJson) } }, (err, numReplaced) => {
-                if(err){
-                    console.info(err.stack);
-                }
-                if(numReplaced.result.nModified === 1){
-                    res.status(200).json({ message: 'Option successfully removed' });
-                }else{
-                    res.status(400).json({ message: 'Failed to remove option. Please try again.' });
-                }
-            });
-        }else{
-            res.status(400).json({ message: 'Product not found. Try saving before removing.' });
-        }
-    });
-});
-
-// settings update
 router.get('/admin/settings/menu', restrict, async (req, res) => {
     const db = req.app.db;
     res.render('settings_menu', {
@@ -243,24 +195,20 @@ router.get('/admin/settings/menu', restrict, async (req, res) => {
 });
 
 // settings page list
-router.get('/admin/settings/pages', restrict, (req, res) => {
+router.get('/admin/settings/pages', restrict, async (req, res) => {
     const db = req.app.db;
-    db.pages.find({}).toArray(async (err, pages) => {
-        if(err){
-            console.info(err.stack);
-        }
+    const pages = await db.pages.find({}).toArray();
 
-        res.render('settings_pages', {
-            title: 'Static pages',
-            pages: pages,
-            session: req.session,
-            admin: true,
-            message: common.clearSessionValue(req.session, 'message'),
-            messageType: common.clearSessionValue(req.session, 'messageType'),
-            helpers: req.handlebars.helpers,
-            config: req.app.config,
-            menu: common.sortMenu(await common.getMenu(db))
-        });
+    res.render('settings_pages', {
+        title: 'Static pages',
+        pages: pages,
+        session: req.session,
+        admin: true,
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config,
+        menu: common.sortMenu(await common.getMenu(db))
     });
 });
 
@@ -282,43 +230,38 @@ router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) 
 });
 
 // settings pages editor
-router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, (req, res) => {
+router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    db.pages.findOne({ _id: common.getId(req.params.page) }, async (err, page) => {
-        if(err){
-            console.info(err.stack);
-        }
-        // page found
-        const menu = common.sortMenu(await common.getMenu(db));
-        if(page){
-            res.render('settings_page_edit', {
-                title: 'Static pages',
-                page: page,
-                button_text: 'Update',
-                session: req.session,
-                admin: true,
-                message: common.clearSessionValue(req.session, 'message'),
-                messageType: common.clearSessionValue(req.session, 'messageType'),
-                helpers: req.handlebars.helpers,
-                config: req.app.config,
-                menu
-            });
-        }else{
-            // 404 it!
-            res.status(404).render('error', {
-                title: '404 Error - Page not found',
-                config: req.app.config,
-                message: '404 Error - Page not found',
-                helpers: req.handlebars.helpers,
-                showFooter: 'showFooter',
-                menu
-            });
-        }
+    const page = await db.pages.findOne({ _id: common.getId(req.params.page) });
+    const menu = common.sortMenu(await common.getMenu(db));
+    if(!page){
+        res.status(404).render('error', {
+            title: '404 Error - Page not found',
+            config: req.app.config,
+            message: '404 Error - Page not found',
+            helpers: req.handlebars.helpers,
+            showFooter: 'showFooter',
+            menu
+        });
+        return;
+    }
+
+    res.render('settings_page_edit', {
+        title: 'Static pages',
+        page: page,
+        button_text: 'Update',
+        session: req.session,
+        admin: true,
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config,
+        menu
     });
 });
 
 // settings update page
-router.post('/admin/settings/pages/update', restrict, checkAccess, (req, res) => {
+router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     const doc = {
@@ -330,47 +273,43 @@ router.post('/admin/settings/pages/update', restrict, checkAccess, (req, res) =>
 
     if(req.body.page_id){
         // existing page
-        db.pages.findOne({ _id: common.getId(req.body.page_id) }, (err, page) => {
-            if(err){
-                console.info(err.stack);
-            }
-            if(page){
-                db.pages.update({ _id: common.getId(req.body.page_id) }, { $set: doc }, {}, (err, numReplaced) => {
-                    if(err){
-                        console.info(err.stack);
-                    }
-                    res.status(200).json({ message: 'Page updated successfully', page_id: req.body.page_id });
-                });
-            }else{
-                res.status(400).json({ message: 'Page not found' });
-            }
-        });
+        const page = await db.pages.findOne({ _id: common.getId(req.body.page_id) });
+        if(!page){
+            res.status(400).json({ message: 'Page not found' });
+        }
+
+        try{
+            await db.pages.update({ _id: common.getId(req.body.page_id) }, { $set: doc }, {});
+            res.status(200).json({ message: 'Page updated successfully', page_id: req.body.page_id });
+        }catch(ex){
+            res.status(400).json({ message: 'Error updating page. Please try again.' });
+        }
     }else{
         // insert page
-        db.pages.insert(doc, (err, newDoc) => {
-            if(err){
-                res.status(400).json({ message: 'Error creating page. Please try again.' });
-            }else{
-                res.status(200).json({ message: 'New page successfully created', page_id: newDoc._id });
-            }
-        });
+        try{
+            const newDoc = await db.pages.insert(doc);
+            res.status(200).json({ message: 'New page successfully created', page_id: newDoc._id });
+            return;
+        }catch(ex){
+            res.status(400).json({ message: 'Error creating page. Please try again.' });
+        }
     }
 });
 
 // settings delete page
-router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, (req, res) => {
+router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    db.pages.remove({ _id: common.getId(req.params.page) }, {}, (err, numRemoved) => {
-        if(err){
-            req.session.message = 'Error deleting page. Please try again.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/settings/pages');
-            return;
-        }
+    try{
+        await db.pages.remove({ _id: common.getId(req.params.page) }, {});
         req.session.message = 'Page successfully deleted';
         req.session.messageType = 'success';
         res.redirect('/admin/settings/pages');
-    });
+        return;
+    }catch(ex){
+        req.session.message = 'Error deleting page. Please try again.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/settings/pages');
+    }
 });
 
 // new menu item
@@ -414,7 +353,7 @@ router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res)
 });
 
 // validate the permalink
-router.post('/admin/api/validate_permalink', (req, res) => {
+router.post('/admin/api/validate_permalink', async (req, res) => {
     // if doc id is provided it checks for permalink in any products other that one provided,
     // else it just checks for any products with that permalink
     const db = req.app.db;
@@ -426,21 +365,17 @@ router.post('/admin/api/validate_permalink', (req, res) => {
         query = { productPermalink: req.body.permalink, _id: { $ne: common.getId(req.body.docId) } };
     }
 
-    db.products.count(query, (err, products) => {
-        if(err){
-            console.info(err.stack);
-        }
-        if(products > 0){
-            res.status(400).json({ message: 'Permalink already exists' });
-        }else{
-            res.status(200).json({ message: 'Permalink validated successfully' });
-        }
-    });
+    const products = await db.products.count(query);
+    if(products && products > 0){
+        res.status(400).json({ message: 'Permalink already exists' });
+        return;
+    }
+    res.status(200).json({ message: 'Permalink validated successfully' });
 });
 
 // upload the file
 const upload = multer({ dest: 'public/uploads/' });
-router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_file'), (req, res, next) => {
+router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_file'), async (req, res, next) => {
     const db = req.app.db;
 
     if(req.file){
@@ -462,59 +397,53 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
         }
 
         // get the product form the DB
-        db.products.findOne({ _id: common.getId(req.body.productId) }, (err, product) => {
-            if(err){
-                console.info(err.stack);
-                // delete the temp file.
-                fs.unlinkSync(file.path);
-
-                // Redirect to error
-                req.session.message = 'File upload error. Please try again.';
-                req.session.messageType = 'danger';
-                res.redirect('/admin/product/edit/' + req.body.productId);
-                return;
-            }
-
-            const productPath = product.productPermalink;
-            const uploadDir = path.join('public/uploads', productPath);
-
-            // Check directory and create (if needed)
-            common.checkDirectorySync(uploadDir);
-
-            const source = fs.createReadStream(file.path);
-            const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
-
-            // save the new file
-            source.pipe(dest);
-            source.on('end', () => { });
-
+        const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
+        if(!product){
             // delete the temp file.
             fs.unlinkSync(file.path);
 
-            const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
+            // Redirect to error
+            req.session.message = 'File upload error. Please try again.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/product/edit/' + req.body.productId);
+            return;
+        }
 
-            // if there isn't a product featured image, set this one
-            if(!product.productImage){
-                db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false }, (err, numReplaced) => {
-                    if(err){
-                        console.info(err.stack);
-                    }
-                    req.session.message = 'File uploaded successfully';
-                    req.session.messageType = 'success';
-                    res.redirect('/admin/product/edit/' + req.body.productId);
-                });
-            }else{
-                req.session.message = 'File uploaded successfully';
-                req.session.messageType = 'success';
-                res.redirect('/admin/product/edit/' + req.body.productId);
-            }
-        });
-    }else{
-        // Redirect to error
-        req.session.message = 'File upload error. Please select a file.';
-        req.session.messageType = 'danger';
+        const productPath = product.productPermalink;
+        const uploadDir = path.join('public/uploads', productPath);
+
+        // Check directory and create (if needed)
+        common.checkDirectorySync(uploadDir);
+
+        const source = fs.createReadStream(file.path);
+        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+
+        // save the new file
+        source.pipe(dest);
+        source.on('end', () => { });
+
+        // delete the temp file.
+        fs.unlinkSync(file.path);
+
+        const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
+
+        // if there isn't a product featured image, set this one
+        if(!product.productImage){
+            await db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+            req.session.message = 'File uploaded successfully';
+            req.session.messageType = 'success';
+            res.redirect('/admin/product/edit/' + req.body.productId);
+            return;
+        }
+        req.session.message = 'File uploaded successfully';
+        req.session.messageType = 'success';
         res.redirect('/admin/product/edit/' + req.body.productId);
+        return;
     }
+    // Redirect to error
+    req.session.message = 'File upload error. Please select a file.';
+    req.session.messageType = 'danger';
+    res.redirect('/admin/product/edit/' + req.body.productId);
 });
 
 // delete a file via ajax request
@@ -526,66 +455,65 @@ router.post('/admin/testEmail', restrict, (req, res) => {
 });
 
 // delete a file via ajax request
-router.post('/admin/file/delete', restrict, checkAccess, (req, res) => {
+router.post('/admin/file/delete', restrict, checkAccess, async (req, res) => {
     req.session.message = null;
     req.session.messageType = null;
 
-    fs.unlink('public/' + req.body.img, (err) => {
-        if(err){
-            console.error(colors.red('File delete error: ' + err));
-            res.writeHead(400, { 'Content-Type': 'application/text' });
-            res.end('Failed to delete file: ' + err);
-        }else{
-            res.writeHead(200, { 'Content-Type': 'application/text' });
-            res.end('File deleted successfully');
-        }
-    });
+    try{
+        await fs.unlinkSync('public/' + req.body.img);
+        res.writeHead(200, { 'Content-Type': 'application/text' });
+        res.end('File deleted successfully');
+    }catch(ex){
+        console.error(colors.red('File delete error: ' + ex));
+        res.writeHead(400, { 'Content-Type': 'application/text' });
+        res.end('Failed to delete file: ' + ex);
+    }
 });
 
-router.get('/admin/files', restrict, (req, res) => {
+router.get('/admin/files', restrict, async (req, res) => {
     // loop files in /public/uploads/
-    glob('public/uploads/**', { nosort: true }, (er, files) => {
-        // sort array
-        files.sort();
+    const files = await glob.sync('public/uploads/**', { nosort: true });
 
-        // declare the array of objects
-        const fileList = [];
-        const dirList = [];
+    // sort array
+    files.sort();
 
-        // loop these files
-        for(let i = 0; i < files.length; i++){
-            // only want files
-            if(fs.lstatSync(files[i]).isDirectory() === false){
-                // declare the file object and set its values
-                const file = {
-                    id: i,
-                    path: files[i].substring(6)
-                };
+    // declare the array of objects
+    const fileList = [];
+    const dirList = [];
 
-                // push the file object into the array
-                fileList.push(file);
-            }else{
-                const dir = {
-                    id: i,
-                    path: files[i].substring(6)
-                };
+    // loop these files
+    for(let i = 0; i < files.length; i++){
+        // only want files
+        if(fs.lstatSync(files[i]).isDirectory() === false){
+            // declare the file object and set its values
+            const file = {
+                id: i,
+                path: files[i].substring(6)
+            };
 
-                // push the dir object into the array
-                dirList.push(dir);
-            }
+            // push the file object into the array
+            fileList.push(file);
+        }else{
+            const dir = {
+                id: i,
+                path: files[i].substring(6)
+            };
+
+            // push the dir object into the array
+            dirList.push(dir);
         }
+    }
 
-        // render the files route
-        res.render('files', {
-            title: 'Files',
-            files: fileList,
-            admin: true,
-            dirs: dirList,
-            session: req.session,
-            config: common.get(),
-            message: common.clearSessionValue(req.session, 'message'),
-            messageType: common.clearSessionValue(req.session, 'messageType')
-        });
+    // render the files route
+    res.render('files', {
+        title: 'Files',
+        files: fileList,
+        admin: true,
+        dirs: dirList,
+        session: req.session,
+        config: common.get(),
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType')
     });
 });
 
