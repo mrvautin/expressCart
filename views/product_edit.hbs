@@ -138,7 +138,7 @@
                                 {{#ifCond this.productImage '==' true}}
                                     <span class="label label-info">main image</span>
                                 {{else}}
-                                    <a data-id="{{this.path}}" class="set-as-main-image btn btn-sm btn-success">Set as main image</a>
+                                    <a data-id="{{../this.path}}" class="set-as-main-image btn btn-sm btn-success">Set as main image</a>
                                 {{/ifCond}}
                             </p>
                             <img src="{{this.path}}" class="product-main-image img-responsive">
