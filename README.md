@@ -140,22 +140,6 @@ Settings can be managed from the admin panel ([http://127.0.0.1:1111/admin](http
 
 All settings are stored in json files in the `/config` directory. The main application-level settings are stored in `/config/settings.json` while payment gateway settings are stored in files in the `/config` directory named after the payment gateway. For example, configuration for the Stripe payment gateway is stored in `/config/stripe.json`.
 
-> When using in production be sure to update the session secret in `app.js` to a safe random string. Eg:
-
-```
-app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: 'UPDATE_TO_RANDOM_STRING',
-    cookie: {
-        path: '/',
-        httpOnly: true,
-        maxAge: 900000
-    },
-    store: store
-}));
-```
-
 ##### Local configuration
 
 If you'd rather store settings in a file which isn't checked into version control, you can create a new settings file at `/config/settings-local.json` and store your complete settings there. When viewing or editing settings in the admin panel, expressCart will detect the existence of this file and update it accordingly.

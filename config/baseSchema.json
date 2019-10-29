@@ -104,6 +104,12 @@
         },
         "orderHook": {
             "format": "uri-template"
+        },
+        "secretCookie": {
+            "type": "string"
+        },
+        "secretSession": {
+            "type": "string"
         }
     },
     "required": [

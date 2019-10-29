@@ -11,6 +11,7 @@ const numeral = require('numeral');
 const helmet = require('helmet');
 const colors = require('colors');
 const cron = require('node-cron');
+const crypto = require('crypto');
 const common = require('./lib/common');
 const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
@@ -233,17 +234,29 @@ const store = new MongoStore({
     collection: 'sessions'
 });
 
+// Setup secrets
+if(!config.secretCookie || config.secretCookie === ''){
+    const randomString = crypto.randomBytes(20).toString('hex');
+    config.secretCookie = randomString;
+    common.updateConfigLocal({ secretCookie: randomString });
+}
+if(!config.secretSession || config.secretSession === ''){
+    const randomString = crypto.randomBytes(20).toString('hex');
+    config.secretSession = randomString;
+    common.updateConfigLocal({ secretSession: randomString });
+}
+
 app.enable('trust proxy');
 app.use(helmet());
 app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser('5TOCyfH3HuszKGzFZntk'));
+app.use(cookieParser(config.secretCookie));
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: 'UPDATE_TO_RANDOM_STRING',
+    secret: config.secretSession,
     cookie: {
         path: '/',
         httpOnly: true,
