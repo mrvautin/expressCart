@@ -89,7 +89,7 @@
             </div>
             {{#ifCond page '!=' 'pay'}}
             <div class="text-right align-right col s6">
-                {{#ifCond page '==' 'checkout'}}
+                {{#ifCond @root.page '==' 'checkout'}}
                 <a href="/pay" class="btn waves-effect waves-light black">Pay now</a>
                 {{else}}
                 <a href="/checkout" class="btn waves-effect waves-light black">Checkout</a>
