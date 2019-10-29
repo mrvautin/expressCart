@@ -103,13 +103,21 @@
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ @root.__ "Languages" }} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {{#each languages}}
+                                    <li><a href="/lang/{{this}}">{{@root.__ this}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </li>
                         {{#unless admin}}
                         {{#ifCond page '!=' 'checkout'}}
                         {{#ifCond page '!=' 'pay'}}
                             {{#if session.cart}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{session.cartTotalItems}}</span></a></li>
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge" id="cart-count">{{session.cartTotalItems}}</span></a></li>
                                 {{else}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">0</span></a></li>
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i>  {{ @root.__ "Cart" }} <span class="badge" id="cart-count">0</span></a></li>
                             {{/if}}
                         {{/ifCond}}
                         {{/ifCond}}

@@ -17,6 +17,7 @@ const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
 const { initDb } = require('./lib/db');
 let handlebars = require('express-handlebars');
+const i18n = require('i18n');
 
 // Validate our settings schema
 const Ajv = require('ajv');
@@ -71,6 +72,21 @@ const authorizenet = require('./routes/payments/authorizenet');
 
 const app = express();
 
+// Language initialize
+const availableLanguages = ['en', 'it'];
+i18n.configure({
+    locales: availableLanguages,
+    defaultLocale: 'en',
+    cookie: 'locale',
+    queryParameter: 'lang',
+    directory: `${__dirname}/locales`,
+    directoryPermissions: '755',
+    api: {
+        __: '__', // now req.__ becomes req.__
+        __n: '__n' // and req.__n can be called as req.__n
+    }
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, '/views'));
 app.engine('hbs', handlebars({
@@ -84,6 +100,9 @@ app.set('view engine', 'hbs');
 // helpers for the handlebar templating platform
 handlebars = handlebars.create({
     helpers: {
+        // Language helper
+        __: function (){ return i18n.__(this, arguments);  },
+        __n: function (){ return i18n.__n(this, arguments); },
         perRowClass: (numProducts) => {
             if(parseInt(numProducts) === 1){
                 return'col-md-12 col-xl-12 col m12 xl12 product-item';
@@ -126,22 +145,22 @@ handlebars = handlebars.create({
         },
         getStatusColor: (status) => {
             switch(status){
-            case'Paid':
-                return'success';
-            case'Approved':
-                return'success';
-            case'Approved - Processing':
-                return'success';
-            case'Failed':
-                return'danger';
-            case'Completed':
-                return'success';
-            case'Shipped':
-                return'success';
-            case'Pending':
-                return'warning';
-            default:
-                return'danger';
+                case'Paid':
+                    return'success';
+                case'Approved':
+                    return'success';
+                case'Approved - Processing':
+                    return'success';
+                case'Failed':
+                    return'danger';
+                case'Completed':
+                    return'success';
+                case'Shipped':
+                    return'success';
+                case'Pending':
+                    return'warning';
+                default:
+                    return'danger';
             }
         },
         checkProductOptions: (opts) => {
@@ -197,26 +216,26 @@ handlebars = handlebars.create({
         },
         ifCond: (v1, operator, v2, options) => {
             switch(operator){
-            case'==':
-                return(v1 === v2) ? options.fn(this) : options.inverse(this);
-            case'!=':
-                return(v1 !== v2) ? options.fn(this) : options.inverse(this);
-            case'===':
-                return(v1 === v2) ? options.fn(this) : options.inverse(this);
-            case'<':
-                return(v1 < v2) ? options.fn(this) : options.inverse(this);
-            case'<=':
-                return(v1 <= v2) ? options.fn(this) : options.inverse(this);
-            case'>':
-                return(v1 > v2) ? options.fn(this) : options.inverse(this);
-            case'>=':
-                return(v1 >= v2) ? options.fn(this) : options.inverse(this);
-            case'&&':
-                return(v1 && v2) ? options.fn(this) : options.inverse(this);
-            case'||':
-                return(v1 || v2) ? options.fn(this) : options.inverse(this);
-            default:
-                return options.inverse(this);
+                case'==':
+                    return(v1 === v2) ? options.fn(this) : options.inverse(this);
+                case'!=':
+                    return(v1 !== v2) ? options.fn(this) : options.inverse(this);
+                case'===':
+                    return(v1 === v2) ? options.fn(this) : options.inverse(this);
+                case'<':
+                    return(v1 < v2) ? options.fn(this) : options.inverse(this);
+                case'<=':
+                    return(v1 <= v2) ? options.fn(this) : options.inverse(this);
+                case'>':
+                    return(v1 > v2) ? options.fn(this) : options.inverse(this);
+                case'>=':
+                    return(v1 >= v2) ? options.fn(this) : options.inverse(this);
+                case'&&':
+                    return(v1 && v2) ? options.fn(this) : options.inverse(this);
+                case'||':
+                    return(v1 || v2) ? options.fn(this) : options.inverse(this);
+                default:
+                    return options.inverse(this);
             }
         },
         isAnAdmin: (value, options) => {
@@ -265,6 +284,9 @@ app.use(session({
     store: store
 }));
 
+// Set locales from session
+app.use(i18n.init);
+
 // serving static content
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views', 'themes')));
@@ -272,6 +294,11 @@ app.use(express.static(path.join(__dirname, 'views', 'themes')));
 // Make stuff accessible to our router
 app.use((req, res, next) => {
     req.handlebars = handlebars;
+    next();
+});
+
+app.use((req, res, next) => {
+    res.locals.languages = i18n.getLocales();
     next();
 });
 
@@ -386,7 +413,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
     if(process.env.NODE_ENV !== 'test'){
         try{
             await runIndexing(app);
-        }catch(ex){
+        } catch(ex){
             console.error(colors.red('Error setting up indexes:' + err));
         }
     }
@@ -396,7 +423,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await app.listen(app.get('port'));
         app.emit('appStarted');
         console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
-    }catch(ex){
+    } catch(ex){
         console.error(colors.red('Error starting expressCart app:' + err));
         process.exit(2);
     }
