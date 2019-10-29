@@ -67,7 +67,7 @@ router.get('/checkout_return', (req, res, next) => {
         }
 
         // update the order status
-        db.orders.update({ _id: common.getId(paymentOrderId) }, { $set: { orderStatus: paymentStatus } }, { multi: false }, (err, numReplaced) => {
+        db.orders.updateOne({ _id: common.getId(paymentOrderId) }, { $set: { orderStatus: paymentStatus } }, { multi: false }, (err, numReplaced) => {
             if(err){
                 console.info(err.stack);
             }
@@ -186,7 +186,7 @@ router.post('/checkout_action', (req, res, next) => {
                 res.redirect(redirectUrl);
             }else{
                 // no order ID so we create a new one
-                db.orders.insert(orderDoc, (err, newDoc) => {
+                db.orders.insertOne(orderDoc, (err, newDoc) => {
                     if(err){
                         console.info(err.stack);
                     }

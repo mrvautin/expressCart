@@ -39,7 +39,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
             }
 
             // Update product stock
-            await db.products.update({
+            await db.products.updateOne({
                 _id: getId(product.productId)
             }, {
                 $set: {
@@ -221,7 +221,7 @@ router.post('/product/updatecart', (req, res, next) => {
         updateTotalCartAmount(req, res);
 
         // Update cart to the DB
-        await db.cart.update({ sessionId: req.session.id }, {
+        await db.cart.updateOne({ sessionId: req.session.id }, {
             $set: { cart: req.session.cart }
         });
 
@@ -254,7 +254,7 @@ router.post('/product/removefromcart', (req, res, next) => {
         callback();
     }, async () => {
         // Update cart in DB
-        await db.cart.update({ sessionId: req.session.id }, {
+        await db.cart.updateOne({ sessionId: req.session.id }, {
             $set: { cart: req.session.cart }
         });
         // update total cart amount
@@ -276,7 +276,7 @@ router.post('/product/emptycart', async (req, res, next) => {
     delete req.session.orderId;
 
     // Remove cart from DB
-    await db.cart.removeOne({ sessionId: req.session.id });
+    await db.cart.deleteOne({ sessionId: req.session.id });
 
     // update total cart amount
     updateTotalCartAmount(req, res);
@@ -387,7 +387,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }
 
     // Update cart to the DB
-    await db.cart.update({ sessionId: req.session.id }, {
+    await db.cart.updateOne({ sessionId: req.session.id }, {
         $set: { cart: req.session.cart }
     }, { upsert: true });
 

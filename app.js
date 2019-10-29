@@ -356,7 +356,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         });
 
         // Remove any invalid cart holds
-        await db.cart.remove({
+        await db.cart.deleteMany({
             sessionId: { $nin: validSessionIds }
         });
     });

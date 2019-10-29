@@ -124,7 +124,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     }
 
     // Check permalink doesn't already exist
-    const product = await db.products.count({ productPermalink: req.body.productPermalink });
+    const product = await db.products.countDocuments({ productPermalink: req.body.productPermalink });
     if(product > 0 && req.body.productPermalink !== ''){
         // permalink exits
         req.session.message = 'Permalink already exists. Pick a new one.';
@@ -239,7 +239,7 @@ router.post('/admin/product/removeoption', restrict, checkAccess, async (req, re
         delete opts[req.body.optName];
 
         try{
-            const updateOption = await db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productOptions: opts } });
+            const updateOption = await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productOptions: opts } });
             if(updateOption.result.nModified === 1){
                 res.status(200).json({ message: 'Option successfully removed' });
                 return;
@@ -273,7 +273,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         res.redirect('/admin/product/edit/' + req.body.productId);
         return;
     }
-    const count = await db.products.count({ productPermalink: req.body.productPermalink, _id: { $ne: common.getId(product._id) } });
+    const count = await db.products.countDocuments({ productPermalink: req.body.productPermalink, _id: { $ne: common.getId(product._id) } });
     if(count > 0 && req.body.productPermalink !== ''){
         // If API request, return json
         if(req.apiAuthenticated){
@@ -365,7 +365,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     }
 
     try{
-        await db.products.update({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {});
+        await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {});
         // Update the index
         indexProducts(req.app)
         .then(() => {
@@ -398,7 +398,7 @@ router.get('/admin/product/delete/:id', restrict, checkAccess, async (req, res) 
     const db = req.app.db;
 
     // remove the product
-    await db.products.remove({ _id: common.getId(req.params.id) }, {});
+    await db.products.deleteOne({ _id: common.getId(req.params.id) }, {});
 
     // delete any images and folder
     rimraf('public/uploads/' + req.params.id, (err) => {
@@ -422,7 +422,7 @@ router.post('/admin/product/published_state', restrict, checkAccess, async (req,
     const db = req.app.db;
 
     try{
-        await db.products.update({ _id: common.getId(req.body.id) }, { $set: { productPublished: common.convertBool(req.body.state) } }, { multi: false });
+        await db.products.updateOne({ _id: common.getId(req.body.id) }, { $set: { productPublished: common.convertBool(req.body.state) } }, { multi: false });
         res.status(200).json('Published state updated');
     }catch(ex){
         console.error(colors.red('Failed to update the published state: ' + ex));
@@ -436,7 +436,7 @@ router.post('/admin/product/setasmainimage', restrict, checkAccess, async (req, 
 
     try{
         // update the productImage to the db
-        await db.products.update({ _id: common.getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
+        await db.products.updateOne({ _id: common.getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
         res.status(200).json({ message: 'Main image successfully set' });
     }catch(ex){
         res.status(400).json({ message: 'Unable to set as main image. Please try again.' });
@@ -455,7 +455,7 @@ router.post('/admin/product/deleteimage', restrict, checkAccess, async (req, res
     }
     if(req.body.productImage === product.productImage){
         // set the productImage to null
-        await db.products.update({ _id: common.getId(req.body.product_id) }, { $set: { productImage: null } }, { multi: false });
+        await db.products.updateOne({ _id: common.getId(req.body.product_id) }, { $set: { productImage: null } }, { multi: false });
 
         // remove the image from disk
         fs.unlink(path.join('public', req.body.productImage), (err) => {

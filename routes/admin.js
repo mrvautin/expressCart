@@ -29,7 +29,7 @@ router.get('/admin/logout', (req, res) => {
 router.get('/admin/login', async (req, res) => {
     const db = req.app.db;
 
-    const userCount = await db.users.count({});
+    const userCount = await db.users.countDocuments({});
     // we check for a user. If one exists, redirect to login form otherwise setup
     if(userCount && userCount > 0){
         // set needsSetup to false as a user exists
@@ -80,7 +80,7 @@ router.post('/admin/login_action', async (req, res) => {
 router.get('/admin/setup', async (req, res) => {
     const db = req.app.db;
 
-    const userCount = await db.users.count({});
+    const userCount = await db.users.countDocuments({});
     // dont allow the user to "re-setup" if a user exists.
     // set needsSetup to false as a user exists
     req.session.needsSetup = false;
@@ -111,11 +111,11 @@ router.post('/admin/setup_action', async (req, res) => {
     };
 
     // check for users
-    const userCount = await db.users.count({});
+    const userCount = await db.users.countDocuments({});
     if(userCount && userCount === 0){
         // email is ok to be used.
         try{
-            await db.users.insert(doc);
+            await db.users.insertOne(doc);
             req.session.message = 'User account inserted';
             req.session.messageType = 'success';
             res.redirect('/admin/login');
@@ -279,7 +279,7 @@ router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, r
         }
 
         try{
-            await db.pages.update({ _id: common.getId(req.body.page_id) }, { $set: doc }, {});
+            await db.pages.updateOne({ _id: common.getId(req.body.page_id) }, { $set: doc }, {});
             res.status(200).json({ message: 'Page updated successfully', page_id: req.body.page_id });
         }catch(ex){
             res.status(400).json({ message: 'Error updating page. Please try again.' });
@@ -287,7 +287,7 @@ router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, r
     }else{
         // insert page
         try{
-            const newDoc = await db.pages.insert(doc);
+            const newDoc = await db.pages.insertOne(doc);
             res.status(200).json({ message: 'New page successfully created', page_id: newDoc._id });
             return;
         }catch(ex){
@@ -300,7 +300,7 @@ router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, r
 router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     try{
-        await db.pages.remove({ _id: common.getId(req.params.page) }, {});
+        await db.pages.deleteOne({ _id: common.getId(req.params.page) }, {});
         req.session.message = 'Page successfully deleted';
         req.session.messageType = 'success';
         res.redirect('/admin/settings/pages');
@@ -365,7 +365,7 @@ router.post('/admin/api/validate_permalink', async (req, res) => {
         query = { productPermalink: req.body.permalink, _id: { $ne: common.getId(req.body.docId) } };
     }
 
-    const products = await db.products.count(query);
+    const products = await db.products.countDocuments(query);
     if(products && products > 0){
         res.status(400).json({ message: 'Permalink already exists' });
         return;
@@ -429,7 +429,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
 
         // if there isn't a product featured image, set this one
         if(!product.productImage){
-            await db.products.update({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+            await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
             req.session.message = 'File uploaded successfully';
             req.session.messageType = 'success';
             res.redirect('/admin/product/edit/' + req.body.productId);

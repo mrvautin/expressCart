@@ -71,7 +71,7 @@ router.get('/admin/user/new', restrict, (req, res) => {
 router.get('/admin/user/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
     if(req.session.isAdmin === true){
-        db.users.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
+        db.users.deleteOne({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
             if(err){
                 console.info(err.stack);
             }
@@ -120,7 +120,7 @@ router.post('/admin/user/update', restrict, (req, res) => {
             updateDoc.userPassword = bcrypt.hashSync(req.body.userPassword);
         }
 
-        db.users.update({ _id: common.getId(req.body.userId) },
+        db.users.updateOne({ _id: common.getId(req.body.userId) },
             {
                 $set: updateDoc
             }, { multi: false }, (err, numReplaced) => {
@@ -147,7 +147,7 @@ router.post('/admin/user/insert', restrict, (req, res) => {
     const urlParts = new URL(req.header('Referer'));
 
     // Check number of users
-    db.users.count({}, (err, userCount) => {
+    db.users.countDocuments({}, (err, userCount) => {
         let isAdmin = false;
 
         // if no users, setup user as admin
@@ -173,7 +173,7 @@ router.post('/admin/user/insert', restrict, (req, res) => {
                 return;
             }
             // email is ok to be used.
-            db.users.insert(doc, (err, doc) => {
+            db.users.insertOne(doc, (err, doc) => {
                 // show the view
                 if(err){
                     if(doc){

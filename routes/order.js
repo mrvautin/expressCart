@@ -136,7 +136,7 @@ router.get('/admin/order/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
 
     // remove the order
-    db.orders.remove({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
+    db.orders.deleteOne({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
         if(err){
             console.info(err.stack);
         }
@@ -154,7 +154,7 @@ router.get('/admin/order/delete/:id', restrict, (req, res) => {
 // update order status
 router.post('/admin/order/statusupdate', restrict, checkAccess, (req, res) => {
     const db = req.app.db;
-    db.orders.update({ _id: common.getId(req.body.order_id) }, { $set: { orderStatus: req.body.status } }, { multi: false }, (err, numReplaced) => {
+    db.orders.updateOne({ _id: common.getId(req.body.order_id) }, { $set: { orderStatus: req.body.status } }, { multi: false }, (err, numReplaced) => {
         if(err){
             console.info(err.stack);
             return res.status(400).json({ message: 'Failed to update the order status' });

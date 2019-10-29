@@ -216,7 +216,7 @@ router.post('/customer/forgotten_action', (req, res) => {
         // if we have a customer, set a token, expiry and email it
         if(customer){
             const tokenExpiry = Date.now() + 3600000;
-            db.customers.update({ email: req.body.email }, { $set: { resetToken: passwordToken, resetTokenExpiry: tokenExpiry } }, { multi: false }, (err, numReplaced) => {
+            db.customers.updateOne({ email: req.body.email }, { $set: { resetToken: passwordToken, resetTokenExpiry: tokenExpiry } }, { multi: false }, (err, numReplaced) => {
                 // send forgotten password email
                 const mailOpts = {
                     to: req.body.email,
@@ -282,7 +282,7 @@ router.post('/customer/reset/:token', (req, res) => {
 
         // update the password and remove the token
         const newPassword = bcrypt.hashSync(req.body.password, 10);
-        db.customers.update({ email: customer.email }, { $set: { password: newPassword, resetToken: undefined, resetTokenExpiry: undefined } }, { multi: false }, (err, numReplaced) => {
+        db.customers.updateOne({ email: customer.email }, { $set: { password: newPassword, resetToken: undefined, resetTokenExpiry: undefined } }, { multi: false }, (err, numReplaced) => {
             const mailOpts = {
                 to: customer.email,
                 subject: 'Password successfully reset',

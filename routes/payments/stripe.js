@@ -56,7 +56,7 @@ router.post('/checkout_action', (req, res, next) => {
         };
 
         // insert order into DB
-        db.orders.insert(orderDoc, (err, newDoc) => {
+        db.orders.insertOne(orderDoc, (err, newDoc) => {
             if(err){
                 console.info(err.stack);
             }

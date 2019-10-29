@@ -19,11 +19,11 @@ let request = null;
 
 function setup(db){
     return Promise.all([
-        db.cart.remove({}, {}),
-        db.users.remove({}, {}),
-        db.customers.remove({}, {}),
-        db.products.remove({}, {}),
-        db.orders.remove({}, {})
+        db.cart.deleteMany({}, {}),
+        db.users.deleteMany({}, {}),
+        db.customers.deleteMany({}, {}),
+        db.products.deleteMany({}, {}),
+        db.orders.deleteMany({}, {})
     ])
     .then(() => {
         return Promise.all([
@@ -65,7 +65,7 @@ test.before(async () => {
                     productComment: null
                 });
                 order.orderDate = new Date();
-                await db.orders.insert(order);
+                await db.orders.insertOne(order);
             });
 
             // Index everything
