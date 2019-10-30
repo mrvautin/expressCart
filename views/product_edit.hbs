@@ -4,19 +4,19 @@
         <div class="col-lg-12">
             <div class="page-header">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Upload image</button>
-                    <button id="frm_edit_product_save" class="btn btn-success">Save product <i class="fa fa-floppy-o"></i></button>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
+                    <button id="frm_edit_product_save" class="btn btn-success">{{ @root.__ "Save product" }} <i class="fa fa-floppy-o"></i></button>
                 </div>
-                <h2>Edit product</h2>
+                <h2>{{ @root.__ "Edit product" }}</h2>
             </div>
             <div class="form-group">
-                <label for="productTitle" class="col-sm-2 control-label">Product title *</label>
+                <label for="productTitle" class="col-sm-2 control-label">{{ @root.__ "Product title" }} *</label>
                 <div class="col-sm-10">
                     <input type="text" name="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
                 </div>
             </div>
             <div class="form-group">
-                <label for="productPrice" class="col-sm-2 control-label">Product price *</label>
+                <label for="productPrice" class="col-sm-2 control-label">{{ @root.__ "Product price" }} *</label>
                 <div class="col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon">{{currencySymbol config.currencySymbol}}</span>
@@ -25,24 +25,24 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="productPublished" class="col-sm-2 control-label">Status</label>
+                <label for="productPublished" class="col-sm-2 control-label">{{ @root.__ "Status" }}</label>
                 <div class="col-sm-6">
                     <select class="form-control" id="productPublished" name="productPublished">
-                        <option value="true"  {{selectState result.productPublished "true"}}>Published</option>
-                        <option value="false" {{selectState result.productPublished "false"}}>Draft</option>
+                        <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
+                        <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
                     </select>
                 </div>
             </div>
             {{#if config.trackStock}}
             <div class="form-group">
-                <label for="productStock" class="col-sm-2 control-label">Stock level</label>
+                <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>
                 <div class="col-sm-6">
                     <input type="number" name="productStock" class="form-control" value="{{result.productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
             <div class="form-group">
-                <label for="editor" class="col-sm-2 control-label">Product description *</label>
+                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
                 <div class="col-sm-10">
                     <textarea id="editor" minlength="5" rows="10" id="productDescription" name="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
                 </div>
@@ -53,29 +53,29 @@
                     <div class="input-group">
                         <input type="text" class="form-control" name="productPermalink" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
                         <span class="input-group-btn">
-                            <button class="btn btn-success" id="validate_permalink" type="button">Validate</button>
+                            <button class="btn btn-success" id="validate_permalink" type="button">{{ @root.__ "Validate" }}</button>
                         </span>
                     </div>
-                    <p class="help-block">This sets a readable URL for the product</p>
+                    <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
                 </div>
             </div>
             <div class="form-group">
                 <input type="hidden" id="productOptions" name="productOptions" value="{{stringify result.productOptions}}" />
-                <label for="editor" class="col-sm-2 control-label">Product options</label>
+                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
                 <div class="col-lg-10">
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item">
                             <div class="row">
                             <div class="col-lg-2">
-                                <strong>Name:</strong>
+                                <strong>{{ @root.__ "Name" }}:</strong>
                                 <input type="text" id="product_optName" class="form-control" placeholder="size" />
                             </div>
                             <div class="col-lg-2">
-                                <strong>Label:</strong>
+                                <strong>{{ @root.__ "Label" }}:</strong>
                                 <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
                             </div>
                             <div class="col-lg-2">
-                                <strong>Type:</strong>
+                                <strong>{{ @root.__ "Type" }}:</strong>
                                 <select id="product_optType" class="form-control">
                                     <option value="select">Select</option>
                                     <option value="radio">Radio</option>
@@ -83,11 +83,11 @@
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <strong>Options:</strong>
+                                <strong>{{ @root.__ "Options" }}:</strong>
                                 <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
                             </div>
                             <div class="col-lg-2 text-right"></br>
-                                <button id="product_opt_add" class="btn btn-success">Add</button>
+                                <button id="product_opt_add" class="btn btn-success">{{ @root.__ "Add" }}</button>
                             </div></div>
                         </li>
                         {{#each options}}
@@ -98,17 +98,17 @@
                                     <div class='col-lg-2'>{{this.optType}}</div>
                                     <div class='col-lg-4'>{{{this.optOptions}}}</div>
                                     <div class='col-lg-2 text-right'>
-                                        <button class='product_opt_remove btn btn-danger btn-sm'>Remove</button>
+                                        <button class='product_opt_remove btn btn-danger btn-sm'>{{ @root.__ "Remove" }}</button>
                                     </div>
                                 </div>
                             </li>
                         {{/each}}
                     </ul>
-                    <p class="help-block">Here you can set options for your product. Eg: Size, color, style</p>
+                    <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="productComment" class="col-sm-2 control-label">Allow comment</label>
+                <label for="productComment" class="col-sm-2 control-label">{{ @root.__ "Allow comment" }}</label>
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
@@ -116,29 +116,29 @@
                                 name="productComment">
                         </label>
                     </div>
-                    <p class="help-block">Allow free form comments when adding products to cart</p>
+                    <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="productTags" class="col-sm-2 control-label">Product tag words</label>
+                <label for="productTags" class="col-sm-2 control-label">{{ @root.__ "Product tag words" }}</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="productTags" name="productTags" value="{{result.productTags}}">
-                    <p class="help-block">Tag words used to indexed products, making them easier to find and filter.</p>
+                    <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
                 </div>
             </div>
             <div id="product-images">
-                <h2>Product images</h2>
+                <h2>{{ @root.__ "Product images" }}</h2>
                 {{#if images}}
                 <div class="row">
                     <div class="col-md-10 col-md-offset-2">
                     {{#each images}}
                         <div class="col-md-3">
                             <p>
-                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-danger btn-sm">Delete</a>
+                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-danger btn-sm">{{ @root.__ "Delete" }}</a>
                                 {{#ifCond this.productImage '==' true}}
-                                    <span class="label label-info">main image</span>
+                                    <span class="label label-info">{{ @root.__ "main image" }}</span>
                                 {{else}}
-                                    <a data-id="{{../this.path}}" class="set-as-main-image btn btn-sm btn-success">Set as main image</a>
+                                    <a data-id="{{../this.path}}" class="set-as-main-image btn btn-sm btn-success">{{ @root.__ "Set as main image" }}</a>
                                 {{/ifCond}}
                             </p>
                             <img src="{{this.path}}" class="product-main-image img-responsive">
@@ -147,7 +147,7 @@
                     </div>
                 </div>
                 {{else}}
-                    <h4 class="text-warning">No images have been uploaded for this product</h4>
+                    <h4 class="text-warning">{{ @root.__ "No images have been uploaded for this product" }}</h4>
                 {{/if}}
             </div>
         </div>
@@ -162,17 +162,17 @@
             <form method="post" id="upload_form" name="upload_form" action="/admin/file/upload" enctype="multipart/form-data">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Product image upload</h4>
+                    <h4 class="modal-title" id="myModalLabel">{{ @root.__ "Product image upload" }}</h4>
                 </div>
                 <div class="modal-body">
                     <span class="btn btn-info btn-file">
-                        Select file<input type="file" name="upload_file" id="upload_file">
+                        {{ @root.__ "Select file" }}<input type="file" name="upload_file" id="upload_file">
                     </span>
                     <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="saveButton" name="saveButton" class="btn btn-primary">Upload</button>
+                    <button type="submit" id="saveButton" name="saveButton" class="btn btn-primary">{{ @root.__ "Upload" }}</button>
                 </div>
             </form>
         </div>

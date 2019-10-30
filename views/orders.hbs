@@ -7,25 +7,25 @@
         <div class="input-group">
             <input type="text" name="order_filter" id="order_filter" class="form-control input-lg" placeholder="Filter orders">
             <span class="input-group-btn">
-                <button class="btn btn-success btn-lg" id="btn_order_filter">Filter</button>
-                <a href="/admin/orders/bystatus/" class="hidden-xs btn btn-info btn-lg orderFilterByStatus">By status</a>
+                <button class="btn btn-success btn-lg" id="btn_order_filter">{{ @root.__ "Filter" }}</button>
+                <a href="/admin/orders/bystatus/" class="hidden-xs btn btn-info btn-lg orderFilterByStatus">{{ @root.__ "By status" }}</a>
                 <a href="/admin/orders" class="hidden-xs btn btn-warning btn-lg"><i class="fa fa-times" aria-hidden="true"></i></a>
             </span>
         </div>
         <div class="orderFilter">
-            <div class="text-warning top-pad-10 col-md-8">Orders can be filtered by: surname, email address or postcode/zipcode</div>
+            <div class="text-warning top-pad-10 col-md-8">{{ @root.__ "Orders can be filtered by: surname, email address or postcode/zipcode" }}</div>
             <div class="col-md-4 no-pad-right">
                 <div class="form-group">
                     <label for="orderStatusFilter" class="col-sm-2 control-label formLabel">Status</label>
                     <div class="col-sm-10 no-pad-right">
                         <select class="form-control input-sm" id="orderStatusFilter">
-                            <option>Completed</option>
-                            <option>Paid</option>
-                            <option>Created</option>
-                            <option>Cancelled</option>
-                            <option>Declined</option>
-                            <option>Shipped</option>
-                            <option>Pending</option>
+                            <option>{{ @root.__ "Completed" }}</option>
+                            <option>{{ @root.__ "Paid" }}</option>
+                            <option>{{ @root.__ "Created" }}</option>
+                            <option>{{ @root.__ "Cancelled" }}</option>
+                            <option>{{ @root.__ "Declined" }}</option>
+                            <option>{{ @root.__ "Shipped" }}</option>
+                            <option>{{ @root.__ "Pending" }}</option>
                         </select>
                     </div>
                 </div>
@@ -37,27 +37,27 @@
         <ul class="list-group">
             <li class="list-group-item">
                 {{#if searchTerm}}
-                    <strong>Orders - <span class="text-danger">Filtered term: {{searchTerm}} </span></strong>
+                    <strong>{{ @root.__ "Orders" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{searchTerm}} </span></strong>
                 {{else}}
-                    <strong>Recent orders</strong>
+                    <strong>{{ @root.__ "Recent orders" }}</strong>
                 {{/if}}
             </li>
             {{#if orders}}
             {{#each orders}}
                 <li class="list-group-item">
                     <h4 class="pull-right" style="padding-left: 10px;">
-                        Status: <span class="text-{{getStatusColor this.orderStatus}}">{{this.orderStatus}}</span>
+                        {{ @root.__ "Status" }}: <span class="text-{{getStatusColor this.orderStatus}}">{{this.orderStatus}}</span>
                         <a class="text-danger" href="/admin/order/delete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this order?');"> <i class="fa fa-trash-o"></i></a>
                     </h4>
                     <h5>
-                        <a href="/admin/order/view/{{this._id}}" class="text-success">View order</a> - <span class="text-info">Date: </span>{{formatDate this.orderDate "DD/MM/YYYY hh:mm"}} | <span class="text-info">Email:</span> {{this.orderEmail}} | <span class="text-info">Last name:</span> {{this.orderLastname}}
+                        <a href="/admin/order/view/{{this._id}}" class="text-success">View order</a> - <span class="text-info">Date: </span>{{formatDate this.orderDate "DD/MM/YYYY hh:mm"}} | <span class="text-info">Email:</span> {{this.orderEmail}} | <span class="text-info">{{ @root.__ "Last name" }}:</span> {{this.orderLastname}}
                     </h5>
                 </li>
             {{/each}}
             {{else}}
                 <li class="list-group-item">
                     <h4 class="text-center">
-                        No orders found
+                        {{ @root.__ "No orders found" }}
                     </h4>
                 </li>
             {{/if}}

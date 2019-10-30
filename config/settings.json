@@ -16,12 +16,16 @@
     "productsPerPage": 6,
     "menuTitle": "Menu",
     "menuLocation": "side",
-    "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
+    "footerHtml": "",
     "googleAnalytics": "",
-    "customCss": ".footer{padding-top: 5px;}",
+    "customCss": "",
     "currencySymbol": "£",
     "paymentGateway": "stripe",
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
-    "trackStock": false
+    "trackStock": false,
+    "secretCookie": "fbdc7c07be5693cf170787e372170776e7bf9519",
+    "secretSession": "ecc338c807e58b8f2bb230ce35af988c64d5006d",
+    "env": "",
+    "themeViews": "../views/themes/Mono/"
 }
