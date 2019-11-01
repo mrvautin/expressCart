@@ -150,10 +150,10 @@
 		{{#if showFooter}}
             <footer class="footer">
                 <div class="container-fluid">
-                    {{#isNull config.footerHtml}}
+                    {{#isNull @root.config.footerHtml}}
                         <h4 class="text-center">Powered by expressCart</h4>
                     {{else}}
-                        {{{config.footerHtml}}}
+                        {{{@root.config.footerHtml}}}
                     {{/isNull}}
                 </div>
             </footer>
