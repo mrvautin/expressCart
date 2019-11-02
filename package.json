@@ -7,7 +7,8 @@
     "start": "node app.js",
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
-    "test": "NODE_ENV=test ava --verbose"
+    "test": "NODE_ENV=test ava --verbose",
+    "lint": "eslint ./"
   },
   "engines": {
     "node": "10.16.0"
