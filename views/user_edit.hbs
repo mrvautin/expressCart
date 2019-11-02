@@ -6,26 +6,26 @@
 			<form method="post" id="edit_form" action="/admin/user/update" data-toggle="validator">
 			<input type="hidden" name="userId" value="{{user._id}}" />
             <div class="form-group">
-		    	<label>Users name</label>
+		    	<label>{{ @root.__ "Users name" }}</label>
 		    	<input type="text" class="form-control" name="usersName" value="{{user.usersName}}" required>
 		  	</div>
 			<div class="form-group">
-		    	<label>User email</label>
+		    	<label>{{ @root.__ "User email" }}</label>
 		    	<input type="text" class="form-control" name="userEmail" value="{{user.userEmail}}" readonly>
 		  	</div>
 		  	<div class="form-group">
-			    <label>User password {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
+			    <label>{{ @root.__ "User password" }} {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
 			    <input type="password" class="form-control" name="userPassword" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
 		  	</div>
 		  	<div class="form-group">
-			    <label>Password confirm {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
+			    <label>{{ @root.__ "Password confirm" }} {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
 			    <input type="password" data-validation-match-match="userPassword" data-validation-match-message="Password values to not match" class="form-control" name="frm_userPassword_confirm" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
 		  	</div>
             {{#isAnAdmin session.isAdmin}}
                 {{#ifCond session.user '!=' user.userEmail}}
                     <div class="checkbox">
                         <label>
-                            <input name="user_admin" {{#checkedState user.isAdmin}}{{/checkedState}} type="checkbox"> User is admin?
+                            <input name="user_admin" {{#checkedState user.isAdmin}}{{/checkedState}} type="checkbox"> {{ @root.__ "User is admin?" }}
                         </label>
                     </div>
                 {{/ifCond}}
@@ -35,13 +35,13 @@
 				<div class="input-group">
 					<input type="text" class="form-control" id="apiKey" value="{{user.apiKey}}" aria-label="..." readonly>
 					<div class="input-group-btn">
-						<button id="btnGenerateAPIkey" class="btn btn-success">Generate</button>
+						<button id="btnGenerateAPIkey" class="btn btn-success">{{ @root.__ "Generate" }}</button>
 					</div>
 				</div>
 			</div><br/>
 		  	<div class="form-group">
     			<div class="pull-right">
-      				<button type="submit" class="btn btn-success">Update</button>
+      				<button type="submit" class="btn btn-success">{{ @root.__ "Update" }}</button>
     			</div>
   			</div>
 		</div>

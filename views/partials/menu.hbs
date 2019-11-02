@@ -13,12 +13,12 @@
         <li class="list-group-item"><strong>Users</strong></li>
         {{#ifCond session.isAdmin '===' true}}
         <li class="list-group-item"><i class="fa fa-user-plus fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/new">{{ @root.__ "New" }}</a></li>
-        <li class="list-group-item"><i class="fa fa-user fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/users">Edit</a></li>
+        <li class="list-group-item"><i class="fa fa-user fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/users">{{ @root.__ "Edit" }}</a></li>
         {{/ifCond}}
         <li class="list-group-item"><i class="fa fa-user-circle-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/edit/{{session.userId}}">My Account</a></li>
         <li class="list-group-item"><strong>{{ @root.__ "Settings" }}</strong></li>
         <li class="list-group-item"><i class="fa fa-cog fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings">{{ @root.__ "General settings" }}</a></li>
         <li class="list-group-item"><i class="fa fa-bars fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/menu">Menu</a></li>
-        <li class="list-group-item"><i class="fa fa-file-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/pages">Static pages</a></li>
+        <li class="list-group-item"><i class="fa fa-file-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/pages">{{ @root.__ "Static pages" }}</a></li>
     </ul>
 </div>

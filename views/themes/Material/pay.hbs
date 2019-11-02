@@ -7,9 +7,9 @@
             <div class="card">
                 <div class="card-content">
                     <div class="row">
-                    <span class="card-title">Customer details</span>
+                    <span class="card-title">{{ @root.__ "Customer details" }}</span>
                     {{#unless session.customer}}
-                    <p>Existing customer</p>
+                    <p>{{ @root.__ "Existing customer" }}</p>
                     <div class="input-field col s12">
                         <input type="email" id="customerLoginEmail" name="loginEmail" minlength="5" placeholder="Email address" required>
                     </div>
@@ -17,7 +17,7 @@
                         <input type="password" class="form-control" id="customerLoginPassword" name="loginPassword" minlength="5" placeholder="Password" required>
                     </div>
                     <div class="input-field col s12 m6">
-                        <a href="/customer/forgotten" class="btn waves-effect waves-light blue darken-3 pull-left">Forgotten</a>
+                        <a href="/customer/forgotten" class="btn waves-effect waves-light blue darken-3 pull-left">{{ @root.__ "Forgotten" }}</a>
                     </div>
                     <div class="input-field col s12 m6">
                         <button id="customerLogin" class="btn waves-effect waves-light blue darken-3 pull-right" type="submit">Login</button>
@@ -25,7 +25,7 @@
                     {{/unless}}
                     {{#if session.customer}}
                     <div class="col s12">
-                        <button id="customerLogout" class="btn waves-effect waves-light blue darken-3 pull-right">Change customer</button>
+                        <button id="customerLogout" class="btn waves-effect waves-light blue darken-3 pull-right">{{ @root.__ "Change customer" }}</button>
                     </div>
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action" method="post" role="form" data-toggle="validator" novalidate="false">
@@ -37,13 +37,13 @@
                         {{/if}}
                         {{#unless session.customer}}
                         <div class="col s12">
-                            <p class="text-muted">Enter a password to create an account for next time</p>
+                            <p class="text-muted">{{ @root.__ "Enter a password to create an account for next time" }}</p>
                             <div class="input-field col s12">
                                 <input type="password" class="form-control customerDetails" id="newCustomerPassword" name="newCustomerPassword" placeholder="Password" required>
                             </div>
                         </div>
                         <div class="col s12">
-                            <a id="createCustomerAccount" class="btn waves-effect waves-light blue darken-3 pull-right">Create account</a>
+                            <a id="createCustomerAccount" class="btn waves-effect waves-light blue darken-3 pull-right">{{ @root.__ "Create account" }}</a>
                         </div>
                         {{/unless}}
                     </form>
