@@ -11,7 +11,7 @@
             <div class="panel-heading">Cart contents</div>
             <div class="panel-body cart-body">
                 <div class="container-fluid">
-                    {{#each session.cart}}
+                    {{#each @root.session.cart}}
                     <div class="row cart-row">
                         <div class="col-xs-4 col-md-2 col s4 m2">
                             {{#if productImage}}
@@ -59,13 +59,13 @@
                     {{/each}}
                 </div>
                 <div class="container-fluid">
-                    {{#if session.cart}}
+                    {{#if @root.session.cart}}
                     <div class="row">
                         <div class="cart-contents-shipping col-md-12 col m12 no-pad-right">
-                            {{#ifCond session.shippingCostApplied '===' true}}
+                            {{#ifCond @root.session.shippingCostApplied '===' true}}
                             <div class="text-right">
                                 Shipping:
-                                <strong>{{currencySymbol config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong>
+                                <strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong>
                             </div>
                             {{else}}
                             <div class="text-right">
@@ -75,7 +75,7 @@
                             {{/ifCond}}
                             <div class="text-right">
                                 Total:
-                                <strong>{{currencySymbol config.currencySymbol}}{{formatAmount session.totalCartAmount}}</strong>
+                                <strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartAmount}}</strong>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
             </div>
         </div>
         <div class="row">
-            {{#if session.cart}}
+            {{#if @root.session.cart}}
             <div class="col-xs-6 col s6 text-left align-right">
                 <button class="btn btn-danger" id="empty-cart" type="button">Empty cart</button>
             </div>

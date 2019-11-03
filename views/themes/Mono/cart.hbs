@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-content">
                 <span class="card-title">Cart contents</span>
-                {{#each session.cart}}
+                {{#each @root.session.cart}}
                 <div class="row cart-row">
                     <div class="col s4 m2">
                         {{#if productImage}}
@@ -53,10 +53,10 @@
                     </div>
                 </div>
                 {{/each}}
-                {{#if session.cart}}
+                {{#if @root.session.cart}}
                 <div class="row">
                     <div class="cart-contents-shipping col s12 no-pad-right">
-                        {{#ifCond session.shippingCostApplied '===' true}}
+                        {{#ifCond @root.session.shippingCostApplied '===' true}}
                         <div class="text-right">
                             Shipping:
                             <strong>{{currencySymbol config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong>
@@ -69,7 +69,7 @@
                         {{/ifCond}}
                         <div class="text-right">
                             Total:
-                            <strong>{{currencySymbol config.currencySymbol}}{{formatAmount session.totalCartAmount}}</strong>
+                            <strong>{{currencySymbol config.currencySymbol}}{{formatAmount @root.session.totalCartAmount}}</strong>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
             </div>
         </div>
         <div class="row">
-            {{#if session.cart}}
+            {{#if @root.session.cart}}
             <div class="col s6 align-right">
                 <button class="btn waves-effect waves-light red darken-3" id="empty-cart" type="button">Empty cart</button>
             </div>

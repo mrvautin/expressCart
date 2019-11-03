@@ -90,14 +90,14 @@
                     {{#if admin}}
                         <a class="navbar-brand navbar-brand-image" href="/admin"><img class="img-responsive" src="/images/logo-admin.png"></a>
                     {{else}}
-                        {{#isNull config.cartLogo}}
-                            {{#isNull config.cartTitle}}
+                        {{#isNull @root.config.cartLogo}}
+                            {{#isNull @root.config.cartTitle}}
                                 <a class="navbar-brand" href="/">expressCart</a>
                             {{else}}
-                                <a class="navbar-brand" href="/">{{config.cartTitle}}</a>
+                                <a class="navbar-brand" href="/">{{@root.config.cartTitle}}</a>
                             {{/isNull}}
                         {{else}}
-                            <a class="navbar-brand navbar-brand-image" href="/"><img class="img-responsive" src="{{config.cartLogo}}"></a>
+                            <a class="navbar-brand navbar-brand-image" href="/"><img class="img-responsive" src="{{@root.config.cartLogo}}"></a>
                         {{/isNull}}
                     {{/if}}
 				</div>
@@ -106,15 +106,15 @@
                         {{#unless admin}}
                         {{#ifCond page '!=' 'checkout'}}
                         {{#ifCond page '!=' 'pay'}}
-                            {{#if session.cart}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{session.cartTotalItems}}</span></a></li>
+                            {{#if @root.session.cart}}
+                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">{{@root.session.cartTotalItems}}</span></a></li>
                                 {{else}}
                                 <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge" id="cart-count">0</span></a></li>
                             {{/if}}
                         {{/ifCond}}
                         {{/ifCond}}
                         {{/unless}}
-                        {{#if session.user}}
+                        {{#if @root.session.user}}
 							<li><a href="/admin/logout"><i class="fa fa-sign-out" aria-hidden="true"> </i>Logout</a></li>
 						{{/if}}
 					</ul>
@@ -145,7 +145,7 @@
 		<input type="hidden" id="input_notify_message" value="{{message}}">
 		<input type="hidden" id="input_notify_messageType" value="{{messageType}}">
         <input type="hidden" id="cartCheckout" value="{{checkout}}">
-        <input type="hidden" id="cartTheme" value="{{config.theme}}">
+        <input type="hidden" id="cartTheme" value="{{@root.config.theme}}">
 		<div id="notify_message"></div>
 		{{#if showFooter}}
             <footer class="footer">
