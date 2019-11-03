@@ -6,14 +6,15 @@
             value="Process payment"
             class="btn btn-success waves-effect waves-light blue darken-3"
             type="submit"
-            data-key="{{paymentConfig.publicKey}}"
-            data-amount="{{amountNoDecimal session.totalCartAmount}}"
-            data-name="{{config.cartTitle}}"
-            data-description="{{config.cartTitle}} Payment"
-            data-image="{{paymentConfig.stripeLogoURL}}"
+            data-key="{{@root.paymentConfig.publicKey}}"
+            data-amount="{{amountNoDecimal @root.session.totalCartAmount}}"
+            data-name="{{@root.config.cartTitle}}"
+            data-description="{{@root.config.cartTitle}} Payment"
+            data-image="{{@root.paymentConfig.stripeLogoURL}}"
+            data-email="{{@root.session.customer.email}}"
             data-locale="auto"
             data-zip-code="false"
-            data-currency="{{paymentConfig.stripeCurrency}}">
+            data-currency="{{@root.paymentConfig.stripeCurrency}}">
             <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i> Process payment <i class="fa fa-cc-stripe fa-lg" aria-hidden="true"></i>
         </button>
         <script src="https://checkout.stripe.com/v2/checkout.js"></script>
