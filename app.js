@@ -73,10 +73,9 @@ const authorizenet = require('./routes/payments/authorizenet');
 const app = express();
 
 // Language initialize
-const availableLanguages = ['en', 'it'];
 i18n.configure({
-    locales: availableLanguages,
-    defaultLocale: 'en',
+    locales: config.availableLanguages,
+    defaultLocale: config.defaultLocale,
     cookie: 'locale',
     queryParameter: 'lang',
     directory: `${__dirname}/locales`,

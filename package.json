@@ -7,7 +7,8 @@
     "start": "node app.js",
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
-    "test": "NODE_ENV=test ava --verbose"
+    "test": "NODE_ENV=test ava --verbose",
+    "dev": "nodemon app.js"
   },
   "engines": {
     "node": "10.16.0"
@@ -36,6 +37,7 @@
     "mime-db": "^1.42.0",
     "mime-type": "^3.0.7",
     "moment": "^2.24.0",
+    "moment-recur": "^1.0.7",
     "mongodb": "^3.3.3",
     "mongodb-uri": "^0.9.7",
     "morgan": "^1.9.1",

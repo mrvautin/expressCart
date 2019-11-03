@@ -512,7 +512,6 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
 // Language setup in cookie
 router.get('/lang/:locale', (req, res) => {
-    console.log(req.params.locale);
     res.cookie('locale', req.params.locale, { maxAge: 900000, httpOnly: true });
     res.redirect('back');
 });
