@@ -122,7 +122,7 @@
 	"Products per page": "Products per page",
 	"The number of products to be displayed on each page.": "The number of products to be displayed on each page.",
 	"Menu Enabled": "Menu Enabled",
-	"Menu_Enabled_Info": "If a menu is set you can set it up <a href="/admin/settings/menu">here</a>.",
+	"Menu_Enabled_Info": "If a menu is set you can set it up <a href=\"/admin/settings/menu\">here</a>.",
 	"Menu header": "Menu header",
 	"The heading text for your menu.": "The heading text for your menu.",
 	"Menu location": "Menu location",
@@ -159,5 +159,6 @@
 	"Leave a comment?": "Leave a comment?",
 	"Cart contents": "Cart contents",
 	"Shipping": "Shipping:",
-	"Empty cart": "Empty cart"
+	"Empty cart": "Empty cart",
+	"List": "List"
 }
