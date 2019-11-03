@@ -192,7 +192,7 @@ router.post('/checkout_action', (req, res, next) => {
                     }
 
                     // get the new ID
-                    const newId = newDoc.insertedIds['0'];
+                    const newId = newDoc.insertedId;
 
                     // set the order ID in the session
                     req.session.orderId = newId;
