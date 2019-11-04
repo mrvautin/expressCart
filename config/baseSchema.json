@@ -86,7 +86,6 @@
             "enum": ["paypal", "stripe", "authorizenet"]
         },
         "databaseConnectionString": {
-            "format": "uri-template",
             "type": "string"
         },
         "theme": {
