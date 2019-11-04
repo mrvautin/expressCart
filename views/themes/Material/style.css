@@ -119,7 +119,7 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
     color: #1565c0 !important;
 }
 
-.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
+.navbar-static-top, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
     margin-bottom: 0;
     height: 100px !important;
 }

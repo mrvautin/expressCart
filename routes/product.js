@@ -356,12 +356,12 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     // if no featured image
     if(!product.productImage){
         if(images.length > 0){
-            productDoc['productImage'] = images[0].path;
+            productDoc.productImage = images[0].path;
         }else{
-            productDoc['productImage'] = '/uploads/placeholder.png';
+            productDoc.productImage = '/uploads/placeholder.png';
         }
     }else{
-        productDoc['productImage'] = product.productImage;
+        productDoc.productImage = product.productImage;
     }
 
     try{

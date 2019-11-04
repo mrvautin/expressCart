@@ -296,6 +296,7 @@ $(document).ready(function (){
 
             // open the stripe payment form
             handler.open({
+                email: $('#stripeButton').data('email'),
                 name: $('#stripeButton').data('name'),
                 description: $('#stripeButton').data('description'),
                 zipCode: $('#stripeButton').data('zipCode'),

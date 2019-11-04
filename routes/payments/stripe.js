@@ -62,7 +62,7 @@ router.post('/checkout_action', (req, res, next) => {
             }
 
             // get the new ID
-            const newId = newDoc.insertedIds['0'];
+            const newId = newDoc.insertedId;
 
             // add to lunr index
             indexOrders(req.app)

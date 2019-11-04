@@ -24,7 +24,7 @@ const Ajv = require('ajv');
 const ajv = new Ajv({ useDefaults: true });
 
 // get config
-let config = common.getConfig();
+const config = common.getConfig();
 
 const baseConfig = ajv.validate(require('./config/baseSchema'), config);
 if(baseConfig === false){
@@ -35,24 +35,21 @@ if(baseConfig === false){
 // Validate the payment gateway config
 switch(config.paymentGateway){
     case'paypal':
-        const paypalConfig = ajv.validate(require('./config/paypalSchema'), require('./config/paypal.json'));
-        if(paypalConfig === false){
+        if(ajv.validate(require('./config/paypalSchema'), require('./config/paypal.json')) === false){
             console.log(colors.red(`PayPal config is incorrect: ${ajv.errorsText()}`));
             process.exit(2);
         }
         break;
 
     case'stripe':
-        const stripeConfig = ajv.validate(require('./config/stripeSchema'), require('./config/stripe.json'));
-        if(stripeConfig === false){
+        if(ajv.validate(require('./config/stripeSchema'), require('./config/stripe.json')) === false){
             console.log(colors.red(`Stripe config is incorrect: ${ajv.errorsText()}`));
             process.exit(2);
         }
         break;
 
     case'authorizenet':
-        const authorizenetConfig = ajv.validate(require('./config/authorizenetSchema'), require('./config/authorizenet.json'));
-        if(authorizenetConfig === false){
+        if(ajv.validate(require('./config/authorizenetSchema'), require('./config/authorizenet.json')) === false){
             console.log(colors.red(`Authorizenet config is incorrect: ${ajv.errorsText()}`));
             process.exit(2);
         }
@@ -298,15 +295,6 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
     res.locals.languages = i18n.getLocales();
-    next();
-});
-
-// update config when modified
-app.use((req, res, next) => {
-    if(res.configDirty){
-        config = common.getConfig();
-        app.config = config;
-    }
     next();
 });
 

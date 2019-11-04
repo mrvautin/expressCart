@@ -172,8 +172,8 @@ router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
 router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
     const result = common.updateConfig(req.body);
     if(result === true){
+        req.app.config = common.getConfig();
         res.status(200).json({ message: 'Settings successfully updated' });
-        res.configDirty = true;
         return;
     }
     res.status(400).json({ message: 'Permission denied' });

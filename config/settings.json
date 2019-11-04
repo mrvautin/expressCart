@@ -24,10 +24,7 @@
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
-    "secretCookie": "fbdc7c07be5693cf170787e372170776e7bf9519",
-    "secretSession": "ecc338c807e58b8f2bb230ce35af988c64d5006d",
-    "env": "",
-    "themeViews": "../views/themes/Mono/",
     "availableLanguages": ["en", "it"],
     "defaultLocale": "en"
+    "orderHook": ""
 }
