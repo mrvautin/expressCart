@@ -52,7 +52,8 @@ router.post('/checkout_action', (req, res, next) => {
             orderComment: req.body.orderComment,
             orderStatus: paymentStatus,
             orderDate: new Date(),
-            orderProducts: req.session.cart
+            orderProducts: req.session.cart,
+            orderType: 'Single'
         };
 
         // insert order into DB
@@ -111,8 +112,39 @@ router.post('/checkout_action', (req, res, next) => {
     });
 });
 
-router.post('/subscription_update', async (req, res, next) => {
-    // TODO Add webhook handler
+// Subscription hook from Stripe
+router.all('/subscription_update', async (req, res, next) => {
+    const db = req.app.db;
+
+    if(!req.body.data.object.customer){
+        return res.status(400).json({ message: 'Customer not found' });
+    }
+
+    const order = await db.orders.findOne({
+        orderCustomer: req.body.data.object.customer,
+        orderType: 'Subscription'
+    });
+
+    if(!order){
+        return res.status(400).json({ message: 'Order not found' });
+    }
+
+    let orderStatus = 'Paid';
+    if(req.body.type === 'invoice.payment_failed'){
+        orderStatus = 'Declined';
+    }
+
+    // Update order status
+    await db.orders.updateOne({
+        _id: common.getId(order._id),
+        orderType: 'Subscription'
+    }, {
+        $set: {
+            orderStatus: orderStatus
+        }
+    });
+
+    return res.status(200).json({ message: 'Status successfully updated' });
 });
 
 router.post('/checkout_action_subscription', async (req, res, next) => {
@@ -180,9 +212,11 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
         orderPostcode: req.body.shipPostcode,
         orderPhoneNumber: req.body.shipPhoneNumber,
         orderComment: req.body.orderComment,
-        orderStatus: 'Paid',
+        orderStatus: 'Pending',
         orderDate: new Date(),
-        orderProducts: req.session.cart
+        orderProducts: req.session.cart,
+        orderType: 'Subscription',
+        orderCustomer: customer.id
     };
 
     // insert order into DB
