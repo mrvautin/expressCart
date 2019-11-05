@@ -4,7 +4,7 @@
             {{#ifCond result.orderStatus '==' 'Paid'}}
                 <h2 class="text-success">{{ @root.__ "Your payment has been successfully processed" }}</h2>
             {{else}}
-                <h2 class="text-danger">{{ @root.__ "Your payment has been successfully processed" }}</h2>
+                <h2 class="text-danger">{{ @root.__ "Your payment has failed. Please try again or contact us." }}</h2>
             {{/ifCond}}
             {{#if result}}
                 <div>

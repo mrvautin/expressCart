@@ -97,8 +97,15 @@ app.set('view engine', 'hbs');
 handlebars = handlebars.create({
     helpers: {
         // Language helper
-        __: function (){ return i18n.__(this, arguments);  },
-        __n: function (){ return i18n.__n(this, arguments); },
+        __: () => { return i18n.__(this, arguments); },
+        __n: () => { return i18n.__n(this, arguments); },
+        availableLanguages: (block) => {
+            let total = ''
+            for(const lang of i18n.getLocales()){
+                total += block.fn(lang);
+            }
+            return total;
+        },
         perRowClass: (numProducts) => {
             if(parseInt(numProducts) === 1){
                 return'col-md-12 col-xl-12 col m12 xl12 product-item';
@@ -293,11 +300,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
-    res.locals.languages = i18n.getLocales();
-    next();
-});
-
 // Ran on all routes
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache, no-store');
@@ -400,7 +402,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
     if(process.env.NODE_ENV !== 'test'){
         try{
             await runIndexing(app);
-        } catch(ex){
+        }catch(ex){
             console.error(colors.red('Error setting up indexes:' + err));
         }
     }
@@ -410,7 +412,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await app.listen(app.get('port'));
         app.emit('appStarted');
         console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
-    } catch(ex){
+    }catch(ex){
         console.error(colors.red('Error starting expressCart app:' + err));
         process.exit(2);
     }

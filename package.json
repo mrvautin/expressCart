@@ -37,7 +37,6 @@
     "mime-type": "^3.0.7",
     "mkdirp": "^0.5.1",
     "moment": "^2.24.0",
-    "moment-recur": "^1.0.7",
     "mongodb": "^3.3.3",
     "mongodb-uri": "^0.9.7",
     "morgan": "^1.9.1",
