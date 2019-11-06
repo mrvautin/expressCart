@@ -390,7 +390,13 @@ router.post('/product/addtocart', async (req, res, next) => {
     // Doc used to test if existing in the cart with the options. If not found, we add new.
     let options = {};
     if(req.body.productOptions){
-        options = JSON.parse(req.body.productOptions);
+        try{
+            if(typeof req.body.productOptions === 'object'){
+                options = req.body.productOptions;
+            }else{
+                options = JSON.parse(req.body.productOptions);
+            }
+        }catch(ex){}
     }
     const findDoc = {
         productId: req.body.productId,
