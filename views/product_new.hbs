@@ -106,6 +106,15 @@
                     <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
                 </div>
             </div>
+            {{#ifCond config.paymentGateway '==' 'stripe'}}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Subscription plan</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="productSubscription" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX">
+                    <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
+                </div>
+            </div>
+            {{/ifCond}}
             <div class="form-group">
                 <label for="productComment" class="col-sm-2 control-label">{{ @root.__ "Allow comment" }}</label>
                 <div class="col-sm-10">

@@ -141,6 +141,41 @@ test.serial('[Success] Customer login with correct email', async t => {
     t.deepEqual(res.body.message, 'Successfully logged in');
 });
 
+test.serial('[Success] Add subscripton product to cart', async t => {
+    const res = await request
+        .post('/product/addtocart')
+        .send({
+            productId: products[7]._id,
+            productQuantity: 1,
+            productOptions: {}
+        })
+        .expect(200);
+    const sessions = await db.cart.find({}).toArray();
+    if(!sessions || sessions.length === 0){
+        t.fail();
+    }
+    t.deepEqual(res.body.message, 'Cart successfully updated');
+});
+
+test.serial('[Fail] Add product to cart when subscription already added', async t => {
+    const res = await request
+        .post('/product/addtocart')
+        .send({
+            productId: products[1]._id,
+            productQuantity: 100,
+            productOptions: JSON.stringify(products[1].productOptions)
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'Subscription already existing in cart. You cannot add more.');
+});
+
+test.serial('[Success] Empty cart', async t => {
+    const res = await request
+        .post('/product/emptycart')
+        .expect(200);
+    t.deepEqual(res.body.message, 'Cart successfully emptied');
+});
+
 test.serial('[Success] Add product to cart', async t => {
     const res = await request
         .post('/product/addtocart')
@@ -155,6 +190,18 @@ test.serial('[Success] Add product to cart', async t => {
         t.fail();
     }
     t.deepEqual(res.body.message, 'Cart successfully updated');
+});
+
+test.serial('[Fail] Cannot add subscripton when other product in cart', async t => {
+    const res = await request
+        .post('/product/addtocart')
+        .send({
+            productId: products[7]._id,
+            productQuantity: 1,
+            productOptions: {}
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'You cannot combine scubscription products with existing in your cart. Empty your cart and try again.');
 });
 
 test.serial('[Fail] Add product to cart with not enough stock', async t => {

@@ -118,6 +118,13 @@ Note: An `Options` value is not required when `Type` is set to `Checkbox`.
 
 Tags are used when indexing the products for search. It's advised to set tags (keywords) so that customers can easily find the products they are searching for.
 
+## Subscriptions (Stripe only)
+
+You are able to setup product subscriptions through Stripe. First setup the `Plan` in the [Stripe dashboard](https://dashboard.stripe.com/) then enter the Plan ID (Formatted: plan_XXXXXXXXXXXXXX) when creating or editing a product. When purchasing, a customer can only add a single subscription to their cart at one time. Subscriptions cannot be combined with other products in their cart. On Checkout/Payment the customer and subscription is created in Stripe and the billing cycle commences based on the plan setup.
+
+##### Subscription Webhooks (Stripe only)
+You are able to configure a Webhook in Stripe to receive subscription updates on successful/failed payments [here](https://dashboard.stripe.com/webhooks). The `expressCart` Webhook endpoint should be set to: `https://<example.com>/stripe/subscription_update`. You will need to set the `Events to send` value to both: `invoice.payment_failed` and `invoice.payment_succeeded`.
+
 ## Database
 
 `expressCart` uses a MongoDB for storing all the data. Setting of the database connection string is done through the `/config/settings.json` file. There are two properties relating to the database connection:

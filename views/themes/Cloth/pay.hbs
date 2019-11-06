@@ -36,7 +36,7 @@
                         <button id="customerLogout" class="btn btn-sm btn-success pull-right">{{ @root.__ "Change customer" }}</button>
                     </div>
                     {{/if}}
-                    <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action" method="post" role="form" data-toggle="validator" novalidate="false">
+                    <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
                         {{> partials/payments/shipping-form}}
                         {{#if session.customer}}
                         {{#ifCond config.paymentGateway '==' 'paypal'}}

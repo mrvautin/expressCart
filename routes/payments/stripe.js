@@ -52,7 +52,8 @@ router.post('/checkout_action', (req, res, next) => {
             orderComment: req.body.orderComment,
             orderStatus: paymentStatus,
             orderDate: new Date(),
-            orderProducts: req.session.cart
+            orderProducts: req.session.cart,
+            orderType: 'Single'
         };
 
         // insert order into DB
@@ -108,6 +109,151 @@ router.post('/checkout_action', (req, res, next) => {
                 }
             });
         });
+    });
+});
+
+// Subscription hook from Stripe
+router.all('/subscription_update', async (req, res, next) => {
+    const db = req.app.db;
+
+    if(!req.body.data.object.customer){
+        return res.status(400).json({ message: 'Customer not found' });
+    }
+
+    const order = await db.orders.findOne({
+        orderCustomer: req.body.data.object.customer,
+        orderType: 'Subscription'
+    });
+
+    if(!order){
+        return res.status(400).json({ message: 'Order not found' });
+    }
+
+    let orderStatus = 'Paid';
+    if(req.body.type === 'invoice.payment_failed'){
+        orderStatus = 'Declined';
+    }
+
+    // Update order status
+    await db.orders.updateOne({
+        _id: common.getId(order._id),
+        orderType: 'Subscription'
+    }, {
+        $set: {
+            orderStatus: orderStatus
+        }
+    });
+
+    return res.status(200).json({ message: 'Status successfully updated' });
+});
+
+router.post('/checkout_action_subscription', async (req, res, next) => {
+    const db = req.app.db;
+    const config = req.app.config;
+
+    try{
+        const plan = await stripe.plans.retrieve(req.body.stripePlan);
+        if(!plan){
+            req.session.messageType = 'danger';
+            req.session.message = 'The plan connected to this product doesn\'t exist';
+            res.redirect('/pay/');
+            return;
+        }
+    }catch(ex){
+        req.session.messageType = 'danger';
+        req.session.message = 'The plan connected to this product doesn\'t exist';
+        res.redirect('/pay/');
+        return;
+    }
+
+    // Create customer
+    const customer = await stripe.customers.create({
+        source: req.body.stripeToken,
+        plan: req.body.stripePlan,
+        email: req.body.shipEmail,
+        name: `${req.body.shipFirstname} ${req.body.shipLastname}`,
+        phone: req.body.shipPhoneNumber
+    });
+
+    if(!customer){
+        req.session.messageType = 'danger';
+        req.session.message = 'Your subscripton has declined. Please try again';
+        req.session.paymentApproved = false;
+        req.session.paymentDetails = '';
+        res.redirect('/pay');
+        return;
+    }
+
+    // Check for a subscription
+    if(customer.subscriptions.data && customer.subscriptions.data.length === 0){
+        req.session.messageType = 'danger';
+        req.session.message = 'Your subscripton has declined. Please try again';
+        req.session.paymentApproved = false;
+        req.session.paymentDetails = '';
+        res.redirect('/pay');
+        return;
+    }
+
+    const subscription = customer.subscriptions.data[0];
+
+    // Create the new order document
+    const orderDoc = {
+        orderPaymentId: subscription.id,
+        orderPaymentGateway: 'Stripe',
+        orderPaymentMessage: subscription.collection_method,
+        orderTotal: req.session.totalCartAmount,
+        orderEmail: req.body.shipEmail,
+        orderFirstname: req.body.shipFirstname,
+        orderLastname: req.body.shipLastname,
+        orderAddr1: req.body.shipAddr1,
+        orderAddr2: req.body.shipAddr2,
+        orderCountry: req.body.shipCountry,
+        orderState: req.body.shipState,
+        orderPostcode: req.body.shipPostcode,
+        orderPhoneNumber: req.body.shipPhoneNumber,
+        orderComment: req.body.orderComment,
+        orderStatus: 'Pending',
+        orderDate: new Date(),
+        orderProducts: req.session.cart,
+        orderType: 'Subscription',
+        orderCustomer: customer.id
+    };
+
+    // insert order into DB
+    const order = await db.orders.insertOne(orderDoc);
+    const orderId = order.insertedId;
+
+    indexOrders(req.app)
+    .then(() => {
+        // set the results
+        req.session.messageType = 'success';
+        req.session.message = 'Your subscription was successfully created';
+        req.session.paymentEmailAddr = req.body.shipEmail;
+        req.session.paymentApproved = true;
+        req.session.paymentDetails = '<p><strong>Order ID: </strong>' + orderId + '</p><p><strong>Subscription ID: </strong>' + subscription.id + '</p>';
+
+        // set payment results for email
+        const paymentResults = {
+            message: req.session.message,
+            messageType: req.session.messageType,
+            paymentEmailAddr: req.session.paymentEmailAddr,
+            paymentApproved: true,
+            paymentDetails: req.session.paymentDetails
+        };
+
+        // clear the cart
+        if(req.session.cart){
+            req.session.cartSubscription = null;
+            req.session.cart = null;
+            req.session.orderId = null;
+            req.session.totalCartAmount = 0;
+        }
+
+        // send the email with the response
+        common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
+
+        // redirect to outcome
+        res.redirect('/payment/' + orderId);
     });
 });
 

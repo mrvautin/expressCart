@@ -69,6 +69,17 @@
             "productTags" : "shirt",
             "productOptions" : "{\"Size\":{\"optName\":\"Size\",\"optLabel\":\"Select size\",\"optType\":\"select\",\"optOptions\":[\"S\",\"M\",\"L\"]}}",
             "productStock": 10
+        },
+        {
+            "productPermalink" : "gym-membership",
+            "productTitle" : "Gym membership",
+            "productPrice" : "15",
+            "productDescription" : "This a monthly recurring Gym membership subscription.",
+            "productPublished": true,
+            "productTags" : "subscription",
+            "productOptions" : "",
+            "productStock": null,
+            "productSubscription": "plan_XXXXXXXXXXXXXX"
         }
     ],
     "customers": [

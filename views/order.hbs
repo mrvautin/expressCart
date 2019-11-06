@@ -16,6 +16,7 @@
                 <div class="pull-right col-md-2">
                     <select class="form-control input-sm" id="orderStatus">
                         <option>{{ @root.__ "Completed" }}</option>
+                        <option>{{ @root.__ "Paid" }}</option>
                         <option>{{ @root.__ "Pending" }}</option>
                         <option>{{ @root.__ "Cancelled" }}</option>
                         <option>{{ @root.__ "Declined" }}</option>
@@ -37,6 +38,7 @@
             <li class="list-group-item"><strong> {{ @root.__ "State" }}: </strong><span class="pull-right">{{result.orderState}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Postcode" }}: </strong><span class="pull-right">{{result.orderPostcode}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Phone number" }}: </strong><span class="pull-right">{{result.orderPhoneNumber}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order type" }}: </strong><span class="pull-right">{{result.orderType}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order comment" }}: </strong><span class="pull-right">{{result.orderComment}}</span></li>
 
             <li class="list-group-item">&nbsp;</li>
@@ -57,7 +59,7 @@
                         {{/each}}
                         )
                     {{/if}}
-                    <div class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
+                    <div class="pull-right">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
                     {{#if productComment}}
                     <h4><span class="text-danger">Comment:</span> {{this.productComment}}</h4>
                     {{/if}}

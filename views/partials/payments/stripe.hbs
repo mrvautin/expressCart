@@ -12,6 +12,9 @@
             data-description="{{@root.config.cartTitle}} Payment"
             data-image="{{@root.paymentConfig.stripeLogoURL}}"
             data-email="{{@root.session.customer.email}}"
+            {{#if @root.session.cartSubscription}}
+            data-subscription="{{@root.session.cartSubscription}}"
+            {{/if}}
             data-locale="auto"
             data-zip-code="false"
             data-currency="{{@root.paymentConfig.stripeCurrency}}">

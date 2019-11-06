@@ -13,6 +13,7 @@ const {
     getPaymentConfig,
     getImages,
     updateTotalCartAmount,
+    updateSubscriptionCheck,
     getData,
     addSitemapProducts
 } = require('../lib/common');
@@ -68,6 +69,10 @@ router.get('/payment/:orderId', async (req, res, next) => {
     });
 });
 
+router.get('/emptycart', async (req, res, next) => {
+    emptyCart(req, res, '');
+});
+
 router.get('/checkout', async (req, res, next) => {
     const config = req.app.config;
 
@@ -105,6 +110,11 @@ router.get('/pay', async (req, res, next) => {
         return;
     }
 
+    let paymentType = '';
+    if(req.session.cartSubscription){
+        paymentType = '_subscription';
+    }
+
     // render the payment page
     res.render(`${config.themeViews}pay`, {
         title: 'Pay',
@@ -113,6 +123,7 @@ router.get('/pay', async (req, res, next) => {
         pageCloseBtn: showCartCloseBtn('pay'),
         session: req.session,
         paymentPage: true,
+        paymentType,
         page: 'pay',
         message: clearSessionValue(req.session, 'message'),
         messageType: clearSessionValue(req.session, 'messageType'),
@@ -220,6 +231,9 @@ router.post('/product/updatecart', (req, res, next) => {
         // update total cart amount
         updateTotalCartAmount(req, res);
 
+        // Update checking cart for subscription
+        updateSubscriptionCheck(req, res);
+
         // Update cart to the DB
         await db.cart.updateOne({ sessionId: req.session.id }, {
             $set: { cart: req.session.cart }
@@ -239,36 +253,42 @@ router.post('/product/updatecart', (req, res, next) => {
 });
 
 // Remove single product from cart
-router.post('/product/removefromcart', (req, res, next) => {
+router.post('/product/removefromcart', async (req, res, next) => {
     const db = req.app.db;
     let itemRemoved = false;
 
     // remove item from cart
-    async.each(req.session.cart, (item, callback) => {
+    req.session.cart.forEach((item) => {
         if(item){
             if(item.productId === req.body.cartId){
                 itemRemoved = true;
                 req.session.cart = _.pull(req.session.cart, item);
             }
         }
-        callback();
-    }, async () => {
-        // Update cart in DB
-        await db.cart.updateOne({ sessionId: req.session.id }, {
-            $set: { cart: req.session.cart }
-        });
-        // update total cart amount
-        updateTotalCartAmount(req, res);
-
-        if(itemRemoved === false){
-            return res.status(400).json({ message: 'Product not found in cart' });
-        }
-        return res.status(200).json({ message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length });
     });
+
+    // Update cart in DB
+    await db.cart.updateOne({ sessionId: req.session.id }, {
+        $set: { cart: req.session.cart }
+    });
+    // update total cart amount
+    updateTotalCartAmount(req, res);
+
+    // Update checking cart for subscription
+    updateSubscriptionCheck(req, res);
+
+    if(itemRemoved === false){
+        return res.status(400).json({ message: 'Product not found in cart' });
+    }
+    return res.status(200).json({ message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length });
 });
 
 // Totally empty the cart
 router.post('/product/emptycart', async (req, res, next) => {
+    emptyCart(req, res, 'json');
+});
+
+const emptyCart = async (req, res, type) => {
     const db = req.app.db;
 
     // Remove from session
@@ -280,8 +300,20 @@ router.post('/product/emptycart', async (req, res, next) => {
 
     // update total cart amount
     updateTotalCartAmount(req, res);
-    res.status(200).json({ message: 'Cart successfully emptied', totalCartItems: 0 });
-});
+
+    // Update checking cart for subscription
+    updateSubscriptionCheck(req, res);
+
+    // If POST, return JSON else redirect nome
+    if(type === 'json'){
+        res.status(200).json({ message: 'Cart successfully emptied', totalCartItems: 0 });
+        return;
+    }
+
+    req.session.message = 'Cart successfully emptied.';
+    req.session.messageType = 'success';
+    res.redirect('/');
+};
 
 // Add item to cart
 router.post('/product/addtocart', async (req, res, next) => {
@@ -300,11 +332,23 @@ router.post('/product/addtocart', async (req, res, next) => {
         req.session.cart = [];
     }
 
-    // Get the item from the DB
+    // Get the product from the DB
     const product = await db.products.findOne({ _id: getId(req.body.productId) });
     // No product found
     if(!product){
         return res.status(400).json({ message: 'Error updating cart. Please try again.' });
+    }
+
+    // If cart already has a subscription you cannot add anything else
+    if(req.session.cartSubscription){
+        return res.status(400).json({ message: 'Subscription already existing in cart. You cannot add more.' });
+    }
+
+    // If existing cart isn't empty check if product is a subscription
+    if(req.session.cart.length !== 0){
+        if(product.productSubscription){
+            return res.status(400).json({ message: 'You cannot combine scubscription products with existing in your cart. Empty your cart and try again.' });
+        }
     }
 
     // If stock management on check there is sufficient stock for this product
@@ -346,7 +390,13 @@ router.post('/product/addtocart', async (req, res, next) => {
     // Doc used to test if existing in the cart with the options. If not found, we add new.
     let options = {};
     if(req.body.productOptions){
-        options = JSON.parse(req.body.productOptions);
+        try{
+            if(typeof req.body.productOptions === 'object'){
+                options = req.body.productOptions;
+            }else{
+                options = JSON.parse(req.body.productOptions);
+            }
+        }catch(ex){}
     }
     const findDoc = {
         productId: req.body.productId,
@@ -376,6 +426,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         productObj.options = options;
         productObj.productImage = product.productImage;
         productObj.productComment = productComment;
+        productObj.productSubscription = product.productSubscription;
         if(product.productPermalink){
             productObj.link = product.productPermalink;
         }else{
@@ -393,6 +444,13 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // update total cart amount
     updateTotalCartAmount(req, res);
+
+    // Update checking cart for subscription
+    updateSubscriptionCheck(req, res);
+
+    if(product.productSubscription){
+        req.session.cartSubscription = product.productSubscription;
+    }
 
     // update how many products in the shopping cart
     req.session.cartTotalItems = req.session.cart.reduce((a, b) => +a + +b.quantity, 0);

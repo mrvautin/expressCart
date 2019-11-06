@@ -289,6 +289,9 @@ $(document).ready(function (){
                 image: $('#stripeButton').data('image'),
                 locale: 'auto',
                 token: function(token){
+                    if($('#stripeButton').data('subscription')){
+                        $('#shipping-form').append('<input type="hidden" name="stripePlan" value="' + $('#stripeButton').data('subscription') + '" />');
+                    }
                     $('#shipping-form').append('<input type="hidden" name="stripeToken" value="' + token.id + '" />');
                     $('#shipping-form').submit();
                 }
@@ -301,7 +304,8 @@ $(document).ready(function (){
                 description: $('#stripeButton').data('description'),
                 zipCode: $('#stripeButton').data('zipCode'),
                 amount: $('#stripeButton').data('amount'),
-                currency: $('#stripeButton').data('currency')
+                currency: $('#stripeButton').data('currency'),
+                subscription: $('#stripeButton').data('subscription')
             });
         }
     });
