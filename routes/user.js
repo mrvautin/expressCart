@@ -32,12 +32,21 @@ router.get('/admin/user/edit/:id', restrict, (req, res) => {
         if(err){
             console.info(err.stack);
         }
+
+        // Check user is found
+        if(!user){
+            req.session.message = 'User not found';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/users');
+            return;
+        }
+
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
         if(user.userEmail !== req.session.user && req.session.isAdmin === false){
             req.session.message = 'Access denied';
             req.session.messageType = 'danger';
-            res.redirect('/Users/');
+            res.redirect('/admin/users');
             return;
         }
 
@@ -70,7 +79,16 @@ router.get('/admin/user/new', restrict, (req, res) => {
 // delete user
 router.get('/admin/user/delete/:id', restrict, (req, res) => {
     const db = req.app.db;
+
+    // userId
     if(req.session.isAdmin === true){
+        if(req.session.userId === req.params.id){
+            req.session.message = 'You can\'t delete your own user account.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/users');
+            return;
+        }
+
         db.users.deleteOne({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
             if(err){
                 console.info(err.stack);
@@ -108,7 +126,7 @@ router.post('/admin/user/update', restrict, (req, res) => {
         if(user.userEmail !== req.session.user && req.session.isAdmin === false){
             req.session.message = 'Access denied';
             req.session.messageType = 'danger';
-            res.redirect('/admin/users/');
+            res.redirect('/admin/users');
             return;
         }
 
