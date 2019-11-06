@@ -8,6 +8,7 @@
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
     "test": "NODE_ENV=test ava --verbose",
+    "dev": "nodemon app.js",
     "lint": "eslint ./"
   },
   "engines": {
@@ -29,6 +30,7 @@
     "glob": "^7.1.5",
     "helmet": "^3.21.2",
     "html-entities": "^1.2.0",
+    "i18n": "^0.8.4",
     "jsonschema": "^1.2.4",
     "lodash": "^4.17.15",
     "lunr": "^2.3.8",

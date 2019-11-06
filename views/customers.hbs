@@ -11,29 +11,29 @@
                 <a href="/admin/customers" class="hidden-xs btn btn-warning btn-lg"><i class="fa fa-times" aria-hidden="true"></i></a>
             </span>
         </div>
-        <p class="text-warning top-pad-10">Customers can be filtered by: email, name or phone numnber</p>
+        <p class="text-warning top-pad-10">{{ @root.__ "Customers can be filtered by: email, name or phone number" }}</p>
     </div>
     {{#if customers}}
         <div class="col-lg-12">
             <ul class="list-group">
                 <li class="list-group-item">
                     <strong>
-                        Customers
+                        {{ @root.__ "Customers" }}
                         {{#if searchTerm}}
-                            - <span class="text-danger">Filtered term: {{searchTerm}} </span>
+                            - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{searchTerm}} </span>
                         {{/if}}
                     </strong>
                 </li>
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-md-4">
-                            <h5 class="text-info"><strong>Email address</strong></h5>
+                            <h5 class="text-info"><strong>{{ @root.__ "Email address" }}</strong></h5>
                         </div>
                         <div class="col-md-4">
-                            <h5 class="text-info"><strong>Name</strong></h5>
+                            <h5 class="text-info"><strong>{{ @root.__ "Name" }}</strong></h5>
                         </div>
                         <div class="col-md-4">
-                            <h5 class="text-info"><strong>Phone number</strong></h5>
+                            <h5 class="text-info"><strong>{{ @root.__ "Phone number" }}</strong></h5>
                         </div>
                     </div>
                 </li>
@@ -58,7 +58,7 @@
         </div>
     {{else}}
     <h4 class="text-center">
-        No orders found
+        {{ @root.__ "No orders found" }}
     </h4>
     {{/if}}
 </div>

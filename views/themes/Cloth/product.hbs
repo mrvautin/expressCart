@@ -6,7 +6,7 @@
                 <h1 class="col-md-10 product-title">{{result.productTitle}}</h1>
                 <h4 class="col-md-10 product-price">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
                 {{#if productOptions}}
-                    <h4 class="col-md-10 product-option">Options</h4>
+                    <h4 class="col-md-10 product-option">{{ @root.__ "Options" }}</h4>
                     <div class="col-md-10">
                     {{#each productOptions}}
                         {{#ifCond this.optType '==' "select"}}
@@ -48,7 +48,7 @@
                     {{/ifCond}}
                 {{/if}}
                 <div class="col-md-10 productOptions">
-                    <p class="product-option-text">Quantity</p>
+                    <p class="product-option-text">{{ @root.__ "Quantity" }}</p>
                     <div class="input-group">
                         <span class="input-group-btn">
                             <button class="btn btn-primary qty-btn-minus" type="button">-</button>
@@ -61,12 +61,12 @@
                 </div>
                 {{#if result.productComment}}
                 <div class="col-md-10">
-                    Leave a comment?
+                    {{ @root.__ "Leave a comment?" }}
                     <textarea class="form-control" id="product_comment"></textarea>
                 </div>
                 {{/if}}
                 <div class="col-md-10 btnAddToCart">
-                    <button class="btn btn-primary btn-block product-add-to-cart" type="button">Add to cart</button>
+                    <button class="btn btn-primary btn-block product-add-to-cart" type="button">{{ @root.__ "Add to cart" }}</button>
                 </div>
                 <div class="col-md-10 body_text">
                     {{{productDescription}}}
