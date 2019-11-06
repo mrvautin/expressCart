@@ -97,10 +97,10 @@ app.set('view engine', 'hbs');
 handlebars = handlebars.create({
     helpers: {
         // Language helper
-        __: () => { return i18n.__(this, arguments); },
-        __n: () => { return i18n.__n(this, arguments); },
+        __: () => { return i18n.__(this, arguments); }, // eslint-disable-line no-undef
+        __n: () => { return i18n.__n(this, arguments); }, // eslint-disable-line no-undef
         availableLanguages: (block) => {
-            let total = ''
+            let total = '';
             for(const lang of i18n.getLocales()){
                 total += block.fn(lang);
             }
