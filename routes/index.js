@@ -615,7 +615,7 @@ router.get('/:page?', async (req, res, next) => {
                     message: clearSessionValue(req.session, 'message'),
                     messageType: clearSessionValue(req.session, 'messageType'),
                     pageCloseBtn: showCartCloseBtn('page'),
-                    config: req.app.config,
+                    config,
                     productsPerPage: numberProducts,
                     totalProductCount: results.totalProducts,
                     pageNum: 1,

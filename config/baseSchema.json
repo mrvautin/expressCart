@@ -115,6 +115,10 @@
         },
         "defaultLocale": {
             "type": "string"
+        },
+        "enableLanguages": {
+            "type": "boolean",
+            "default": true
         }
     },
     "required": [
