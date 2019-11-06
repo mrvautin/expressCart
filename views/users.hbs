@@ -2,17 +2,17 @@
 <div class="col-lg-9">
 	<div class="row">
 		<div class="col-md-8">
-			<h2>Users <span class="pull-right"><a href="/admin/user/new" class="btn btn-success btn-sm">New user</a></span></h2>
+			<h2>Users <span class="pull-right"><a href="/admin/user/new" class="btn btn-success btn-sm">{{ @root.__ "New user" }}</a></span></h2>
 			<ul class="list-group">
 				{{#each users}}
 					<li class="list-group-item">
-						<strong>User:</strong> {{this.usersName}} - ({{this.userEmail}})
+						<strong>{{ @root.__ "User" }}:</strong> {{this.usersName}} - ({{this.userEmail}})
 				  		<span class="pull-right">
-                            <strong>Role: </strong>
+                            <strong>{{ @root.__ "Role" }}: </strong>
                             {{#isAnAdmin this.isAdmin}}
                                 <span>Admin</span>
                             {{else}}
-                                <span>User</span>
+                                <span>{{ @root.__ "User" }}</span>
                             {{/isAnAdmin}}
                             {{#isAnAdmin ../session.isAdmin}}
                                 <a href="/admin/user/edit/{{this._id}}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></a>

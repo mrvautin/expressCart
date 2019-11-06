@@ -84,7 +84,7 @@ router.get('/admin/setup', async (req, res) => {
     // dont allow the user to "re-setup" if a user exists.
     // set needsSetup to false as a user exists
     req.session.needsSetup = false;
-    if(userCount && userCount === 0){
+    if(userCount === 0){
         req.session.needsSetup = true;
         res.render('setup', {
             title: 'Setup',
@@ -112,7 +112,7 @@ router.post('/admin/setup_action', async (req, res) => {
 
     // check for users
     const userCount = await db.users.countDocuments({});
-    if(userCount && userCount === 0){
+    if(userCount === 0){
         // email is ok to be used.
         try{
             await db.users.insertOne(doc);

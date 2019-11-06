@@ -6,8 +6,8 @@
     <div class="order-layout col-md-12">
         <div class="row">
             <div class="col-md-12 bottom-pad-20">
-                <a id="orderStatusUpdate" class="btn btn-sm btn-success pull-left">Update status</a>
-                <a href="/admin/orders" class="btn btn-sm btn-info pull-right">Go Back</a>
+                <a id="orderStatusUpdate" class="btn btn-sm btn-success pull-left">{{ @root.__ "Update status" }}</a>
+                <a href="/admin/orders" class="btn btn-sm btn-info pull-right">{{ @root.__ "Go Back" }}</a>
             </div>
         </div>
         <ul class="list-group">
@@ -15,39 +15,38 @@
                 <strong> Order status: </strong><span class="text-{{getStatusColor result.orderStatus}} pull-right">{{result.orderStatus}}</span>
                 <div class="pull-right col-md-2">
                     <select class="form-control input-sm" id="orderStatus">
-                        <option>Completed</option>
-                        <option>Pending</option>
-                        <option>Cancelled</option>
-                        <option>Declined</option>
-                        <option>Shipped</option>
-                        <option>Pending</option>
+                        <option>{{ @root.__ "Completed" }}</option>
+                        <option>{{ @root.__ "Pending" }}</option>
+                        <option>{{ @root.__ "Cancelled" }}</option>
+                        <option>{{ @root.__ "Declined" }}</option>
+                        <option>{{ @root.__ "Shipped" }}</option>
                     </select>
                 </div>
             </li>
-            <li class="list-group-item"><strong> Order date: </strong><span class="pull-right">{{formatDate result.orderDate "DD/MM/YYYY hh:mmA"}}</span></li>
-            <li class="list-group-item"><strong> Order ID: </strong><span class="pull-right">{{result._id}}</span></li>
-            <li class="list-group-item"><strong> Payment Gateway ref: </strong><span class="pull-right">{{result.orderPaymentId}}</span></li>
-            <li class="list-group-item"><strong> Payment Gateway: </strong><span class="pull-right">{{result.orderPaymentGateway}}</span></li>
-            <li class="list-group-item"><strong> Order total amount: </strong><span class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderTotal}}</span></li>
-            <li class="list-group-item"><strong> Email address: </strong><span class="pull-right">{{result.orderEmail}}</span></li>
-            <li class="list-group-item"><strong> First name: </strong><span class="pull-right">{{result.orderFirstname}}</span></li>
-            <li class="list-group-item"><strong> Last name: </strong><span class="pull-right">{{result.orderLastname}}</span></li>
-            <li class="list-group-item"><strong> Address 1: </strong><span class="pull-right">{{result.orderAddr1}}</span></li>
-            <li class="list-group-item"><strong> Address 2: </strong><span class="pull-right">{{result.orderAddr2}}</span></li>
-            <li class="list-group-item"><strong> Country: </strong><span class="pull-right">{{result.orderCountry}}</span></li>
-            <li class="list-group-item"><strong> State: </strong><span class="pull-right">{{result.orderState}}</span></li>
-            <li class="list-group-item"><strong> Postcode/Zipcode: </strong><span class="pull-right">{{result.orderPostcode}}</span></li>
-            <li class="list-group-item"><strong> Phone number: </strong><span class="pull-right">{{result.orderPhoneNumber}}</span></li>
-            <li class="list-group-item"><strong> Order comment: </strong><span class="pull-right">{{result.orderComment}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order date" }}: </strong><span class="pull-right">{{formatDate result.orderDate "DD/MM/YYYY hh:mmA"}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order ID" }}: </strong><span class="pull-right">{{result._id}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway ref" }}: </strong><span class="pull-right">{{result.orderPaymentId}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway" }}: </strong><span class="pull-right">{{result.orderPaymentGateway}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order total amount" }}: </strong><span class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderTotal}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Email address" }}: </strong><span class="pull-right">{{result.orderEmail}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "First name" }}: </strong><span class="pull-right">{{result.orderFirstname}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Last name" }}: </strong><span class="pull-right">{{result.orderLastname}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Address 1" }}: </strong><span class="pull-right">{{result.orderAddr1}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Address 2" }}: </strong><span class="pull-right">{{result.orderAddr2}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Country" }}: </strong><span class="pull-right">{{result.orderCountry}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "State" }}: </strong><span class="pull-right">{{result.orderState}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Postcode" }}: </strong><span class="pull-right">{{result.orderPostcode}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Phone number" }}: </strong><span class="pull-right">{{result.orderPhoneNumber}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order comment" }}: </strong><span class="pull-right">{{result.orderComment}}</span></li>
 
             <li class="list-group-item">&nbsp;</li>
-            <li class="list-group-item"><strong class="text-info">Products ordered</strong></li>
+            <li class="list-group-item"><strong class="text-info">{{ @root.__ "Products ordered" }}</strong></li>
             {{#each result.orderProducts}}
                 <li class="list-group-item">
                     {{this.quantity}} x {{this.title}}
                     {{#if this.options}}
                         &nbsp; > &nbsp;
-                        <span class="text-warning"> Options: </span>
+                        <span class="text-warning"> {{ @root.__ "Options" }}: </span>
                         (
                         {{#each this.options}}
                             {{#if @last}}

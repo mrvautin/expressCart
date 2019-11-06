@@ -11,14 +11,14 @@
                 <a href="/admin/products" class="hidden-xs btn btn-warning btn-lg"><i class="fa fa-times" aria-hidden="true"></i></a>
             </span>
         </div>
-        <p class="text-warning top-pad-10">Products can be filtered by: product title or product description keywords</p>
+        <p class="text-warning top-pad-10">{{ @root.__ "Products can be filtered by: product title or product description keywords" }}</p>
     </div>
     {{#if results}}
         <div class="col-lg-12">
             <ul class="list-group">
                 <li class="list-group-item">
-                    <span class="pull-right"><strong>Published</strong></span>
-                    <strong>Products - <span class="text-danger">Filtered term: {{searchTerm}} </span></strong>
+                    <span class="pull-right"><strong>{{ @root.__ "Published" }}</strong></span>
+                    <strong>{{ @root.__ "Products" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{searchTerm}} </span></strong>
                 </li>
                 {{#each results}}
                     <li class="list-group-item">
@@ -33,8 +33,8 @@
         <div class="col-lg-12">
             <ul class="list-group">
                 <li class="list-group-item">
-                    <span class="pull-right"><strong>Published</strong></span>
-                    <strong>Recent products</strong>
+                    <span class="pull-right"><strong>{{ @root.__ "Published" }}</strong></span>
+                    <strong>{{ @root.__ "Recent products" }}</strong>
                 </li>
                 {{#each top_results}}
                     <li class="list-group-item">

@@ -3,16 +3,16 @@
     {{#if filtered}}
         <div class="product-layout col m12">
             {{#if menuLink}}
-            <h4>Category: <strong>{{menuLink.title}}</strong></h4>
+            <h4>{{ @root.__ "Category" }}: <strong>{{menuLink.title}}</strong></h4>
             {{else}}
-            <h4>Search results: <strong>{{searchTerm}}</strong></h4>
+            <h4>{{ @root.__ "Search results" }}: <strong>{{searchTerm}}</strong></h4>
             {{/if}}
         </div>
     {{/if}}
     <div class="row product-layout">
         {{#ifCond results.length '==' 0}}
             <div class="col m12">
-                <p class="text-danger">No products found</p>
+                <p class="text-danger">{{ @root.__ "No products found" }}</p>
             </div>
         {{/ifCond}}
         {{#each results}}
@@ -51,7 +51,7 @@
                         {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
                     </h3>
                     <p class="text-center">
-                        <a class="btn waves-effect waves-light blue darken-3 add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">Add to cart</a>
+                        <a class="btn waves-effect waves-light blue darken-3 add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">{{ @root.__ "Add to cart" }}</a>
                     </p>
                 </div>
             </div>

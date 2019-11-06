@@ -3,7 +3,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="/checkout">Checkout</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Pay</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ @root.__ "Pay now" }}</li>
         </ol>
     </nav>
     <div class="row">
@@ -12,10 +12,10 @@
         {{/if}}
         <div class="col-md-5">
             <div class="panel panel-default" style="margin-top: 30px;">
-                <div class="panel-heading">Customer details</div>
+                <div class="panel-heading">{{ @root.__ "Customer details" }}</div>
                 {{#unless session.customer}}
                 <div class="panel-body customer-details-login">
-                    <p>Existing customer</p>
+                    <p>{{ @root.__ "Existing customer" }}</p>
                     <div class="form-group">
                         <input type="email" class="form-control" id="customerLoginEmail" name="loginEmail" minlength="5" placeholder="Email address" required>
                     </div>
@@ -23,7 +23,7 @@
                         <input type="password" class="form-control" id="customerLoginPassword" name="loginPassword" minlength="5" placeholder="Password" required>
                     </div>
                     <div class="form-group">
-                        <a href="/customer/forgotten" class="btn btn-default pull-left">Forgotten</a>
+                        <a href="/customer/forgotten" class="btn btn-default pull-left">{{ @root.__ "Forgotten" }}</a>
                     </div>
                     <div class="form-group">
                         <button id="customerLogin" class="btn btn-success pull-right" type="submit">Login</button>
@@ -33,7 +33,7 @@
                 <div class="panel-body customer-details">
                     {{#if session.customer}}
                     <div class="col-xs-12 col-md-12">
-                        <button id="customerLogout" class="btn btn-sm btn-success pull-right">Change customer</button>
+                        <button id="customerLogout" class="btn btn-sm btn-success pull-right">{{ @root.__ "Change customer" }}</button>
                     </div>
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action" method="post" role="form" data-toggle="validator" novalidate="false">
@@ -45,11 +45,11 @@
                         {{/if}}
                         {{#unless session.customer}}
                         <div class="col-xs-12 col-md-12">
-                            <p class="text-muted">Enter a password to create an account for next time</p>
+                            <p class="text-muted">{{ @root.__ "Enter a password to create an account for next time" }}</p>
                             <div class="form-group">
                                 <input type="password" class="form-control customerDetails" id="newCustomerPassword" name="newCustomerPassword" placeholder="Password" required>
                             </div>
-                            <a id="createCustomerAccount" class="btn btn-success pull-right">Create account</a>
+                            <a id="createCustomerAccount" class="btn btn-success pull-right">{{ @root.__ "Create account" }}</a>
                         </div>
                         {{/unless}}
                     </form>

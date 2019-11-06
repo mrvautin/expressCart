@@ -6,16 +6,16 @@
                 <div class="pull-right">
                     <button id="frm_edit_product_save" class="btn btn-success" type="submit">Add product <i class="fa fa-plus"></i></button>
                 </div>
-                <h2>New product</h2>
+                <h2>{{ @root.__ "New product" }}</h2>
             </div>
             <div class="form-group">
-                <label for="productTitle" class="col-sm-2 control-label">Product title *</label>
+                <label for="productTitle" class="col-sm-2 control-label">{{ @root.__ "Product title" }} *</label>
                 <div class="col-sm-10">
                     <input type="text" id="productTitle" name="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
                 </div>
             </div>
             <div class="form-group">
-                <label for="productPrice" class="col-sm-2 control-label">Product price *</label>
+                <label for="productPrice" class="col-sm-2 control-label">{{ @root.__ "Product price" }} *</label>
                 <div class="col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon">$</span>
@@ -24,24 +24,24 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="productPublished" class="col-sm-2 control-label">Status</label>
+                <label for="productPublished" class="col-sm-2 control-label">{{ @root.__ "Status" }}</label>
                 <div class="col-sm-6">
                     <select class="form-control" id="productPublished" name="productPublished">
-                        <option value="true" selected>Published</option>
-                        <option value="false">Draft</option>
+                        <option value="true" selected>{{ @root.__ "Published" }}</option>
+                        <option value="false">{{ @root.__ "Draft" }}</option>
                     </select>
                 </div>
             </div>
             {{#if config.trackStock}}
             <div class="form-group">
-                <label for="productStock" class="col-sm-2 control-label">Stock level</label>
+                <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>
                 <div class="col-sm-6">
                     <input type="number" name="productStock" class="form-control" value="{{productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
             <div class="form-group" id="editor-wrapper">
-                <label for="editor" class="col-sm-2 control-label">Product description *</label>
+                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
                 <div class="col-sm-10">
                     <textarea id="editor" minlength="5" rows="10" name="productDescription" class="form-control" required>{{productDescription}}</textarea>
                 </div>
@@ -55,26 +55,26 @@
                             <button class="btn btn-success" id="validate_permalink" type="button">Validate</button>
                         </span>
                     </div>
-                    <p class="help-block">This sets a readable URL for the product</p>
+                    <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
                 </div>
             </div>
             <div class="form-group">
                 <input type="hidden" id="productOptions" name="productOptions" value="{{result.productOptions}}" />
-                <label for="editor" class="col-sm-2 control-label">Product options</label>
+                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
                 <div class="col-lg-10">
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item">
                             <div class="row">
                             <div class="col-lg-2">
-                                <strong>Name:</strong>
+                                <strong>{{ @root.__ "Name" }}:</strong>
                                 <input type="text" id="product_optName" class="form-control" placeholder="Size" />
                             </div>
                             <div class="col-lg-2">
-                                <strong>Label:</strong>
+                                <strong>{{ @root.__ "Label" }}:</strong>
                                 <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
                             </div>
                             <div class="col-lg-2">
-                                <strong>Type:</strong>
+                                <strong>{{ @root.__ "Type" }}:</strong>
                                 <select id="product_optType" class="form-control">
                                     <option value="select">Select</option>
                                     <option value="radio">Radio</option>
@@ -82,11 +82,11 @@
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <strong>Options:</strong>
+                                <strong>{{ @root.__ "Options" }}:</strong>
                                 <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
                             </div>
                             <div class="col-lg-2 text-right"></br>
-                                <button id="product_opt_add" class="btn btn-success">Add</button>
+                                <button id="product_opt_add" class="btn btn-success">{{ @root.__ "Add" }}</button>
                             </div></div>
                         </li>
                         {{#each options}}
@@ -97,17 +97,17 @@
                                     <div class='col-lg-2'>{{this.optType}}</div>
                                     <div class='col-lg-4'>{{{this.optOptions}}}</div>
                                     <div class='col-lg-2 text-right'>
-                                        <button class='product_opt_remove btn btn-danger btn-sm'>Remove</button>
+                                        <button class='product_opt_remove btn btn-danger btn-sm'>{{ @root.__ "Remove" }}</button>
                                     </div>
                                 </div>
                             </li>
                         {{/each}}
                     </ul>
-                    <p class="help-block">Here you can set options for your product. Eg: Size, color, style</p>
+                    <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
                 </div>
             </div>
             <div class="form-group">
-                <label for="productComment" class="col-sm-2 control-label">Allow comment</label>
+                <label for="productComment" class="col-sm-2 control-label">{{ @root.__ "Allow comment" }}</label>
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
@@ -115,14 +115,14 @@
                                 name="productComment">
                         </label>
                     </div>
-                    <p class="help-block">Allow free form comments when adding products to cart</p>
+                    <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
                 </div>
             </div>
             <div class="form-group">
                 <label for="productTags" class="col-sm-2 control-label">Product tag words</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="productTags" name="productTags">
-                    <p class="help-block">Tag words used to indexed products, making them easier to find and filter.</p>
+                    <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
                 </div>
             </div>
         </div>

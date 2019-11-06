@@ -109,6 +109,12 @@
         },
         "secretSession": {
             "type": "string"
+        },
+        "availableLanguages": {
+            "type": "array"
+        },
+        "defaultLocale": {
+            "type": "string"
         }
     },
     "required": [

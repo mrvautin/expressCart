@@ -3,22 +3,22 @@
     <ul class="list-group">
         <li class="list-group-item"><strong>Products</strong></li>
         {{#ifCond session.isAdmin '===' true}}
-        <li class="list-group-item"><i class="fa fa-plus-square-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/product/new">New</a></li>
+        <li class="list-group-item"><i class="fa fa-plus-square-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/product/new">{{ @root.__ "New" }}</a></li>
         {{/ifCond}}
-        <li class="list-group-item"><i class="fa fa-list fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/products">List</a></li>
+        <li class="list-group-item"><i class="fa fa-list fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/products">{{ @root.__ "List" }}</a></li>
         <li class="list-group-item"><strong>Orders</strong></li>
-        <li class="list-group-item"><i class="fa fa-cube fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/orders">List</a></li>
+        <li class="list-group-item"><i class="fa fa-cube fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/orders">{{ @root.__ "List" }}</a></li>
         <li class="list-group-item"><strong>Customers</strong></li>
-        <li class="list-group-item"><i class="fa fa-users fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/customers">List</a></li>
+        <li class="list-group-item"><i class="fa fa-users fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/customers">{{ @root.__ "List" }}</a></li>
         <li class="list-group-item"><strong>Users</strong></li>
         {{#ifCond session.isAdmin '===' true}}
-        <li class="list-group-item"><i class="fa fa-user-plus fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/new">New</a></li>
-        <li class="list-group-item"><i class="fa fa-user fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/users">Edit</a></li>
+        <li class="list-group-item"><i class="fa fa-user-plus fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/new">{{ @root.__ "New" }}</a></li>
+        <li class="list-group-item"><i class="fa fa-user fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/users">{{ @root.__ "Edit" }}</a></li>
         {{/ifCond}}
         <li class="list-group-item"><i class="fa fa-user-circle-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/edit/{{session.userId}}">My Account</a></li>
-        <li class="list-group-item"><strong>Settings</strong></li>
-        <li class="list-group-item"><i class="fa fa-cog fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings">General settings</a></li>
+        <li class="list-group-item"><strong>{{ @root.__ "Settings" }}</strong></li>
+        <li class="list-group-item"><i class="fa fa-cog fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings">{{ @root.__ "General settings" }}</a></li>
         <li class="list-group-item"><i class="fa fa-bars fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/menu">Menu</a></li>
-        <li class="list-group-item"><i class="fa fa-file-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/pages">Static pages</a></li>
+        <li class="list-group-item"><i class="fa fa-file-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/pages">{{ @root.__ "Static pages" }}</a></li>
     </ul>
 </div>
