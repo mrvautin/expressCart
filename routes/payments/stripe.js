@@ -115,13 +115,27 @@ router.post('/checkout_action', (req, res, next) => {
 // Subscription hook from Stripe
 router.all('/subscription_update', async (req, res, next) => {
     const db = req.app.db;
+    const stripeSigSecret = common.getPaymentConfig().stripeWebhookSecret;
+    const stripeSig = req.headers['stripe-signature'];
 
-    if(!req.body.data.object.customer){
-        return res.status(400).json({ message: 'Customer not found' });
+    let hook;
+    if(stripeSigSecret){
+        try{
+            hook = await stripe.webhooks.constructEvent(req.rawBody, stripeSig, stripeSigSecret);
+            console.info('Stripe Webhook received');
+        }catch(err){
+            return res.status(400).send(`Webhook Error: ${err.message}`);
+        }
+
+        if(!hook.data.object.customer){
+            return res.status(400).json({ message: 'Customer not found' });
+        }
+    }else{
+        hook = req.body;
     }
 
     const order = await db.orders.findOne({
-        orderCustomer: req.body.data.object.customer,
+        orderCustomer: hook.data.object.customer,
         orderType: 'Subscription'
     });
 
@@ -130,7 +144,7 @@ router.all('/subscription_update', async (req, res, next) => {
     }
 
     let orderStatus = 'Paid';
-    if(req.body.type === 'invoice.payment_failed'){
+    if(hook.type === 'invoice.payment_failed'){
         orderStatus = 'Declined';
     }
 

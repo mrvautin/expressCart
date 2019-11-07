@@ -16,6 +16,9 @@
         "stripeLogoURL": {
             "type": "string",
             "format": "uri-template"
+        },
+        "stripeWebhookSecret": {
+            "type": "string"
         }
     },
     "required": [

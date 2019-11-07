@@ -272,7 +272,6 @@ app.enable('trust proxy');
 app.use(helmet());
 app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.secretCookie));
 app.use(session({
@@ -285,6 +284,15 @@ app.use(session({
         maxAge: 900000
     },
     store: store
+}));
+
+app.use(bodyParser.json({
+    // Only on Stripe URL's which need the rawBody
+    verify: (req, res, buf) => {
+        if(req.originalUrl === '/stripe/subscription_update'){
+            req.rawBody = buf.toString();
+        }
+    }
 }));
 
 // Set locales from session

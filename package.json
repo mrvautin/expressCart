@@ -50,7 +50,7 @@
     "sanitize-html": "^1.20.1",
     "sitemap": "^1.6.0",
     "strip-bom": "^3.0.0",
-    "stripe": "^5.10.0",
+    "stripe": "^7.12.0",
     "uglifycss": "0.0.27"
   },
   "devDependencies": {
