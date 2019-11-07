@@ -15,17 +15,17 @@
 		  	</div>
 		  	<div class="form-group">
 			    <label>{{ @root.__ "User password" }} {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
-			    <input type="password" class="form-control" name="userPassword" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
+			    <input autocomplete="off" type="password" class="form-control" name="userPassword" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
 		  	</div>
 		  	<div class="form-group">
 			    <label>{{ @root.__ "Password confirm" }} {{#ifCond session.user '==' user.userEmail}}*{{/ifCond}}</label>
-			    <input type="password" data-validation-match-match="userPassword" data-validation-match-message="Password values to not match" class="form-control" name="frm_userPassword_confirm" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
+			    <input autocomplete="off" type="password" data-validation-match-match="userPassword" data-validation-match-message="Password values to not match" class="form-control" name="frm_userPassword_confirm" {{#ifCond session.user '==' user.userEmail}}required{{/ifCond}}>
 		  	</div>
-            {{#isAnAdmin session.isAdmin}}
-                {{#ifCond session.user '!=' user.userEmail}}
+            {{#isAnAdmin @root.session.isAdmin}}
+                {{#ifCond @root.session.user '!=' user.userEmail}}
                     <div class="checkbox">
                         <label>
-                            <input name="user_admin" {{#checkedState user.isAdmin}}{{/checkedState}} type="checkbox"> {{ @root.__ "User is admin?" }}
+                            <input name="user_admin" {{#checkedState @root.user.isAdmin}}{{/checkedState}} type="checkbox"> {{ @root.__ "User is admin?" }}
                         </label>
                     </div>
                 {{/ifCond}}

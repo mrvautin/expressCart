@@ -107,7 +107,8 @@ router.post('/admin/setup_action', async (req, res) => {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
         userPassword: bcrypt.hashSync(req.body.userPassword, 10),
-        isAdmin: true
+        isAdmin: true,
+        isOwner: true
     };
 
     // check for users

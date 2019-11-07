@@ -41,6 +41,14 @@ router.get('/admin/user/edit/:id', restrict, (req, res) => {
             return;
         }
 
+        // Cannot edit the original user/owner
+        if(user._id !== req.session.userId && user.isOwner){
+            req.session.message = 'Access denied.';
+            req.session.messageType = 'danger';
+            res.redirect('/admin/users');
+            return;
+        }
+
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
         if(user.userEmail !== req.session.user && req.session.isAdmin === false){
@@ -77,31 +85,51 @@ router.get('/admin/user/new', restrict, (req, res) => {
 });
 
 // delete user
-router.get('/admin/user/delete/:id', restrict, (req, res) => {
+router.get('/admin/user/delete/:id', restrict, async (req, res) => {
     const db = req.app.db;
 
     // userId
-    if(req.session.isAdmin === true){
-        if(req.session.userId === req.params.id){
-            req.session.message = 'You can\'t delete your own user account.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/users');
-            return;
-        }
-
-        db.users.deleteOne({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
-            if(err){
-                console.info(err.stack);
-            }
-            req.session.message = 'User deleted.';
-            req.session.messageType = 'success';
-            res.redirect('/admin/users');
-        });
-    }else{
+    if(req.session.isAdmin !== true){
         req.session.message = 'Access denied.';
         req.session.messageType = 'danger';
         res.redirect('/admin/users');
+        return;
     }
+
+    // Cannot delete your own account
+    if(req.session.userId === req.params.id){
+        req.session.message = 'Unable to delete own user account.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/users');
+        return;
+    }
+
+    const user = await db.users.findOne({ _id: common.getId(req.params.id) });
+
+    // If user is not found
+    if(!user){
+        req.session.message = 'User not found.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/users');
+        return;
+    }
+
+    // Cannot delete the original user/owner
+    if(user.isOwner){
+        req.session.message = 'Access denied.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/users');
+        return;
+    }
+
+    db.users.deleteOne({ _id: common.getId(req.params.id) }, {}, (err, numRemoved) => {
+        if(err){
+            console.info(err.stack);
+        }
+        req.session.message = 'User deleted.';
+        req.session.messageType = 'success';
+        res.redirect('/admin/users');
+    });
 });
 
 // update a user

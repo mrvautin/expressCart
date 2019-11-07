@@ -98,6 +98,17 @@ test.serial('[Success] User Login', async t => {
     t.deepEqual(res.body.message, 'Login successful');
 });
 
+test.serial('[Fail] Incorrect user password', async t => {
+    const res = await request
+        .post('/admin/login_action')
+        .send({
+            email: users[0].userEmail,
+            password: 'test1'
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'Access denied. Check password and try again.');
+});
+
 test.serial('[Success] Create API key', async t => {
     const res = await request
         .post('/admin/createApiKey')
@@ -108,15 +119,18 @@ test.serial('[Success] Create API key', async t => {
     t.deepEqual(res.body.apiKey.length, 24);
 });
 
-test.serial('[Fail] Incorrect user password', async t => {
+test.serial('[Fail] Delete own user account', async t => {
     const res = await request
-        .post('/admin/login_action')
-        .send({
-            email: users[0].userEmail,
-            password: 'test1'
-        })
-        .expect(400);
-    t.deepEqual(res.body.message, 'Access denied. Check password and try again.');
+        .get(`/admin/user/delete/${users[0]._id}`)
+        .expect(302);
+    t.deepEqual(res.header['location'], '/admin/users');
+});
+
+test.serial('[Fail] Delete invalid user ID', async t => {
+    const res = await request
+        .get('/admin/user/delete/invalid_user_id')
+        .expect(302);
+    t.deepEqual(res.header['location'], '/admin/users');
 });
 
 test.serial('[Fail] Customer login with incorrect email', async t => {

@@ -101,7 +101,8 @@
             "usersName" : "test",
             "userEmail" : "test@test.com",
             "userPassword" : "$2a$10$7jQx/hQOWrRni531b/dHRuH8o1ZP8Yo8g..GpTOF4M7RrEH/pzTMy",
-            "isAdmin" : true
+            "isAdmin" : true,
+            "isOwner": true
         }
     ],
     "orders": [

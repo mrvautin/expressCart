@@ -11,6 +11,9 @@
                             <strong>{{ @root.__ "Role" }}: </strong>
                             {{#isAnAdmin this.isAdmin}}
                                 <span>Admin</span>
+								{{#if ../this.isOwner}}
+								 (Owner)
+								{{/if}}
                             {{else}}
                                 <span>{{ @root.__ "User" }}</span>
                             {{/isAnAdmin}}
