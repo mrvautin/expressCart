@@ -41,14 +41,6 @@ router.get('/admin/user/edit/:id', restrict, (req, res) => {
             return;
         }
 
-        // Cannot edit the original user/owner
-        if(user._id !== req.session.userId && user.isOwner){
-            req.session.message = 'Access denied.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/users');
-            return;
-        }
-
         // if the user we want to edit is not the current logged in user and the current user is not
         // an admin we render an access denied message
         if(user.userEmail !== req.session.user && req.session.isAdmin === false){
