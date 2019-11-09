@@ -25,7 +25,7 @@ router.get('/admin/products', restrict, async (req, res, next) => {
     });
 });
 
-router.get('/admin/products/filter/:search', async (req, res, next) => {
+router.get('/admin/products/filter/:search', restrict, async (req, res, next) => {
     const db = req.app.db;
     const searchTerm = req.params.search;
     const productsIndex = req.app.productsIndex;
@@ -37,6 +37,12 @@ router.get('/admin/products/filter/:search', async (req, res, next) => {
 
     // we search on the lunr indexes
     const results = await db.products.find({ _id: { $in: lunrIdArray } }).toArray();
+
+    if(req.apiAuthenticated){
+        res.status(200).json(results);
+        return;
+    }
+
     res.render('products', {
         title: 'Results',
         results: results,
@@ -205,6 +211,11 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     const images = await common.getImages(req.params.id, req, res);
     const product = await db.products.findOne({ _id: common.getId(req.params.id) });
     if(!product){
+        // If API request, return json
+        if(req.apiAuthenticated){
+            res.status(400).json({ message: 'Product not found' });
+            return;
+        }
         req.session.message = 'Product not found';
         req.session.messageType = 'danger';
         res.redirect('/admin/products');
@@ -213,6 +224,12 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     let options = {};
     if(product.productOptions){
         options = product.productOptions;
+    }
+
+    // If API request, return json
+    if(req.apiAuthenticated){
+        res.status(200).json(product);
+        return;
     }
 
     res.render('product_edit', {

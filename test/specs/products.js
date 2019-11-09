@@ -134,6 +134,37 @@ test('[Success] Search products', async t => {
     t.deepEqual(res.body.length, 2);
 });
 
+test('[Success] Filter products', async t => {
+    const res = await g.request
+        .get('/admin/products/filter/backpack')
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Should be two backpack products
+    t.deepEqual(res.body.length, 2);
+});
+
+test('[Success] Edit a product', async t => {
+    const res = await g.request
+        .get(`/admin/product/edit/${g.products[0]._id}`)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Products should match
+    t.deepEqual(res.body._id.toString(), g.products[0]._id.toString());
+    t.deepEqual(res.body.productPermalink, g.products[0].productPermalink);
+});
+
+test('[Fail] Edit an invalid product', async t => {
+    const res = await g.request
+        .get('/admin/product/edit/some_invalid_product')
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Product not found');
+});
+
 test('[Success] Add a product', async t => {
     const product = {
         productPermalink: 'test-jacket',
