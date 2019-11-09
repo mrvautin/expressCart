@@ -2,7 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const session = require('supertest-session');
 const app = require('../app.js');
-const { getId, newId } = require('../lib/common');
+const { newId } = require('../lib/common');
 const { runIndexing } = require('../lib/indexing');
 
 // Get test data to compare in tests
