@@ -9,6 +9,14 @@ test.before(async () => {
 });
 
 test('[Success] Create a customer', async t => {
+    // Login
+    await g.request
+        .post('/admin/login_action')
+        .send({
+            email: g.users[0].userEmail,
+            password: 'test'
+        });
+
     const customer = {
         email: 'sarah.jones@test.com',
         firstName: 'Sarah',
@@ -31,6 +39,14 @@ test('[Success] Create a customer', async t => {
 });
 
 test('[Fail] Try create a duplicate customer', async t => {
+    // Login
+    await g.request
+        .post('/admin/login_action')
+        .send({
+            email: g.users[0].userEmail,
+            password: 'test'
+        });
+
     const customer = {
         email: 'sarah.jones@test.com',
         firstName: 'Sarah',
