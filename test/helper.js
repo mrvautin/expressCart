@@ -3,7 +3,7 @@ const _ = require('lodash');
 const session = require('supertest-session');
 const app = require('../app.js');
 const { getId, newId } = require('../lib/common');
-const { runIndexing, fixProductDates } = require('../lib/indexing');
+const { runIndexing } = require('../lib/indexing');
 
 // Get test data to compare in tests
 const rawTestData = fs.readFileSync('./bin/testdata.json', 'utf-8');
@@ -30,7 +30,7 @@ const setup = (db) => {
     ])
     .then(() => {
         return Promise.all([
-            db.users.insertMany(jsonData.users),
+            db.users.insertMany(addApiKey(jsonData.users)),
             db.customers.insertMany(jsonData.customers),
             db.products.insertMany(fixProductDates(jsonData.products))
         ]);
@@ -91,8 +91,27 @@ const runBefore = async () => {
     });
 };
 
+const fixProductDates = (products) => {
+    let index = 0;
+    products.forEach(() => {
+        products[index].productAddedDate = new Date();
+        index++;
+    });
+    return products;
+};
+
+const addApiKey = (users) => {
+    let index = 0;
+    users.forEach(() => {
+        users[index].apiKey = newId();
+        index++;
+    });
+    return users;
+};
+
 module.exports = {
     runBefore,
     setup,
-    g
+    g,
+    fixProductDates
 };
