@@ -53,6 +53,7 @@ test('[Fail] Try create a duplicate customer', async t => {
 });
 
 test('[Success] Get customer list', async t => {
+    console.log('User', g.users[0]);
     const res = await g.request
         .get('/admin/customers')
         .set('apiKey', g.users[0].apiKey)
