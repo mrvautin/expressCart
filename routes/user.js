@@ -270,7 +270,7 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
             return;
         }
         // user already exists with that email address
-        console.error(colors.red('Failed to insert user, possibly already exists: ' + err));
+        console.error(colors.red('Failed to insert user, possibly already exists'));
         req.session.message = 'A user with that email address already exists';
         req.session.messageType = 'danger';
         res.redirect('/admin/user/new');
