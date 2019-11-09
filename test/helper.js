@@ -53,8 +53,6 @@ const runBefore = async () => {
             g.customers = await g.db.customers.find({}).toArray();
             g.users = await g.db.users.find({}).toArray();
 
-            console.log('Users', g.users);
-
             // Insert orders using product ID's
             _(jsonData.orders).each(async (order) => {
                 order.orderProducts.push({
