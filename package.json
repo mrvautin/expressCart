@@ -11,6 +11,12 @@
     "dev": "nodemon app.js",
     "lint": "eslint ./"
   },
+  "ava": {
+    "serial": true,
+    "files": [
+      "./test/specs/*.js"
+    ]
+  },
   "engines": {
     "node": "10.16.0"
   },
