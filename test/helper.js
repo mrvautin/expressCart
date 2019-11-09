@@ -51,6 +51,9 @@ const runBefore = async () => {
             // Get some data from DB to use in compares
             g.products = await g.db.products.find({}).toArray();
             g.customers = await g.db.customers.find({}).toArray();
+            g.users = await g.db.users.find({}).toArray();
+
+            console.log('Users', g.users);
 
             // Insert orders using product ID's
             _(jsonData.orders).each(async (order) => {
@@ -68,20 +71,6 @@ const runBefore = async () => {
                 order.orderDate = new Date();
                 await g.db.orders.insertOne(order);
             });
-
-            // Add API keys for users
-            _(jsonData.users).each(async (user) => {
-                await g.db.users.updateOne({
-                    _id: getId(user._id)
-                }, {
-                    $set: {
-                        apiKey: newId()
-                    }
-                });
-            });
-
-            // Get the updated users
-            g.users = await g.db.users.find({}).toArray();
 
             // Index everything
             await runIndexing(app);

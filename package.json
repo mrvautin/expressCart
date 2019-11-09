@@ -7,7 +7,7 @@
     "start": "node app.js",
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
-    "test": "NODE_ENV=test ava --verbose",
+    "test": "ava",
     "dev": "nodemon app.js",
     "lint": "eslint ./"
   },
@@ -15,7 +15,11 @@
     "serial": true,
     "files": [
       "./test/specs/*.js"
-    ]
+    ],
+    "verbose": true,
+    "environmentVariables": {
+			"NODE_ENV": "test"
+		}
   },
   "engines": {
     "node": "10.16.0"
