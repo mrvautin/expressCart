@@ -83,7 +83,7 @@
         },
         "paymentGateway": {
             "type": "string",
-            "enum": ["paypal", "stripe", "authorizenet"]
+            "enum": ["paypal", "stripe", "authorizenet", "adyen"]
         },
         "databaseConnectionString": {
             "type": "string"
