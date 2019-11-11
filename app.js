@@ -54,6 +54,13 @@ switch(config.paymentGateway){
             process.exit(2);
         }
         break;
+
+    case'adyen':
+        if(ajv.validate(require('./config/adyenSchema'), require('./config/adyen.json')) === false){
+            console.log(colors.red(`adyen config is incorrect: ${ajv.errorsText()}`));
+            process.exit(2);
+        }
+        break;
 }
 
 // require the routes
@@ -66,6 +73,7 @@ const user = require('./routes/user');
 const paypal = require('./routes/payments/paypal');
 const stripe = require('./routes/payments/stripe');
 const authorizenet = require('./routes/payments/authorizenet');
+const adyen = require('./routes/payments/adyen');
 
 const app = express();
 
@@ -246,6 +254,9 @@ handlebars = handlebars.create({
                 return options.fn(this);
             }
             return options.inverse(this);
+        },
+        printObj: (object) => {
+            return JSON.stringify(object, null, 2);
         }
     }
 });
@@ -324,6 +335,7 @@ app.use('/', admin);
 app.use('/paypal', paypal);
 app.use('/stripe', stripe);
 app.use('/authorizenet', authorizenet);
+app.use('/adyen', adyen);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

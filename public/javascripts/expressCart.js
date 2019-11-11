@@ -1,4 +1,5 @@
-/* eslint-disable prefer-arrow-callback,  no-var, no-tabs */
+/* eslint-disable prefer-arrow-callback, no-var, no-tabs */
+/* globals AdyenCheckout */
 $(document).ready(function (){
     // setup if material theme
     if($('#cartTheme').val() === 'Material'){
@@ -309,6 +310,63 @@ $(document).ready(function (){
             });
         }
     });
+
+    if($('#adyen-dropin').length > 0){
+        $.ajax({
+            method: 'POST',
+            url: '/adyen/setup'
+        })
+        .done(function(response){
+            const configuration = {
+                locale: 'en-AU',
+                environment: response.environment.toLowerCase(),
+                originKey: response.publicKey,
+                paymentMethodsResponse: response.paymentsResponse
+            };
+            const checkout = new AdyenCheckout(configuration);
+            checkout
+            .create('dropin', {
+                paymentMethodsConfiguration: {
+                    card: {
+                        hasHolderName: false,
+                        holderNameRequired: false,
+                        enableStoreDetails: false,
+                        groupTypes: ['mc', 'visa'],
+                        name: 'Credit or debit card'
+                    }
+                },
+                onSubmit: (state, dropin) => {
+                    if($('#shipping-form').validator('validate').has('.has-error').length === 0){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/adyen/checkout_action',
+                            data: {
+                                shipEmail: $('#shipEmail').val(),
+                                shipFirstname: $('#shipFirstname').val(),
+                                shipLastname: $('#shipLastname').val(),
+                                shipAddr1: $('#shipAddr1').val(),
+                                shipAddr2: $('#shipAddr2').val(),
+                                shipCountry: $('#shipCountry').val(),
+                                shipState: $('#shipState').val(),
+                                shipPostcode: $('#shipPostcode').val(),
+                                shipPhoneNumber: $('#shipPhoneNumber').val(),
+                                payment: JSON.stringify(state.data.paymentMethod)
+                            }
+                        }).done((response) => {
+                            window.location = '/payment/' + response.paymentId;
+                        }).fail((response) => {
+                            console.log('Response', response);
+                            showNotification('Failed to complete transaction', 'danger', true);
+                        });
+                    }
+                }
+            })
+            .mount('#adyen-dropin');
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    };
 
     // call update settings API
     $('#settingsForm').validator().on('submit', function(e){

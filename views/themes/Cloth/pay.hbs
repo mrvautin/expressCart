@@ -60,6 +60,9 @@
                     {{#ifCond config.paymentGateway '==' 'authorizenet'}}
                         {{> partials/payments/authorizenet}}
                     {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'adyen'}}
+                        {{> partials/payments/adyen}}
+                    {{/ifCond}}
                     {{/if}}
                 </div>
             </div>

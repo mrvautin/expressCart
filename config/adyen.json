@@ -1,0 +1,8 @@
+{
+    "environment": "TEST",
+    "apiKey": "this_is_not_real",
+    "publicKey": "this_is_not_real",
+    "merchantAccount": "this_is_not_real",
+    "statementDescriptor": "a_statement_descriptor",
+    "currency": "AUD"
+}

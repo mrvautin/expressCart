@@ -28,6 +28,9 @@
             <li class="list-group-item"><strong> {{ @root.__ "Order ID" }}: </strong><span class="pull-right">{{result._id}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway ref" }}: </strong><span class="pull-right">{{result.orderPaymentId}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway" }}: </strong><span class="pull-right">{{result.orderPaymentGateway}}</span></li>
+            {{#if result.orderPaymentMessage}}
+            <li class="list-group-item"><strong> {{ @root.__ "Payment Message" }}: </strong><span class="pull-right">{{result.orderPaymentMessage}}</span></li>
+            {{/if}}
             <li class="list-group-item"><strong> {{ @root.__ "Order total amount" }}: </strong><span class="pull-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderTotal}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Email address" }}: </strong><span class="pull-right">{{result.orderEmail}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "First name" }}: </strong><span class="pull-right">{{result.orderFirstname}}</span></li>

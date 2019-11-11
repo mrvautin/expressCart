@@ -1,0 +1,32 @@
+{
+    "properties": {
+        "environment": {
+            "type": "string",
+            "enum": ["TEST", "LIVE"]
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "publicKey": {
+            "type": "string"
+        },
+        "merchantAccount": {
+            "type": "string"
+        },
+        "statementDescriptor": {
+            "type": "string"
+        },
+        "currency": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "environment",
+        "apiKey",
+        "publicKey",
+        "merchantAccount",
+        "statementDescriptor",
+        "currency"
+    ],
+    "additionalProperties": false
+}
