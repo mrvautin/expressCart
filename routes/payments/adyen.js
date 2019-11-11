@@ -54,9 +54,8 @@ router.post('/checkout_action', async (req, res, next) => {
                 value: numeral(req.session.totalCartAmount).format('0.00').replace('.', '')
             },
             paymentMethod: JSON.parse(req.body.payment),
-            reference: 'test',
+            reference: adyenConfig.statementDescriptor,
             merchantAccount: adyenConfig.merchantAccount,
-            // shopperReference: data.customer,
             shopperStatement: adyenConfig.statementDescriptor
         });
     }catch(ex){
