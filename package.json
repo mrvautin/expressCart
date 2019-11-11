@@ -88,6 +88,9 @@
     "nodejs",
     "ecommerce",
     "paypal",
+    "stripe",
+    "authorise.net",
+    "adyen",
     "lunr",
     "cart",
     "shopping"

@@ -2,7 +2,7 @@
 
 ![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
 
-`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal and Authorize.net payments.
+`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Authorize.net and Adyen payments.
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
 [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
@@ -262,6 +262,23 @@ The Authorize.net config file is located: `/config/authorizenet.json`. A example
 ```
 
 Note: The credentials are obtained from your Authorize.net account dashboard.
+
+##### Adyen (Payments)
+
+The Adyen config file is located: `/config/adyen.json`. A example Adyen settings file is provided:
+
+```
+{
+    "environment": "TEST",
+    "apiKey": "this_is_not_real",
+    "publicKey": "this_is_not_real",
+    "merchantAccount": "this_is_not_real",
+    "statementDescriptor": "a_statement_descriptor",
+    "currency": "AUD"
+}
+```
+
+Note: The `publicKey`, `apiKey` and `merchantAccount` is obtained from your Adyen account dashboard.
 
 ## Email settings
 
