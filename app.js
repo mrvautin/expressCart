@@ -254,9 +254,6 @@ handlebars = handlebars.create({
                 return options.fn(this);
             }
             return options.inverse(this);
-        },
-        printObj: (object) => {
-            return JSON.stringify(object, null, 2);
         }
     }
 });
