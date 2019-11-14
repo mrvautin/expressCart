@@ -1,14 +1,11 @@
-{{#ifCond paymentConfig.mode '==' 'test'}}
 <script type="text/javascript"
+{{#ifCond @root.paymentConfig.mode '==' 'test'}}
     src="https://jstest.authorize.net/v3/AcceptUI.js"
-    charset="utf-8">
-</script>
 {{else}}
-<script type="text/javascript"
     src="https://js.authorize.net/v3/AcceptUI.js"
+{{/ifCond}}
     charset="utf-8">
 </script>
-{{/ifCond}}
 <script>
     function responseHandler(data){
         // Set fields from the form
@@ -51,8 +48,8 @@
         <button type="button"
             class="AcceptUI btn btn-success waves-effect waves-light blue darken-3"
             data-billingAddressOptions='{"show":false, "required":false}'
-            data-apiLoginID="{{paymentConfig.loginId}}"
-            data-clientKey="{{paymentConfig.clientKey}}"
+            data-apiLoginID="{{@root.paymentConfig.loginId}}"
+            data-clientKey="{{@root.paymentConfig.clientKey}}"
             data-acceptUIFormBtnTxt="Submit"
             data-acceptUIFormHeaderTxt="Card Information"
             data-responseHandler="responseHandler">Process payment
