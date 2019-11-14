@@ -16,8 +16,6 @@ services:
   mongodb:
     image: mongo:3.4.10
     container_name: "expresscart-mongodb"
-    ports:
-      - 27017
     volumes:
       - expresscart-mongo-data:/data/db
     ports:
