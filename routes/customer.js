@@ -4,13 +4,14 @@ const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
 const common = require('../lib/common');
+const { validateJson } = require('../lib/schema');
 const { restrict } = require('../lib/auth');
 
 // insert a customer
 router.post('/customer/create', async (req, res) => {
     const db = req.app.db;
 
-    const doc = {
+    const customerObj = {
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -24,6 +25,12 @@ router.post('/customer/create', async (req, res) => {
         created: new Date()
     };
 
+    const schemaResult = validateJson('newCustomer', customerObj);
+    if(!schemaResult){
+        res.status(400).json(schemaResult.errors);
+        return;
+    }
+
     // check for existing customer
     const customer = await db.customers.findOne({ email: req.body.email });
     if(customer){
@@ -32,16 +39,14 @@ router.post('/customer/create', async (req, res) => {
         });
         return;
     }
-        // email is ok to be used.
+    // email is ok to be used.
     try{
-        await db.customers.insertOne(doc, (err, newCustomer) => {
-            // Customer creation successful
-            req.session.customer = newCustomer.insertedId;
-            res.status(200).json({
-                message: 'Successfully logged in',
-                customer: newCustomer
-            });
-        });
+        const newCustomer = await db.customers.insertOne(customerObj);
+        // Customer creation successful
+        req.session.customer = newCustomer.insertedId;
+        const customerReturn = newCustomer.ops[0];
+        delete customerReturn.password;
+        res.status(200).json(customerReturn);
     }catch(ex){
         console.error(colors.red('Failed to insert customer: ', ex));
         res.status(400).json({

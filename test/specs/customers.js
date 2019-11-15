@@ -27,7 +27,8 @@ test('[Success] Create a customer', async t => {
         .send(customer)
         .expect(200);
 
-    t.deepEqual(res.body.message, 'Successfully logged in');
+    t.deepEqual(res.body.email, customer.email);
+    t.deepEqual(res.body.firstName, customer.firstName);
 });
 
 test('[Fail] Try create a duplicate customer', async t => {

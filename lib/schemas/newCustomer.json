@@ -1,0 +1,49 @@
+{
+    "$id": "newCustomer",
+    "type": "object",
+    "properties": {
+        "email": {
+            "type": "string",
+            "format": "email"
+        },
+        "firstName": {
+            "type": "string"
+        },
+        "lastName": {
+            "type": "string"
+        },
+        "address1": {
+            "type": "string"
+        },
+        "address2": {
+            "type": "string"
+        },
+        "country": {
+            "type": "string"
+        },
+        "state": {
+            "type": "string"
+        },
+        "postcode": {
+            "type": "string"
+        },
+        "phone": {
+            "type": "string"
+        },
+        "password": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "email",
+        "firstName",
+        "lastName",
+        "address1",
+        "address2",
+        "country",
+        "state",
+        "postcode",
+        "phone",
+        "password"
+    ]
+}
