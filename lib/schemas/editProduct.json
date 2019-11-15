@@ -1,5 +1,5 @@
 {
-    "id": "/editProduct",
+    "$id": "editProduct",
     "type": "object",
     "properties": {
         "productId": {

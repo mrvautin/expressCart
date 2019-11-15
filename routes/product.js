@@ -103,7 +103,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
 
     // Validate the body again schema
     const schemaResult = validateJson('newProduct', doc);
-    if(!schemaResult.valid){
+    if(!schemaResult){
         // If API request, return json
         if(req.apiAuthenticated){
             res.status(400).json(schemaResult.errors);
@@ -342,7 +342,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
 
     // Validate the body again schema
     const schemaResult = validateJson('editProduct', productDoc);
-    if(!schemaResult.valid){
+    if(!schemaResult){
         // If API request, return json
         if(req.apiAuthenticated){
             res.status(400).json(schemaResult.errors);

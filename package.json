@@ -16,6 +16,7 @@
     "files": [
       "./test/specs/*.js"
     ],
+    "timeout": "10s",
     "verbose": true,
     "environmentVariables": {
       "NODE_ENV": "test"
@@ -42,7 +43,6 @@
     "helmet": "^3.21.2",
     "html-entities": "^1.2.0",
     "i18n": "^0.8.4",
-    "jsonschema": "^1.2.4",
     "lodash": "^4.17.15",
     "lunr": "^2.3.8",
     "mime-type": "^3.0.7",
