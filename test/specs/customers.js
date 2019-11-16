@@ -53,6 +53,28 @@ test('[Fail] Try create a duplicate customer', async t => {
     t.deepEqual(res.body.err, 'A customer already exists with that email address');
 });
 
+test('[Fail] Try invalid email address', async t => {
+    const customer = {
+        email: 'sarah.jones@test',
+        firstName: 'Sarah',
+        lastName: 'Jones',
+        address1: '1 Sydney Street',
+        address2: '',
+        country: 'Australia',
+        state: 'NSW',
+        postcode: '2000',
+        phone: '0400000000',
+        password: 'password'
+    };
+
+    const res = await g.request
+        .post('/customer/create')
+        .send(customer)
+        .expect(400);
+
+    t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
+});
+
 test('[Success] Get customer list', async t => {
     const res = await g.request
         .get('/admin/customers')
