@@ -102,15 +102,15 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     };
 
     // Validate the body again schema
-    const schemaResult = validateJson('newProduct', doc);
-    if(!schemaResult){
+    const schemaValidate = validateJson('newProduct', doc);
+    if(!schemaValidate.result){
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json(schemaResult.errors);
+            res.status(400).json(schemaValidate.errors);
             return;
         }
 
-        console.log('schemaResult errors', schemaResult.errors);
+        console.log('schemaValidate errors', schemaValidate.errors);
         req.session.message = 'Form invalid. Please check values and try again.';
         req.session.messageType = 'danger';
 
@@ -341,11 +341,11 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     };
 
     // Validate the body again schema
-    const schemaResult = validateJson('editProduct', productDoc);
-    if(!schemaResult){
+    const schemaValidate = validateJson('editProduct', productDoc);
+    if(!schemaValidate.result){
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json(schemaResult.errors);
+            res.status(400).json(schemaValidate.errors);
             return;
         }
 

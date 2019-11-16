@@ -25,8 +25,8 @@ router.post('/customer/create', async (req, res) => {
         created: new Date()
     };
 
-    const schemaResult = validateJson('newCustomer', customerObj);
-    if(!schemaResult){
+    const schemaResult = validateJson('customer', customerObj);
+    if(!schemaResult.result){
         res.status(400).json(schemaResult.errors);
         return;
     }
