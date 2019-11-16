@@ -109,3 +109,35 @@ test('[Success] Update user', async t => {
     t.deepEqual(res.body.user.userEmail, 'jim.smith@gmail.com');
     t.deepEqual(res.body.message, 'User account updated');
 });
+
+test('[Fail] Update user invalid email', async t => {
+    const user = {
+        userId: g.users[1]._id,
+        usersName: 'Jim Smith',
+        userEmail: 'jim.smith@gmail',
+        userPassword: 'test',
+        isAdmin: false
+    };
+    const res = await g.request
+        .post('/admin/user/update')
+        .send(user)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+    t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
+});
+
+test('[Fail] Update user invalid userId', async t => {
+    const user = {
+        userId: '5dcfc8a5492532d1943e259e',
+        usersName: 'Jim Smith',
+        userEmail: 'jim.smith@gmail',
+        userPassword: 'test',
+        isAdmin: false
+    };
+    const res = await g.request
+        .post('/admin/user/update')
+        .send(user)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+    t.deepEqual(res.body.message, 'User not found');
+});
