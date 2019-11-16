@@ -15,10 +15,5 @@
         "isAdmin": {
             "type": "boolean"
         }
-    },
-    "required": [
-        "usersName",
-        "userEmail",
-        "isAdmin"
-    ]
+    }
 }

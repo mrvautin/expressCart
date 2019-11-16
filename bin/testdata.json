@@ -98,11 +98,18 @@
     ],
     "users": [
         {
-            "usersName" : "test",
-            "userEmail" : "test@test.com",
+            "usersName" : "Owner user",
+            "userEmail" : "owner@test.com",
             "userPassword" : "$2a$10$7jQx/hQOWrRni531b/dHRuH8o1ZP8Yo8g..GpTOF4M7RrEH/pzTMy",
             "isAdmin" : true,
             "isOwner": true
+        },
+        {
+            "usersName" : "Non Owner",
+            "userEmail" : "nonowner@test.com",
+            "userPassword" : "$2a$10$7jQx/hQOWrRni531b/dHRuH8o1ZP8Yo8g..GpTOF4M7RrEH/pzTMy",
+            "isAdmin" : false,
+            "isOwner": false
         }
     ],
     "orders": [

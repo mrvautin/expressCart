@@ -208,7 +208,12 @@ router.post('/admin/user/update', restrict, async (req, res) => {
     // create the update doc
     const updateDoc = {};
     updateDoc.isAdmin = isAdmin;
-    updateDoc.usersName = req.body.usersName;
+    if(req.body.usersName){
+        updateDoc.usersName = req.body.usersName;
+    }
+    if(req.body.userEmail){
+        updateDoc.userEmail = req.body.userEmail;
+    }
     if(req.body.userPassword){
         updateDoc.userPassword = bcrypt.hashSync(req.body.userPassword);
     }
@@ -227,14 +232,17 @@ router.post('/admin/user/update', restrict, async (req, res) => {
     }
 
     try{
-        await db.users.updateOne(
+        const updatedUser = await db.users.findOneAndUpdate(
             { _id: common.getId(req.body.userId) },
             {
                 $set: updateDoc
-            }, { multi: false }
+            }, { multi: false, returnOriginal: false }
         );
         if(req.apiAuthenticated){
-            res.status(200).json({ message: 'User account updated' });
+            const returnUser = updatedUser.value;
+            delete returnUser.userPassword;
+            delete returnUser.apiKey;
+            res.status(200).json({ message: 'User account updated', user: updatedUser.value });
             return;
         }
         // show the view
@@ -242,11 +250,11 @@ router.post('/admin/user/update', restrict, async (req, res) => {
         req.session.messageType = 'success';
         res.redirect('/admin/user/edit/' + req.body.userId);
     }catch(ex){
+        console.error(colors.red('Failed updating user: ' + ex));
         if(req.apiAuthenticated){
             res.status(400).json({ message: 'Failed to update user' });
             return;
         }
-        console.error(colors.red('Failed updating user: ' + ex));
         req.session.message = 'Failed to update user';
         req.session.messageType = 'danger';
         res.redirect('/admin/user/edit/' + req.body.userId);
