@@ -1,0 +1,25 @@
+{
+    "$id": "newUser",
+    "type": "object",
+    "properties": {
+        "usersName": {
+            "type": "string"
+        },
+        "userEmail": {
+            "type": "string",
+            "format": "emailAddress"
+        },
+        "userPassword": {
+            "type": "string"
+        },
+        "isAdmin": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "usersName",
+        "userEmail",
+        "userPassword",
+        "isAdmin"
+    ]
+}

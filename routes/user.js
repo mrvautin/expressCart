@@ -3,6 +3,7 @@ const common = require('../lib/common');
 const { restrict } = require('../lib/auth');
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
+const { validateJson } = require('../lib/schema');
 const router = express.Router();
 
 router.get('/admin/users', restrict, async (req, res) => {
@@ -212,6 +213,19 @@ router.post('/admin/user/update', restrict, async (req, res) => {
         updateDoc.userPassword = bcrypt.hashSync(req.body.userPassword);
     }
 
+    // Validate update user
+    const schemaResult = validateJson('editUser', updateDoc);
+    if(!schemaResult.result){
+        if(req.apiAuthenticated){
+            res.status(400).json(schemaResult.errors);
+            return;
+        }
+        req.session.message = 'Please check your inputs.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/user/edit/' + req.body.userId);
+        return;
+    }
+
     try{
         await db.users.updateOne(
             { _id: common.getId(req.body.userId) },
@@ -220,11 +234,11 @@ router.post('/admin/user/update', restrict, async (req, res) => {
             }, { multi: false }
         );
         if(req.apiAuthenticated){
-            res.status(200).json({ message: 'User account updated.' });
+            res.status(200).json({ message: 'User account updated' });
             return;
         }
         // show the view
-        req.session.message = 'User account updated.';
+        req.session.message = 'User account updated';
         req.session.messageType = 'success';
         res.redirect('/admin/user/edit/' + req.body.userId);
     }catch(ex){
@@ -244,7 +258,7 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
     const db = req.app.db;
 
     // set the account to admin if using the setup form. Eg: First user account
-    const urlParts = new URL(req.header('Referer'));
+    const urlParts = req.get('Referrer');
 
     // Check number of users
     const userCount = await db.users.countDocuments({});
@@ -255,12 +269,25 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
         isAdmin = true;
     }
 
-    const doc = {
+    const userObj = {
         usersName: req.body.usersName,
         userEmail: req.body.userEmail,
         userPassword: bcrypt.hashSync(req.body.userPassword, 10),
         isAdmin: isAdmin
     };
+
+    // Validate new user
+    const schemaResult = validateJson('newUser', userObj);
+    if(!schemaResult.result){
+        if(req.apiAuthenticated){
+            res.status(400).json(schemaResult.errors);
+            return;
+        }
+        req.session.message = 'Invalid new user. Please check your inputs.';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/user/new');
+        return;
+    }
 
     // check for existing user
     const user = await db.users.findOne({ userEmail: req.body.userEmail });
@@ -278,10 +305,10 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
     }
     // email is ok to be used.
     try{
-        await db.users.insertOne(doc);
+        await db.users.insertOne(userObj);
         // if from setup we add user to session and redirect to login.
         // Otherwise we show users screen
-        if(urlParts.path === '/admin/setup'){
+        if(urlParts && urlParts.path === '/admin/setup'){
             req.session.user = req.body.userEmail;
             res.redirect('/admin/login');
             return;
@@ -295,11 +322,11 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
         req.session.messageType = 'success';
         res.redirect('/admin/users');
     }catch(ex){
+        console.error(colors.red('Failed to insert user: ' + ex));
         if(req.apiAuthenticated){
             res.status(400).json({ message: 'New user creation failed' });
             return;
         }
-        console.error(colors.red('Failed to insert user: ' + ex));
         req.session.message = 'New user creation failed';
         req.session.messageType = 'danger';
         res.redirect('/admin/user/new');

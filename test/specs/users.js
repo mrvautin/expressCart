@@ -60,3 +60,33 @@ test('[Fail] Delete invalid user ID', async t => {
         .expect(302);
     t.deepEqual(res.header['location'], '/admin/users');
 });
+
+test('[Success] Create new user', async t => {
+    const user = {
+        usersName: 'Jim Smith',
+        userEmail: 'jim.smith@gmail.com',
+        userPassword: 'test',
+        isAdmin: false
+    };
+    const res = await g.request
+        .post('/admin/user/insert')
+        .send(user)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+    t.deepEqual(res.body.message, 'User account inserted');
+});
+
+test('[Fail] Create new user with invalid email', async t => {
+    const user = {
+        usersName: 'Jim Smith',
+        userEmail: 'jim.smith@gmail',
+        userPassword: 'test',
+        isAdmin: false
+    };
+    const res = await g.request
+        .post('/admin/user/insert')
+        .send(user)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+    t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
+});
