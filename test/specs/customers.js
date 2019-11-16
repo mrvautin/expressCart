@@ -118,12 +118,12 @@ test('[Success] Get customer list', async t => {
 
 test('[Success] Filter customers', async t => {
     const res = await g.request
-        .get('/admin/customers')
+        .get('/admin/customers/filter/Testy')
         .set('apiKey', g.users[0].apiKey)
         .expect(200);
 
     // Check the returned customers length
-    t.deepEqual(3, res.body.length);
+    t.deepEqual(1, res.body.customers.length);
 });
 
 test('[Success] Get single customer', async t => {

@@ -4,6 +4,7 @@ const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
 const common = require('../lib/common');
+const { indexCustomers } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
 const { restrict } = require('../lib/auth');
 
@@ -42,11 +43,14 @@ router.post('/customer/create', async (req, res) => {
     // email is ok to be used.
     try{
         const newCustomer = await db.customers.insertOne(customerObj);
-        // Customer creation successful
-        req.session.customer = newCustomer.insertedId;
-        const customerReturn = newCustomer.ops[0];
-        delete customerReturn.password;
-        res.status(200).json(customerReturn);
+        indexCustomers(req.app)
+        .then(() => {
+            // Customer creation successful
+            req.session.customer = newCustomer.insertedId;
+            const customerReturn = newCustomer.ops[0];
+            delete customerReturn.password;
+            res.status(200).json(customerReturn);
+        });
     }catch(ex){
         console.error(colors.red('Failed to insert customer: ', ex));
         res.status(400).json({
@@ -110,16 +114,19 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
                 $set: customerObj
             }, { multi: false, returnOriginal: false }
         );
-        if(req.apiAuthenticated){
-            const returnCustomer = updatedCustomer.value;
-            delete returnCustomer.password;
-            res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
-            return;
-        }
-        // show the view
-        req.session.message = 'Customer updated';
-        req.session.messageType = 'success';
-        res.redirect('/admin/customer/view/' + req.body.customerId);
+        indexCustomers(req.app)
+        .then(() => {
+            if(req.apiAuthenticated){
+                const returnCustomer = updatedCustomer.value;
+                delete returnCustomer.password;
+                res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
+                return;
+            }
+            // show the view
+            req.session.message = 'Customer updated';
+            req.session.messageType = 'success';
+            res.redirect('/admin/customer/view/' + req.body.customerId);
+        });
     }catch(ex){
         console.error(colors.red('Failed updating customer: ' + ex));
         if(req.apiAuthenticated){
