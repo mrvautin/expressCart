@@ -90,8 +90,20 @@
             "address1" : "1 test street",
             "address2" : "testvile",
             "country" : "Netherlands",
-            "state" : "",
+            "state" : "NL",
             "postcode" : "2000TW",
+            "phone" : "123456789",
+            "password" : "$2a$10$kKjnX1J/CAdgdmLI0WuPY.ILH1c7N8mD0H/ZyUXEfee1mJxJvZIS."
+        },
+        {
+            "email" : "test1@test.com",
+            "firstName" : "Testy",
+            "lastName" : "McTesterson",
+            "address1" : "2 test street",
+            "address2" : "testvile",
+            "country" : "Netherlands",
+            "state" : "",
+            "postcode" : "2000ZT",
             "phone" : "123456789",
             "password" : "$2a$10$kKjnX1J/CAdgdmLI0WuPY.ILH1c7N8mD0H/ZyUXEfee1mJxJvZIS."
         }

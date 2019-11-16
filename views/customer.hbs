@@ -1,49 +1,84 @@
 {{> partials/menu}}
 <div class="col-lg-9">
     <div class="row">
-        <div class="col-lg-12">
-            <h2>Customer</h2>
-        </div>
-        <div class="col-xs-12 col-md-12">
-            <table class="table-bordered">
-                <tr>
-                    <td><span class="text-info">Email:</span></td>
-                    <td>{{result.email}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Name" }}:</span></td>
-                    <td>{{result.firstName}} {{result.lastName}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Address 1" }}:</span></td>
-                    <td>{{result.address1}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Address 2" }}:</span></td>
-                    <td>{{result.address2}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Country" }}:</span></td>
-                    <td>{{result.country}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "State" }}:</span></td>
-                    <td>{{result.state}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Postcode" }}:</span></td>
-                    <td>{{result.postcode}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Phone number" }}:</span></td>
-                    <td>{{result.phone}}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-info">{{ @root.__ "Creation date" }}:</span></td>
-                    <td>{{formatDate result.created "DD/MM/YYYY hh:mmA"}}</td>
-                </tr>
-            </table>
-        </div>
+        <form method="post" class="form-horizontal" id="update_form" action="/admin/customer/update" data-toggle="validator">
+            <div class="col-xs-12 col-md-12">
+                <div class="page-header">
+                    <div class="pull-right">
+                        <button id="frm_edit_product_save" class="btn btn-success">Save customer <i class="fa fa-floppy-o"></i></button>
+                    </div>
+                    <h2>Customer</h2>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Email *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="email" value={{result.email}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "First name" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="firstName" value={{result.firstName}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Last name" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="lastName" value={{result.lastName}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Address 1" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="address1" value={{result.address1}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Address 2" }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="address2" value={{result.address2}}>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Country" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="country" value={{result.country}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "State" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="state" value={{result.state}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Postcode" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="postcode" value={{result.postcode}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Phone number" }} *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="phone" value={{result.phone}} required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Password" }}</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" name="password">
+                        <p class="help-block">Only populate if wanting to reset the customers password</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{ @root.__ "Creation date" }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" value="{{formatDate result.created "DD/MM/YYYY hh:mmA"}}" readonly>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="customerId" value="{{result._id}}">
+        </form>
     </div>
-    <input type="hidden" id="productId" value="{{result._id}}">
+    
 </div>

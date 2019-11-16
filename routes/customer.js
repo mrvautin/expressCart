@@ -25,7 +25,7 @@ router.post('/customer/create', async (req, res) => {
         created: new Date()
     };
 
-    const schemaResult = validateJson('customer', customerObj);
+    const schemaResult = validateJson('newCustomer', customerObj);
     if(!schemaResult.result){
         res.status(400).json(schemaResult.errors);
         return;
@@ -52,6 +52,83 @@ router.post('/customer/create', async (req, res) => {
         res.status(400).json({
             err: 'Customer creation failed.'
         });
+    }
+});
+
+// Update a customer
+router.post('/admin/customer/update', restrict, async (req, res) => {
+    const db = req.app.db;
+
+    const customerObj = {
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        country: req.body.country,
+        state: req.body.state,
+        postcode: req.body.postcode,
+        phone: req.body.phone
+    };
+
+    // Handle optional values
+    if(req.body.password){ customerObj.password = bcrypt.hashSync(req.body.password, 10); }
+
+    const schemaResult = validateJson('editCustomer', customerObj);
+    if(!schemaResult.result){
+        console.log('errors', schemaResult.errors);
+        if(req.apiAuthenticated){
+            res.status(400).json(schemaResult.errors);
+            return;
+        }
+        req.session.message = 'Unable to update customer. Check input values';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/customer/view/' + req.body.customerId);
+        return;
+    }
+
+    // check for existing customer
+    const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
+    if(!customer){
+        if(req.apiAuthenticated){
+            res.status(400).json({
+                err: 'Customer not found'
+            });
+            return;
+        }
+
+        req.session.message = 'Customer not found';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/customer/view/' + req.body.customerId);
+        return;
+    }
+    // Update customer
+    try{
+        const updatedCustomer = await db.customers.findOneAndUpdate(
+            { _id: common.getId(req.body.customerId) },
+            {
+                $set: customerObj
+            }, { multi: false, returnOriginal: false }
+        );
+        if(req.apiAuthenticated){
+            const returnCustomer = updatedCustomer.value;
+            delete returnCustomer.password;
+            res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
+            return;
+        }
+        // show the view
+        req.session.message = 'Customer updated';
+        req.session.messageType = 'success';
+        res.redirect('/admin/customer/view/' + req.body.customerId);
+    }catch(ex){
+        console.error(colors.red('Failed updating customer: ' + ex));
+        if(req.apiAuthenticated){
+            res.status(400).json({ message: 'Failed to update customer' });
+            return;
+        }
+        req.session.message = 'Failed to update customer';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/customer/view/' + req.body.userId);
     }
 });
 

@@ -1,5 +1,5 @@
 {
-    "$id": "customer",
+    "$id": "newCustomer",
     "type": "object",
     "properties": {
         "email": {
@@ -7,31 +7,39 @@
             "format": "emailAddress"
         },
         "firstName": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "lastName": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "address1": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "address2": {
             "type": "string"
         },
         "country": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "state": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "postcode": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "phone": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         },
         "password": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true
         }
     },
     "required": [
@@ -39,7 +47,6 @@
         "firstName",
         "lastName",
         "address1",
-        "address2",
         "country",
         "state",
         "postcode",
