@@ -1,10 +1,10 @@
 {
-    "$id": "newCustomer",
+    "$id": "customer",
     "type": "object",
     "properties": {
         "email": {
             "type": "string",
-            "format": "email"
+            "format": "emailAddress"
         },
         "firstName": {
             "type": "string"
