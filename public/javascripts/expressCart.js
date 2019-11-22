@@ -425,7 +425,7 @@ $(document).ready(function (){
                 location.reload();
             })
             .fail(function(msg){
-                showNotification(msg.responseJSON.err, 'danger');
+                showNotification(msg.responseJSON.message, 'danger');
             });
         }
     });
@@ -482,6 +482,24 @@ $(document).ready(function (){
             });
         }
         e.preventDefault();
+    });
+
+    // call update settings API
+    $('#deleteCustomer').on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'DELETE',
+            url: '/admin/customer',
+            data: {
+                customerId: $('#customerId').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', false, '/admin/customers');
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
     });
 
     $(document).on('click', '.image-next', function(e){
@@ -663,7 +681,6 @@ $(document).ready(function (){
                 data: { permalink: $('#productPermalink').val(), docId: $('#productId').val() }
             })
             .done(function(msg){
-                console.log('msg', msg);
                 showNotification(msg.message, 'success');
             })
             .fail(function(msg){
@@ -850,14 +867,20 @@ function getSelectedOptions(){
 }
 
 // show notification popup
-function showNotification(msg, type, reloadPage){
+function showNotification(msg, type, reloadPage, redirect){
     // defaults to false
     reloadPage = reloadPage || false;
+
+    // defaults to null
+    redirect = redirect || null;
 
     $('#notify_message').removeClass();
     $('#notify_message').addClass('alert-' + type);
     $('#notify_message').html(msg);
     $('#notify_message').slideDown(600).delay(2500).slideUp(600, function(){
+        if(redirect){
+            window.location = redirect;
+        }
         if(reloadPage === true){
             location.reload();
         }

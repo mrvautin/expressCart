@@ -36,7 +36,7 @@ router.post('/customer/create', async (req, res) => {
     const customer = await db.customers.findOne({ email: req.body.email });
     if(customer){
         res.status(400).json({
-            err: 'A customer already exists with that email address'
+            message: 'A customer already exists with that email address'
         });
         return;
     }
@@ -54,7 +54,7 @@ router.post('/customer/create', async (req, res) => {
     }catch(ex){
         console.error(colors.red('Failed to insert customer: ', ex));
         res.status(400).json({
-            err: 'Customer creation failed.'
+            message: 'Customer creation failed.'
         });
     }
 });
@@ -96,7 +96,7 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
     if(!customer){
         if(req.apiAuthenticated){
             res.status(400).json({
-                err: 'Customer not found'
+                message: 'Customer not found'
             });
             return;
         }
@@ -134,6 +134,44 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
             return;
         }
         req.session.message = 'Failed to update customer';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/customer/view/' + req.body.userId);
+    }
+});
+
+// Delete a customer
+router.delete('/admin/customer', restrict, async (req, res) => {
+    const db = req.app.db;
+
+    // check for existing customer
+    const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
+    if(!customer){
+        if(req.apiAuthenticated){
+            res.status(400).json({
+                message: 'Failed to delete customer. Customer not found'
+            });
+            return;
+        }
+
+        req.session.message = 'Failed to delete customer. Customer not found';
+        req.session.messageType = 'danger';
+        res.redirect('/admin/customer/view/' + req.body.customerId);
+        return;
+    }
+    // Update customer
+    try{
+        await db.customers.deleteOne({ _id: common.getId(req.body.customerId) });
+        indexCustomers(req.app)
+        .then(() => {
+            res.status(200).json({ message: 'Customer deleted' });
+        });
+    }catch(ex){
+        console.error(colors.red('Failed deleting customer: ' + ex));
+        if(req.apiAuthenticated){
+            res.status(400).json({ message: 'Failed to delete customer' });
+            return;
+        }
+        req.session.message = 'Failed to delete customer';
         req.session.messageType = 'danger';
         res.redirect('/admin/customer/view/' + req.body.userId);
     }

@@ -50,7 +50,7 @@ test('[Fail] Try create a duplicate customer', async t => {
         .send(customer)
         .expect(400);
 
-    t.deepEqual(res.body.err, 'A customer already exists with that email address');
+    t.deepEqual(res.body.message, 'A customer already exists with that email address');
 });
 
 test('[Fail] Create with invalid email address', async t => {
@@ -156,4 +156,26 @@ test('[Success] Customer login with correct email', async t => {
         })
         .expect(200);
     t.deepEqual(res.body.message, 'Successfully logged in');
+});
+
+test('[Success] Delete a customer', async t => {
+    const res = await g.request
+        .delete('/admin/customer')
+        .send({
+            customerId: g.customers[0]._id
+        })
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+    t.deepEqual(res.body.message, 'Customer deleted');
+});
+
+test('[Success] Failed deleting an incorrect customer', async t => {
+    const res = await g.request
+        .delete('/admin/customer')
+        .send({
+            customerId: g.customers[0]._id
+        })
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+    t.deepEqual(res.body.message, 'Failed to delete customer. Customer not found');
 });
