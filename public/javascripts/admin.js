@@ -284,15 +284,54 @@ $(document).ready(function (){
         customCss.setValue(customCssBeautified);
     }
 
-    // call update settings API
-    $('#settings-menu-new').on('click', function(e){
+    $(document).on('click', '#btnPageUpdate', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: '/admin/settings/page',
+            data: {
+                page_id: $('#page_id').val(),
+                pageName: $('#pageName').val(),
+                pageSlug: $('#pageSlug').val(),
+                pageEnabled: $('#pageEnabled').is(':checked'),
+                pageContent: $('#pageContent').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
+    $(document).on('click', '#btnPageDelete', function(e){
+        e.preventDefault();
+        if(confirm('Are you sure?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/page/delete',
+                data: {
+                    pageId: $(this).attr('data-id')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.message, 'danger', true);
+            });
+        }
+    });
+
+    $(document).on('click', '#settings-menu-new', function(e){
         e.preventDefault();
         $.ajax({
             method: 'POST',
             url: '/admin/settings/menu/new',
             data: {
-                navMenu: $('#navMenu').val(),
-                navLink: $('#navLink').val()
+                navMenu: $('#newNavMenu').val(),
+                navLink: $('#newNavLink').val()
             }
         })
         .done(function(msg){
@@ -303,18 +342,60 @@ $(document).ready(function (){
         });
     });
 
-    $(document).on('click', '#btnPageUpdate', function(e){
+    $(document).on('click', '#settings-menu-update', function(e){
         e.preventDefault();
+        var id = $(this).attr('data-id');
+        var parentEl = $('#menuId-' + id);
         $.ajax({
             method: 'POST',
-            url: '/admin/settings/pages/update',
+            url: '/admin/settings/menu/update',
             data: {
-                page_id: $('#page_id').val(),
-                pageName: $('#pageName').val(),
-                pageSlug: $('#pageSlug').val(),
-                pageEnabled: $('#pageEnabled').is(':checked'),
-                pageContent: $('#pageContent').val()
+                navId: parentEl.find('.navId').val(),
+                navMenu: parentEl.find('.navMenu').val(),
+                navLink: parentEl.find('.navLink').val()
             }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.message, 'danger', true);
+        });
+    });
+
+    $(document).on('click', '.settings-menu-delete', function(e){
+        e.preventDefault();
+
+        if(confirm('Are you sure?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/menu/delete',
+                data: {
+                    menuId: $(this).attr('data-id')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.message, 'danger', true);
+            });
+        }
+    });
+
+    $(document).on('click', '#uploadButton', function(e){
+        e.preventDefault();
+        var formData = new FormData($('#uploadForm')[0]);
+        formData.append('productId', $('#productId').val());
+
+        // Upload file
+        $.ajax({
+            method: 'POST',
+            url: '/admin/file/upload',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: formData
         })
         .done(function(msg){
             showNotification(msg.message, 'success', true);

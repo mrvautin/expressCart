@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const glob = require('glob');
 const mime = require('mime-type/with-db');
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
@@ -132,7 +131,7 @@ router.post('/admin/setup_action', async (req, res) => {
     res.redirect('/admin/login');
 });
 
-// settings update
+// settings
 router.get('/admin/settings', restrict, (req, res) => {
     res.render('settings', {
         title: 'Cart settings',
@@ -148,7 +147,7 @@ router.get('/admin/settings', restrict, (req, res) => {
     });
 });
 
-// settings update
+// create API key
 router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     const result = await db.users.findOneAndUpdate({
@@ -180,7 +179,7 @@ router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
     res.status(400).json({ message: 'Permission denied' });
 });
 
-// settings update
+// settings menu
 router.get('/admin/settings/menu', restrict, async (req, res) => {
     const db = req.app.db;
     res.render('settings_menu', {
@@ -195,7 +194,7 @@ router.get('/admin/settings/menu', restrict, async (req, res) => {
     });
 });
 
-// settings page list
+// page list
 router.get('/admin/settings/pages', restrict, async (req, res) => {
     const db = req.app.db;
     const pages = await db.pages.find({}).toArray();
@@ -213,11 +212,11 @@ router.get('/admin/settings/pages', restrict, async (req, res) => {
     });
 });
 
-// settings pages new
+// pages new
 router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    res.render('settings_page_edit', {
+    res.render('settings_page', {
         title: 'Static pages',
         session: req.session,
         admin: true,
@@ -230,7 +229,7 @@ router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) 
     });
 });
 
-// settings pages editor
+// pages editor
 router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     const page = await db.pages.findOne({ _id: common.getId(req.params.page) });
@@ -247,7 +246,7 @@ router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req
         return;
     }
 
-    res.render('settings_page_edit', {
+    res.render('settings_page', {
         title: 'Static pages',
         page: page,
         button_text: 'Update',
@@ -261,8 +260,8 @@ router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req
     });
 });
 
-// settings update page
-router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, res) => {
+// insert/update page
+router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     const doc = {
@@ -297,50 +296,46 @@ router.post('/admin/settings/pages/update', restrict, checkAccess, async (req, r
     }
 });
 
-// settings delete page
-router.get('/admin/settings/pages/delete/:page', restrict, checkAccess, async (req, res) => {
+// delete page
+router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     try{
-        await db.pages.deleteOne({ _id: common.getId(req.params.page) }, {});
-        req.session.message = 'Page successfully deleted';
-        req.session.messageType = 'success';
-        res.redirect('/admin/settings/pages');
+        await db.pages.deleteOne({ _id: common.getId(req.body.pageId) }, {});
+        res.status(200).json({ message: 'Page successfully deleted' });
         return;
     }catch(ex){
-        req.session.message = 'Error deleting page. Please try again.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/settings/pages');
+        res.status(400).json({ message: 'Error deleting page. Please try again.' });
     }
 });
 
 // new menu item
 router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
-    const result = common.newMenu(req, res);
+    const result = common.newMenu(req);
     if(result === false){
-        req.session.message = 'Failed creating menu.';
-        req.session.messageType = 'danger';
+        res.status(400).json({ message: 'Failed creating menu.' });
+        return;
     }
-    res.redirect('/admin/settings/menu');
+    res.status(200).json({ message: 'Menu created successfully.' });
 });
 
 // update existing menu item
 router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = common.updateMenu(req, res);
+    const result = common.updateMenu(req);
     if(result === false){
-        req.session.message = 'Failed updating menu.';
-        req.session.messageType = 'danger';
+        res.status(400).json({ message: 'Failed updating menu.' });
+        return;
     }
-    res.redirect('/admin/settings/menu');
+    res.status(200).json({ message: 'Menu updated successfully.' });
 });
 
 // delete menu item
-router.get('/admin/settings/menu/delete/:menuid', restrict, checkAccess, (req, res) => {
-    const result = common.deleteMenu(req, res, req.params.menuid);
+router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => {
+    const result = common.deleteMenu(req, req.body.menuId);
     if(result === false){
-        req.session.message = 'Failed deleting menu.';
-        req.session.messageType = 'danger';
+        res.status(400).json({ message: 'Failed deleting menu.' });
+        return;
     }
-    res.redirect('/admin/settings/menu');
+    res.status(200).json({ message: 'Menu deleted successfully.' });
 });
 
 // We call this via a Ajax call to save the order from the sortable list
@@ -376,7 +371,7 @@ router.post('/admin/api/validate_permalink', async (req, res) => {
 
 // upload the file
 const upload = multer({ dest: 'public/uploads/' });
-router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_file'), async (req, res, next) => {
+router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFile'), async (req, res) => {
     const db = req.app.db;
 
     if(req.file){
@@ -390,10 +385,8 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
             // Remove temp file
             fs.unlinkSync(file.path);
 
-            // Redirect to error
-            req.session.message = 'File type not allowed or too large. Please try again.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/product/edit/' + req.body.productId);
+            // Return error
+            res.status(400).json({ message: 'File type not allowed or too large. Please try again.' });
             return;
         }
 
@@ -403,10 +396,8 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
             // delete the temp file.
             fs.unlinkSync(file.path);
 
-            // Redirect to error
-            req.session.message = 'File upload error. Please try again.';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/product/edit/' + req.body.productId);
+            // Return error
+            res.status(400).json({ message: 'File upload error. Please try again.' });
             return;
         }
 
@@ -431,20 +422,13 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('upload_f
         // if there isn't a product featured image, set this one
         if(!product.productImage){
             await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
-            req.session.message = 'File uploaded successfully';
-            req.session.messageType = 'success';
-            res.redirect('/admin/product/edit/' + req.body.productId);
-            return;
         }
-        req.session.message = 'File uploaded successfully';
-        req.session.messageType = 'success';
-        res.redirect('/admin/product/edit/' + req.body.productId);
+         // Return success message
+        res.status(200).json({ message: 'File uploaded successfully' });
         return;
     }
-    // Redirect to error
-    req.session.message = 'File upload error. Please select a file.';
-    req.session.messageType = 'danger';
-    res.redirect('/admin/product/edit/' + req.body.productId);
+    // Return error
+    res.status(400).json({ message: 'File upload error. Please try again.' });
 });
 
 // delete a file via ajax request
@@ -453,69 +437,6 @@ router.post('/admin/testEmail', restrict, (req, res) => {
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json({ message: 'Test email sent' });
-});
-
-// delete a file via ajax request
-router.post('/admin/file/delete', restrict, checkAccess, async (req, res) => {
-    req.session.message = null;
-    req.session.messageType = null;
-
-    try{
-        await fs.unlinkSync('public/' + req.body.img);
-        res.writeHead(200, { 'Content-Type': 'application/text' });
-        res.end('File deleted successfully');
-    }catch(ex){
-        console.error(colors.red('File delete error: ' + ex));
-        res.writeHead(400, { 'Content-Type': 'application/text' });
-        res.end('Failed to delete file: ' + ex);
-    }
-});
-
-router.get('/admin/files', restrict, async (req, res) => {
-    // loop files in /public/uploads/
-    const files = await glob.sync('public/uploads/**', { nosort: true });
-
-    // sort array
-    files.sort();
-
-    // declare the array of objects
-    const fileList = [];
-    const dirList = [];
-
-    // loop these files
-    for(let i = 0; i < files.length; i++){
-        // only want files
-        if(fs.lstatSync(files[i]).isDirectory() === false){
-            // declare the file object and set its values
-            const file = {
-                id: i,
-                path: files[i].substring(6)
-            };
-
-            // push the file object into the array
-            fileList.push(file);
-        }else{
-            const dir = {
-                id: i,
-                path: files[i].substring(6)
-            };
-
-            // push the dir object into the array
-            dirList.push(dir);
-        }
-    }
-
-    // render the files route
-    res.render('files', {
-        title: 'Files',
-        files: fileList,
-        admin: true,
-        dirs: dirList,
-        session: req.session,
-        config: common.get(),
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType')
-    });
 });
 
 module.exports = router;

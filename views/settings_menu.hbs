@@ -11,42 +11,38 @@
                 <th></th>
                 <tbody id="draggable_list">
                     {{#each menu.items}}
-                        <tr class="drag-row">
-                            <form method="post" action="/admin/settings/menu/update">
-                            <input type="hidden" class="navId" name="navId" value="{{title}}">
+                        <tr class="drag-row" id="menuId-{{@key}}">
+                            <input type="hidden" class="navId" value="{{title}}">
                             <td class="dragable_item col-md-1 td-pad"><i class="fa fa-arrows"></i></td>
                             <td class="dragable_item col-md-2">
-                                <input type="text" class="form-control input-sm test" name="navMenu" value="{{title}}">
+                                <input type="text" class="form-control input-sm navMenu" value="{{title}}">
                             </td>
                             <td class="dragable_item col-md-6">
-                                <input type="text" class="form-control input-sm test" name="navLink" value="{{link}}">
+                                <input type="text" class="form-control input-sm navLink" value="{{link}}">
                             </td>
                             <td class="col-md-2">
-                                <a class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');" href="/admin/settings/menu/delete/{{@key}}">
+                                <a class="btn btn-danger btn-sm settings-menu-delete" data-id="{{@key}}">
                                     <i class="fa fa-trash-o"></i>
                                 </a>
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" class="btn btn-success btn-sm" id="settings-menu-update" >
                                     <i class="fa fa-floppy-o"></i>
                                 </button>
                             </td>
-                            </form>
                         </tr>
                     {{/each}}
                         <tr>
-                            <form method="post" action="/admin/settings/menu/new">
                             <td class="dragable_item col-md-1"></td>
                             <td class="dragable_item col-md-2">
-                                <input type="text" class="form-control input-sm test" name="navMenu">
+                                <input type="text" class="form-control input-sm" id="newNavMenu">
                             </td>
                             <td class="dragable_item col-md-6">
-                                <input type="text" class="form-control input-sm test" name="navLink">
+                                <input type="text" class="form-control input-sm" id="newNavLink">
                             </td>
                             <td class="col-md-2">
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" id="settings-menu-new" class="btn btn-success btn-sm">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </td>
-                            </form>
                         </tr>
                 </tbody>
             </table>

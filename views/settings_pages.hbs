@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="col-lg-4 text-right">
                                     <a class="btn btn-sm btn-success" href="/admin/settings/pages/edit/{{_id}}">{{ @root.__ "Edit" }}</a>
-                                    <a class="btn btn-sm btn-danger" href="/admin/settings/pages/delete/{{_id}}">{{ @root.__ "Delete" }}</a>
+                                    <button class="btn btn-sm btn-danger" id="btnPageDelete" data-id="{{_id}}">{{ @root.__ "Delete" }}</button>
                                 </div>
                             </div>
                         </li>

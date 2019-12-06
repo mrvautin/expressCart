@@ -168,22 +168,21 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" id="upload_form" name="upload_form" action="/admin/file/upload" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">{{ @root.__ "Product image upload" }}</h4>
-                </div>
-                <div class="modal-body">
-                    <span class="btn btn-info btn-file">
-                        {{ @root.__ "Select file" }}<input type="file" name="upload_file" id="upload_file">
-                    </span>
-                    <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="saveButton" name="saveButton" class="btn btn-primary">{{ @root.__ "Upload" }}</button>
-                </div>
-            </form>
+            <form method="post" id="uploadForm" enctype="multipart/form-data"></form>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{ @root.__ "Product image upload" }}</h4>
+            </div>
+            <div class="modal-body">
+                <span class="btn btn-info btn-file">
+                    {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
+                </span>
+                <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="uploadButton" class="btn btn-primary">{{ @root.__ "Upload" }}</button>
+            </div>
         </div>
     </div>
 </div>
