@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals AdyenCheckout */
+/* globals showNotification */
 $(document).ready(function (){
     // setup if material theme
     if($('#cartTheme').val() === 'Material'){
@@ -46,59 +46,6 @@ $(document).ready(function (){
         e.preventDefault();
     });
 
-    $('#sendTestEmail').on('click', function(e){
-        e.preventDefault();
-        $.ajax({
-            method: 'POST',
-            url: '/admin/testEmail'
-		})
-		.done(function(msg){
-            showNotification(msg, 'success');
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-    if($('#footerHtml').length){
-        var footerHTML = window.CodeMirror.fromTextArea(document.getElementById('footerHtml'), {
-            mode: 'xml',
-            tabMode: 'indent',
-            theme: 'flatly',
-            lineNumbers: true,
-            htmlMode: true,
-            fixedGutter: false
-        });
-
-        footerHTML.setValue(footerHTML.getValue());
-    }
-
-    if($('#googleAnalytics').length){
-        window.CodeMirror.fromTextArea(document.getElementById('googleAnalytics'), {
-            mode: 'xml',
-            tabMode: 'indent',
-            theme: 'flatly',
-            lineNumbers: true,
-            htmlMode: true,
-            fixedGutter: false
-        });
-    }
-
-    if($('#customCss').length){
-        var customCss = window.CodeMirror.fromTextArea(document.getElementById('customCss'), {
-            mode: 'text/css',
-            tabMode: 'indent',
-            theme: 'flatly',
-            lineNumbers: true
-        });
-
-        var customCssBeautified = window.cssbeautify(customCss.getValue(), {
-            indent: '   ',
-            autosemicolon: true
-        });
-        customCss.setValue(customCssBeautified);
-    }
-
 	// add the table class to all tables
     $('table').each(function(){
         $(this).addClass('table table-hover');
@@ -114,21 +61,6 @@ $(document).ready(function (){
 
     $('.product-title').dotdotdot({
         ellipsis: '...'
-    });
-
-	// Call to API for a change to the published state of a product
-    $('input[class="published_state"]').change(function(){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/published_state',
-            data: { id: this.id, state: this.checked }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success');
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
     });
 
     $(document).on('click', '.btn-qty-minus', function(e){
@@ -149,11 +81,6 @@ $(document).ready(function (){
 
     $(document).on('click', '.btn-delete-from-cart', function(e){
         deleteFromCart($(e.target));
-    });
-
-    $(document).on('click', '.orderFilterByStatus', function(e){
-        e.preventDefault();
-        window.location = '/admin/orders/bystatus/' + $('#orderStatusFilter').val();
     });
 
     if($('#pager').length){
@@ -183,212 +110,6 @@ $(document).ready(function (){
             });
         }
     }
-
-    $(document).on('click', '#btnPageUpdate', function(e){
-        e.preventDefault();
-        $.ajax({
-            method: 'POST',
-            url: '/admin/settings/pages/update',
-            data: {
-                page_id: $('#page_id').val(),
-                pageName: $('#pageName').val(),
-                pageSlug: $('#pageSlug').val(),
-                pageEnabled: $('#pageEnabled').is(':checked'),
-                pageContent: $('#pageContent').val()
-            }
-        })
-        .done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-    $(document).on('click', '#btnGenerateAPIkey', function(e){
-        e.preventDefault();
-        $.ajax({
-            method: 'POST',
-            url: '/admin/createApiKey'
-		})
-		.done(function(msg){
-            $('#apiKey').val(msg.apiKey);
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-    $(document).on('click', '.product_opt_remove', function(e){
-        e.preventDefault();
-        var name = $(this).closest('li').find('.opt-name').html();
-
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/removeoption',
-            data: { productId: $('#productId').val(), optName: name }
-        })
-        .done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-    $(document).on('click', '#product_opt_add', function(e){
-        e.preventDefault();
-
-        var optName = $('#product_optName').val();
-        var optLabel = $('#product_optLabel').val();
-        var optType = $('#product_optType').val();
-        var optOptions = $('#product_optOptions').val();
-
-        var optJson = {};
-        if($('#productOptions').val() !== '' && $('#productOptions').val() !== '"{}"'){
-            optJson = JSON.parse($('#productOptions').val());
-        }
-
-        var html = '<li class="list-group-item">';
-        html += '<div class="row">';
-        html += '<div class="col-lg-2 opt-name">' + optName + '</div>';
-        html += '<div class="col-lg-2">' + optLabel + '</div>';
-        html += '<div class="col-lg-2">' + optType + '</div>';
-        html += '<div class="col-lg-4">' + optOptions + '</div>';
-        html += '<div class="col-lg-2 text-right">';
-        html += '<button class="product_opt_remove btn btn-danger btn-sm">Remove</button>';
-        html += '</div></div></li>';
-
-        // append data
-        $('#product_opt_wrapper').append(html);
-
-        // add to the stored json string
-        optJson[optName] = {
-            optName: optName,
-            optLabel: optLabel,
-            optType: optType,
-            optOptions: $.grep(optOptions.split(','), function(n){ return n === 0 || n; })
-        };
-
-        // write new json back to field
-        $('#productOptions').val(JSON.stringify(optJson));
-
-        // clear inputs
-        $('#product_optName').val('');
-        $('#product_optLabel').val('');
-        $('#product_optOptions').val('');
-    });
-
-    // validate form and show stripe payment
-    $('#stripeButton').validator().on('click', function(e){
-        e.preventDefault();
-        if($('#shipping-form').validator('validate').has('.has-error').length === 0){
-            // if no form validation errors
-            var handler = window.StripeCheckout.configure({
-                key: $('#stripeButton').data('key'),
-                image: $('#stripeButton').data('image'),
-                locale: 'auto',
-                token: function(token){
-                    if($('#stripeButton').data('subscription')){
-                        $('#shipping-form').append('<input type="hidden" name="stripePlan" value="' + $('#stripeButton').data('subscription') + '" />');
-                    }
-                    $('#shipping-form').append('<input type="hidden" name="stripeToken" value="' + token.id + '" />');
-                    $('#shipping-form').submit();
-                }
-            });
-
-            // open the stripe payment form
-            handler.open({
-                email: $('#stripeButton').data('email'),
-                name: $('#stripeButton').data('name'),
-                description: $('#stripeButton').data('description'),
-                zipCode: $('#stripeButton').data('zipCode'),
-                amount: $('#stripeButton').data('amount'),
-                currency: $('#stripeButton').data('currency'),
-                subscription: $('#stripeButton').data('subscription')
-            });
-        }
-    });
-
-    if($('#adyen-dropin').length > 0){
-        $.ajax({
-            method: 'POST',
-            url: '/adyen/setup'
-        })
-        .done(function(response){
-            const configuration = {
-                locale: 'en-AU',
-                environment: response.environment.toLowerCase(),
-                originKey: response.publicKey,
-                paymentMethodsResponse: response.paymentsResponse
-            };
-            const checkout = new AdyenCheckout(configuration);
-            checkout
-            .create('dropin', {
-                paymentMethodsConfiguration: {
-                    card: {
-                        hasHolderName: false,
-                        holderNameRequired: false,
-                        enableStoreDetails: false,
-                        groupTypes: ['mc', 'visa'],
-                        name: 'Credit or debit card'
-                    }
-                },
-                onSubmit: (state, dropin) => {
-                    if($('#shipping-form').validator('validate').has('.has-error').length === 0){
-                        $.ajax({
-                            type: 'POST',
-                            url: '/adyen/checkout_action',
-                            data: {
-                                shipEmail: $('#shipEmail').val(),
-                                shipFirstname: $('#shipFirstname').val(),
-                                shipLastname: $('#shipLastname').val(),
-                                shipAddr1: $('#shipAddr1').val(),
-                                shipAddr2: $('#shipAddr2').val(),
-                                shipCountry: $('#shipCountry').val(),
-                                shipState: $('#shipState').val(),
-                                shipPostcode: $('#shipPostcode').val(),
-                                shipPhoneNumber: $('#shipPhoneNumber').val(),
-                                payment: JSON.stringify(state.data.paymentMethod)
-                            }
-                        }).done((response) => {
-                            window.location = '/payment/' + response.paymentId;
-                        }).fail((response) => {
-                            console.log('Response', response);
-                            showNotification('Failed to complete transaction', 'danger', true);
-                        });
-                    }
-                }
-            })
-            .mount('#adyen-dropin');
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    };
-
-    // call update settings API
-    $('#settingsForm').validator().on('submit', function(e){
-        if(!e.isDefaultPrevented()){
-            e.preventDefault();
-            // set hidden elements from codemirror editors
-            $('#footerHtml_input').val($('.CodeMirror')[0].CodeMirror.getValue());
-            $('#googleAnalytics_input').val($('.CodeMirror')[1].CodeMirror.getValue());
-            $('#customCss_input').val($('.CodeMirror')[2].CodeMirror.getValue());
-            $.ajax({
-                method: 'POST',
-                url: '/admin/settings/update',
-                data: $('#settingsForm').serialize()
-            })
-            .done(function(msg){
-                showNotification(msg.message, 'success');
-            })
-            .fail(function(msg){
-                showNotification(msg.responseJSON.message, 'danger');
-            });
-        }
-    });
 
     $('#customerLogout').on('click', function(e){
         $.ajax({
@@ -484,24 +205,6 @@ $(document).ready(function (){
         e.preventDefault();
     });
 
-    // call update settings API
-    $('#deleteCustomer').on('click', function(e){
-        e.preventDefault();
-        $.ajax({
-            method: 'DELETE',
-            url: '/admin/customer',
-            data: {
-                customerId: $('#customerId').val()
-            }
-        })
-        .done(function(msg){
-            showNotification(msg.message, 'success', false, '/admin/customers');
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
     $(document).on('click', '.image-next', function(e){
         var thumbnails = $('.thumbnail-image');
         var index = 0;
@@ -542,20 +245,6 @@ $(document).ready(function (){
 
         // set the image src
         $('#product-title-image').attr('src', $(thumbnails).eq(matchedIndex).attr('src'));
-    });
-
-    $(document).on('click', '#orderStatusUpdate', function(e){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/order/statusupdate',
-            data: { order_id: $('#order_id').val(), status: $('#orderStatus').val() }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
     });
 
     $(document).on('click', '.product-add-to-cart', function(e){
@@ -644,80 +333,6 @@ $(document).ready(function (){
         $('#product-title-image').attr('src', $(this).attr('src'));
     });
 
-    $('.set-as-main-image').on('click', function(){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/setasmainimage',
-            data: { product_id: $('#productId').val(), productImage: $(this).attr('data-id') }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-    $('.btn-delete-image').on('click', function(){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/deleteimage',
-            data: { product_id: $('#productId').val(), productImage: $(this).attr('data-id') }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
-    });
-
-	// Call to API to check if a permalink is available
-    $(document).on('click', '#validate_permalink', function(e){
-        if($('#productPermalink').val() !== ''){
-            $.ajax({
-                method: 'POST',
-                url: '/admin/api/validate_permalink',
-                data: { permalink: $('#productPermalink').val(), docId: $('#productId').val() }
-            })
-            .done(function(msg){
-                showNotification(msg.message, 'success');
-            })
-            .fail(function(msg){
-                showNotification(msg.responseJSON.message, 'danger');
-            });
-        }else{
-            showNotification('Please enter a permalink to validate', 'danger');
-        }
-    });
-
-    // applies an product filter
-    $(document).on('click', '#btn_product_filter', function(e){
-        if($('#product_filter').val() !== ''){
-            window.location.href = '/admin/products/filter/' + $('#product_filter').val();
-        }else{
-            showNotification('Please enter a keyword to filter', 'danger');
-        }
-    });
-
-    // applies an order filter
-    $(document).on('click', '#btn_order_filter', function(e){
-        if($('#order_filter').val() !== ''){
-            window.location.href = '/admin/orders/filter/' + $('#order_filter').val();
-        }else{
-            showNotification('Please enter a keyword to filter', 'danger');
-        }
-    });
-
-    // applies an product filter
-    $(document).on('click', '#btn_customer_filter', function(e){
-        if($('#customer_filter').val() !== ''){
-            window.location.href = '/admin/customers/filter/' + $('#customer_filter').val();
-        }else{
-            showNotification('Please enter a keyword to filter', 'danger');
-        }
-    });
-
     // resets the order filter
     $(document).on('click', '#btn_search_reset', function(e){
         window.location.replace('/');
@@ -730,13 +345,6 @@ $(document).ready(function (){
             showNotification('Please enter a search value', 'danger');
         }else{
             window.location.href = '/search/' + $('#frm_search').val();
-        }
-    });
-
-    // create a permalink from the product title if no permalink has already been set
-    $(document).on('click', '#frm_edit_product_save', function(e){
-        if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
-            $('#productPermalink').val(slugify($('#productTitle').val()));
         }
     });
 
@@ -781,18 +389,6 @@ function deleteFromCart(element){
     .fail(function(msg){
         showNotification(msg.responseJSON.message, 'danger');
     });
-}
-
-function slugify(str){
-    var $slug = '';
-    var trimmed = $.trim(str);
-    $slug = trimmed.replace(/[^a-z0-9-æøå]/gi, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .replace(/æ/gi, 'ae')
-    .replace(/ø/gi, 'oe')
-    .replace(/å/gi, 'a');
-    return $slug.toLowerCase();
 }
 
 function cartUpdate(element){
@@ -864,25 +460,4 @@ function getSelectedOptions(){
         options[$(this).attr('name').substring(4, $(this).attr('name').length)] = optionValue;
     });
     return options;
-}
-
-// show notification popup
-function showNotification(msg, type, reloadPage, redirect){
-    // defaults to false
-    reloadPage = reloadPage || false;
-
-    // defaults to null
-    redirect = redirect || null;
-
-    $('#notify_message').removeClass();
-    $('#notify_message').addClass('alert-' + type);
-    $('#notify_message').html(msg);
-    $('#notify_message').slideDown(600).delay(2500).slideUp(600, function(){
-        if(redirect){
-            window.location = redirect;
-        }
-        if(reloadPage === true){
-            location.reload();
-        }
-    });
 }
