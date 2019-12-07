@@ -123,6 +123,7 @@ router.delete('/admin/customer', restrict, async (req, res) => {
         res.status(400).json({
             message: 'Failed to delete customer. Customer not found'
         });
+        return;
     }
     // Update customer
     try{
