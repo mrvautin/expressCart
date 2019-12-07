@@ -4,7 +4,7 @@
 		<div class="col-md-12">
             <form id="settingsPageEditor">
                 <h2 class="clearfix">{{ @root.__ "Static page" }} <div class="pull-right"><button type="submit" id="btnPageUpdate" class="btn btn-success">{{button_text}}</button></div></h2>
-                <input type="hidden" id="page_id" value="{{page._id}}">
+                <input type="hidden" id="pageId" value="{{page._id}}">
                 <div class="form-group">
                     <label>{{ @root.__ "Page name" }} *</label>
                     <input type="text" class="form-control" id="pageName" name="pageName" value="{{page.pageName}}" required>
