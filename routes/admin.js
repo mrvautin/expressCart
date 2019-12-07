@@ -276,6 +276,7 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
         const page = await db.pages.findOne({ _id: common.getId(req.body.pageId) });
         if(!page){
             res.status(400).json({ message: 'Page not found' });
+            return;
         }
 
         try{
@@ -299,6 +300,13 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
 // delete page
 router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
+
+    const page = await db.pages.findOne({ _id: common.getId(req.body.pageId) });
+    if(!page){
+        res.status(400).json({ message: 'Page not found' });
+        return;
+    }
+
     try{
         await db.pages.deleteOne({ _id: common.getId(req.body.pageId) }, {});
         res.status(200).json({ message: 'Page successfully deleted' });
