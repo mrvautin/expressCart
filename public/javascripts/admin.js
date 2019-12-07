@@ -228,6 +228,35 @@ $(document).ready(function (){
     });
 
     // call update settings API
+    $('#updateCustomer').validator().on('click', function(e){
+        e.preventDefault();
+        if($('#customer-form').validator('validate').has('.has-error').length === 0){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/customer/update',
+                data: {
+                    customerId: $('#customerId').val(),
+                    email: $('#email').val(),
+                    firstName: $('#firstName').val(),
+                    lastName: $('#lastName').val(),
+                    address1: $('#address1').val(),
+                    address2: $('#address2').val(),
+                    country: $('#country').val(),
+                    state: $('#state').val(),
+                    postcode: $('#postcode').val(),
+                    phone: $('#phone').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    // call update settings API
     $('#deleteCustomer').on('click', function(e){
         e.preventDefault();
         $.ajax({

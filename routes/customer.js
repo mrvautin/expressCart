@@ -81,29 +81,16 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
     const schemaResult = validateJson('editCustomer', customerObj);
     if(!schemaResult.result){
         console.log('errors', schemaResult.errors);
-        if(req.apiAuthenticated){
-            res.status(400).json(schemaResult.errors);
-            return;
-        }
-        req.session.message = 'Unable to update customer. Check input values';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/customer/view/' + req.body.customerId);
+        res.status(400).json(schemaResult.errors);
         return;
     }
 
     // check for existing customer
     const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
     if(!customer){
-        if(req.apiAuthenticated){
-            res.status(400).json({
-                message: 'Customer not found'
-            });
-            return;
-        }
-
-        req.session.message = 'Customer not found';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/customer/view/' + req.body.customerId);
+        res.status(400).json({
+            message: 'Customer not found'
+        });
         return;
     }
     // Update customer
@@ -116,26 +103,13 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
         );
         indexCustomers(req.app)
         .then(() => {
-            if(req.apiAuthenticated){
-                const returnCustomer = updatedCustomer.value;
-                delete returnCustomer.password;
-                res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
-                return;
-            }
-            // show the view
-            req.session.message = 'Customer updated';
-            req.session.messageType = 'success';
-            res.redirect('/admin/customer/view/' + req.body.customerId);
+            const returnCustomer = updatedCustomer.value;
+            delete returnCustomer.password;
+            res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
         });
     }catch(ex){
         console.error(colors.red('Failed updating customer: ' + ex));
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Failed to update customer' });
-            return;
-        }
-        req.session.message = 'Failed to update customer';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/customer/view/' + req.body.userId);
+        res.status(400).json({ message: 'Failed to update customer' });
     }
 });
 
@@ -146,17 +120,9 @@ router.delete('/admin/customer', restrict, async (req, res) => {
     // check for existing customer
     const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
     if(!customer){
-        if(req.apiAuthenticated){
-            res.status(400).json({
-                message: 'Failed to delete customer. Customer not found'
-            });
-            return;
-        }
-
-        req.session.message = 'Failed to delete customer. Customer not found';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/customer/view/' + req.body.customerId);
-        return;
+        res.status(400).json({
+            message: 'Failed to delete customer. Customer not found'
+        });
     }
     // Update customer
     try{
@@ -167,13 +133,7 @@ router.delete('/admin/customer', restrict, async (req, res) => {
         });
     }catch(ex){
         console.error(colors.red('Failed deleting customer: ' + ex));
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Failed to delete customer' });
-            return;
-        }
-        req.session.message = 'Failed to delete customer';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/customer/view/' + req.body.userId);
+        res.status(400).json({ message: 'Failed to delete customer' });
     }
 });
 
