@@ -319,7 +319,7 @@ $(document).ready(function (){
             method: 'POST',
             url: '/admin/settings/page',
             data: {
-                page_id: $('#page_id').val(),
+                pageId: $('#pageId').val(),
                 pageName: $('#pageName').val(),
                 pageSlug: $('#pageSlug').val(),
                 pageEnabled: $('#pageEnabled').is(':checked'),

@@ -271,16 +271,16 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
         pageContent: req.body.pageContent
     };
 
-    if(req.body.page_id){
+    if(req.body.pageId){
         // existing page
-        const page = await db.pages.findOne({ _id: common.getId(req.body.page_id) });
+        const page = await db.pages.findOne({ _id: common.getId(req.body.pageId) });
         if(!page){
             res.status(400).json({ message: 'Page not found' });
         }
 
         try{
-            await db.pages.updateOne({ _id: common.getId(req.body.page_id) }, { $set: doc }, {});
-            res.status(200).json({ message: 'Page updated successfully', page_id: req.body.page_id });
+            const updatedPage = await db.pages.findOneAndUpdate({ _id: common.getId(req.body.pageId) }, { $set: doc }, { returnOriginal: false });
+            res.status(200).json({ message: 'Page updated successfully', pageId: req.body.pageId, page: updatedPage.value });
         }catch(ex){
             res.status(400).json({ message: 'Error updating page. Please try again.' });
         }
@@ -288,7 +288,7 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
         // insert page
         try{
             const newDoc = await db.pages.insertOne(doc);
-            res.status(200).json({ message: 'New page successfully created', page_id: newDoc._id });
+            res.status(200).json({ message: 'New page successfully created', pageId: newDoc.insertedId });
             return;
         }catch(ex){
             res.status(400).json({ message: 'Error creating page. Please try again.' });
