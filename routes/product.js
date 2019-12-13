@@ -15,7 +15,8 @@ router.get('/admin/products', restrict, async (req, res, next) => {
     const topResults = await db.products.find({}).sort({ productAddedDate: -1 }).limit(10).toArray();
     res.render('products', {
         title: 'Cart',
-        top_results: topResults,
+        results: topResults,
+        resultType: 'top',
         session: req.session,
         admin: true,
         config: req.app.config,
@@ -46,6 +47,7 @@ router.get('/admin/products/filter/:search', restrict, async (req, res, next) =>
     res.render('products', {
         title: 'Results',
         results: results,
+        resultType: 'filtered',
         admin: true,
         config: req.app.config,
         session: req.session,
@@ -148,7 +150,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
 
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json({ error: 'Permalink already exists. Pick a new one.' });
+            res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
             return;
         }
 
@@ -195,7 +197,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
 
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json({ error: 'Error inserting document' });
+            res.status(400).json({ message: 'Error inserting document' });
             return;
         }
 
@@ -283,7 +285,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
 
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json({ messge: 'Failed to update product' });
+            res.status(400).json({ message: 'Failed to update product' });
             return;
         }
 
@@ -294,7 +296,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     if(count > 0 && req.body.productPermalink !== ''){
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json({ messge: 'Permalink already exists. Pick a new one' });
+            res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
             return;
         }
 
@@ -399,7 +401,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     }catch(ex){
         // If API request, return json
         if(req.apiAuthenticated){
-            res.status(400).json({ messge: 'Failed to save. Please try again' });
+            res.status(400).json({ message: 'Failed to save. Please try again' });
             return;
         }
 
@@ -411,25 +413,23 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
 });
 
 // delete product
-router.get('/admin/product/delete/:id', restrict, checkAccess, async (req, res) => {
+router.post('/admin/product/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     // remove the product
-    await db.products.deleteOne({ _id: common.getId(req.params.id) }, {});
+    await db.products.deleteOne({ _id: common.getId(req.body.productId) }, {});
 
     // delete any images and folder
-    rimraf('public/uploads/' + req.params.id, (err) => {
+    rimraf('public/uploads/' + req.body.productId, (err) => {
         if(err){
             console.info(err.stack);
+            res.status(400).json({ message: 'Failed to delete product' });
         }
 
         // re-index products
         indexProducts(req.app)
         .then(() => {
-            // redirect home
-            req.session.message = 'Product successfully deleted';
-            req.session.messageType = 'success';
-            res.redirect('/admin/products');
+            res.status(200).json({ message: 'Product successfully deleted' });
         });
     });
 });
@@ -440,10 +440,10 @@ router.post('/admin/product/published_state', restrict, checkAccess, async (req,
 
     try{
         await db.products.updateOne({ _id: common.getId(req.body.id) }, { $set: { productPublished: common.convertBool(req.body.state) } }, { multi: false });
-        res.status(200).json('Published state updated');
+        res.status(200).json({ message: 'Published state updated' });
     }catch(ex){
         console.error(colors.red('Failed to update the published state: ' + ex));
-        res.status(400).json('Published state not updated');
+        res.status(400).json({ message: 'Published state not updated' });
     }
 });
 

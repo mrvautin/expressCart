@@ -140,6 +140,20 @@ $(document).ready(function (){
         });
     });
 
+    $('.btn-delete-product').on('click', function(){
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/delete',
+            data: { productId: $(this).attr('data-id') }
+        })
+		.done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
 	// Call to API to check if a permalink is available
     $(document).on('click', '#validate_permalink', function(e){
         if($('#productPermalink').val() !== ''){
