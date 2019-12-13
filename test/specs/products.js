@@ -195,6 +195,36 @@ test('[Success] Add a product', async t => {
     t.deepEqual(res.body.message, 'New product successfully created');
 });
 
+test('[Fail] Add a product - Duplicate permalink', async t => {
+    const product = {
+        productPermalink: 'test-jacket',
+        productTitle: 'Test Jacket - blue',
+        productPrice: 100,
+        productDescription: 'Test desc blue',
+        productPublished: true,
+        productTags: 'organic, jacket, blue',
+        productOptions: {
+            Size: {
+                optName: 'Size',
+                optLabel: 'Select size',
+                optType: 'select',
+                optOptions: ['S', 'M', 'L', 'XL']
+            }
+        },
+        productComment: 'test comment - its blue',
+        productStock: 50
+    };
+
+    const res = await g.request
+        .post('/admin/product/insert')
+        .send(product)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Permalink already exists. Pick a new one.');
+});
+
 test('[Success] Update a product', async t => {
     const product = {
         productId: g.products[0]._id,
@@ -225,4 +255,31 @@ test('[Success] Update a product', async t => {
     t.deepEqual(res.body.message, 'Successfully saved');
     t.deepEqual(res.body.product.productTitle, product.productTitle);
     t.deepEqual(res.body.product.productPrice, product.productPrice);
+});
+
+test('[Fail] Update a product - Duplicate permalink', async t => {
+    const product = {
+        productId: g.products[0]._id,
+        productPermalink: 'test-jacket'
+    };
+
+    const res = await g.request
+        .post('/admin/product/update')
+        .send(product)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Permalink already exists. Pick a new one.');
+});
+
+test('[Success] Delete a product', async t => {
+    const res = await g.request
+        .post('/admin/product/delete')
+        .send({ productId: g.products[0]._id })
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Product successfully deleted');
 });
