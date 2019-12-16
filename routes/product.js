@@ -106,56 +106,15 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     // Validate the body again schema
     const schemaValidate = validateJson('newProduct', doc);
     if(!schemaValidate.result){
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json(schemaValidate.errors);
-            return;
-        }
-
         console.log('schemaValidate errors', schemaValidate.errors);
-        req.session.message = 'Form invalid. Please check values and try again.';
-        req.session.messageType = 'danger';
-
-        // keep the current stuff
-        req.session.productTitle = req.body.productTitle;
-        req.session.productDescription = req.body.productDescription;
-        req.session.productPrice = req.body.productPrice;
-        req.session.productPermalink = req.body.productPermalink;
-        req.session.productOptions = productOptions;
-        req.session.productComment = common.checkboxBool(req.body.productComment);
-        req.session.productTags = req.body.productTags;
-        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
-
-        // redirect to insert
-        res.redirect('/admin/product/new');
+        res.status(400).json(schemaValidate.errors);
         return;
     }
 
     // Check permalink doesn't already exist
     const product = await db.products.countDocuments({ productPermalink: req.body.productPermalink });
     if(product > 0 && req.body.productPermalink !== ''){
-        // permalink exits
-        req.session.message = 'Permalink already exists. Pick a new one.';
-        req.session.messageType = 'danger';
-
-        // keep the current stuff
-        req.session.productTitle = req.body.productTitle;
-        req.session.productDescription = req.body.productDescription;
-        req.session.productPrice = req.body.productPrice;
-        req.session.productPermalink = req.body.productPermalink;
-        req.session.productOptions = productOptions;
-        req.session.productComment = common.checkboxBool(req.body.productComment);
-        req.session.productTags = req.body.productTags;
-        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
-
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
-            return;
-        }
-
-        // redirect to insert
-        res.redirect('/admin/product/new');
+        res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
         return;
     }
 
@@ -167,42 +126,14 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         // add to lunr index
         indexProducts(req.app)
         .then(() => {
-            req.session.message = 'New product successfully created';
-            req.session.messageType = 'success';
-
-            // If API request, return json
-            if(req.apiAuthenticated){
-                res.status(200).json({ message: 'New product successfully created' });
-                return;
-            }
-
-            // redirect to new doc
-            res.redirect('/admin/product/edit/' + newId);
+            res.status(200).json({
+                message: 'New product successfully created',
+                productId: newId
+            });
         });
     }catch(ex){
         console.log(colors.red('Error inserting document: ' + ex));
-
-        // keep the current stuff
-        req.session.productTitle = req.body.productTitle;
-        req.session.productDescription = req.body.productDescription;
-        req.session.productPrice = req.body.productPrice;
-        req.session.productPermalink = req.body.productPermalink;
-        req.session.productOptions = productOptions;
-        req.session.productComment = common.checkboxBool(req.body.productComment);
-        req.session.productTags = req.body.productTags;
-        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
-
-        req.session.message = 'Error: Inserting product';
-        req.session.messageType = 'danger';
-
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Error inserting document' });
-            return;
-        }
-
-        // redirect to insert
-        res.redirect('/admin/product/new');
+        res.status(400).json({ message: 'Error inserting document' });
     }
 });
 

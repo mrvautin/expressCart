@@ -1,6 +1,6 @@
 {{> partials/menu}}
 <div class="col-lg-9">
-    <form method="post" class="form-horizontal" id="insert_form" action="/admin/product/insert" data-toggle="validator">
+    <form class="form-horizontal" id="productNewForm" data-toggle="validator">
         <div class="col-lg-12">
             <div class="page-header">
                 <div class="pull-right">
@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label for="productTitle" class="col-sm-2 control-label">{{ @root.__ "Product title" }} *</label>
                 <div class="col-sm-10">
-                    <input type="text" id="productTitle" name="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
+                    <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
                 </div>
             </div>
             <div class="form-group">
@@ -19,14 +19,14 @@
                 <div class="col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input type="number" name="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
+                        <input type="number" id="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="productPublished" class="col-sm-2 control-label">{{ @root.__ "Status" }}</label>
                 <div class="col-sm-6">
-                    <select class="form-control" id="productPublished" name="productPublished">
+                    <select class="form-control" id="productPublished">
                         <option value="true" selected>{{ @root.__ "Published" }}</option>
                         <option value="false">{{ @root.__ "Draft" }}</option>
                     </select>
@@ -36,21 +36,21 @@
             <div class="form-group">
                 <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>
                 <div class="col-sm-6">
-                    <input type="number" name="productStock" class="form-control" value="{{productStock}}" step="any" />
+                    <input type="number" id="productStock" class="form-control" value="{{productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
             <div class="form-group" id="editor-wrapper">
                 <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
                 <div class="col-sm-10">
-                    <textarea id="editor" minlength="5" rows="10" name="productDescription" class="form-control" required>{{productDescription}}</textarea>
+                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{productDescription}}</textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Permalink</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="productPermalink" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
+                        <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="validate_permalink" type="button">Validate</button>
                         </span>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" id="productOptions" name="productOptions" value="{{result.productOptions}}" />
+                <input type="hidden" id="productOptions" value="{{result.productOptions}}" />
                 <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
                 <div class="col-lg-10">
                     <ul class="list-group" id="product_opt_wrapper">
@@ -110,7 +110,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Subscription plan</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="productSubscription" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX">
+                    <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX">
                     <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
                 </div>
             </div>
@@ -120,8 +120,7 @@
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
-                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment"
-                                name="productComment">
+                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
                         </label>
                     </div>
                     <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
@@ -130,7 +129,7 @@
             <div class="form-group">
                 <label for="productTags" class="col-sm-2 control-label">Product tag words</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="productTags" name="productTags">
+                    <input type="text" class="form-control" id="productTags">
                     <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
                 </div>
             </div>
@@ -141,7 +140,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
-        $('#editor').summernote({
+        $('#productDescription').summernote({
             height: 300,
             minHeight: null
         });

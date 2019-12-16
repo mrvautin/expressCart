@@ -112,6 +112,37 @@ $(document).ready(function (){
         });
     });
 
+    $('#productNewForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
+                $('#productPermalink').val(slugify($('#productTitle').val()));
+            }
+            $.ajax({
+                method: 'POST',
+                url: '/admin/product/insert',
+                data: {
+                    productTitle: $('#productTitle').val(),
+                    productPrice: $('#productPrice').val(),
+                    productPublished: $('#productPublished').val(),
+                    productStock: $('#productStock').val(),
+                    productDescription: $('#productDescription').val(),
+                    productPermalink: $('#productPermalink').val(),
+                    productOptions: $('#productOptions').val(),
+                    productSubscription: $('#productSubscription').val(),
+                    productComment: $('#productComment').is(':checked'),
+                    productTags: $('#productTags').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', false, '/admin/product/edit/' + msg.productId);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('#productEditForm').validator().on('submit', function(e){
         if(!e.isDefaultPrevented()){
             e.preventDefault();
