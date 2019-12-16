@@ -381,7 +381,7 @@ app.on('uncaughtException', (err) => {
     process.exit(2);
 });
 
-initDb(config.databaseConnectionString, async (err, db) => {
+initDb(process.env.DB_URI || config.databaseConnectionString, async (err, db) => {
     // On connection error we display then exit
     if(err){
         console.log(colors.red('Error connecting to MongoDB: ' + err));
