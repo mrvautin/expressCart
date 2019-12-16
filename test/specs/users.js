@@ -88,7 +88,8 @@ test('[Fail] Create new user with invalid email', async t => {
         .send(user)
         .set('apiKey', g.users[0].apiKey)
         .expect(400);
-    t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
+    t.deepEqual(res.body.message, 'Failed to create user. Check inputs.');
+    t.deepEqual(res.body.error[0].message, 'should match format "emailAddress"');
 });
 
 test('[Success] Update user', async t => {
@@ -123,7 +124,8 @@ test('[Fail] Update user invalid email', async t => {
         .send(user)
         .set('apiKey', g.users[0].apiKey)
         .expect(400);
-    t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
+    t.deepEqual(res.body.message, 'Failed to create user. Check inputs.');
+    t.deepEqual(res.body.error[0].message, 'should match format "emailAddress"');
 });
 
 test('[Fail] Update user invalid userId', async t => {

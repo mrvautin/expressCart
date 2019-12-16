@@ -24,6 +24,27 @@ $(document).ready(function (){
         $('#offcanvasClose').hide();
     }
 
+    $('#userSetupForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/setup_action',
+                data: {
+                    usersName: $('#usersName').val(),
+                    userEmail: $('#userEmail').val(),
+                    userPassword: $('#userPassword').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', false, '/admin/login');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('.shipping-form input').each(function(e){
         $(this).wrap('<fieldset></fieldset>');
         var tag = $(this).attr('placeholder');

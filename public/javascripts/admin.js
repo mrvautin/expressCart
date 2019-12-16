@@ -112,6 +112,50 @@ $(document).ready(function (){
         });
     });
 
+    $('#userNewForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/user/insert',
+                data: {
+                    usersName: $('#usersName').val(),
+                    userEmail: $('#userEmail').val(),
+                    userPassword: $('#userPassword').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', false, '/admin/user/edit/' + msg.userId);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    $('#userEditForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/user/update',
+                data: {
+                    userId: $('#userId').val(),
+                    usersName: $('#usersName').val(),
+                    userEmail: $('#userEmail').val(),
+                    userPassword: $('#userPassword').val(),
+                    userAdmin: $('#userPassword').is(':checked')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('#productNewForm').validator().on('submit', function(e){
         if(!e.isDefaultPrevented()){
             e.preventDefault();

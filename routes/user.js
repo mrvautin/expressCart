@@ -168,21 +168,14 @@ router.get('/admin/user/delete/:id', restrict, async (req, res) => {
 router.post('/admin/user/update', restrict, async (req, res) => {
     const db = req.app.db;
 
-    let isAdmin = req.body.user_admin === 'on';
+    let isAdmin = req.body.userAdmin === 'on';
 
     // get the user we want to update
     const user = await db.users.findOne({ _id: common.getId(req.body.userId) });
 
     // If user not found
     if(!user){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'User not found' });
-            return;
-        }
-
-        req.session.message = 'User not found';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(400).json({ message: 'User not found' });
         return;
     }
 
@@ -194,14 +187,7 @@ router.post('/admin/user/update', restrict, async (req, res) => {
     // if the user we want to edit is not the current logged in user and the current user is not
     // an admin we render an access denied message
     if(user.userEmail !== req.session.user && req.session.isAdmin === false){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Access denied' });
-            return;
-        }
-
-        req.session.message = 'Access denied';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(400).json({ message: 'Access denied' });
         return;
     }
 
@@ -221,13 +207,10 @@ router.post('/admin/user/update', restrict, async (req, res) => {
     // Validate update user
     const schemaResult = validateJson('editUser', updateDoc);
     if(!schemaResult.result){
-        if(req.apiAuthenticated){
-            res.status(400).json(schemaResult.errors);
-            return;
-        }
-        req.session.message = 'Please check your inputs.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/user/edit/' + req.body.userId);
+        res.status(400).json({
+            message: 'Failed to create user. Check inputs.',
+            error: schemaResult.errors
+        });
         return;
     }
 
@@ -238,35 +221,21 @@ router.post('/admin/user/update', restrict, async (req, res) => {
                 $set: updateDoc
             }, { multi: false, returnOriginal: false }
         );
-        if(req.apiAuthenticated){
-            const returnUser = updatedUser.value;
-            delete returnUser.userPassword;
-            delete returnUser.apiKey;
-            res.status(200).json({ message: 'User account updated', user: updatedUser.value });
-            return;
-        }
-        // show the view
-        req.session.message = 'User account updated';
-        req.session.messageType = 'success';
-        res.redirect('/admin/user/edit/' + req.body.userId);
+
+        const returnUser = updatedUser.value;
+        delete returnUser.userPassword;
+        delete returnUser.apiKey;
+        res.status(200).json({ message: 'User account updated', user: updatedUser.value });
+        return;
     }catch(ex){
         console.error(colors.red('Failed updating user: ' + ex));
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Failed to update user' });
-            return;
-        }
-        req.session.message = 'Failed to update user';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/user/edit/' + req.body.userId);
+        res.status(400).json({ message: 'Failed to update user' });
     }
 });
 
 // insert a user
 router.post('/admin/user/insert', restrict, async (req, res) => {
     const db = req.app.db;
-
-    // set the account to admin if using the setup form. Eg: First user account
-    const urlParts = req.get('Referrer');
 
     // Check number of users
     const userCount = await db.users.countDocuments({});
@@ -287,57 +256,27 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
     // Validate new user
     const schemaResult = validateJson('newUser', userObj);
     if(!schemaResult.result){
-        if(req.apiAuthenticated){
-            res.status(400).json(schemaResult.errors);
-            return;
-        }
-        req.session.message = 'Invalid new user. Please check your inputs.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/user/new');
+        res.status(400).json({ message: 'Failed to create user. Check inputs.', error: schemaResult.errors });
         return;
     }
 
     // check for existing user
     const user = await db.users.findOne({ userEmail: req.body.userEmail });
     if(user){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'A user with that email address already exists' });
-            return;
-        }
-        // user already exists with that email address
         console.error(colors.red('Failed to insert user, possibly already exists'));
-        req.session.message = 'A user with that email address already exists';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/user/new');
+        res.status(400).json({ message: 'A user with that email address already exists' });
         return;
     }
     // email is ok to be used.
     try{
-        await db.users.insertOne(userObj);
-        // if from setup we add user to session and redirect to login.
-        // Otherwise we show users screen
-        if(urlParts && urlParts.path === '/admin/setup'){
-            req.session.user = req.body.userEmail;
-            res.redirect('/admin/login');
-            return;
-        }
-        if(req.apiAuthenticated){
-            res.status(200).json({ message: 'User account inserted' });
-            return;
-        }
-
-        req.session.message = 'User account inserted';
-        req.session.messageType = 'success';
-        res.redirect('/admin/users');
+        const newUser = await db.users.insertOne(userObj);
+        res.status(200).json({
+            message: 'User account inserted',
+            userId: newUser.insertedId
+        });
     }catch(ex){
         console.error(colors.red('Failed to insert user: ' + ex));
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'New user creation failed' });
-            return;
-        }
-        req.session.message = 'New user creation failed';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/user/new');
+        res.status(400).json({ message: 'New user creation failed' });
     }
 });
 

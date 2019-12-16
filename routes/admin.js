@@ -116,19 +116,15 @@ router.post('/admin/setup_action', async (req, res) => {
         // email is ok to be used.
         try{
             await db.users.insertOne(doc);
-            req.session.message = 'User account inserted';
-            req.session.messageType = 'success';
-            res.redirect('/admin/login');
+            res.status(200).json({ message: 'User account inserted' });
             return;
         }catch(ex){
             console.error(colors.red('Failed to insert user: ' + ex));
-            req.session.message = 'Setup failed';
-            req.session.messageType = 'danger';
-            res.redirect('/admin/setup');
+            res.status(200).json({ message: 'Setup failed' });
             return;
         }
     }
-    res.redirect('/admin/login');
+    res.status(200).json({ message: 'Already setup.' });
 });
 
 // settings
