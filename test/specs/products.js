@@ -181,7 +181,7 @@ test('[Success] Add a product', async t => {
                 optOptions: ['S', 'M', 'L', 'XL']
             }
         },
-        productComment: 'test comment',
+        productComment: false,
         productStock: 50
     };
 
@@ -211,7 +211,7 @@ test('[Fail] Add a product - Duplicate permalink', async t => {
                 optOptions: ['S', 'M', 'L', 'XL']
             }
         },
-        productComment: 'test comment - its blue',
+        productComment: false,
         productStock: 50
     };
 
@@ -241,7 +241,7 @@ test('[Success] Update a product', async t => {
                 optOptions: ['S', 'M', 'L', 'XL']
             }
         },
-        productComment: 'test comment',
+        productComment: true,
         productStock: 50
     };
 
