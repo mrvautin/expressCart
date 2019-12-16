@@ -4,3 +4,4 @@ public/uploads
 /config/*-local.json
 .vscode
 **.DS_Store
+ecosystem.config.js
