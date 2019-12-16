@@ -4,9 +4,15 @@ const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
 const common = require('../lib/common');
+const rateLimit = require('express-rate-limit');
 const { indexCustomers } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
 const { restrict } = require('../lib/auth');
+
+const apiLimiter = rateLimit({
+    windowMs: 300000, // 5 minutes
+    max: 5
+});
 
 // insert a customer
 router.post('/customer/create', async (req, res) => {
@@ -281,21 +287,21 @@ router.get('/customer/forgotten', (req, res) => {
 });
 
 // forgotten password
-router.post('/customer/forgotten_action', async (req, res) => {
+router.post('/customer/forgotten_action', apiLimiter, async (req, res) => {
     const db = req.app.db;
     const config = req.app.config;
     const passwordToken = randtoken.generate(30);
 
     // find the user
     const customer = await db.customers.findOne({ email: req.body.email });
-    // if we have a customer, set a token, expiry and email it
-    if(!customer){
-        req.session.message = 'Account does not exist';
-        req.session.message_type = 'danger';
-        res.redirect('/customer/forgotten');
-        return;
-    }
     try{
+        if(!customer){
+            // if don't have an email on file, silently fail
+            res.status(200).json({
+                message: 'If your account exists, a password reset has been sent to your email'
+            });
+            return;
+        }
         const tokenExpiry = Date.now() + 3600000;
         await db.customers.updateOne({ email: req.body.email }, { $set: { resetToken: passwordToken, resetTokenExpiry: tokenExpiry } }, { multi: false });
         // send forgotten password email
@@ -311,13 +317,13 @@ router.post('/customer/forgotten_action', async (req, res) => {
         // send the email with token to the user
         // TODO: Should fix this to properly handle result
         common.sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
-        req.session.message = 'An email has been sent to ' + req.body.email + ' with further instructions';
-        req.session.message_type = 'success';
-        res.redirect('/customer/forgotten');
+        res.status(200).json({
+            message: 'If your account exists, a password reset has been sent to your email'
+        });
     }catch(ex){
-        req.session.message = 'Account does not exist';
-        req.session.message_type = 'danger';
-        res.redirect('/customer/forgotten');
+        res.status(400).json({
+            message: 'Password reset failed.'
+        });
     }
 });
 

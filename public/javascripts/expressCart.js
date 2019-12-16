@@ -143,6 +143,29 @@ $(document).ready(function (){
         });
     });
 
+    $('#customerForgotten').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/customer/forgotten_action',
+                data: {
+                    email: $('#email').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success');
+            })
+            .fail(function(msg){
+                if(msg.message){
+                    showNotification(msg.responseJSON.message, 'danger');
+                    return;
+                }
+                showNotification(msg.responseText, 'danger');
+            });
+        }
+    });
+
     $('#createCustomerAccount').validator().on('click', function(e){
         e.preventDefault();
         if($('#shipping-form').validator('validate').has('.has-error').length === 0){
