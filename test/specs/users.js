@@ -49,16 +49,22 @@ test('[Fail] Incorrect user password', async t => {
 
 test('[Fail] Delete own user account', async t => {
     const res = await g.request
-        .get(`/admin/user/delete/${g.users[0]._id}`)
-        .expect(302);
-    t.deepEqual(res.header['location'], '/admin/users');
+        .post('/admin/user/delete')
+        .send({
+            userId: g.users[0]._id
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'Unable to delete own user account');
 });
 
 test('[Fail] Delete invalid user ID', async t => {
     const res = await g.request
-        .get('/admin/user/delete/invalid_user_id')
-        .expect(302);
-    t.deepEqual(res.header['location'], '/admin/users');
+        .post('/admin/user/delete')
+        .send({
+            userId: 'invalid_user_id'
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'User not found.');
 });
 
 test('[Success] Create new user', async t => {

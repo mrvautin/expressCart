@@ -19,7 +19,7 @@
                             {{/isAnAdmin}}
                             {{#isAnAdmin ../session.isAdmin}}
                                 <a href="/admin/user/edit/{{../this._id}}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
-                                <a href="/admin/user/delete/{{../this._id}}" onclick="return confirm('Are you sure you want to delete?')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+                                <a href="#" class="userDelete" data-id="{{../this._id}}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
                             {{/isAnAdmin}}
 						</span>
 					</li>

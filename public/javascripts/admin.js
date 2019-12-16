@@ -133,6 +133,24 @@ $(document).ready(function (){
         }
     });
 
+    $('.userDelete').on('click', function(){
+        if(confirm('Are you sure you want to delete?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/user/delete',
+                data: {
+                    userId: $(this).attr('data-id')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('#userEditForm').validator().on('submit', function(e){
         if(!e.isDefaultPrevented()){
             e.preventDefault();

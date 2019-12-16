@@ -86,81 +86,43 @@ router.get('/admin/user/new', restrict, (req, res) => {
 });
 
 // delete user
-router.get('/admin/user/delete/:id', restrict, async (req, res) => {
+router.post('/admin/user/delete', restrict, async (req, res) => {
     const db = req.app.db;
 
     // userId
     if(req.session.isAdmin !== true){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Access denied' });
-            return;
-        }
-
-        req.session.message = 'Access denied.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(400).json({ message: 'Access denied' });
         return;
     }
 
     // Cannot delete your own account
-    if(req.session.userId === req.params.id){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Unable to delete own user account' });
-            return;
-        }
-
-        req.session.message = 'Unable to delete own user account.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+    if(req.session.userId === req.body.userId){
+        res.status(400).json({ message: 'Unable to delete own user account' });
         return;
     }
 
-    const user = await db.users.findOne({ _id: common.getId(req.params.id) });
+    const user = await db.users.findOne({ _id: common.getId(req.body.userId) });
 
     // If user is not found
     if(!user){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'User not found.' });
-            return;
-        }
-
-        req.session.message = 'User not found.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(400).json({ message: 'User not found.' });
         return;
     }
 
     // Cannot delete the original user/owner
     if(user.isOwner){
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Access denied.' });
-            return;
-        }
-
-        req.session.message = 'Access denied.';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(400).json({ message: 'Access denied.' });
         return;
     }
 
     try{
-        await db.users.deleteOne({ _id: common.getId(req.params.id) }, {});
-        if(req.apiAuthenticated){
-            res.status(200).json({ message: 'User deleted.' });
-            return;
-        }
-        req.session.message = 'User deleted.';
-        req.session.messageType = 'success';
-        res.redirect('/admin/users');
+        await db.users.deleteOne({ _id: common.getId(req.body.userId) }, {});
+        res.status(200).json({ message: 'User deleted.' });
+        return;
     }catch(ex){
         console.log('Failed to delete user', ex);
-        if(req.apiAuthenticated){
-            res.status(200).json({ message: 'Cannot delete user' });
-            return;
-        }
-        req.session.message = 'Cannot delete user';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/users');
+        res.status(200).json({ message: 'Cannot delete user' });
+        return;
     };
 });
 
