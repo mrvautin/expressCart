@@ -1,18 +1,18 @@
 {{> partials/menu}}
 <div class="col-lg-9">
-    <form method="post" class="form-horizontal" id="insert_form" action="/admin/product/update" data-toggle="validator">
+    <form class="form-horizontal" id="productEditForm" data-toggle="validator">
         <div class="col-lg-12">
             <div class="page-header">
                 <div class="pull-right">
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
-                    <button id="frm_edit_product_save" class="btn btn-success">{{ @root.__ "Save product" }} <i class="fa fa-floppy-o"></i></button>
+                    <button id="productUpdate" class="btn btn-success">{{ @root.__ "Save product" }} <i class="fa fa-floppy-o"></i></button>
                 </div>
                 <h2>{{ @root.__ "Edit product" }}</h2>
             </div>
             <div class="form-group">
                 <label for="productTitle" class="col-sm-2 control-label">{{ @root.__ "Product title" }} *</label>
                 <div class="col-sm-10">
-                    <input type="text" name="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
+                    <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
                 </div>
             </div>
             <div class="form-group">
@@ -20,14 +20,14 @@
                 <div class="col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon">{{currencySymbol config.currencySymbol}}</span>
-                        <input type="number" name="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
+                        <input type="number" id="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="productPublished" class="col-sm-2 control-label">{{ @root.__ "Status" }}</label>
                 <div class="col-sm-6">
-                    <select class="form-control" id="productPublished" name="productPublished">
+                    <select class="form-control" id="productPublished">
                         <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
                         <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
                     </select>
@@ -37,21 +37,21 @@
             <div class="form-group">
                 <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>
                 <div class="col-sm-6">
-                    <input type="number" name="productStock" class="form-control" value="{{result.productStock}}" step="any" />
+                    <input type="number" id="productStock" class="form-control" value="{{result.productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
             <div class="form-group">
-                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
+                <label for="productDescription" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
                 <div class="col-sm-10">
-                    <textarea id="editor" minlength="5" rows="10" id="productDescription" name="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
+                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Permalink</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="productPermalink" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
+                        <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="validate_permalink" type="button">{{ @root.__ "Validate" }}</button>
                         </span>
@@ -60,8 +60,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" id="productOptions" name="productOptions" value="{{stringify result.productOptions}}" />
-                <label for="editor" class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
+                <input type="hidden" id="productOptions" value="{{stringify result.productOptions}}" />
+                <label class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
                 <div class="col-lg-10">
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item">
@@ -111,7 +111,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Subscription plan</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="productSubscription" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX" value={{@root.result.productSubscription}}>
+                    <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX" value={{@root.result.productSubscription}}>
                     <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
                 </div>
             </div>
@@ -121,8 +121,7 @@
                 <div class="col-sm-10">
                     <div class="checkbox">
                         <label>
-                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment"
-                                name="productComment">
+                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
                         </label>
                     </div>
                     <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
@@ -131,7 +130,7 @@
             <div class="form-group">
                 <label for="productTags" class="col-sm-2 control-label">{{ @root.__ "Product tag words" }}</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="productTags" name="productTags" value="{{result.productTags}}">
+                    <input type="text" class="form-control" id="productTags" value="{{result.productTags}}">
                     <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
                 </div>
             </div>
@@ -160,7 +159,7 @@
                 {{/if}}
             </div>
         </div>
-        <input type="hidden" name="productId" id="productId" value="{{result._id}}" />
+        <input type="hidden" id="productId" value="{{result._id}}" />
     </form>
 </div>
 
@@ -190,7 +189,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
 <script>
     $(document).ready(function() {
-        $('#editor').summernote({
+        $('#productDescription').summernote({
             height: 300,
             minHeight: null
         });

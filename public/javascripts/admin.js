@@ -112,6 +112,38 @@ $(document).ready(function (){
         });
     });
 
+    $('#productEditForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
+                $('#productPermalink').val(slugify($('#productTitle').val()));
+            }
+            $.ajax({
+                method: 'POST',
+                url: '/admin/product/update',
+                data: {
+                    productId: $('#productId').val(),
+                    productTitle: $('#productTitle').val(),
+                    productPrice: $('#productPrice').val(),
+                    productPublished: $('#productPublished').val(),
+                    productStock: $('#productStock').val(),
+                    productDescription: $('#productDescription').val(),
+                    productPermalink: $('#productPermalink').val(),
+                    productOptions: $('#productOptions').val(),
+                    productSubscription: $('#productSubscription').val(),
+                    productComment: $('#productComment').is(':checked'),
+                    productTags: $('#productTags').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('.set-as-main-image').on('click', function(){
         $.ajax({
             method: 'POST',
@@ -217,13 +249,6 @@ $(document).ready(function (){
     $(document).on('click', '.orderFilterByStatus', function(e){
         e.preventDefault();
         window.location = '/admin/orders/bystatus/' + $('#orderStatusFilter').val();
-    });
-
-    // create a permalink from the product title if no permalink has already been set
-    $(document).on('click', '#frm_edit_product_save', function(e){
-        if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
-            $('#productPermalink').val(slugify($('#productTitle').val()));
-        }
     });
 
     // Call to API for a change to the published state of a product

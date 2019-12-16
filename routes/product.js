@@ -226,6 +226,9 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     let options = {};
     if(product.productOptions){
         options = product.productOptions;
+        if(typeof product.productOptions !== 'object'){
+            options = JSON.parse(product.productOptions);
+        }
     }
 
     // If API request, return json
@@ -258,8 +261,8 @@ router.post('/admin/product/removeoption', restrict, checkAccess, async (req, re
         delete opts[req.body.optName];
 
         try{
-            const updateOption = await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productOptions: opts } });
-            if(updateOption.result.nModified === 1){
+            const updateOption = await db.products.findOneAndUpdate({ _id: common.getId(req.body.productId) }, { $set: { productOptions: opts } });
+            if(updateOption.ok === 1){
                 res.status(200).json({ message: 'Option successfully removed' });
                 return;
             }
@@ -280,42 +283,12 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
 
     if(!product){
-        req.session.message = 'Failed updating product.';
-        req.session.messageType = 'danger';
-
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Failed to update product' });
-            return;
-        }
-
-        res.redirect('/admin/product/edit/' + req.body.productId);
+        res.status(400).json({ message: 'Failed to update product' });
         return;
     }
     const count = await db.products.countDocuments({ productPermalink: req.body.productPermalink, _id: { $ne: common.getId(product._id) } });
     if(count > 0 && req.body.productPermalink !== ''){
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
-            return;
-        }
-
-        // permalink exits
-        req.session.message = 'Permalink already exists. Pick a new one.';
-        req.session.messageType = 'danger';
-
-        // keep the current stuff
-        req.session.productTitle = req.body.productTitle;
-        req.session.productDescription = req.body.productDescription;
-        req.session.productPrice = req.body.productPrice;
-        req.session.productPermalink = req.body.productPermalink;
-        req.session.productTags = req.body.productTags;
-        req.session.productOptions = req.body.productOptions;
-        req.session.productComment = common.checkboxBool(req.body.productComment);
-        req.session.productStock = req.body.productStock ? req.body.productStock : null;
-
-        // redirect to insert
-        res.redirect('/admin/product/edit/' + req.body.productId);
+        res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
         return;
     }
     const images = await common.getImages(req.body.productId, req, res);
@@ -345,27 +318,10 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);
     if(!schemaValidate.result){
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json(schemaValidate.errors);
-            return;
-        }
-
-        req.session.message = 'Form invalid. Please check values and try again.';
-        req.session.messageType = 'danger';
-
-        // keep the current stuff
-        req.session.productTitle = req.body.productTitle;
-        req.session.productDescription = req.body.productDescription;
-        req.session.productPrice = req.body.productPrice;
-        req.session.productPermalink = req.body.productPermalink;
-        req.session.productOptions = productOptions;
-        req.session.productComment = common.checkboxBool(req.body.productComment);
-        req.session.productTags = req.body.productTags;
-        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
-
-        // redirect to insert
-        res.redirect('/admin/product/edit/' + req.body.productId);
+        res.status(400).json({
+            message: 'Form invalid. Please check values and try again.',
+            error: schemaValidate.errors
+        });
         return;
     }
 
@@ -388,27 +344,10 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         // Update the index
         indexProducts(req.app)
         .then(() => {
-            // If API request, return json
-            if(req.apiAuthenticated){
-                res.status(200).json({ message: 'Successfully saved', product: productDoc });
-                return;
-            }
-
-            req.session.message = 'Successfully saved';
-            req.session.messageType = 'success';
-            res.redirect('/admin/product/edit/' + req.body.productId);
+            res.status(200).json({ message: 'Successfully saved', product: productDoc });
         });
     }catch(ex){
-        // If API request, return json
-        if(req.apiAuthenticated){
-            res.status(400).json({ message: 'Failed to save. Please try again' });
-            return;
-        }
-
-        console.error(colors.red('Failed to save product: ' + ex));
-        req.session.message = 'Failed to save. Please try again';
-        req.session.messageType = 'danger';
-        res.redirect('/admin/product/edit/' + req.body.productId);
+        res.status(400).json({ message: 'Failed to save. Please try again' });
     }
 });
 
