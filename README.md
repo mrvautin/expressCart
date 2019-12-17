@@ -9,6 +9,19 @@
 
 [**View the demo**](https://demo.expresscart.markmoffat.com/)
 
+
+```
+Demo credentials
+
+Admin User:
+- User: `demo@test.com`
+- Password: `test`
+
+Customer:
+- User: `test@test.com`
+- Password: `test`
+```
+
 ## Installation
 
 1. Create a folder to hold your installation: `mkdir expressCart`
