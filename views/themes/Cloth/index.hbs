@@ -2,11 +2,11 @@
 <div class="productsWrapper col-md-8 col-md-offset-2">
     {{#if filtered}}
         <div class="product-layout col-md-12">
-            {{#if menuLink}}
-            <h4>{{ @root.__ "Category" }}: <strong>{{menuLink.title}}</strong></h4>
+            {{#ifCond @root.paginateUrl '==' 'category'}}
+            <h4>{{ @root.__ "Category" }}: <strong>{{@root.searchTerm}}</strong></h4>
             {{else}}
-            <h4>{{ @root.__ "Search results" }}: <strong>{{searchTerm}}</strong></h4>
-            {{/if}}
+            <h4>{{ @root.__ "Search results" }}: <strong>{{@root.searchTerm}}</strong></h4>
+            {{/ifCond}}
         </div>
     {{/if}}
     <div class="row product-layout">
