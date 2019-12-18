@@ -1,6 +1,11 @@
-require('dotenv').config();
-const express = require('express');
+// require('dotenv').config();
+const fs = require('fs');
+const yenv = require('yenv');
+if(fs.existsSync('./env.yaml')){
+    process.env = yenv('env.yaml', { strict: false });
+}
 const path = require('path');
+const express = require('express');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -279,7 +284,7 @@ if(!config.secretSession || config.secretSession === ''){
 
 app.enable('trust proxy');
 app.use(helmet());
-app.set('port', process.env.PORT || 1111);
+app.set('port', process.env.port || 1111);
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.secretCookie));

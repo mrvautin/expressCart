@@ -4,5 +4,5 @@ public/uploads
 /config/*-local.json
 .vscode
 **.DS_Store
-.env
+env.yaml
 ecosystem.config.js

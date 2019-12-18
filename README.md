@@ -166,6 +166,21 @@ If you'd rather store settings in a file which isn't checked into version contro
 
 This can also be used for payment modules too. Any settings in the `/config/<gateway>-local.json` file will override the `/config/<gateway>.json` file.
 
+##### Environment configuration
+
+An alternative to local configuration is using an `env.yaml` file (in the root of app) to override settings. You may want to do something like:
+
+``` yaml
+development:
+  port: 1111
+  databaseConnectionString: mongodb://127.0.0.1:27017/expresscart
+production:
+  port: 2222
+  databaseConnectionString: mongodb://prod_db_url:27017/expresscart
+```
+
+The app will read in the `NODE_ENV` and switch and override any valid settings. Eg: `databaseConnectionString` set in the `env.yaml` file will override anything in `settings.json` file (including local).
+
 ##### Cart name and Cart description
 
 These values are used for search engine optimization (SEO) purposes. They will be used as the title and description when your website is listed in Google and other search engines.
