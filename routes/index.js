@@ -543,12 +543,12 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
             }
 
             res.render(`${config.themeViews}index`, {
-                title: 'Category',
+                title: `Category: ${searchTerm}`,
                 results: results.data,
                 filtered: true,
                 session: req.session,
                 searchTerm: searchTerm,
-                metaDescription: req.app.config.cartTitle + ' - Category: ' + searchTerm,
+                metaDescription: `${req.app.config.cartTitle} - Category: ${searchTerm}`,
                 pageCloseBtn: showCartCloseBtn('category'),
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
