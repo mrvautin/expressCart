@@ -64,7 +64,6 @@
                         <div class="cart-contents-shipping col-md-12 col m12 no-pad-right">
                             {{#ifCond @root.session.shippingCostApplied '===' true}}
                             <div class="text-right">
-                                <strong>{{currencySymbol config.currencySymbol}}{{formatAmount config.flatShipping}}</strong>
                                 {{ @root.__ "Shipping" }}
                                 <strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong>
                             </div>
