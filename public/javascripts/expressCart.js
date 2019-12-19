@@ -1,11 +1,6 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
 /* globals showNotification */
 $(document).ready(function (){
-    // setup if material theme
-    if($('#cartTheme').val() === 'Material'){
-        $('.materialboxed').materialbox();
-    }
-
     if($(window).width() < 768){
         $('.menu-side').on('click', function(e){
             e.preventDefault();
