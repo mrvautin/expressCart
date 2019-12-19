@@ -40,7 +40,7 @@
         <script src="/javascripts/jquery.bootpag.min.js"></script>
         <script src="/javascripts/cssbeautify.min.js"></script>
         {{#unless admin}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         {{/unless}}
         <script src="/javascripts/common{{config.env}}.js"></script>
 		<script src="/javascripts/expressCart{{config.env}}.js"></script>
@@ -72,7 +72,10 @@
         {{#if admin}}
         <link rel="stylesheet" href="/stylesheets/admin{{config.env}}.css">
         {{else}}
-        {{#if config.theme}}<link rel="stylesheet" href="/{{config.theme}}/style.css">{{/if}}
+        {{#if config.theme}}
+        <link rel="stylesheet" href="/{{config.theme}}/style{{config.env}}.css">
+        <script src="/{{config.theme}}/index{{config.env}}.js"></script>
+        {{/if}}
         {{/if}}
         <!-- SEO data -->
 	</head>
