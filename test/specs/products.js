@@ -70,6 +70,32 @@ test('[Success] Add product to cart', async t => {
     t.deepEqual(res.body.message, 'Cart successfully updated');
 });
 
+test('[Success] Update cart', async t => {
+    const cart = await g.request
+        .get('/cart/retrieve')
+        .expect(200);
+
+    // Adjust the quantity of an item
+    cart.body.cart[0].quantity = 10;
+
+    const res = await g.request
+        .post('/product/updatecart')
+        .send({
+            items: JSON.stringify(cart.body.cart)
+        })
+        .expect(200);
+
+    t.deepEqual(res.body.message, 'Cart successfully updated');
+
+    const checkCart = await g.request
+        .get('/cart/retrieve')
+        .expect(200);
+
+    // Check new quantity and total price has been updated
+    t.deepEqual(checkCart.body.cart[0].quantity, 10);
+    t.deepEqual(checkCart.body.cart[0].totalItemPrice, cart.body.cart[0].totalItemPrice * 10);
+});
+
 test('[Fail] Cannot add subscripton when other product in cart', async t => {
     const res = await g.request
         .post('/product/addtocart')

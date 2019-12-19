@@ -192,6 +192,16 @@ router.get('/product/:id', async (req, res) => {
     });
 });
 
+// Gets the current cart
+router.get('/cart/retrieve', async (req, res, next) => {
+    const db = req.app.db;
+
+    // Get the cart from the DB using the session id
+    const cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+
+    res.status(200).json({ cart: cart.cart });
+});
+
 // Updates a single product quantity
 router.post('/product/updatecart', (req, res, next) => {
     const db = req.app.db;
@@ -201,34 +211,41 @@ router.post('/product/updatecart', (req, res, next) => {
     let stockError = false;
 
     async.eachSeries(cartItems, async (cartItem, callback) => {
-        const productQuantity = cartItem.itemQuantity ? cartItem.itemQuantity : 1;
-        if(cartItem.itemQuantity === 0){
-            // quantity equals zero so we remove the item
-            req.session.cart.splice(cartItem.cartIndex, 1);
-            callback(null);
-        }else{
-            const product = await db.products.findOne({ _id: getId(cartItem.productId) });
-            if(product){
-                // If stock management on check there is sufficient stock for this product
-                if(config.trackStock){
-                    if(productQuantity > product.productStock){
-                        hasError = true;
-                        stockError = true;
-                        callback(null);
-                        return;
-                    }
-                }
+        // Find index in cart
+        const cartIndex = _.findIndex(req.session.cart, { productId: cartItem.productId });
 
-                const productPrice = parseFloat(product.productPrice).toFixed(2);
-                if(req.session.cart[cartItem.cartIndex]){
-                    req.session.cart[cartItem.cartIndex].quantity = productQuantity;
-                    req.session.cart[cartItem.cartIndex].totalItemPrice = productPrice * productQuantity;
+        // Calculate the quantity to update
+        let productQuantity = cartItem.quantity ? cartItem.quantity : 1;
+        if(typeof productQuantity === 'string'){
+            productQuantity = parseInt(productQuantity);
+        }
+        if(productQuantity === 0){
+            // quantity equals zero so we remove the item
+            req.session.cart.splice(cartIndex, 1);
+            callback(null);
+            return;
+        }
+        const product = await db.products.findOne({ _id: getId(cartItem.productId) });
+        if(product){
+            // If stock management on check there is sufficient stock for this product
+            if(config.trackStock){
+                if(productQuantity > product.productStock){
+                    hasError = true;
+                    stockError = true;
                     callback(null);
+                    return;
                 }
-            }else{
-                hasError = true;
+            }
+
+            const productPrice = parseFloat(product.productPrice).toFixed(2);
+            if(req.session.cart[cartIndex]){
+                req.session.cart[cartIndex].quantity = productQuantity;
+                req.session.cart[cartIndex].totalItemPrice = productPrice * productQuantity;
                 callback(null);
             }
+        }else{
+            hasError = true;
+            callback(null);
         }
     }, async () => {
         // update total cart amount

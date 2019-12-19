@@ -443,12 +443,10 @@ function updateCart(){
     // gather items of cart
     var cartItems = [];
     $('.cart-product-quantity').each(function(){
-        var item = {
-            cartIndex: $(this).attr('id'),
-            itemQuantity: $(this).val(),
-            productId: $(this).attr('data-id')
-        };
-        cartItems.push(item);
+        cartItems.push({
+            productId: $(this).attr('data-id'),
+            quantity: $(this).val()
+        });
     });
 
     // update cart on server
