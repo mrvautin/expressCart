@@ -37,7 +37,7 @@
                     </div>
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
-                        {{> partials/payments/shipping-form}}
+                        {{> themes/Cloth/shipping-form}}
                         {{#if session.customer}}
                         {{#ifCond config.paymentGateway '==' 'paypal'}}
                             {{> partials/payments/paypal}}
