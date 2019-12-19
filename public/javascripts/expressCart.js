@@ -180,9 +180,8 @@ $(document).ready(function (){
                     password: $('#newCustomerPassword').val()
                 }
             })
-            .done(function(msg){
-                // Just reload to fill in the form from session
-                location.reload();
+            .done(function(){
+                showNotification('Customer created successfully', 'success', true);
             })
             .fail(function(msg){
                 showNotification(msg.responseJSON.message, 'danger');

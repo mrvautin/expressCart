@@ -15,8 +15,10 @@ const {
     updateTotalCartAmount,
     updateSubscriptionCheck,
     getData,
-    addSitemapProducts
+    addSitemapProducts,
+    getCountryList
 } = require('../lib/common');
+const countryList = getCountryList();
 
 // These is the customer facing routes
 router.get('/payment/:orderId', async (req, res, next) => {
@@ -125,6 +127,7 @@ router.get('/pay', async (req, res, next) => {
         paymentPage: true,
         paymentType,
         page: 'pay',
+        countryList,
         message: clearSessionValue(req.session, 'message'),
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,

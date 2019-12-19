@@ -12,6 +12,10 @@ fieldset {
     border: none;
 }
 
+.select-wrapper{
+    padding: 0.35em 0.75em 0.625em;
+}
+
 .pagelayout-wrapper{
     padding-top: 30px;
     padding-bottom: 30px;

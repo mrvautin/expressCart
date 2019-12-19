@@ -52,9 +52,9 @@ router.post('/customer/create', async (req, res) => {
         indexCustomers(req.app)
         .then(() => {
             // Customer creation successful
-            req.session.customer = newCustomer.insertedId;
             const customerReturn = newCustomer.ops[0];
             delete customerReturn.password;
+            req.session.customer = customerReturn;
             res.status(200).json(customerReturn);
         });
     }catch(ex){

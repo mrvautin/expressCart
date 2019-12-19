@@ -11,15 +11,21 @@
     <input type="text" class="customerDetails" id="shipAddr1" name="shipAddr1" placeholder="Address 1" value="{{session.customer.address1}}" required>
 </div>
 <div class="input-field col s12">
-    <input type="text" class="customerDetails" id="shipAddr2" name="shipAddr2" placeholder="Address 2 (optional)" value="{{session.customer.address1}}">
+    <input type="text" class="customerDetails" id="shipAddr2" name="shipAddr2" placeholder="Address 2 (optional)" value="{{session.customer.address2}}">
 </div>
-<div class="input-field col s12 m4">
-    <input type="text" class="customerDetails" id="shipCountry" name="shipCountry" placeholder="Country" value="{{session.customer.country}}" required>
+<div class="input-field col s12">
+    <select id="shipCountry" name="shipCountry" required>
+        <option value="" disabled selected>Select Country</option>
+        {{#each countryList}}
+        <option {{selectState this @root.session.customer.country}} value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+    <label>Country</label>
 </div>
-<div class="input-field col s12 m4">
+<div class="input-field col s12 m6">
     <input type="text" class="customerDetails" id="shipState" name="shipState" placeholder="State" value="{{session.customer.state}}" required>
 </div>
-<div class="input-field col s12 m4">
+<div class="input-field col s12 m6">
     <input type="text" class="customerDetails" id="shipPostcode" name="shipPostcode" placeholder="Post code" value="{{session.customer.postcode}}" required>
 </div>
 <div class="input-field col s12">
