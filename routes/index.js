@@ -73,31 +73,6 @@ router.get('/emptycart', async (req, res, next) => {
     emptyCart(req, res, '');
 });
 
-// router.get('/checkout', async (req, res, next) => {
-//     const config = req.app.config;
-
-//     // if there is no items in the cart then render a failure
-//     if(!req.session.cart){
-//         req.session.message = 'The are no items in your cart. Please add some items before checking out';
-//         req.session.messageType = 'danger';
-//         res.redirect('/');
-//         return;
-//     }
-
-//     // render the checkout
-//     res.render(`${config.themeViews}checkout`, {
-//         title: 'Checkout',
-//         config: req.app.config,
-//         session: req.session,
-//         checkout: 'hidden',
-//         page: 'checkout',
-//         message: clearSessionValue(req.session, 'message'),
-//         messageType: clearSessionValue(req.session, 'messageType'),
-//         helpers: req.handlebars.helpers,
-//         showFooter: 'showFooter'
-//     });
-// });
-
 router.get('/checkout/information', async (req, res, next) => {
     const config = req.app.config;
 
