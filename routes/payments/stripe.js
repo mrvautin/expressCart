@@ -18,13 +18,13 @@ router.post('/checkout_action', (req, res, next) => {
         source: req.body.stripeToken,
         description: stripeConfig.stripeDescription,
         shipping: {
-            name: `${req.body.shipFirstname} ${req.body.shipLastname}`,
+            name: `${req.session.customerFirstname} ${req.session.customerFirstname}`,
             address: {
-                line1: req.body.shipAddr1,
-                line2: req.body.shipAddr2,
-                postal_code: req.body.shipPostcode,
-                state: req.body.shipState,
-                country: req.body.shipCountry
+                line1: req.session.customerAddress1,
+                line2: req.session.customerAddress2,
+                postal_code: req.session.customerPostcode,
+                state: req.session.customerState,
+                country: req.session.customerCountry
             }
         }
     };
@@ -37,7 +37,7 @@ router.post('/checkout_action', (req, res, next) => {
             req.session.message = 'Your payment has declined. Please try again';
             req.session.paymentApproved = false;
             req.session.paymentDetails = '';
-            res.redirect('/pay');
+            res.redirect('/checkout/payment');
             return;
         }
 
@@ -53,16 +53,16 @@ router.post('/checkout_action', (req, res, next) => {
             orderPaymentGateway: 'Stripe',
             orderPaymentMessage: charge.outcome.seller_message,
             orderTotal: req.session.totalCartAmount,
-            orderEmail: req.body.shipEmail,
-            orderFirstname: req.body.shipFirstname,
-            orderLastname: req.body.shipLastname,
-            orderAddr1: req.body.shipAddr1,
-            orderAddr2: req.body.shipAddr2,
-            orderCountry: req.body.shipCountry,
-            orderState: req.body.shipState,
-            orderPostcode: req.body.shipPostcode,
-            orderPhoneNumber: req.body.shipPhoneNumber,
-            orderComment: req.body.orderComment,
+            orderEmail: req.session.customerEmail,
+            orderFirstname: req.session.customerFirstname,
+            orderLastname: req.session.customerLastname,
+            orderAddr1: req.session.customerAddress1,
+            orderAddr2: req.session.customerAddress2,
+            orderCountry: req.session.customerCountry,
+            orderState: req.session.customerState,
+            orderPostcode: req.session.customerPostcode,
+            orderPhoneNumber: req.session.customerPhone,
+            orderComment: req.session.orderComment,
             orderStatus: paymentStatus,
             orderDate: new Date(),
             orderProducts: req.session.cart,
@@ -183,13 +183,13 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
         if(!plan){
             req.session.messageType = 'danger';
             req.session.message = 'The plan connected to this product doesn\'t exist';
-            res.redirect('/pay/');
+            res.redirect('/checkout/payment');
             return;
         }
     }catch(ex){
         req.session.messageType = 'danger';
         req.session.message = 'The plan connected to this product doesn\'t exist';
-        res.redirect('/pay/');
+        res.redirect('/checkout/payment');
         return;
     }
 
@@ -207,7 +207,7 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
         req.session.message = 'Your subscripton has declined. Please try again';
         req.session.paymentApproved = false;
         req.session.paymentDetails = '';
-        res.redirect('/pay');
+        res.redirect('/checkout/payment');
         return;
     }
 
@@ -217,7 +217,7 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
         req.session.message = 'Your subscripton has declined. Please try again';
         req.session.paymentApproved = false;
         req.session.paymentDetails = '';
-        res.redirect('/pay');
+        res.redirect('/checkout/payment');
         return;
     }
 
@@ -229,16 +229,16 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
         orderPaymentGateway: 'Stripe',
         orderPaymentMessage: subscription.collection_method,
         orderTotal: req.session.totalCartAmount,
-        orderEmail: req.body.shipEmail,
-        orderFirstname: req.body.shipFirstname,
-        orderLastname: req.body.shipLastname,
-        orderAddr1: req.body.shipAddr1,
-        orderAddr2: req.body.shipAddr2,
-        orderCountry: req.body.shipCountry,
-        orderState: req.body.shipState,
-        orderPostcode: req.body.shipPostcode,
-        orderPhoneNumber: req.body.shipPhoneNumber,
-        orderComment: req.body.orderComment,
+        orderEmail: req.session.customerEmail,
+        orderFirstname: req.session.customerFirstname,
+        orderLastname: req.session.customerLastname,
+        orderAddr1: req.session.customerAddress1,
+        orderAddr2: req.session.customerAddress2,
+        orderCountry: req.session.customerCountry,
+        orderState: req.session.customerState,
+        orderPostcode: req.session.customerPostcode,
+        orderPhoneNumber: req.session.customerPhone,
+        orderComment: req.session.orderComment,
         orderStatus: 'Pending',
         orderDate: new Date(),
         orderProducts: req.session.cart,

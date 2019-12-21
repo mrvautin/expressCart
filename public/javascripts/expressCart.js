@@ -58,8 +58,9 @@ $(document).ready(function (){
         }
     });
 
-    $('.menu-btn').on('click', function(e){
+    $(document).on('click', '.menu-btn', function(e){
         e.preventDefault();
+        $('body').addClass('pushy-open-right');
     });
 
 	// add the table class to all tables
@@ -75,9 +76,11 @@ $(document).ready(function (){
         $(this).toggleClass('hover');
     });
 
-    $('.product-title').dotdotdot({
-        ellipsis: '...'
-    });
+    if($('.product-title').length){
+        $('.product-title').dotdotdot({
+            ellipsis: '...'
+        });
+    }
 
     $(document).on('click', '.btn-qty-minus', function(e){
         var qtyElement = $(e.target).parent().parent().find('.cart-product-quantity');
@@ -161,12 +164,21 @@ $(document).ready(function (){
         }
     });
 
-    $('#createCustomerAccount').validator().on('click', function(e){
+    $(document).on('click', '#createAccountCheckbox', function(e){
+        $('#newCustomerPassword').prop('required', $('#createAccountCheckbox').prop('checked'));
+    });
+
+    $('#checkoutInformation').validator().on('click', function(e){
         e.preventDefault();
         if($('#shipping-form').validator('validate').has('.has-error').length === 0){
+            // Change route if customer to be saved for later
+            var route = '/customer/save';
+            if($('#createAccountCheckbox').prop('checked')){
+                route = '/customer/create';
+            }
             $.ajax({
                 method: 'POST',
-                url: '/customer/create',
+                url: route,
                 data: {
                     email: $('#shipEmail').val(),
                     firstName: $('#shipFirstname').val(),
@@ -177,11 +189,12 @@ $(document).ready(function (){
                     state: $('#shipState').val(),
                     postcode: $('#shipPostcode').val(),
                     phone: $('#shipPhoneNumber').val(),
-                    password: $('#newCustomerPassword').val()
+                    password: $('#newCustomerPassword').val(),
+                    orderComment: $('#orderComment').val()
                 }
             })
             .done(function(){
-                showNotification('Customer created successfully', 'success', true);
+                window.location = '/checkout/shipping';
             })
             .fail(function(msg){
                 showNotification(msg.responseJSON.message, 'danger');

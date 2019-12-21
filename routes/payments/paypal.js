@@ -138,7 +138,7 @@ router.post('/checkout_action', (req, res, next) => {
         if(error){
             req.session.message = 'There was an error processing your payment. You have not been changed and can try again.';
             req.session.messageType = 'danger';
-            res.redirect('/pay');
+            res.redirect('/checkout/payment');
             return;
         }
         if(payment.payer.payment_method === 'paypal'){
@@ -164,16 +164,16 @@ router.post('/checkout_action', (req, res, next) => {
                 orderPaymentId: payment.id,
                 orderPaymentGateway: 'Paypal',
                 orderTotal: req.session.totalCartAmount,
-                orderEmail: req.body.shipEmail,
-                orderFirstname: req.body.shipFirstname,
-                orderLastname: req.body.shipLastname,
-                orderAddr1: req.body.shipAddr1,
-                orderAddr2: req.body.shipAddr2,
-                orderCountry: req.body.shipCountry,
-                orderState: req.body.shipState,
-                orderPostcode: req.body.shipPostcode,
-                orderPhoneNumber: req.body.shipPhoneNumber,
-                orderComment: req.body.orderComment,
+                orderEmail: req.session.customerEmail,
+                orderFirstname: req.session.customerFirstname,
+                orderLastname: req.session.customerLastname,
+                orderAddr1: req.session.customerAddress1,
+                orderAddr2: req.session.customerAddress2,
+                orderCountry: req.session.customerCountry,
+                orderState: req.session.customerState,
+                orderPostcode: req.session.customerPostcode,
+                orderPhoneNumber: req.session.customerPhone,
+                orderComment: req.session.orderComment,
                 orderStatus: payment.state,
                 orderDate: new Date(),
                 orderProducts: req.session.cart

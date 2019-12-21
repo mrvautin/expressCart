@@ -166,5 +166,9 @@
 	"Payment ID": "Payment ID",
 	"Payment Message": "Payment Message",
 	"Password": "Password",
-	"Cart Email": "Cart Email"
+	"Cart Email": "Cart Email",
+	"Information": "Information",
+	"Shipping options": "Shipping options",
+	"Proceed to payment": "Proceed to payment",
+	"Return to information": "Return to information"
 }

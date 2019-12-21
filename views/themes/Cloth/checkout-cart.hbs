@@ -1,0 +1,15 @@
+<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <div class="row">
+        <div id="cart" class="col-md-12">
+            {{> (getTheme 'cart')}}
+            <div class="row">
+                {{#if @root.session.cart}}
+                <div class="col-xs-12 col s12">
+                    <button class="btn btn-danger pull-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                    <a href="/checkout/information" class="btn btn-danger pull-right">Checkout</a>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

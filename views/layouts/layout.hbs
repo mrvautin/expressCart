@@ -121,19 +121,17 @@
                         </li>
                         {{/ifCond}}
                         {{#unless admin}}
-                        {{#ifCond page '!=' 'checkout'}}
-                        {{#ifCond page '!=' 'pay'}}
                             {{#if @root.session.cart}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge" id="cart-count">{{@root.session.cartTotalItems}}</span></a></li>
+                                <li><a href="/checkout/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge" id="cart-count">{{@root.session.cartTotalItems}}</span></a></li>
                                 {{else}}
-                                <li><a href="/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i>  {{ @root.__ "Cart" }} <span class="badge" id="cart-count">0</span></a></li>
+                                <li><a href="/checkout/cart" class="menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge" id="cart-count">0</span></a></li>
                             {{/if}}
-                        {{/ifCond}}
-                        {{/ifCond}}
                         {{/unless}}
+                        {{#if admin}}
                         {{#if @root.session.user}}
 							<li><a href="/admin/logout"><i class="fa fa-sign-out" aria-hidden="true"> </i>Logout</a></li>
 						{{/if}}
+                        {{/if}}
 					</ul>
 				</div>
 	        </div>
@@ -142,8 +140,25 @@
         {{#unless admin}}
             {{#ifCond page '!=' 'checkout'}}
             {{#ifCond page '!=' 'pay'}}
-                <div id="cart" class="col-md-12 pushy pushy-right">
-                    {{> (getTheme 'cart')}}
+                <div id="cart" class="col-md-12 pad-left-12 pushy pushy-right">
+                    <div class="row {{checkout}}">
+                        <div class="col-lg-12 col l12 text-right">
+                            <button class="pushy-link btn btn-primary" type="button">X</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="cart" class="col-md-12">
+                        {{> (getTheme 'cart')}}
+                        <div class="row">
+                        {{#if @root.session.cart}}
+                        <div class="col-xs-12 col s12">
+                            <button class="btn btn-danger pull-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                            <a href="/checkout/information" class="btn btn-primary pull-right">Checkout</a>
+                        </div>
+                        {{/if}}
+                    </div>
+                        </div>
+                    </div>
                 </div>
             {{/ifCond}}
             {{/ifCond}}

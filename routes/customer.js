@@ -51,10 +51,24 @@ router.post('/customer/create', async (req, res) => {
         const newCustomer = await db.customers.insertOne(customerObj);
         indexCustomers(req.app)
         .then(() => {
-            // Customer creation successful
+            // Return the new customer
             const customerReturn = newCustomer.ops[0];
             delete customerReturn.password;
-            req.session.customer = customerReturn;
+
+            // Set the customer into the session
+            req.session.customerPresent = true;
+            req.session.customerEmail = customerReturn.email;
+            req.session.customerFirstname = customerReturn.firstName;
+            req.session.customerLastname = customerReturn.lastName;
+            req.session.customerAddress1 = customerReturn.address1;
+            req.session.customerAddress2 = customerReturn.address2;
+            req.session.customerCountry = customerReturn.country;
+            req.session.customerState = customerReturn.state;
+            req.session.customerPostcode = customerReturn.postcode;
+            req.session.customerPhone = customerReturn.phone;
+            req.session.orderComment = req.body.orderComment;
+
+            // Return customer oject
             res.status(200).json(customerReturn);
         });
     }catch(ex){
@@ -63,6 +77,41 @@ router.post('/customer/create', async (req, res) => {
             message: 'Customer creation failed.'
         });
     }
+});
+
+router.post('/customer/save', async (req, res) => {
+    const customerObj = {
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        country: req.body.country,
+        state: req.body.state,
+        postcode: req.body.postcode,
+        phone: req.body.phone
+    };
+
+    const schemaResult = validateJson('saveCustomer', customerObj);
+    if(!schemaResult.result){
+        res.status(400).json(schemaResult.errors);
+        return;
+    }
+
+    // Set the customer into the session
+    req.session.customerPresent = true;
+    req.session.customerEmail = customerObj.email;
+    req.session.customerFirstname = customerObj.firstName;
+    req.session.customerLastname = customerObj.lastName;
+    req.session.customerAddress1 = customerObj.address1;
+    req.session.customerAddress2 = customerObj.address2;
+    req.session.customerCountry = customerObj.country;
+    req.session.customerState = customerObj.state;
+    req.session.customerPostcode = customerObj.postcode;
+    req.session.customerPhone = customerObj.phone;
+    req.session.orderComment = req.body.orderComment;
+
+    res.status(200).json(customerObj);
 });
 
 // Update a customer
@@ -259,7 +308,17 @@ router.post('/customer/login_action', async (req, res) => {
         }
 
         // Customer login successful
-        req.session.customer = customer;
+        req.session.customerPresent = true;
+        req.session.customerEmail = customer.email;
+        req.session.customerFirstname = customer.firstName;
+        req.session.customerLastname = customer.lastName;
+        req.session.customerAddress1 = customer.address1;
+        req.session.customerAddress2 = customer.address2;
+        req.session.customerCountry = customer.country;
+        req.session.customerState = customer.state;
+        req.session.customerPostcode = customer.postcode;
+        req.session.customerPhone = customer.phone;
+
         res.status(200).json({
             message: 'Successfully logged in',
             customer: customer
@@ -379,7 +438,7 @@ router.post('/customer/reset/:token', async (req, res) => {
         common.sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
         req.session.message = 'Password successfully updated';
         req.session.message_type = 'success';
-        return res.redirect('/pay');
+        return res.redirect('/checkout/payment');
     }catch(ex){
         console.log('Unable to reset password', ex);
         req.session.message = 'Unable to reset password';
@@ -390,7 +449,19 @@ router.post('/customer/reset/:token', async (req, res) => {
 
 // logout the customer
 router.post('/customer/logout', (req, res) => {
-    req.session.customer = null;
+    // Clear our session
+    req.session.customerPresent = null;
+    req.session.customerEmail = null;
+    req.session.customerFirstname = null;
+    req.session.customerLastname = null;
+    req.session.customerAddress1 = null;
+    req.session.customerAddress2 = null;
+    req.session.customerCountry = null;
+    req.session.customerState = null;
+    req.session.customerPostcode = null;
+    req.session.customerPhone = null;
+    req.session.orderComment = null;
+
     res.status(200).json({});
 });
 

@@ -6,7 +6,6 @@ const _ = require('lodash');
 const {
     getId,
     hooker,
-    showCartCloseBtn,
     clearSessionValue,
     sortMenu,
     getMenu,
@@ -61,7 +60,6 @@ router.get('/payment/:orderId', async (req, res, next) => {
         title: 'Payment complete',
         config: req.app.config,
         session: req.session,
-        pageCloseBtn: showCartCloseBtn('payment'),
         result: order,
         message: clearSessionValue(req.session, 'message'),
         messageType: clearSessionValue(req.session, 'messageType'),
@@ -75,7 +73,32 @@ router.get('/emptycart', async (req, res, next) => {
     emptyCart(req, res, '');
 });
 
-router.get('/checkout', async (req, res, next) => {
+// router.get('/checkout', async (req, res, next) => {
+//     const config = req.app.config;
+
+//     // if there is no items in the cart then render a failure
+//     if(!req.session.cart){
+//         req.session.message = 'The are no items in your cart. Please add some items before checking out';
+//         req.session.messageType = 'danger';
+//         res.redirect('/');
+//         return;
+//     }
+
+//     // render the checkout
+//     res.render(`${config.themeViews}checkout`, {
+//         title: 'Checkout',
+//         config: req.app.config,
+//         session: req.session,
+//         checkout: 'hidden',
+//         page: 'checkout',
+//         message: clearSessionValue(req.session, 'message'),
+//         messageType: clearSessionValue(req.session, 'messageType'),
+//         helpers: req.handlebars.helpers,
+//         showFooter: 'showFooter'
+//     });
+// });
+
+router.get('/checkout/information', async (req, res, next) => {
     const config = req.app.config;
 
     // if there is no items in the cart then render a failure
@@ -86,47 +109,20 @@ router.get('/checkout', async (req, res, next) => {
         return;
     }
 
-    // render the checkout
-    res.render(`${config.themeViews}checkout`, {
-        title: 'Checkout',
-        config: req.app.config,
-        session: req.session,
-        pageCloseBtn: showCartCloseBtn('checkout'),
-        checkout: 'hidden',
-        page: 'checkout',
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        showFooter: 'showFooter'
-    });
-});
-
-router.get('/pay', async (req, res, next) => {
-    const config = req.app.config;
-
-    // if there is no items in the cart then render a failure
-    if(!req.session.cart){
-        req.session.message = 'The are no items in your cart. Please add some items before checking out';
-        req.session.messageType = 'danger';
-        res.redirect('/checkout');
-        return;
-    }
-
     let paymentType = '';
     if(req.session.cartSubscription){
         paymentType = '_subscription';
     }
 
     // render the payment page
-    res.render(`${config.themeViews}pay`, {
-        title: 'Pay',
+    res.render(`${config.themeViews}checkout-information`, {
+        title: 'Checkout',
         config: req.app.config,
-        paymentConfig: getPaymentConfig(),
-        pageCloseBtn: showCartCloseBtn('pay'),
         session: req.session,
-        paymentPage: true,
         paymentType,
-        page: 'pay',
+        cartSize: 'part',
+        cartClose: false,
+        page: 'checkout-information',
         countryList,
         message: clearSessionValue(req.session, 'message'),
         messageType: clearSessionValue(req.session, 'messageType'),
@@ -135,16 +131,86 @@ router.get('/pay', async (req, res, next) => {
     });
 });
 
-router.get('/cartPartial', (req, res) => {
+router.get('/checkout/shipping', async (req, res, next) => {
     const config = req.app.config;
 
-    res.render(`${config.themeViews}cart`, {
-        pageCloseBtn: showCartCloseBtn(req.query.path),
-        page: req.query.path,
-        layout: false,
-        helpers: req.handlebars.helpers,
+    // if there is no items in the cart then render a failure
+    if(!req.session.cart){
+        req.session.message = 'The are no items in your cart. Please add some items before checking out';
+        req.session.messageType = 'danger';
+        res.redirect('/');
+        return;
+    }
+
+    if(!req.session.customerEmail){
+        req.session.message = 'Cannot proceed to shipping without customer information';
+        req.session.messageType = 'danger';
+        res.redirect('/checkout/information');
+        return;
+    }
+
+    // render the payment page
+    res.render(`${config.themeViews}checkout-shipping`, {
+        title: 'Checkout',
         config: req.app.config,
-        session: req.session
+        session: req.session,
+        cartSize: 'part',
+        cartClose: false,
+        page: 'checkout-shipping',
+        countryList,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        showFooter: 'showFooter'
+    });
+});
+
+router.get('/checkout/cart', (req, res) => {
+    const config = req.app.config;
+
+    res.render(`${config.themeViews}checkout-cart`, {
+        page: req.query.path,
+        cartSize: 'full',
+        config: req.app.config,
+        session: req.session,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        showFooter: 'showFooter'
+    });
+});
+
+router.get('/checkout/payment', (req, res) => {
+    const config = req.app.config;
+
+    // if there is no items in the cart then render a failure
+    if(!req.session.cart){
+        req.session.message = 'The are no items in your cart. Please add some items before checking out';
+        req.session.messageType = 'danger';
+        res.redirect('/');
+        return;
+    }
+
+    let paymentType = '';
+    if(req.session.cartSubscription){
+        paymentType = '_subscription';
+    }
+
+    res.render(`${config.themeViews}checkout-payment`, {
+        title: 'Checkout',
+        config: req.app.config,
+        paymentConfig: getPaymentConfig(),
+        session: req.session,
+        paymentPage: true,
+        paymentType,
+        cartSize: 'part',
+        cartClose: true,
+        page: 'checkout-information',
+        countryList,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        showFooter: 'showFooter'
     });
 });
 
@@ -180,7 +246,6 @@ router.get('/product/:id', async (req, res) => {
         images: images,
         productDescription: product.productDescription,
         metaDescription: config.cartTitle + ' - ' + product.productTitle,
-        pageCloseBtn: showCartCloseBtn('product'),
         config: config,
         session: req.session,
         pageUrl: config.baseUrl + req.originalUrl,
@@ -209,6 +274,12 @@ router.post('/product/updatecart', (req, res, next) => {
     const cartItems = JSON.parse(req.body.items);
     let hasError = false;
     let stockError = false;
+
+    // Check cart exists
+    if(!req.session.cart){
+        emptyCart(req, res, 'json', 'There are no items if your cart or your cart is expired');
+        return;
+    }
 
     async.eachSeries(cartItems, async (cartItem, callback) => {
         // Find index in cart
@@ -308,11 +379,12 @@ router.post('/product/emptycart', async (req, res, next) => {
     emptyCart(req, res, 'json');
 });
 
-const emptyCart = async (req, res, type) => {
+const emptyCart = async (req, res, type, customMessage) => {
     const db = req.app.db;
 
     // Remove from session
     delete req.session.cart;
+    delete req.session.shippingAmount;
     delete req.session.orderId;
 
     // Remove cart from DB
@@ -324,13 +396,19 @@ const emptyCart = async (req, res, type) => {
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
 
+    // Set returned message
+    let message = 'Cart successfully emptied';
+    if(customMessage){
+        message = customMessage;
+    }
+
     // If POST, return JSON else redirect nome
     if(type === 'json'){
-        res.status(200).json({ message: 'Cart successfully emptied', totalCartItems: 0 });
+        res.status(200).json({ message: message, totalCartItems: 0 });
         return;
     }
 
-    req.session.message = 'Cart successfully emptied.';
+    req.session.message = message;
     req.session.messageType = 'success';
     res.redirect('/');
 };
@@ -513,7 +591,6 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
                 session: req.session,
                 metaDescription: req.app.config.cartTitle + ' - Search term: ' + searchTerm,
                 searchTerm: searchTerm,
-                pageCloseBtn: showCartCloseBtn('search'),
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
                 productsPerPage: numberProducts,
@@ -569,7 +646,6 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
                 session: req.session,
                 searchTerm: searchTerm,
                 metaDescription: `${req.app.config.cartTitle} - Category: ${searchTerm}`,
-                pageCloseBtn: showCartCloseBtn('category'),
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
                 productsPerPage: numberProducts,
@@ -650,7 +726,6 @@ router.get('/page/:pageNum', (req, res, next) => {
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
                 metaDescription: req.app.config.cartTitle + ' - Products page: ' + req.params.pageNum,
-                pageCloseBtn: showCartCloseBtn('page'),
                 config: req.app.config,
                 productsPerPage: numberProducts,
                 totalProductCount: results.totalProducts,
@@ -692,7 +767,6 @@ router.get('/:page?', async (req, res, next) => {
                     session: req.session,
                     message: clearSessionValue(req.session, 'message'),
                     messageType: clearSessionValue(req.session, 'messageType'),
-                    pageCloseBtn: showCartCloseBtn('page'),
                     config,
                     productsPerPage: numberProducts,
                     totalProductCount: results.totalProducts,
@@ -722,7 +796,6 @@ router.get('/:page?', async (req, res, next) => {
                 session: req.session,
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
-                pageCloseBtn: showCartCloseBtn('page'),
                 config: req.app.config,
                 metaDescription: req.app.config.cartTitle + ' - ' + page,
                 helpers: req.handlebars.helpers,

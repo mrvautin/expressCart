@@ -1,0 +1,65 @@
+<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/information">Information</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/shipping">Shipping</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/checkout/payment">Payment</a></li>
+        </ol>
+    </nav>
+    <div class="row">
+        {{#if paymentMessage}}
+            <p class="text-danger text-center">{{paymentMessage}}</p>
+        {{/if}}
+        <div class="col-md-5">
+            <div class="panel panel-default" style="margin-top: 30px;">
+                <div class="panel-heading">{{ @root.__ "Customer details" }}</div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            {{@root.session.customerFirstname}} {{@root.session.customerLastname}} - 
+                            {{@root.session.customerEmail}}
+                            <span class="pull-right"><a href="/checkout/information">Change</a></span>
+                        </li>
+                    </ul>
+                    <ul class="list-group">
+                        {{#if @root.session.shippingCostApplied}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Standard shipping 
+                                </div>
+                                <div class="col-md-6">
+                                    <span><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span>
+                                    <span class="pull-right"><a href="/checkout/shipping">Change</a></span>
+                                </div>
+                            </div>
+                        </li>
+                        {{else}}
+                        <li class="list-group-item">FREE shipping <span class="pull-right"><a href="/checkout/shipping">Change</a></span></li>
+                        {{/if}}
+                    </ul>
+                    <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
+                    {{#if session.customerPresent}}
+                    {{#ifCond config.paymentGateway '==' 'paypal'}}
+                        {{> partials/payments/paypal}}
+                    {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'stripe'}}
+                        {{> partials/payments/stripe}}
+                    {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'authorizenet'}}
+                        {{> partials/payments/authorizenet}}
+                    {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'adyen'}}
+                        {{> partials/payments/adyen}}
+                    {{/ifCond}}
+                    {{/if}}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="cart" class="col-md-7">
+            {{> (getTheme 'cart')}}
+        </div>
+    </div>
+</div>
