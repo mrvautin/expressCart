@@ -317,7 +317,7 @@ router.get('/product/:id', async (req, res) => {
     // show the view
     const images = await getImages(product._id, req, res);
 
-    var productHbs = 'product';
+    var productHbs = 'default';
     
     if(typeof product.productView != 'undefined' && 
         product.productView != null && product.productView != 'default')
