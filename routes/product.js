@@ -103,8 +103,6 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productView: req.body.productView
     };
 
-    console.log('Inserting product: ' + doc.productView);
-
     // Validate the body against schema
     const schemaResult = validateJson('newProduct', doc);
     if(!schemaResult.valid){

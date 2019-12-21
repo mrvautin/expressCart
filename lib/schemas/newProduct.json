@@ -30,7 +30,7 @@
             "type": ["number", "null"]
         },
         "productView": {
-            "type": "string", "default": "product"
+            "type": "string", "default": "default"
         }
     },
     "required": [
