@@ -29,6 +29,9 @@
         },
         "productStock": {
             "type": ["number", "null"]
+        },
+        "productView": {
+            "type": "string", "default": "product"
         }
     },
     "required": [

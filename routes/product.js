@@ -67,6 +67,7 @@ router.get('/admin/product/new', restrict, checkAccess, (req, res) => {
         productDescription: common.clearSessionValue(req.session, 'productDescription'),
         productPrice: common.clearSessionValue(req.session, 'productPrice'),
         productPermalink: common.clearSessionValue(req.session, 'productPermalink'),
+        productView: common.clearSessionValue(req.session, 'productView'),
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         editor: true,
@@ -100,7 +101,8 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productOptions: productOptions || null,
         productComment: common.checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
-        productStock: common.safeParseInt(req.body.productStock) || null
+        productStock: common.safeParseInt(req.body.productStock) || null,
+        productView: req.body.productView
     };
 
     // Validate the body again schema
@@ -108,6 +110,33 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     if(!schemaValidate.result){
         console.log('schemaValidate errors', schemaValidate.errors);
         res.status(400).json(schemaValidate.errors);
+
+    // Validate the body against schema
+    const schemaResult = validateJson('newProduct', doc);
+    if(!schemaResult.valid){
+        // If API request, return json
+        if(req.apiAuthenticated){
+            res.status(400).json(schemaResult.errors);
+            return;
+        }
+
+        console.log('schemaResult errors', schemaResult.errors);
+        req.session.message = 'Form invalid. Please check values and try again.';
+        req.session.messageType = 'danger';
+
+        // keep the current stuff
+        req.session.productTitle = req.body.productTitle;
+        req.session.productDescription = req.body.productDescription;
+        req.session.productPrice = req.body.productPrice;
+        req.session.productPermalink = req.body.productPermalink;
+        req.session.productOptions = productOptions;
+        req.session.productComment = common.checkboxBool(req.body.productComment);
+        req.session.productTags = req.body.productTags;
+        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
+        req.session.productView = req.body.productView;
+
+        // redirect to insert
+        res.redirect('/admin/product/new');
         return;
     }
 
@@ -115,6 +144,29 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     const product = await db.products.countDocuments({ productPermalink: req.body.productPermalink });
     if(product > 0 && req.body.productPermalink !== ''){
         res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
+        // permalink exits
+        req.session.message = 'Permalink already exists. Pick a new one.';
+        req.session.messageType = 'danger';
+
+        // keep the current stuff
+        req.session.productTitle = req.body.productTitle;
+        req.session.productDescription = req.body.productDescription;
+        req.session.productPrice = req.body.productPrice;
+        req.session.productPermalink = req.body.productPermalink;
+        req.session.productOptions = productOptions;
+        req.session.productComment = common.checkboxBool(req.body.productComment);
+        req.session.productTags = req.body.productTags;
+        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
+        req.session.productView = req.body.productView;
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            res.status(400).json({ error: 'Permalink already exists. Pick a new one.' });
+            return;
+        }
+
+        // redirect to insert
+        res.redirect('/admin/product/new');
         return;
     }
 
@@ -134,8 +186,31 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     }catch(ex){
         console.log(colors.red('Error inserting document: ' + ex));
         res.status(400).json({ message: 'Error inserting document' });
+
+        // keep the current stuff
+        req.session.productTitle = req.body.productTitle;
+        req.session.productDescription = req.body.productDescription;
+        req.session.productPrice = req.body.productPrice;
+        req.session.productPermalink = req.body.productPermalink;
+        req.session.productOptions = productOptions;
+        req.session.productComment = common.checkboxBool(req.body.productComment);
+        req.session.productTags = req.body.productTags;
+        req.session.productStock = req.body.productStock ? parseInt(req.body.productStock) : null;
+        req.session.productView = req.body.productView;
+
+        req.session.message = 'Error: Inserting product';
+        req.session.messageType = 'danger';
+
+        // If API request, return json
+        if(req.apiAuthenticated){
+            res.status(400).json({ error: 'Error inserting document' });
+            return;
+        }
+
+        // redirect to insert
+        res.redirect('/admin/product/new');
     }
-});
+}});
 
 // render the editor
 router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) => {

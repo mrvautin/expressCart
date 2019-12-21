@@ -141,7 +141,9 @@
                 "enabled": {
                     "shipping": "shipping-basic"
                 }
-            }
+            },
+        "productViews": {
+            "type": "array"
         }
     },
     "required": [

@@ -19,7 +19,7 @@
     "customCss": "",
     "currencySymbol": "£",
     "paymentGateway": "stripe",
-    "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
+    "databaseConnectionString": "mongodb://mongodb:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
@@ -33,5 +33,6 @@
             "shipping": "shipping-basic",
             "discount": "discount-voucher"
         }
-    }
+    },
+    "productViews": [{"key": "default", "value": "Defaut"}]
 }
