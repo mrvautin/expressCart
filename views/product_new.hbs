@@ -32,6 +32,18 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="productView" class="col-sm-2 control-label">{{ @root.__ "Product View" }}</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="productView" name="productView">
+                        {{!-- <option value="default" selected>{{ @root.__ "Default" }}</option> --}}
+                        {{!-- <option value="draft">{{ @root.__ "Draft" }}</option> --}}
+                        {{#each config.productViews}}
+                            <option value="{{key}}">{{ @root.__ value }}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
             {{#if config.trackStock}}
             <div class="form-group">
                 <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>

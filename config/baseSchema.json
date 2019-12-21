@@ -119,6 +119,9 @@
         "enableLanguages": {
             "type": "boolean",
             "default": true
+        },
+        "productViews": {
+            "type": "array"
         }
     },
     "required": [

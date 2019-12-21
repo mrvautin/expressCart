@@ -170,7 +170,13 @@ router.get('/product/:id', async (req, res) => {
     // show the view
     const images = await getImages(product._id, req, res);
 
-    res.render(`${config.themeViews}product`, {
+    var productHbs = 'product';
+    
+    if(typeof product.productView != 'undefined' && 
+        product.productView != null && product.productView != 'default')
+        productHbs = product.productView;
+
+    res.render(config.themeViews + productHbs, {
         title: product.productTitle,
         result: product,
         productOptions: productOptions,
