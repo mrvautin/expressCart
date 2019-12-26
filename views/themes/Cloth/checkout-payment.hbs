@@ -1,4 +1,4 @@
-<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+<div class="col-md-10 offset-md-1 col-sm-12">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -12,17 +12,17 @@
             <p class="text-danger text-center">{{paymentMessage}}</p>
         {{/if}}
         <div class="col-md-5">
-            <div class="panel panel-default" style="margin-top: 30px;">
-                <div class="panel-heading">{{ @root.__ "Customer details" }}</div>
-                <div class="panel-body">
-                    <ul class="list-group">
+            <div class="card top-marg-15">
+                <div class="card-body">
+                    <h5 class="card-title">{{ @root.__ "Customer details" }}</h5>
+                    <ul class="list-group bottom-pad-15">
                         <li class="list-group-item">
                             {{@root.session.customerFirstname}} {{@root.session.customerLastname}} - 
                             {{@root.session.customerEmail}}
                             <span class="pull-right"><a href="/checkout/information">Change</a></span>
                         </li>
                     </ul>
-                    <ul class="list-group">
+                    <ul class="list-group bottom-pad-15">
                         {{#if @root.session.shippingCostApplied}}
                         <li class="list-group-item">
                             <div class="row">

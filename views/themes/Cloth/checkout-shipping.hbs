@@ -1,4 +1,4 @@
-<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+<div class="col-md-10 offset-md-1 col-sm-12">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -9,29 +9,29 @@
     </nav>
     <div class="row">
         <div class="col-md-5">
-            <div class="panel panel-default" style="margin-top: 30px;">
-                <div class="panel-heading">{{ @root.__ "Shipping options" }}</div>
-                <div class="panel-body cart-body">
-                {{#unless @root.session.shippingOptions}}
-                    <ul class="list-group">
-                        {{#if @root.session.shippingCostApplied}}
-                        <li class="list-group-item">Standard shipping <span class="pull-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span></li>
-                        {{else}}
-                        <li class="list-group-item">FREE shipping <span class="pull-right"></li>
-                        {{/if}}
-                    </ul>
-                {{/unless}}
+            <div class="card top-marg-15 bottom-marg-15">
+                <div class="card-body">
+                    <h5 class="card-title">{{ @root.__ "Shipping options" }}</h5>
+                    {{#unless @root.session.shippingOptions}}
+                        <ul class="list-group">
+                            {{#if @root.session.shippingCostApplied}}
+                            <li class="list-group-item">Standard shipping <span class="pull-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span></li>
+                            {{else}}
+                            <li class="list-group-item">FREE shipping <span class="pull-right"></li>
+                            {{/if}}
+                        </ul>
+                    {{/unless}}
                 </div>
             </div>
-            <a href="/checkout/information" class="btn btn-primary pull-left">{{ @root.__ "Return to information" }}</a>
-            <a href="/checkout/payment" class="btn btn-primary pull-right">{{ @root.__ "Proceed to payment" }}</a>
+            <a href="/checkout/information" class="btn btn-outline-primary pull-left">{{ @root.__ "Return to information" }}</a>
+            <a href="/checkout/payment" class="btn btn-outline-primary pull-right">{{ @root.__ "Proceed to payment" }}</a>
         </div>
         <div id="cart" class="col-md-7">
             {{> (getTheme 'cart')}}
             <div class="row">
                 {{#if @root.session.cart}}
-                <div class="col-xs-12 col s12">
-                    <button class="btn btn-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                <div class="col-sm-12">
+                    <button class="btn btn-outline-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
                 {{/if}}
             </div>

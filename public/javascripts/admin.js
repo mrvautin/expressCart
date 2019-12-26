@@ -48,12 +48,12 @@ $(document).ready(function (){
 
         var html = '<li class="list-group-item">';
         html += '<div class="row">';
-        html += '<div class="col-lg-2 opt-name">' + optName + '</div>';
-        html += '<div class="col-lg-2">' + optLabel + '</div>';
-        html += '<div class="col-lg-2">' + optType + '</div>';
-        html += '<div class="col-lg-4">' + optOptions + '</div>';
-        html += '<div class="col-lg-2 text-right">';
-        html += '<button class="product_opt_remove btn btn-danger btn-sm">Remove</button>';
+        html += '<div class="col-sm-2 opt-name">' + optName + '</div>';
+        html += '<div class="col-sm-2">' + optLabel + '</div>';
+        html += '<div class="col-sm-2">' + optType + '</div>';
+        html += '<div class="col-sm-4">' + optOptions + '</div>';
+        html += '<div class="col-sm-2 text-right">';
+        html += '<button class="product_opt_remove btn btn-outline-danger">Remove</button>';
         html += '</div></div></li>';
 
         // append data
@@ -252,31 +252,35 @@ $(document).ready(function (){
     });
 
     $('.btn-delete-image').on('click', function(){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/deleteimage',
-            data: { product_id: $('#productId').val(), productImage: $(this).attr('data-id') }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
+        if(confirm('Are you sure you want to delete this image?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/product/deleteimage',
+                data: { product_id: $('#productId').val(), productImage: $(this).attr('data-id') }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
     });
 
     $('.btn-delete-product').on('click', function(){
-        $.ajax({
-            method: 'POST',
-            url: '/admin/product/delete',
-            data: { productId: $(this).attr('data-id') }
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-        })
-        .fail(function(msg){
-            showNotification(msg.responseJSON.message, 'danger');
-        });
+        if(confirm('Are you sure you want to delete this product?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/product/delete',
+                data: { productId: $(this).attr('data-id') }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
     });
 
 	// Call to API to check if a permalink is available
@@ -543,6 +547,28 @@ $(document).ready(function (){
             });
         }
     });
+
+    if($('#draggable_list').length){
+        $('#draggable_list').sortable({
+            update: function (){
+                var menuOrder = [];
+                $('.navId').each(function(val){
+                    menuOrder.push($($('.navId')[val]).val());
+                });
+                $.ajax({
+                    data: { order: menuOrder },
+                    type: 'POST',
+                    url: '/admin/settings/menu/save_order'
+                })
+                .done(function(){
+                    showNotification('Menu order saved', 'success', true);
+                })
+                .fail(function(msg){
+                    showNotification(msg.responseJSON.message, 'danger', true);
+                });
+            }
+        });
+    }
 
     $(document).on('click', '#uploadButton', function(e){
         e.preventDefault();

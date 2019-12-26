@@ -1,5 +1,5 @@
 {{> partials/menu}}
-<div class="col-lg-9">
+<div class="col-sm-9">
 	<div class="row">
 		<div class="col-md-8">
 			<h2>User edit</h2>
@@ -34,14 +34,14 @@
 					<label>API Key</label>
 					<div class="input-group">
 						<input type="text" class="form-control" id="apiKey" value="{{user.apiKey}}" aria-label="..." readonly>
-						<div class="input-group-btn">
-							<button id="btnGenerateAPIkey" class="btn btn-success">{{ @root.__ "Generate" }}</button>
+						<div class="input-group-append">
+							<button id="btnGenerateAPIkey" class="btn btn-outline-success">{{ @root.__ "Generate" }}</button>
 						</div>
 					</div>
 				</div><br/>
 				<div class="form-group">
 					<div class="pull-right">
-						<button type="submit" class="btn btn-success">{{ @root.__ "Update" }}</button>
+						<button type="submit" class="btn btn-outline-success">{{ @root.__ "Update" }}</button>
 					</div>
 				</div>
 			</form>

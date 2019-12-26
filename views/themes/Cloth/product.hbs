@@ -1,9 +1,29 @@
 {{> themes/Cloth/front-menu}}
-<div class="product-layout col-md-8 col-md-offset-2">
+<div class="product-layout col-sm-8 offset-sm-2">
     <div class="row">
-        <div class="col-xs-12 col-md-6 pull-right">
+        <div class="col-sm-12 col-md-6 mr-auto">
+            {{#if result.productImage}}
+                <div class="title-image-container">
+                    <div class="image-prev image-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i></div>
+                    <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-fluid" alt="...">
+                    <div class="image-next image-button"> <i class="fa fa-chevron-right" aria-hidden="true"></i></div>
+                </div>
+            {{else}}
+                <div class="title-image-container">
+                    <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-fluid" alt="...">
+                </div>
+            {{/if}}
+            {{#ifCond images.length '>' 1}}
+                {{#each images}}
+                    <div class="vertical-center top-pad-20 col-sm-6">
+                        <img src="{{this.path}}" class="thumbnail-image img-fluid">
+                    </div>
+                {{/each}}
+            {{/ifCond}}
+        </div>
+        <div class="col-sm-12 col-md-6 ml-auto">
             <div class="row">
-                <h1 class="col-md-10 product-title">{{result.productTitle}}</h1>
+                <h1 class="col-md-10 product-title text-truncate">{{result.productTitle}}</h1>
                 <h4 class="col-md-10 product-price">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
                 {{#if productOptions}}
                     <h4 class="col-md-10 product-option">{{ @root.__ "Options" }}</h4>
@@ -50,13 +70,13 @@
                 <div class="col-md-10 productOptions">
                     <p class="product-option-text">{{ @root.__ "Quantity" }}</p>
                     <div class="input-group">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary qty-btn-minus" type="button">-</button>
-                        </span>
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-primary qty-btn-minus" type="button">-</button>
+                        </div>
                         <input type="text" class="form-control add-color text-center" id="product_quantity" maxlength="3" value="1">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary qty-btn-plus" type="button">+</button>
-                        </span>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary qty-btn-plus" type="button">+</button>
+                        </div>
                     </div>
                 </div>
                 {{#if result.productComment}}
@@ -66,32 +86,12 @@
                 </div>
                 {{/if}}
                 <div class="col-md-10 btnAddToCart">
-                    <button class="btn btn-primary btn-block product-add-to-cart" type="button">{{ @root.__ "Add to cart" }}</button>
+                    <button class="btn btn-outline-primary btn-block product-add-to-cart" type="button">{{ @root.__ "Add to cart" }}</button>
                 </div>
                 <div class="col-md-10 body_text">
                     {{{productDescription}}}
                 </div>
             </div>
-        </div>
-        <div class="col-xs-12 col-md-6 pull-left">
-            {{#if result.productImage}}
-                <div class="title-image-container">
-                    <div class="image-prev image-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                    <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-responsive" alt="...">
-                    <div class="image-next image-button"> <i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
-            {{else}}
-                <div class="title-image-container">
-                    <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-responsive" alt="...">
-                </div>
-            {{/if}}
-            {{#ifCond images.length '>' 1}}
-                {{#each images}}
-                    <div class="vertical-center top-pad-20 col-xs-6 col-lg-6 col-xl-6">
-                        <img src="{{this.path}}" class="thumbnail-image img-responsive">
-                    </div>
-                {{/each}}
-            {{/ifCond}}
         </div>
     </div>
 </div>

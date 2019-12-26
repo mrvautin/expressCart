@@ -1,11 +1,11 @@
 {{> partials/menu}}
-<div class="col-lg-9">
+<div class="col-sm-9">
     <div class="row">
         <div class="col-md-10">
             <form id="settingsForm" data-toggle="validator">
                 <h2 class="clearfix">{{ @root.__ "General settings" }}
                     <div class="pull-right">
-                    <button type="submit" id="btnSettingsUpdate" class="btn btn-success">{{ @root.__ "Update" }}</button>
+                    <button type="submit" id="btnSettingsUpdate" class="btn btn-outline-success">{{ @root.__ "Update" }}</button>
                 </h2>
                 <div class="form-group">
                     <label>{{ @root.__ "Cart name" }} *</label>
@@ -146,7 +146,7 @@
                     <input type="password" class="form-control" name="emailPassword" value="{{config.emailPassword}}" autocomplete="off" required>
                 </div>
                 <div class="form-group">
-                    <button id="sendTestEmail" class="btn btn-success">{{ @root.__ "Send test email" }}</button>
+                    <button id="sendTestEmail" class="btn btn-outline-success">{{ @root.__ "Send test email" }}</button>
                 </div>
                 </div>
         </div>

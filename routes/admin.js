@@ -349,7 +349,7 @@ router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res)
         res.status(400).json({ message: 'Failed saving menu order' });
         return;
     }
-    res.status(200);
+    res.status(200).json({});
 });
 
 // validate the permalink

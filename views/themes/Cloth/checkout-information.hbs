@@ -1,4 +1,4 @@
-<div class="col-xl-8 col-xl-offset-2 col-xs-12">
+<div class="col-md-10 offset-md-1 col-sm-12">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -12,71 +12,86 @@
             {{/if}}
         </ol>
     </nav>
-    <div class="row">
+    <div class="row 1">
         {{#if paymentMessage}}
+        <div class="col-sm-12">
             <p class="text-danger text-center">{{paymentMessage}}</p>
+        </div>
         {{/if}}
         <div class="col-md-5">
-            <div class="panel panel-default" style="margin-top: 30px;">
-                <div class="panel-heading">{{ @root.__ "Customer details" }}</div>
-                {{#unless @root.session.customerPresent}}
-                <div class="panel-body customer-details-login">
-                    <p>{{ @root.__ "Existing customer" }}</p>
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="customerLoginEmail" name="loginEmail" minlength="5" placeholder="Email address" required>
+            <div class="card top-marg-15">
+                <div class="card-body customer-details-login">
+                    <h5 class="card-heading">{{ @root.__ "Customer details" }}</h5>
+                    {{#unless @root.session.customerPresent}}
+                    <div class="row">
+                        <div class="col-sm-12 bottom-marg-15">
+                            <p>{{ @root.__ "Existing customer" }}</p>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="customerLoginEmail" name="loginEmail"
+                                    minlength="5" placeholder="Email address" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="customerLoginPassword"
+                                    name="loginPassword" minlength="5" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <a href="/customer/forgotten"
+                                    class="btn btn-outline-primary float-left">{{ @root.__ "Forgotten" }}</a>
+                            </div>
+                            <div class="form-group">
+                                <button id="customerLogin" class="btn btn-outline-primary float-right"
+                                    type="submit">Login</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="customerLoginPassword" name="loginPassword" minlength="5" placeholder="Password" required>
-                    </div>
-                    <div class="form-group">
-                        <a href="/customer/forgotten" class="btn btn-default pull-left">{{ @root.__ "Forgotten" }}</a>
-                    </div>
-                    <div class="form-group">
-                        <button id="customerLogin" class="btn btn-primary pull-right" type="submit">Login</button>
-                    </div>
-                </div>
-                {{/unless}}
-                <div class="panel-body customer-details">
+                    {{/unless}}
                     {{#if @root.session.customerPresent}}
-                    <div class="col-xs-12 col-md-12">
-                        <button id="customerLogout" class="btn btn-sm btn-primary pull-right">{{ @root.__ "Change customer" }}</button>
+                    <div class="row bottom-marg-15">
+                        <div class="col-sm-12">
+                            <button id="customerLogout"
+                                class="btn btn-outline-primary pull-right">{{ @root.__ "Change customer" }}</button>
+                        </div>
                     </div>
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" role="form" data-toggle="validator" novalidate="false">
                         {{> themes/Cloth/shipping-form}}
-                        {{#unless @root.session.customerPresent}}
-                        <div class="col-xs-12 col-md-12">
-                            <p class="text-muted">{{ @root.__ "Enter a password to create an account for next time" }}</p>
-                        </div>
-                        <div class="col-xs-6 col-md-6">  
-                            <div class="form-group">
-                                <input type="password" class="form-control customerDetails" id="newCustomerPassword" name="newCustomerPassword" placeholder="Password">
+                        <div class="row">
+                            {{#unless @root.session.customerPresent}}
+                            <div class="col-sm-12">
+                                <p class="text-muted">
+                                    {{ @root.__ "Enter a password to create an account for next time" }}</p>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-md-6">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="createAccountCheckbox"> Create an account
-                                </label>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input type="password" class="form-control customerDetails" id="newCustomerPassword"
+                                        name="newCustomerPassword" placeholder="Password">
+                                </div>
                             </div>
-                        </div>
-                        {{/unless}}
-                        <div class="col-xs-12 col-md-12">
-                            <a href="/checkout/cart" class="btn btn-primary pull-left">Return to cart</a>
-                            <a href="/checkout/shipping" id="checkoutInformation" class="btn btn-primary pull-right">Continue to shipping</a>
+                            <div class="col-sm-6">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="createAccountCheckbox"> Create an account
+                                    </label>
+                                </div>
+                            </div>
+                            {{/unless}}
+                            <div class="col-sm-12">
+                                <a href="/checkout/cart" class="btn btn-outline-primary pull-left">Return to cart</a>
+                                <a href="/checkout/shipping" id="checkoutInformation" class="btn btn-outline-primary pull-right">Continue to shipping</a>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div id="cart" class="col-md-7">
+        <div class="col-md-7" id="cart">
             {{> (getTheme 'cart')}}
+            {{#if @root.session.cart}}
             <div class="row">
-                {{#if @root.session.cart}}
-                <div class="col-xs-12 col s12">
-                    <button class="btn btn-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                <div class="col-sm-12">
+                    <button class="btn btn-outline-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
-                {{/if}}
+            {{/if}}
             </div>
         </div>
     </div>

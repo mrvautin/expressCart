@@ -4,6 +4,12 @@ const cleanCSS = require('gulp-clean-css');
 const minify = require('gulp-minify');
 const rename = require('gulp-rename');
 
+function less(){
+    return gulp.src('public/stylesheets/less/**/*.less')
+      .pipe(less())
+      .pipe(gulp.dest('./'));
+};
+
 function compressJS(){
     return src([
         'public/javascripts/*.js',
@@ -58,4 +64,4 @@ function compressThemeJS(){
 };
 
 // run the tasks
-gulp.task('default', series(compressJS, compressCss, compressThemeCss, compressThemeJS));
+gulp.task('default', series(less, compressJS, compressCss, compressThemeCss, compressThemeJS));

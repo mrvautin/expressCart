@@ -180,6 +180,7 @@ router.get('/checkout/payment', (req, res) => {
         paymentType,
         cartSize: 'part',
         cartClose: true,
+        cartReadOnly: true,
         page: 'checkout-information',
         countryList,
         message: clearSessionValue(req.session, 'message'),
@@ -250,11 +251,15 @@ router.post('/product/updatecart', (req, res, next) => {
     let hasError = false;
     let stockError = false;
 
+    console.log('cartItems', cartItems);
+
     // Check cart exists
     if(!req.session.cart){
         emptyCart(req, res, 'json', 'There are no items if your cart or your cart is expired');
         return;
     }
+
+    console.log('req.session.cart', req.session.cart);
 
     async.eachSeries(cartItems, async (cartItem, callback) => {
         // Find index in cart
@@ -265,6 +270,8 @@ router.post('/product/updatecart', (req, res, next) => {
         if(typeof productQuantity === 'string'){
             productQuantity = parseInt(productQuantity);
         }
+
+        console.log('productQuantity', productQuantity);
         if(productQuantity === 0){
             // quantity equals zero so we remove the item
             req.session.cart.splice(cartIndex, 1);

@@ -1,32 +1,35 @@
 {{> partials/menu}}
-<div class="col-lg-9">
+<div class="col-sm-9 top-pad-10">
     <form class="form-horizontal" id="productEditForm" data-toggle="validator">
-        <div class="col-lg-12">
-            <div class="page-header">
-                <div class="pull-right">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
-                    <button id="productUpdate" class="btn btn-success">{{ @root.__ "Save product" }} <i class="fa fa-floppy-o"></i></button>
+            <div class="col-sm-12">
+                <div class="page-header">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
+                        <button id="productUpdate" class="btn btn-outline-success">{{ @root.__ "Save product" }} <i class="fa fa-floppy-o"></i></button>
+                    </div>
+                    <h2>{{ @root.__ "Edit product" }}</h2>
                 </div>
-                <h2>{{ @root.__ "Edit product" }}</h2>
             </div>
-            <div class="form-group">
-                <label for="productTitle" class="col-sm-2 control-label">{{ @root.__ "Product title" }} *</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
                     <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="productPrice" class="col-sm-2 control-label">{{ @root.__ "Product price" }} *</label>
-                <div class="col-sm-6">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
                     <div class="input-group">
-                        <span class="input-group-addon">{{currencySymbol config.currencySymbol}}</span>
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+                        </div>
                         <input type="number" id="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="productPublished" class="col-sm-2 control-label">{{ @root.__ "Status" }}</label>
-                <div class="col-sm-6">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
                     <select class="form-control" id="productPublished">
                         <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
                         <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
@@ -34,47 +37,47 @@
                 </div>
             </div>
             {{#if config.trackStock}}
-            <div class="form-group">
-                <label for="productStock" class="col-sm-2 control-label">{{ @root.__ "Stock level" }}</label>
-                <div class="col-sm-6">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
                     <input type="number" id="productStock" class="form-control" value="{{result.productStock}}" step="any" />
                 </div>
             </div>
             {{/if}}
-            <div class="form-group">
-                <label for="productDescription" class="col-sm-2 control-label">{{ @root.__ "Product description" }} *</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
                     <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Permalink</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label class="control-label">Permalink</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
-                        <span class="input-group-btn">
-                            <button class="btn btn-success" id="validate_permalink" type="button">{{ @root.__ "Validate" }}</button>
-                        </span>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success" id="validate_permalink" type="button">{{ @root.__ "Validate" }}</button>
+                        </div>
                     </div>
                     <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
                 </div>
             </div>
-            <div class="form-group">
-                <input type="hidden" id="productOptions" value="{{stringify result.productOptions}}" />
-                <label class="col-sm-2 control-label">{{ @root.__ "Product options" }}</label>
-                <div class="col-lg-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input type="hidden" id="productOptions" value="{{stringify result.productOptions}}" />
+                    <label class="control-label">{{ @root.__ "Product options" }}</label>
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item">
                             <div class="row">
-                            <div class="col-lg-2">
+                            <div class="col-sm-2">
                                 <strong>{{ @root.__ "Name" }}:</strong>
                                 <input type="text" id="product_optName" class="form-control" placeholder="size" />
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-sm-2">
                                 <strong>{{ @root.__ "Label" }}:</strong>
                                 <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-sm-2">
                                 <strong>{{ @root.__ "Type" }}:</strong>
                                 <select id="product_optType" class="form-control">
                                     <option value="select">Select</option>
@@ -82,23 +85,23 @@
                                     <option value="checkbox">Checkbox</option>
                                 </select>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-sm-4">
                                 <strong>{{ @root.__ "Options" }}:</strong>
                                 <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
                             </div>
-                            <div class="col-lg-2 text-right"></br>
-                                <button id="product_opt_add" class="btn btn-success">{{ @root.__ "Add" }}</button>
+                            <div class="col-sm-2 text-right"></br>
+                                <button id="product_opt_add" class="btn btn-outline-success">{{ @root.__ "Add" }}</button>
                             </div></div>
                         </li>
                         {{#each options}}
                             <li class="list-group-item">
                                 <div class="row">
-                                    <div class='col-lg-2 opt-name'>{{this.optName}}</div>
-                                    <div class='col-lg-2'>{{this.optLabel}}</div>
-                                    <div class='col-lg-2'>{{this.optType}}</div>
-                                    <div class='col-lg-4'>{{{this.optOptions}}}</div>
-                                    <div class='col-lg-2 text-right'>
-                                        <button class='product_opt_remove btn btn-danger btn-sm'>{{ @root.__ "Remove" }}</button>
+                                    <div class='col-sm-2 opt-name'>{{this.optName}}</div>
+                                    <div class='col-sm-2'>{{this.optLabel}}</div>
+                                    <div class='col-sm-2'>{{this.optType}}</div>
+                                    <div class='col-sm-4'>{{{this.optOptions}}}</div>
+                                    <div class='col-sm-2 text-right'>
+                                        <button class='product_opt_remove btn btn-outline-danger'>{{ @root.__ "Remove" }}</button>
                                     </div>
                                 </div>
                             </li>
@@ -108,17 +111,17 @@
                 </div>
             </div>
             {{#ifCond config.paymentGateway '==' 'stripe'}}
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Subscription plan</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label class="control-label">Subscription plan</label>
                     <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX" value={{@root.result.productSubscription}}>
                     <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
                 </div>
             </div>
             {{/ifCond}}
-            <div class="form-group">
-                <label for="productComment" class="col-sm-2 control-label">{{ @root.__ "Allow comment" }}</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
                     <div class="checkbox">
                         <label>
                             <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
@@ -127,36 +130,38 @@
                     <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="productTags" class="col-sm-2 control-label">{{ @root.__ "Product tag words" }}</label>
-                <div class="col-sm-10">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label for="productTags" class="control-label">{{ @root.__ "Product tag words" }}</label>
                     <input type="text" class="form-control" id="productTags" value="{{result.productTags}}">
                     <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
                 </div>
             </div>
-            <div id="product-images">
-                <h2>{{ @root.__ "Product images" }}</h2>
-                {{#if images}}
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-2">
-                    {{#each images}}
-                        <div class="col-md-3">
-                            <p>
-                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-danger btn-sm">{{ @root.__ "Delete" }}</a>
-                                {{#ifCond this.productImage '==' true}}
-                                    <span class="label label-info">{{ @root.__ "main image" }}</span>
-                                {{else}}
-                                    <a data-id="{{../this.path}}" class="set-as-main-image btn btn-sm btn-success">{{ @root.__ "Set as main image" }}</a>
-                                {{/ifCond}}
-                            </p>
-                            <img src="{{this.path}}" class="product-main-image img-responsive">
+            <div class="col-sm-12">
+                <div id="product-images">
+                    <h2>{{ @root.__ "Product images" }}</h2>
+                    {{#if images}}
+                    <div class="row">
+                        <div class="col-sm-10 offset-sm-2">
+                        {{#each images}}
+                            <div class="col-sm-3">
+                                <p>
+                                    <a data-id="{{this.path}}" class="btn-delete-image btn btn-outline-danger">{{ @root.__ "Delete" }}</a>
+                                    {{#ifCond this.productImage '==' true}}
+                                        <span class="label label-info">{{ @root.__ "main image" }}</span>
+                                    {{else}}
+                                        <a data-id="{{../this.path}}" class="set-as-main-image btn btn-outline-success">{{ @root.__ "Set as main image" }}</a>
+                                    {{/ifCond}}
+                                </p>
+                                <img src="{{this.path}}" class="product-main-image img-responsive">
+                            </div>
+                        {{/each}}
                         </div>
-                    {{/each}}
                     </div>
+                    {{else}}
+                        <h4 class="text-warning">{{ @root.__ "No images have been uploaded for this product" }}</h4>
+                    {{/if}}
                 </div>
-                {{else}}
-                    <h4 class="text-warning">{{ @root.__ "No images have been uploaded for this product" }}</h4>
-                {{/if}}
             </div>
         </div>
         <input type="hidden" id="productId" value="{{result._id}}" />
@@ -173,20 +178,20 @@
                 <h4 class="modal-title" id="myModalLabel">{{ @root.__ "Product image upload" }}</h4>
             </div>
             <div class="modal-body">
-                <span class="btn btn-info btn-file">
+                <span class="btn btn-outline-info btn-file">
                     {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
                 </span>
                 <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" id="uploadButton" class="btn btn-primary">{{ @root.__ "Upload" }}</button>
+                <button type="button" id="uploadButton" class="btn btn-outline-primary">{{ @root.__ "Upload" }}</button>
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.min.js" integrity="sha256-Q4K0T9IUORjpebn9dIu9szj2Rgn7GmLF+S3RjgM8aXw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" integrity="sha256-f/v2ew/bb0v4el1ALE7bOoXGUDWGk2k+dkPLo3JPhLw=" crossorigin="anonymous" />
 <script>
     $(document).ready(function() {
         $('#productDescription').summernote({
