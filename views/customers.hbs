@@ -27,33 +27,31 @@
                 <li class="list-group-item">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h6 class="text-info"><strong>{{ @root.__ "Email address" }}</strong></h6>
+                            <div class="text-info"><strong>{{ @root.__ "Email address" }}</strong></div>
                         </div>
                         <div class="col-sm-3">
-                            <h6 class="text-info"><strong>{{ @root.__ "Name" }}</strong></h6>
+                            <div class="text-info"><strong>{{ @root.__ "Name" }}</strong></div>
                         </div>
                         <div class="col-sm-3">
-                            <h6 class="text-info"><strong>{{ @root.__ "Phone number" }}</strong></h6>
+                            <div class="text-info"><strong>{{ @root.__ "Phone number" }}</strong></div>
                         </div>
                     </div>
                 </li>
                 {{#each customers}}
                     <li class="list-group-item">
-                        
-                            <a href="/admin/customer/view/{{this._id}}">
+                        <a href="/admin/customer/view/{{this._id}}">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <h6 class="">{{this.email}}</h6>
+                                    <div class="">{{this.email}}</div>
                                 </div>
                                 <div class="col-sm-3">
-                                    <h6 class="">{{this.firstName}} {{this.lastName}}</h6>
+                                    <div class="">{{this.firstName}} {{this.lastName}}</div>
                                 </div>
                                 <div class="col-sm-3">
-                                    <h6 class="">{{this.phone}}</h6>
+                                    <div class="">{{this.phone}}</div>
                                 </div>
                             </div>
-                            </a>
-                        
+                        </a>  
                     </li>
                 {{/each}}
             </ul>

@@ -121,7 +121,7 @@ input[type=number]::-webkit-outer-spin-button {
 .product-price {
   padding-bottom: 10px;
   font-size: 20px;
-  color: #aaaaaa;
+  color: #AAAAAA;
 }
 .productOptions {
   padding-bottom: 15px;
@@ -136,13 +136,13 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .product-option-text {
   font-size: 16px;
-  color: #aaaaaa;
+  color: #AAAAAA;
   padding-bottom: 10px;
   padding-top: 10px;
 }
 .seporator {
   padding-top: 5px;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid #EEEEEE;
   padding-bottom: 6px;
 }
 .list-group-input-pad select {
@@ -162,12 +162,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .top-marg-20 {
   margin-top: 20px;
-}
-.top-pad-5 {
-  padding-top: 10px;
-}
-.top-pad-8 {
-  padding-top: 8px;
 }
 .top-pad-10 {
   padding-top: 10px;
@@ -199,14 +193,8 @@ input[type=number]::-webkit-outer-spin-button {
 .bottom-marg-20 {
   margin-bottom: 20px;
 }
-.left-pad-10 {
-  padding-left: 10px;
-}
 .left-pad-30 {
   padding-left: 30px;
-}
-.right-pad-10 {
-  padding-right: 10px;
 }
 .shipping-form input {
   margin-bottom: 15px;
@@ -371,6 +359,7 @@ input.form-control.customerDetails {
 .navbar-default .navbar-nav > li > a:focus {
   color: #000000;
 }
+.btn-outline-danger,
 .btn-warning,
 .btn-outline-primary {
   color: #ffffff;
@@ -378,21 +367,10 @@ input.form-control.customerDetails {
   border-color: #000000;
 }
 .btn-warning:hover,
-.btn-outline-primary:hover {
-  color: #ffffff !important;
-  background-color: #000000 !important;
-  border-color: #000000 !important;
-  opacity: 0.65;
-}
-.btn-outline-danger {
-  color: #ffffff;
-  background-color: #cc3a2c;
-  border-color: #cc3a2c;
-}
 .btn-outline-danger:hover {
-  color: #ffffff !important;
-  background-color: #cc3a2c !important;
-  border-color: #cc3a2c !important;
+  color: #ffffff;
+  background-color: #000000;
+  border-color: #000000;
   opacity: 0.65;
 }
 a:hover,
@@ -420,6 +398,14 @@ a {
 .navbar-brand-image {
   padding: 0px;
   height: 70px;
+}
+.navbar-default .badge {
+  background-color: #000000;
+  color: #fff;
+}
+.navbar-default .navbar-toggle {
+  background-color: #000000;
+  border-color: #000000;
 }
 .page-item.disabled .page-link {
   color: #b7b7b7;

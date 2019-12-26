@@ -1,153 +1,148 @@
-.btn-outline-danger, .btn-warning, .btn-outline-primary {
-    color: #ffffff !important;
-    background-color: #000000;
-    border-color: #000000;
+.btn-warning,
+.btn-outline-primary {
+  color: #ffffff !important;
+  background-color: #000000;
+  border-color: #000000;
 }
-
-.search-bar-input, #frm_search, .search-bar-input .btn{
-    padding-top: 10px;
-    height: 45px;
+.btn-outline-danger {
+  color: #ffffff !important;
+  background-color: #cc4135;
+  border-color: #cc4135;
 }
-
+.has-error input,
+.has-error textarea,
+.has-error div {
+  border-color: #cc4135;
+}
+.search-bar-input,
+#frm_search,
+.search-bar-input .btn {
+  padding-top: 10px;
+  height: 45px;
+}
 .searchMenuLocation-side {
-    padding-right: 0;
+  padding-right: 0;
 }
-
-.productsWrapper{
-    padding-right: 10px;
-    padding-left: 10px;
+.productsWrapper {
+  padding-right: 10px;
+  padding-left: 10px;
 }
-
-.searchBarWrapper{
-    padding-right: 0;
-    padding-left: 0;
+.searchBarWrapper {
+  padding-right: 0;
+  padding-left: 0;
 }
-
-.footer{
-    padding-top: 20px;
+.footer {
+  padding-top: 20px;
 }
-
 .product-price {
-    padding-bottom: 0;
+  padding-bottom: 0;
 }
-
-.navbarMenuWrapper{
-    background-color: #f5f5f5;
+.navbarMenuWrapper {
+  background-color: #f5f5f5;
 }
-
-.navbarMenu>ul>li>a:hover{
-    color: #cc4135 !important;
+.navbarMenu > ul > li > a:hover {
+  color: #cc4135 !important;
 }
-
-.navbarMenu{
-    padding-right: 0;
-    padding-left: 0;
+.navbarMenu {
+  padding-right: 0;
+  padding-left: 0;
 }
-
-.product-wrapper>a:hover{
-    color: #cc4135 !important;
+.product-wrapper > a:hover {
+  color: #cc4135 !important;
 }
-
-.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
-    margin-bottom: 0;
-    height: 100px !important;
+.navbar-static-top,
+#navbar,
+.navbar-header,
+#navbar > .navbar-nav,
+#navbar > .navbar-nav > li > a {
+  margin-bottom: 0;
+  height: 100px !important;
 }
-
-#navbar>.navbar-nav>li>a{
-    padding-top: 35px;
+#navbar > .navbar-nav > li > a {
+  padding-top: 35px;
 }
-
-.pagination>li>a{
-    background-color: #cc4135 !important;
+.pagination > li > a {
+  background-color: #cc4135 !important;
 }
-
 /* Fixes summernote editor issue: https://github.com/summernote/summernote/issues/2516 */
-body .popover{display:none !important; }
-
-.navbar-brand{
-    color: #cc4135 !important;
-    letter-spacing: 4px;
-    padding-left: 20px !important;
-    padding-top: 0 !important;
-    height: 80px !important;
-    font-size: 55px !important;
+body .popover {
+  display: none !important;
 }
-
-.navbar-brand-image, .navbar-brand{
-    height: 80px;
-    padding-left: 10px;
-    padding-top: 10px;
+.navbar-brand {
+  color: #cc4135 !important;
+  letter-spacing: 4px;
+  padding-left: 20px !important;
+  padding-top: 0 !important;
+  height: 80px !important;
+  font-size: 55px !important;
 }
-
+.navbar-brand-image,
+.navbar-brand {
+  height: 80px;
+  padding-left: 10px;
+  padding-top: 10px;
+}
 .navbar-default .badge {
+  background-color: #cc4135;
+}
+.pushy-link:hover,
+.pushy-link:focus,
+.pushy-link:active,
+.pushy-link:active:hover,
+#empty-cart:hover,
+#empty-cart:focus,
+#empty-cart:active,
+#empty-cart:active:hover {
+  border-color: #cc4135;
+  background-color: #cc4135;
+}
+.navActive > a {
+  margin-bottom: 0px;
+  padding-top: 15px;
+  border-bottom: 5px solid #cc4135;
+}
+.navbar-static-top,
+#navbar,
+.navbar-header,
+#navbar > .navbar-nav,
+#navbar > .navbar-nav > li > a {
+  background-color: #fff;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #838b8f;
+  font-size: 20px;
+}
+@media only screen and (max-width: 768px) {
+  .navbar-default .navbar-brand {
+    padding-top: 10px;
+  }
+  .navbar-default .navbar-nav > li > a {
+    font-size: 16px;
+  }
+  .searchBarWrapper {
+    padding-top: 10px;
+  }
+  .navbarMenuWrapper {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .navbarMenuOuter {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .navActive > a {
+    color: #fff !important;
+  }
+  .navbarMenu {
+    padding-right: 7.5px;
+    padding-left: 7.5px;
+  }
+  .navActive > a {
+    color: white !important;
     background-color: #cc4135;
-}
-
-.pushy-link, #empty-cart{
-    border-color: #E74C3C;
-    background-color: #E74C3C;
-}
-
-.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover,
-#empty-cart:hover, #empty-cart:focus, #empty-cart:active, #empty-cart:active:hover{
-    border-color: #cc4135;
-    background-color: #cc4135;
-}
-
-.navActive>a{
-    margin-bottom: 0px;
-    padding-top: 15px;
-    border-bottom: 5px solid #E74C3C;
-}
-
-.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a {
-    background-color: #fff;
-}
-
-.navbar-default .navbar-nav>li>a {
-    color: #838b8f;
-    font-size: 20px;
-}
-
-@media only screen and (max-width: 768px){
-    .navbar-default .navbar-brand {
-        padding-top: 10px;
-    }
-
-    .navbar-default .navbar-nav>li>a{
-        font-size: 16px;
-    }
-
-    .searchBarWrapper{
-        padding-top: 10px;
-    }
-
-    .navbarMenuWrapper{
-        padding-left: 0px;
-        padding-right: 0px;
-    }
-
-    .navbarMenuOuter{
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .navActive>a {
-        color: #fff !important;
-    }
-
-    .navbarMenu {
-        padding-right: 7.5px;
-        padding-left: 7.5px;
-    }
-
-    .navActive>a{
-        color: white !important;
-        background-color: #E74C3C;
-        border-bottom: none;
-    }
-
-    .footer {
-        padding-top: 10px;
-    }
+    border-bottom: none;
+  }
+  .footer {
+    padding-top: 10px;
+  }
 }

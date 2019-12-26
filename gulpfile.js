@@ -1,13 +1,22 @@
 const { src, dest, series } = require('gulp');
 const gulp = require('gulp');
+const less = require('gulp-less');
 const cleanCSS = require('gulp-clean-css');
 const minify = require('gulp-minify');
 const rename = require('gulp-rename');
 
-function less(){
+function lessCss(){
     return gulp.src('public/stylesheets/less/**/*.less')
-      .pipe(less())
-      .pipe(gulp.dest('./'));
+        .pipe(less({
+            paths: [
+                'public/stylesheets/less'
+            ]
+        }))
+        .pipe(rename({
+            dirname: 'public/stylesheets',
+            extname: '.css'
+        }))
+        .pipe(gulp.dest('./'));
 };
 
 function compressJS(){
@@ -64,4 +73,4 @@ function compressThemeJS(){
 };
 
 // run the tasks
-gulp.task('default', series(less, compressJS, compressCss, compressThemeCss, compressThemeJS));
+gulp.task('default', series(lessCss, compressJS, compressCss, compressThemeCss, compressThemeJS));

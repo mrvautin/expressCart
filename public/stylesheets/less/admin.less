@@ -1,5 +1,28 @@
-.add-to-cart{
-    color: white !important;
+@accent-color: #cc4135;
+@nav-menu-bg: #f5f5f5;
+@btn-danger-color-txt: #ffffff;
+@btn-danger-color-bg: #000000;
+@btn-danger-color-border: #000000;
+
+.btn-warning, .btn-outline-primary {
+    color: @btn-danger-color-txt !important;
+    background-color:@btn-danger-color-bg;
+    border-color: @btn-danger-color-border;
+}
+
+.btn-outline-danger {
+    color: @btn-danger-color-txt !important;
+    background-color: @accent-color;
+    border-color: @accent-color;
+}
+
+.has-error input, .has-error textarea, .has-error div {
+    border-color: @accent-color;
+}
+
+.search-bar-input, #frm_search, .search-bar-input .btn {
+    padding-top: 10px;
+    height: 45px;
 }
 
 .searchMenuLocation-side {
@@ -17,7 +40,7 @@
 }
 
 .footer{
-    padding-top: 30px;
+    padding-top: 20px;
 }
 
 .product-price {
@@ -25,12 +48,11 @@
 }
 
 .navbarMenuWrapper{
-    padding-top: 10px;
-    margin-bottom: 5px;
+    background-color: @nav-menu-bg;
 }
 
 .navbarMenu>ul>li>a:hover{
-    color: #cc4135 !important;
+    color: @accent-color !important;
 }
 
 .navbarMenu{
@@ -39,10 +61,10 @@
 }
 
 .product-wrapper>a:hover{
-    color: #cc4135 !important;
+    color: @accent-color !important;
 }
 
-.navbar-static-top, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
     margin-bottom: 0;
     height: 100px !important;
 }
@@ -51,19 +73,18 @@
     padding-top: 35px;
 }
 
-.img-thumbnail {
-    border: 0;
+.pagination>li>a{
+    background-color: @accent-color !important;
 }
 
-.pagination .page-link{
-    background-color: #cc4135 !important;
-}
+/* Fixes summernote editor issue: https://github.com/summernote/summernote/issues/2516 */
+body .popover{display:none !important; }
 
 .navbar-brand{
-    color: #cc4135 !important;
+    color: @accent-color !important;
     letter-spacing: 4px;
     padding-left: 20px !important;
-    padding-top: 0px !important;
+    padding-top: 0 !important;
     height: 80px !important;
     font-size: 55px !important;
 }
@@ -75,24 +96,19 @@
 }
 
 .navbar-default .badge {
-    background-color: #cc4135;
+    background-color: @accent-color;
 }
 
-.pushy-link, #empty-cart{
-    border-color: #E74C3C;
-    background-color: #E74C3C;
-}
-
-.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover, 
+.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover,
 #empty-cart:hover, #empty-cart:focus, #empty-cart:active, #empty-cart:active:hover{
-    border-color: #cc4135;
-    background-color: #cc4135;
+    border-color: @accent-color;
+    background-color: @accent-color;
 }
 
 .navActive>a{
     margin-bottom: 0px;
     padding-top: 15px;
-    border-bottom: 5px solid #E74C3C;
+    border-bottom: 5px solid @accent-color;
 }
 
 .navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a {
@@ -102,10 +118,6 @@
 .navbar-default .navbar-nav>li>a {
     color: #838b8f;
     font-size: 20px;
-}
-
-.has-error input{
-    border-color: #dc3545;
 }
 
 @media only screen and (max-width: 768px){
@@ -139,10 +151,10 @@
         padding-right: 7.5px;
         padding-left: 7.5px;
     }
- 
+
     .navActive>a{
         color: white !important;
-        background-color: #E74C3C;
+        background-color: @accent-color;
         border-bottom: none;
     }
 
