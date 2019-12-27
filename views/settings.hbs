@@ -97,14 +97,6 @@
                     <p class="help-block">{{ @root.__ "The heading text for your menu." }}</p>
                 </div>
                 <div class="form-group">
-                    <label>{{ @root.__ "Menu location" }}: </label>
-                    <select class="form-control" name="menuLocation">
-                        <option {{selectState 'top' config.menuLocation}}>top</option>
-                        <option {{selectState 'side' config.menuLocation}}>side</option>
-                    </select>
-                    <p class="help-block">{{ @root.__ "The location of your menu." }}</p>
-                </div>
-                <div class="form-group">
                     <label>Footer HTML</label>
                     <textarea class="form-control codemirrorArea" rows="5" id="footerHtml" name="footerHtml">{{footerHtml}}</textarea>
                     <input type="hidden" id="footerHtml_input" name="footerHtml_input">

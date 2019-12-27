@@ -6,6 +6,8 @@
 @text-gray-color: #aaaaaa;
 @separator-color: #eeeeee;
 @breadcrumb-bg: #f8f9fa;
+@product-title-font-size: 20px;
+@product-price-font-size: 20px;
 
 html {
     position: relative;
@@ -137,7 +139,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .product-title{
-    font-size: 24px;
+    font-size: @product-title-font-size;
     margin-top: 0px;
 }
 
@@ -154,7 +156,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .product-price{
     padding-bottom: 10px;
-    font-size: 20px;
+    font-size: @product-price-font-size;
     color: @text-gray-color;
 }
 
@@ -278,15 +280,6 @@ input[type=number]::-webkit-outer-spin-button {
 
 .search-bar{
     margin-top: 10px;
-}
-
-.searchMenuLocation-side{
-    padding-left: 25px;
-    padding-right: 25px;
-}
-.searchMenuLocation-top{
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
 .breadcrumb{

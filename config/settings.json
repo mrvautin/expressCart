@@ -15,7 +15,6 @@
     "productsPerRow": 3,
     "productsPerPage": 6,
     "menuTitle": "Menu",
-    "menuLocation": "side",
     "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
     "googleAnalytics": "",
     "customCss": ".footer{padding-top: 5px;}",

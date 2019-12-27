@@ -62,11 +62,6 @@
             "type": "string",
             "default": "Menu"
         },
-        "menuLocation": {
-            "type": "string",
-            "default": "side",
-            "enum": ["top", "side"]
-        },
         "footerHtml": {
             "type": "string",
             "default": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;"
