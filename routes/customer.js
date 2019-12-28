@@ -221,6 +221,7 @@ router.get('/admin/customer/view/:id?', restrict, async (req, res) => {
         session: req.session,
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
+        countryList: common.getCountryList(),
         config: req.app.config,
         editor: true,
         helpers: req.handlebars.helpers

@@ -44,7 +44,12 @@
             <div class="col-sm-10">
                 <div class="form-group">
                 <label class="control-label">{{ @root.__ "Country" }} *</label>
-                    <input type="text" class="form-control" name="country" id="country" value={{result.country}} required>
+                    <select class="form-control" id="country" name="country" required>
+                        <option value="" disabled selected>Select Country</option>
+                        {{#each countryList}}
+                        <option {{selectState this @root.result.country}} value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
                 </div>
             </div>
             <div class="col-sm-5">
