@@ -13,8 +13,8 @@
                     <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-fluid" alt="...">
                 </div>
             {{/if}}
-            {{#ifCond images.length '>' 1}}
-                {{#each images}}
+            {{#ifCond @root.images.length '>' 1}}
+                {{#each @root.images}}
                     <div class="vertical-center top-pad-20 col-sm-6">
                         <img src="{{this.path}}" class="thumbnail-image img-fluid">
                     </div>
