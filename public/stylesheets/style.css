@@ -507,8 +507,8 @@ a {
   .product-layout {
     padding-top: 0px;
     padding-bottom: 30px;
-    padding-left: 10px;
-    padding-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
   #btn_search {
     border-top-right-radius: 4px;

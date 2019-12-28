@@ -87,11 +87,11 @@
     {{else}}
     <body>
     {{/if}}
-        <nav class="navbar navbar-expand-lg mainNavBar">
+        <nav class="navbar navbar-expand-lg justify-content-between mainNavBar">
             <a class="navbar-brand" href="/">{{@root.config.cartTitle}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars" aria-hidden="true"></i>
-            </button> 
+            </button>
             <div id="navbarText">
                 <ul class="navbar-nav ml-auto">
                     {{#ifCond @root.config.enableLanguages "!=" false}}
