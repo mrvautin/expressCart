@@ -8,7 +8,7 @@
         </ol>
     </nav>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-12 col-md-5 bottom-pad-15">
             <div class="card top-marg-15 bottom-marg-15">
                 <div class="card-body">
                     <h5 class="card-title">{{ @root.__ "Shipping options" }}</h5>
@@ -26,7 +26,7 @@
             <a href="/checkout/information" class="btn btn-outline-primary pull-left">{{ @root.__ "Return to information" }}</a>
             <a href="/checkout/payment" class="btn btn-outline-primary pull-right">{{ @root.__ "Proceed to payment" }}</a>
         </div>
-        <div id="cart" class="col-md-7">
+        <div id="cart" class="col-md-7 d-none">
             {{> (getTheme 'cart')}}
             <div class="row">
                 {{#if @root.session.cart}}

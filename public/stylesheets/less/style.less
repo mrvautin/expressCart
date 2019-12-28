@@ -109,6 +109,15 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0; 
 }
 
+.navbar-brand{
+    color: @secondary-btn-color;
+    letter-spacing: 4px;
+    padding-left: 20px;
+    padding-top: 10px;
+    height: 80px;
+    font-size: 55px;
+}
+
 .navbar-brand>img {
     width: auto;
     height: 100%;
@@ -421,6 +430,16 @@ input.form-control.customerDetails{
     margin-bottom: 0;
 }
 
+.previous a{
+    border-bottom-left-radius: .25rem;
+    border-top-left-radius: .25rem;
+}
+
+.next a{
+    border-bottom-right-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+
 .image-next{
     position: absolute;
     top: 180px; 
@@ -556,6 +575,7 @@ a {
     .pushy {
         width: calc(100%);
     }
+
     .pushy-right {
         -webkit-transform: translate3d(calc(100%), 0, 0);
         -ms-transform: translate3d(calc(100%), 0, 0);
@@ -600,6 +620,8 @@ a {
     .product-layout{
         padding-top: 0px;
         padding-bottom: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     #btn_search{
@@ -631,5 +653,14 @@ a {
 
     body{
         margin-bottom: @footer-height;
+    }
+
+    .navbar-brand {
+        padding-left: 0px;
+        height: auto;
+    }
+
+    .thumbnail{
+        min-height: 0;
     }
 }

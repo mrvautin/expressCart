@@ -121,16 +121,16 @@ handlebars = handlebars.create({
         },
         perRowClass: (numProducts) => {
             if(parseInt(numProducts) === 1){
-                return'col-md-12 product-item';
+                return'col-6 col-md-12 product-item';
             }
             if(parseInt(numProducts) === 2){
-                return'col-md-6 product-item';
+                return'col-6 col-md-6 product-item';
             }
             if(parseInt(numProducts) === 3){
-                return'col-md-4 product-item';
+                return'col-6 col-md-4 product-item';
             }
             if(parseInt(numProducts) === 4){
-                return'col-md-3 product-item';
+                return'col-6 col-md-3 product-item';
             }
 
             return'col-md-6 product-item';

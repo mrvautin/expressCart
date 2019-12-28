@@ -59,16 +59,7 @@
     background-color: #cc4135 !important;
 }
 
-.navbar-brand{
-    color: #cc4135 !important;
-    letter-spacing: 4px;
-    padding-left: 20px !important;
-    padding-top: 0px !important;
-    height: 80px !important;
-    font-size: 55px !important;
-}
-
-.navbar-brand-image, .navbar-brand{
+.navbar-brand-image {
     height: 80px;
     padding-left: 10px;
     padding-top: 10px;
@@ -144,9 +135,5 @@
         color: white !important;
         background-color: #E74C3C;
         border-bottom: none;
-    }
-
-    .footer {
-        padding-top: 10px;
     }
 }

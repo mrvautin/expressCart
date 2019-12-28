@@ -12,13 +12,13 @@
             {{/if}}
         </ol>
     </nav>
-    <div class="row 1">
+    <div class="row">
         {{#if paymentMessage}}
         <div class="col-sm-12">
             <p class="text-danger text-center">{{paymentMessage}}</p>
         </div>
         {{/if}}
-        <div class="col-md-5">
+        <div class="col-12 col-md-5 bottom-pad-15">
             <div class="card top-marg-15">
                 <div class="card-body customer-details-login">
                     <h5 class="card-heading">{{ @root.__ "Customer details" }}</h5>
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-7" id="cart">
+        <div class="col-md-7 d-none" id="cart">
             {{> (getTheme 'cart')}}
             {{#if @root.session.cart}}
             <div class="row">

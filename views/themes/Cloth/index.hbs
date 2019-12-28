@@ -1,5 +1,5 @@
 {{> themes/Cloth/front-menu}}
-<div class="productsWrapper col-sm-8 offset-sm-2">
+<div class="productsWrapper col-sm-12 col-md-8 offset-md-2">
     {{#if filtered}}
         <div class="product-layout col-sm-12">
             {{#ifCond @root.paginateUrl '==' 'category'}}
@@ -17,7 +17,7 @@
         {{/ifCond}}
         {{#each results}}
             <div class="{{perRowClass ../config.productsPerRow}}">
-                <div class="thumbnail1">
+                <div class="thumbnail">
                     {{#if productPermalink}}
                         <div class="product-wrapper">
                             <a href="/product/{{this.productPermalink}}">

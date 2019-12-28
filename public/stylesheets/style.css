@@ -81,6 +81,14 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+.navbar-brand {
+  color: #cc3a2c;
+  letter-spacing: 4px;
+  padding-left: 20px;
+  padding-top: 10px;
+  height: 80px;
+  font-size: 55px;
+}
 .navbar-brand > img {
   width: auto;
   height: 100%;
@@ -217,14 +225,6 @@ input[type=number]::-webkit-outer-spin-button {
 .search-bar {
   margin-top: 10px;
 }
-.searchMenuLocation-side {
-  padding-left: 25px;
-  padding-right: 25px;
-}
-.searchMenuLocation-top {
-  padding-left: 5px;
-  padding-right: 5px;
-}
 .breadcrumb {
   background-color: #f8f9fa;
   margin-top: 10px;
@@ -342,6 +342,14 @@ input.form-control.customerDetails {
 }
 .admin {
   margin-bottom: 0;
+}
+.previous a {
+  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 0.25rem;
+}
+.next a {
+  border-bottom-right-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 .image-next {
   position: absolute;
@@ -499,6 +507,8 @@ a {
   .product-layout {
     padding-top: 0px;
     padding-bottom: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   #btn_search {
     border-top-right-radius: 4px;
@@ -523,5 +533,12 @@ a {
   }
   body {
     margin-bottom: 100px;
+  }
+  .navbar-brand {
+    padding-left: 0px;
+    height: auto;
+  }
+  .thumbnail {
+    min-height: 0;
   }
 }
