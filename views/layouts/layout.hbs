@@ -95,14 +95,16 @@
             <div id="navbarText">
                 <ul class="navbar-nav ml-auto">
                     {{#ifCond @root.config.enableLanguages "!=" false}}
-                    <li class="nav-item dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ @root.__ "Languages" }} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ @root.__ "Languages" }}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#availableLanguages}}
-                                <li><a href="/lang/{{this}}">{{@root.__ this}}</a></li>
+                                <li><a class="dropdown-item" href="/lang/{{this}}">{{@root.__ this}}</a></li>
                             {{/availableLanguages}}
-                        </ul>
-                    </li>
+                        </div>
+                    </div>
                     {{/ifCond}}
                     {{#unless admin}}
                         {{#if @root.session.cart}}
