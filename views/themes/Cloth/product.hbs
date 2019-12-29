@@ -14,11 +14,13 @@
                 </div>
             {{/if}}
             {{#ifCond @root.images.length '>' 1}}
+                <div class="row">
                 {{#each @root.images}}
-                    <div class="vertical-center top-pad-20 col-sm-6">
+                    <div class="vertical-center top-pad-20 col-6">
                         <img src="{{this.path}}" class="thumbnail-image img-fluid">
                     </div>
                 {{/each}}
+                </div>
             {{/ifCond}}
         </div>
         <div class="col-sm-12 col-md-6 ml-auto">
