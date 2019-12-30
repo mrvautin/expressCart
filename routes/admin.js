@@ -13,7 +13,7 @@ const router = express.Router();
 
 // Admin section
 router.get('/admin', restrict, (req, res, next) => {
-    res.redirect('/admin/orders');
+    res.redirect('/admin/dashboard');
 });
 
 // logout
@@ -61,18 +61,18 @@ router.post('/admin/login_action', async (req, res) => {
 
     // we have a user under that email so we compare the password
     bcrypt.compare(req.body.password, user.userPassword)
-    .then((result) => {
-        if(result){
-            req.session.user = req.body.email;
-            req.session.usersName = user.usersName;
-            req.session.userId = user._id.toString();
-            req.session.isAdmin = user.isAdmin;
-            res.status(200).json({ message: 'Login successful' });
-            return;
-        }
-        // password is not correct
-        res.status(400).json({ message: 'Access denied. Check password and try again.' });
-    });
+        .then((result) => {
+            if(result){
+                req.session.user = req.body.email;
+                req.session.usersName = user.usersName;
+                req.session.userId = user._id.toString();
+                req.session.isAdmin = user.isAdmin;
+                res.status(200).json({ message: 'Login successful' });
+                return;
+            }
+            // password is not correct
+            res.status(400).json({ message: 'Access denied. Check password and try again.' });
+        });
 });
 
 // setup form is shown when there are no users setup in the DB
@@ -125,6 +125,57 @@ router.post('/admin/setup_action', async (req, res) => {
         }
     }
     res.status(200).json({ message: 'Already setup.' });
+});
+
+// dashboard
+router.get('/admin/dashboard', restrict, async (req, res) => {
+    const db = req.app.db;
+
+    // Collate data for dashboard
+    const dashboardData = {
+        productsCount: await db.products.countDocuments({
+            productPublished: true
+        }),
+        ordersCount: await db.orders.countDocuments({}),
+        ordersAmount: await db.orders.aggregate([{ $match: {} },
+            { $group: { _id: null, sum: { $sum: '$orderTotal' } }
+        }]).toArray(),
+        productsSold: await db.orders.aggregate([{ $match: {} },
+            { $group: { _id: null, sum: { $sum: '$orderProductCount' } }
+        }]).toArray(),
+        topProducts: await db.orders.aggregate([
+            { $project: { _id: 0 } },
+            { $project: { o: { $objectToArray: '$orderProducts' } } },
+            { $unwind: '$o' },
+            { $group: {
+                    _id: '$o.v.productId',
+                    title: { $last: '$o.v.title' },
+                    productImage: { $last: '$o.v.productImage' },
+                    count:
+                    {
+                        $sum: '$o.v.quantity'
+                    }
+            } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]).toArray()
+    };
+
+    // Fix aggregate data
+    dashboardData.ordersAmount = dashboardData.ordersAmount[0].sum;
+    dashboardData.productsSold = dashboardData.productsSold[0].sum;
+
+    res.render('dashboard', {
+        title: 'Cart dashboard',
+        session: req.session,
+        admin: true,
+        dashboardData,
+        themes: common.getThemes(),
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config
+    });
 });
 
 // settings
@@ -427,7 +478,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         if(!product.productImage){
             await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
         }
-         // Return success message
+        // Return success message
         res.status(200).json({ message: 'File uploaded successfully' });
         return;
     }
