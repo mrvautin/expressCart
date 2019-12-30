@@ -114,7 +114,7 @@
                     {{/unless}}
                     {{#unless admin}}
                         {{#if @root.session.cart}}
-                            <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.cartTotalItems}}</span></a></li>
+                            <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
                             {{else}}
                             <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
                         {{/if}}
