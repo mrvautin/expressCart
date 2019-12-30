@@ -98,6 +98,7 @@
             </button>
             <div id="navbarText">
                 <ul class="navbar-nav ml-auto">
+                    {{#unless admin}}
                     {{#ifCond @root.config.enableLanguages "!=" false}}
                     <div class="dropdown">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -110,6 +111,7 @@
                         </div>
                     </div>
                     {{/ifCond}}
+                    {{/unless}}
                     {{#unless admin}}
                         {{#if @root.session.cart}}
                             <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.cartTotalItems}}</span></a></li>
