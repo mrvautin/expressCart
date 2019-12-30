@@ -75,13 +75,13 @@ test('[Success] Update cart', async t => {
         .get('/cart/retrieve')
         .expect(200);
 
-    // Adjust the quantity of an item
-    cart.body.cart[0].quantity = 10;
+    const productId = g.products[0]._id;
 
     const res = await g.request
         .post('/product/updatecart')
         .send({
-            items: JSON.stringify(cart.body.cart)
+            productId: productId,
+            quantity: 10
         })
         .expect(200);
 
@@ -92,8 +92,8 @@ test('[Success] Update cart', async t => {
         .expect(200);
 
     // Check new quantity and total price has been updated
-    t.deepEqual(checkCart.body.cart[0].quantity, 10);
-    t.deepEqual(checkCart.body.cart[0].totalItemPrice, cart.body.cart[0].totalItemPrice * 10);
+    t.deepEqual(checkCart.body.cart[productId].quantity, 10);
+    t.deepEqual(checkCart.body.cart[productId].totalItemPrice, cart.body.cart[productId].totalItemPrice * 10);
 });
 
 test('[Fail] Cannot add subscripton when other product in cart', async t => {
@@ -105,7 +105,7 @@ test('[Fail] Cannot add subscripton when other product in cart', async t => {
             productOptions: {}
         })
         .expect(400);
-    t.deepEqual(res.body.message, 'You cannot combine scubscription products with existing in your cart. Empty your cart and try again.');
+    t.deepEqual(res.body.message, 'You cannot combine subscription products with existing in your cart. Empty your cart and try again.');
 });
 
 test('[Fail] Add product to cart with not enough stock', async t => {
@@ -132,10 +132,20 @@ test('[Fail] Add incorrect product to cart', async t => {
 });
 
 test('[Success] Remove item previously added to cart', async t => {
+    // Add a second product to cart
+    await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[1]._id,
+            productQuantity: 1,
+            productOptions: JSON.stringify(g.products[1].productOptions)
+        })
+        .expect(200);
+
     const res = await g.request
         .post('/product/removefromcart')
         .send({
-            cartId: g.products[0]._id
+            productId: g.products[0]._id
         })
         .expect(200);
     t.deepEqual(res.body.message, 'Product successfully removed');

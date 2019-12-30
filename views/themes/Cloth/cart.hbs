@@ -2,51 +2,53 @@
 <div class="card top-marg-15 bottom-marg-15">
     <div class="card-body cart-body">
         <h5 class="card-title">{{ @root.__ "Cart contents" }}</h5>
-        {{#each @root.session.cart}}
-        <div class="d-flex flex-row bottom-pad-15">
-            <div class="col-xs-4 col-md-3">
-                {{#if productImage}}
-                <img class="img-fluid" src="{{this.productImage}}" alt="{{this.title}} product image"> {{else}}
-                <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image"> {{/if}}
-            </div>
-            <div class="col-sm-12 col-md-7">
-                <div class="row h-200">
-                    <div class="col-sm-12 text-left no-pad-left">
-                        <h6><a href="/product/{{this.link}}">{{this.title}}</a></h6>
-                    </div>
-                    <div class="col-sm-12 text-left no-pad-left">
-                    {{#each this.options}} 
-                        {{#if @last}} 
-                            {{@key}}: {{this}} 
-                            {{else}} 
-                            {{@key}}: {{this}} / 
-                        {{/if}} 
-                    {{/each}}
-                    </div>
-                    {{#ifCond cartReadOnly '!=' true}}
-                    <div class="col-md-8 no-pad-left">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
-                            </div>
-                            <input type="number" class="form-control cart-product-quantity text-center" data-id="{{../this.productId}}" data-index="{{@key}}"
-                                maxlength="2" value="{{../this.quantity}}">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
+        <div id="cartBodyWrapper">
+            {{#each @root.session.cart}}
+            <div class="d-flex flex-row bottom-pad-15">
+                <div class="col-xs-4 col-md-3">
+                    {{#if productImage}}
+                    <img class="img-fluid" src="{{this.productImage}}" alt="{{this.title}} product image"> {{else}}
+                    <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image"> {{/if}}
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="row h-200">
+                        <div class="col-sm-12 text-left no-pad-left">
+                            <h6><a href="/product/{{this.link}}">{{this.title}}</a></h6>
+                        </div>
+                        <div class="col-sm-12 text-left no-pad-left">
+                        {{#each this.options}} 
+                            {{#if @last}} 
+                                {{@key}}: {{this}} 
+                                {{else}} 
+                                {{@key}}: {{this}} / 
+                            {{/if}} 
+                        {{/each}}
+                        </div>
+                        {{#ifCond cartReadOnly '!=' true}}
+                        <div class="col-md-8 no-pad-left">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
+                                </div>
+                                <input type="number" class="form-control cart-product-quantity text-center" data-id="{{../this.productId}}" data-index="{{@key}}"
+                                    maxlength="2" value="{{../this.quantity}}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-md-4 text-right">
+                            <button class="btn btn-outline-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="fa fa-trash" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
+                        </div>
+                        {{/ifCond}}
                     </div>
-                    <div class="col-md-4 text-right">
-                        <button class="btn btn-outline-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="fa fa-trash" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
-                    </div>
-                    {{/ifCond}}
+                </div>
+                <div class="align-self-center col-sm-12 col-md-2 text-right no-pad-right">
+                    <strong class="my-auto">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
                 </div>
             </div>
-            <div class="align-self-center col-sm-12 col-md-2 text-right no-pad-right">
-                <strong class="my-auto">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
-            </div>
+            {{/each}}
         </div>
-        {{/each}}
         <div class="container-fluid">
             {{#if @root.session.cart}}
             <div class="row">

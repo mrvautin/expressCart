@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
-const async = require('async');
 const _ = require('lodash');
 const {
     getId,
@@ -11,7 +10,7 @@ const {
     getMenu,
     getPaymentConfig,
     getImages,
-    updateTotalCartAmount,
+    updateTotalCart,
     updateSubscriptionCheck,
     getData,
     addSitemapProducts,
@@ -155,6 +154,10 @@ router.get('/checkout/cart', (req, res) => {
     });
 });
 
+router.get('/checkout/cartdata', (req, res) => {
+    res.status(200).json(req.session.cart);
+});
+
 router.get('/checkout/payment', (req, res) => {
     const config = req.app.config;
 
@@ -244,14 +247,10 @@ router.get('/cart/retrieve', async (req, res, next) => {
 });
 
 // Updates a single product quantity
-router.post('/product/updatecart', (req, res, next) => {
+router.post('/product/updatecart', async (req, res, next) => {
     const db = req.app.db;
     const config = req.app.config;
-    const cartItems = JSON.parse(req.body.items);
-    let hasError = false;
-    let stockError = false;
-
-    console.log('cartItems', cartItems);
+    const cartItem = req.body;
 
     // Check cart exists
     if(!req.session.cart){
@@ -259,100 +258,84 @@ router.post('/product/updatecart', (req, res, next) => {
         return;
     }
 
-    console.log('req.session.cart', req.session.cart);
+    // Calculate the quantity to update
+    let productQuantity = cartItem.quantity ? cartItem.quantity : 1;
+    if(typeof productQuantity === 'string'){
+        productQuantity = parseInt(productQuantity);
+    }
 
-    async.eachSeries(cartItems, async (cartItem, callback) => {
-        // Find index in cart
-        const cartIndex = _.findIndex(req.session.cart, { productId: cartItem.productId });
+    if(productQuantity === 0){
+        // quantity equals zero so we remove the item
+        delete req.session.cart[cartItem.productId];
+        res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
 
-        // Calculate the quantity to update
-        let productQuantity = cartItem.quantity ? cartItem.quantity : 1;
-        if(typeof productQuantity === 'string'){
-            productQuantity = parseInt(productQuantity);
-        }
+    const product = await db.products.findOne({ _id: getId(cartItem.productId) });
+    if(!product){
+        res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
 
-        console.log('productQuantity', productQuantity);
-        if(productQuantity === 0){
-            // quantity equals zero so we remove the item
-            req.session.cart.splice(cartIndex, 1);
-            callback(null);
+    // If stock management on check there is sufficient stock for this product
+    if(config.trackStock){
+        if(productQuantity > product.productStock){
+            res.status(400).json({ message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length });
             return;
         }
-        const product = await db.products.findOne({ _id: getId(cartItem.productId) });
-        if(product){
-            // If stock management on check there is sufficient stock for this product
-            if(config.trackStock){
-                if(productQuantity > product.productStock){
-                    hasError = true;
-                    stockError = true;
-                    callback(null);
-                    return;
-                }
-            }
+    }
 
-            const productPrice = parseFloat(product.productPrice).toFixed(2);
-            if(req.session.cart[cartIndex]){
-                req.session.cart[cartIndex].quantity = productQuantity;
-                req.session.cart[cartIndex].totalItemPrice = productPrice * productQuantity;
-                callback(null);
-            }
-        }else{
-            hasError = true;
-            callback(null);
-        }
-    }, async () => {
-        // update total cart amount
-        updateTotalCartAmount(req, res);
+    const productPrice = parseFloat(product.productPrice).toFixed(2);
+    if(!req.session.cart[cartItem.productId]){
+        res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
 
-        // Update checking cart for subscription
-        updateSubscriptionCheck(req, res);
+    // Update the cart
+    req.session.cart[cartItem.productId].quantity = productQuantity;
+    req.session.cart[cartItem.productId].totalItemPrice = productPrice * productQuantity;
 
-        // Update cart to the DB
-        await db.cart.updateOne({ sessionId: req.session.id }, {
-            $set: { cart: req.session.cart }
-        });
+    // update total cart amount
+    updateTotalCart(req, res);
 
-        // show response
-        if(hasError === false){
-            res.status(200).json({ message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length });
-        }else{
-            if(stockError){
-                res.status(400).json({ message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length });
-            }else{
-                res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
-            }
-        }
+    // Update checking cart for subscription
+    updateSubscriptionCheck(req, res);
+
+    // Update cart to the DB
+    await db.cart.updateOne({ sessionId: req.session.id }, {
+        $set: { cart: req.session.cart }
     });
+
+    res.status(200).json({ message: 'Cart successfully updated', totalCartItems: Object.keys(req.session.cart).length });
 });
 
 // Remove single product from cart
 router.post('/product/removefromcart', async (req, res, next) => {
     const db = req.app.db;
-    let itemRemoved = false;
+
+    // Check for item in cart
+    if(!req.session.cart[req.body.productId]){
+        return res.status(400).json({ message: 'Product not found in cart' });
+    }
 
     // remove item from cart
-    req.session.cart.forEach((item) => {
-        if(item){
-            if(item.productId === req.body.cartId){
-                itemRemoved = true;
-                req.session.cart = _.pull(req.session.cart, item);
-            }
-        }
-    });
+    delete req.session.cart[req.body.productId];
+
+    // If not items in cart, empty it
+    if(Object.keys(req.session.cart).length === 0){
+        return emptyCart(req, res, 'json');
+    }
 
     // Update cart in DB
     await db.cart.updateOne({ sessionId: req.session.id }, {
         $set: { cart: req.session.cart }
     });
-    // update total cart amount
-    updateTotalCartAmount(req, res);
+    // update total cart
+    updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
 
-    if(itemRemoved === false){
-        return res.status(400).json({ message: 'Product not found in cart' });
-    }
     return res.status(200).json({ message: 'Product successfully removed', totalCartItems: Object.keys(req.session.cart).length });
 });
 
@@ -372,8 +355,8 @@ const emptyCart = async (req, res, type, customMessage) => {
     // Remove cart from DB
     await db.cart.deleteOne({ sessionId: req.session.id });
 
-    // update total cart amount
-    updateTotalCartAmount(req, res);
+    // update total cart
+    updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -409,7 +392,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // setup cart object if it doesn't exist
     if(!req.session.cart){
-        req.session.cart = [];
+        req.session.cart = {};
     }
 
     // Get the product from the DB
@@ -425,14 +408,19 @@ router.post('/product/addtocart', async (req, res, next) => {
     }
 
     // If existing cart isn't empty check if product is a subscription
-    if(req.session.cart.length !== 0){
+    if(Object.keys(req.session.cart).length !== 0){
         if(product.productSubscription){
-            return res.status(400).json({ message: 'You cannot combine scubscription products with existing in your cart. Empty your cart and try again.' });
+            return res.status(400).json({ message: 'You cannot combine subscription products with existing in your cart. Empty your cart and try again.' });
         }
     }
 
     // If stock management on check there is sufficient stock for this product
     if(config.trackStock && product.productStock){
+        // If there is more stock than total (ignoring held)
+        if(productQuantity > product.productStock){
+            return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+        }
+
         const stockHeld = await db.cart.aggregate(
             {
                 $match: {
@@ -478,22 +466,14 @@ router.post('/product/addtocart', async (req, res, next) => {
             }
         }catch(ex){}
     }
-    const findDoc = {
-        productId: req.body.productId,
-        options: options
-    };
 
     // if exists we add to the existing value
-    const cartIndex = _.findIndex(req.session.cart, findDoc);
     let cartQuantity = 0;
-    if(cartIndex > -1){
-        cartQuantity = parseInt(req.session.cart[cartIndex].quantity) + productQuantity;
-        req.session.cart[cartIndex].quantity = cartQuantity;
-        req.session.cart[cartIndex].totalItemPrice = productPrice * parseInt(req.session.cart[cartIndex].quantity);
+    if(req.session.cart[product._id]){
+        cartQuantity = parseInt(req.session.cart[product._id].quantity) + productQuantity;
+        req.session.cart[product._id].quantity = cartQuantity;
+        req.session.cart[product._id].totalItemPrice = productPrice * parseInt(req.session.cart[product._id].quantity);
     }else{
-        // Doesnt exist so we add to the cart session
-        req.session.cartTotalItems = req.session.cartTotalItems + productQuantity;
-
         // Set the card quantity
         cartQuantity = productQuantity;
 
@@ -514,7 +494,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
 
         // merge into the current cart
-        req.session.cart.push(productObj);
+        req.session.cart[product._id] = productObj;
     }
 
     // Update cart to the DB
@@ -523,7 +503,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }, { upsert: true });
 
     // update total cart amount
-    updateTotalCartAmount(req, res);
+    updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -532,8 +512,6 @@ router.post('/product/addtocart', async (req, res, next) => {
         req.session.cartSubscription = product.productSubscription;
     }
 
-    // update how many products in the shopping cart
-    req.session.cartTotalItems = req.session.cart.reduce((a, b) => +a + +b.quantity, 0);
     return res.status(200).json({ message: 'Cart successfully updated', totalCartItems: req.session.cartTotalItems });
 });
 
