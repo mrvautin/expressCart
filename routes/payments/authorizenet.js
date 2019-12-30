@@ -60,6 +60,8 @@ router.post('/checkout_action', (req, res, next) => {
             orderPaymentGateway: 'AuthorizeNet',
             orderPaymentMessage: 'Your payment was successfully completed',
             orderTotal: req.session.totalCartAmount,
+            orderItemCount: req.session.totalCartItems,
+            orderProductCount: req.session.totalCartProducts,
             orderEmail: req.session.customerEmail,
             orderFirstname: req.session.customerFirstname,
             orderLastname: req.session.customerLastname,

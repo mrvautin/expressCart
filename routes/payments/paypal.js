@@ -164,6 +164,8 @@ router.post('/checkout_action', (req, res, next) => {
                 orderPaymentId: payment.id,
                 orderPaymentGateway: 'Paypal',
                 orderTotal: req.session.totalCartAmount,
+                orderItemCount: req.session.totalCartItems,
+                orderProductCount: req.session.totalCartProducts,
                 orderEmail: req.session.customerEmail,
                 orderFirstname: req.session.customerFirstname,
                 orderLastname: req.session.customerLastname,

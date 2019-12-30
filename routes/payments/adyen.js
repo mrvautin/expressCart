@@ -77,6 +77,8 @@ router.post('/checkout_action', async (req, res, next) => {
         orderPaymentGateway: 'Adyen',
         orderPaymentMessage: response.refusalReason,
         orderTotal: req.session.totalCartAmount,
+        orderItemCount: req.session.totalCartItems,
+        orderProductCount: req.session.totalCartProducts,
         orderEmail: req.session.customerEmail,
         orderFirstname: req.session.customerFirstname,
         orderLastname: req.session.customerLastname,
