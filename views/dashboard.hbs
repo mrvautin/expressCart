@@ -53,6 +53,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title">Top products sold</h5>
                     <ul class="list-unstyled">
+                        {{#if dashboardData.topProducts}}
                         {{#each dashboardData.topProducts}}
                         <li class="media my-4 align-middle">
                             <img src="{{this.productImage}}" class="col-2 mr-3 img-fluid" alt="">
@@ -62,6 +63,9 @@
                             </div>
                         </li>
                         {{/each}}
+                        {{else}}
+                            <h5 class="mt-3 mb-1 text-danger">Nothing to see yet. Do some orders.</h5>
+                        {{/if}}
                     </ul>
                 </div>
             </div>

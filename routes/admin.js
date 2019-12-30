@@ -151,10 +151,7 @@ router.get('/admin/dashboard', restrict, async (req, res) => {
                     _id: '$o.v.productId',
                     title: { $last: '$o.v.title' },
                     productImage: { $last: '$o.v.productImage' },
-                    count:
-                    {
-                        $sum: '$o.v.quantity'
-                    }
+                    count: { $sum: '$o.v.quantity' }
             } },
             { $sort: { count: -1 } },
             { $limit: 5 }
@@ -162,8 +159,14 @@ router.get('/admin/dashboard', restrict, async (req, res) => {
     };
 
     // Fix aggregate data
-    dashboardData.ordersAmount = dashboardData.ordersAmount[0].sum;
-    dashboardData.productsSold = dashboardData.productsSold[0].sum;
+    if(dashboardData.ordersAmount.length > 0){
+        dashboardData.ordersAmount = dashboardData.ordersAmount[0].sum;
+    }
+    if(dashboardData.productsSold.length > 0){
+        dashboardData.productsSold = dashboardData.productsSold[0].sum;
+    }else{
+        dashboardData.productsSold = 0;
+    }
 
     res.render('dashboard', {
         title: 'Cart dashboard',
