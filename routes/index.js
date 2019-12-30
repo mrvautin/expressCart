@@ -512,7 +512,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         req.session.cartSubscription = product.productSubscription;
     }
 
-    return res.status(200).json({ message: 'Cart successfully updated', totalCartItems: req.session.cartTotalItems });
+    return res.status(200).json({ message: 'Cart successfully updated', totalCartItems: req.session.totalCartItems });
 });
 
 // search products
