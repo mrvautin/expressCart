@@ -36,13 +36,3 @@ test('[Success] Get orders by <Paid> status', async t => {
     // Check the returned order length
     t.deepEqual(1, res.body.orders.length);
 });
-
-// test.skip('[Success] Filter orders', async t => {
-//     const res = await g.request
-//         .get('/admin/orders/filter/test@test.com')
-//         .set('apiKey', g.users[0].apiKey)
-//         .expect(200);
-
-//     // Check the returned order length
-//     t.deepEqual(2, res.body.orders.length);
-// });

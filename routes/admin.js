@@ -293,7 +293,7 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
     }
 });
 
-// delete page
+// delete a page
 router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 

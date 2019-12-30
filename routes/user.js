@@ -85,7 +85,7 @@ router.get('/admin/user/new', restrict, (req, res) => {
     });
 });
 
-// delete user
+// delete a user
 router.post('/admin/user/delete', restrict, async (req, res) => {
     const db = req.app.db;
 

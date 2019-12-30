@@ -282,7 +282,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     }
 });
 
-// delete product
+// delete a product
 router.post('/admin/product/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
