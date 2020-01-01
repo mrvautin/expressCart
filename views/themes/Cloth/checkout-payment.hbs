@@ -19,7 +19,7 @@
                         <li class="list-group-item">
                             {{@root.session.customerFirstname}} {{@root.session.customerLastname}} - 
                             {{@root.session.customerEmail}}
-                            <span class="pull-right"><a href="/checkout/information">Change</a></span>
+                            <span class="float-right"><a href="/checkout/information">Change</a></span>
                         </li>
                     </ul>
                     <ul class="list-group bottom-pad-15">
@@ -31,12 +31,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <span><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span>
-                                    <span class="pull-right"><a href="/checkout/shipping">Change</a></span>
+                                    <span class="float-right"><a href="/checkout/shipping">Change</a></span>
                                 </div>
                             </div>
                         </li>
                         {{else}}
-                        <li class="list-group-item">FREE shipping <span class="pull-right"><a href="/checkout/shipping">Change</a></span></li>
+                        <li class="list-group-item">FREE shipping <span class="float-right"><a href="/checkout/shipping">Change</a></span></li>
                         {{/if}}
                     </ul>
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">

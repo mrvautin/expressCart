@@ -2,12 +2,12 @@
 <div class="col-sm-9">
 	<div class="row">
 		<div class="col-md-8">
-			<h2>Users <span class="pull-right"><a href="/admin/user/new" class="btn btn-outline-success">{{ @root.__ "New user" }}</a></span></h2>
+			<h2>Users <span class="float-right"><a href="/admin/user/new" class="btn btn-outline-success">{{ @root.__ "New user" }}</a></span></h2>
 			<ul class="list-group">
 				{{#each users}}
 					<li class="list-group-item">
 						<strong>{{ @root.__ "User" }}:</strong> {{this.usersName}} - ({{this.userEmail}})
-				  		<span class="pull-right">
+				  		<span class="float-right">
                             <strong>{{ @root.__ "Role" }}: </strong>
                             {{#isAnAdmin this.isAdmin}}
                                 <span>Admin</span>

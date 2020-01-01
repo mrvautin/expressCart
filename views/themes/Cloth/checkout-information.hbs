@@ -49,7 +49,7 @@
                     <div class="row bottom-marg-15">
                         <div class="col-sm-12">
                             <button id="customerLogout"
-                                class="btn btn-outline-primary pull-right">{{ @root.__ "Change customer" }}</button>
+                                class="btn btn-outline-primary float-right">{{ @root.__ "Change customer" }}</button>
                         </div>
                     </div>
                     {{/if}}
@@ -76,8 +76,8 @@
                             </div>
                             {{/unless}}
                             <div class="col-sm-12">
-                                <a href="/checkout/cart" class="btn btn-outline-primary pull-left">Return to cart</a>
-                                <a href="/checkout/shipping" id="checkoutInformation" class="btn btn-outline-primary pull-right">Continue to shipping</a>
+                                <a href="/checkout/cart" class="btn btn-outline-primary float-left">Return to cart</a>
+                                <a href="/checkout/shipping" id="checkoutInformation" class="btn btn-outline-primary float-right">Continue to shipping</a>
                             </div>
                         </div>
                     </form>
@@ -89,7 +89,7 @@
             {{#if @root.session.cart}}
             <div class="row">
                 <div class="col-sm-12">
-                    <button class="btn btn-outline-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                    <button class="btn btn-outline-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
             {{/if}}
             </div>

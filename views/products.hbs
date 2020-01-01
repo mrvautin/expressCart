@@ -16,7 +16,7 @@
     <div class="col-sm-12">
         <ul class="list-group">
             <li class="list-group-item">
-                <span class="pull-right"><strong>{{ @root.__ "Published" }}</strong></span>
+                <span class="float-right"><strong>{{ @root.__ "Published" }}</strong></span>
                 {{#ifCond resultType '==' 'filtered'}}
                 <strong>{{ @root.__ "Products" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{searchTerm}} </span></strong>
                 {{else}}
@@ -25,8 +25,8 @@
             </li>
             {{#each results}}
                 <li class="list-group-item">
-                    <button class="pull-right btn text-danger btn-delete-product" data-id="{{this._id}}"> <i class="fa fa-trash-o"></i></button>
-                    <h4 class="pull-right"><input id="{{this._id}}" class="published_state" type="checkbox" {{checkedState this.productPublished}}></h4>
+                    <button class="float-right btn text-danger btn-delete-product" data-id="{{this._id}}"> <i class="fa fa-trash-o"></i></button>
+                    <h4 class="float-right"><input id="{{this._id}}" class="published_state" type="checkbox" {{checkedState this.productPublished}}></h4>
                     <div class="top-pad-8"><a href="/admin/product/edit/{{this._id}}">{{this.productTitle}}</a></div>
                 </li>
             {{/each}}

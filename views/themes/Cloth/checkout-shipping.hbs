@@ -15,23 +15,23 @@
                     {{#unless @root.session.shippingOptions}}
                         <ul class="list-group">
                             {{#if @root.session.shippingCostApplied}}
-                            <li class="list-group-item">Standard shipping <span class="pull-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span></li>
+                            <li class="list-group-item">Standard shipping <span class="float-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span></li>
                             {{else}}
-                            <li class="list-group-item">FREE shipping <span class="pull-right"></li>
+                            <li class="list-group-item">FREE shipping <span class="float-right"></li>
                             {{/if}}
                         </ul>
                     {{/unless}}
                 </div>
             </div>
-            <a href="/checkout/information" class="btn btn-outline-primary pull-left">{{ @root.__ "Return to information" }}</a>
-            <a href="/checkout/payment" class="btn btn-outline-primary pull-right">{{ @root.__ "Proceed to payment" }}</a>
+            <a href="/checkout/information" class="btn btn-outline-primary float-left">{{ @root.__ "Return to information" }}</a>
+            <a href="/checkout/payment" class="btn btn-outline-primary float-right">{{ @root.__ "Proceed to payment" }}</a>
         </div>
         <div id="cart" class="col-md-7 d-none d-sm-block">
             {{> (getTheme 'cart')}}
             <div class="row">
                 {{#if @root.session.cart}}
                 <div class="col-sm-12">
-                    <button class="btn btn-outline-danger pull-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                    <button class="btn btn-outline-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
                 {{/if}}
             </div>
