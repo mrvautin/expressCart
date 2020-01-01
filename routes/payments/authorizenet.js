@@ -95,7 +95,7 @@ router.post('/checkout_action', (req, res, next) => {
                     req.session.paymentEmailAddr = newDoc.ops[0].orderEmail;
                     req.session.paymentApproved = true;
                     req.session.paymentDetails = `<p><strong>Order ID: </strong>${newId}</p>
-                    <p><strong>Transaction ID: </strong>${txn.transHash}</p>`;
+                    <p><strong>Transaction ID: </strong>${orderDoc.orderPaymentId}</p>`;
 
                     // set payment results for email
                     const paymentResults = {
