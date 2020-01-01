@@ -60,7 +60,7 @@ router.get('/admin/products/filter/:search', restrict, async (req, res, next) =>
 
 // insert form
 router.get('/admin/product/new', restrict, checkAccess, (req, res) => {
-    res.render('product_new', {
+    res.render('product-new', {
         title: 'New product',
         session: req.session,
         productTitle: common.clearSessionValue(req.session, 'productTitle'),
@@ -168,7 +168,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         return;
     }
 
-    res.render('product_edit', {
+    res.render('product-edit', {
         title: 'Edit product',
         result: product,
         images: images,

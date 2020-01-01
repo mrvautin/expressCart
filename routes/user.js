@@ -60,7 +60,7 @@ router.get('/admin/user/edit/:id', restrict, async (req, res) => {
         return;
     }
 
-    res.render('user_edit', {
+    res.render('user-edit', {
         title: 'User edit',
         user: user,
         admin: true,
@@ -74,7 +74,7 @@ router.get('/admin/user/edit/:id', restrict, async (req, res) => {
 
 // users new
 router.get('/admin/user/new', restrict, (req, res) => {
-    res.render('user_new', {
+    res.render('user-new', {
         title: 'User - New',
         admin: true,
         session: req.session,

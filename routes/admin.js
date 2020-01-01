@@ -232,7 +232,7 @@ router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
 // settings menu
 router.get('/admin/settings/menu', restrict, async (req, res) => {
     const db = req.app.db;
-    res.render('settings_menu', {
+    res.render('settings-menu', {
         title: 'Cart menu',
         session: req.session,
         admin: true,
@@ -249,7 +249,7 @@ router.get('/admin/settings/pages', restrict, async (req, res) => {
     const db = req.app.db;
     const pages = await db.pages.find({}).toArray();
 
-    res.render('settings_pages', {
+    res.render('settings-pages', {
         title: 'Static pages',
         pages: pages,
         session: req.session,
@@ -266,7 +266,7 @@ router.get('/admin/settings/pages', restrict, async (req, res) => {
 router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    res.render('settings_page', {
+    res.render('settings-page', {
         title: 'Static pages',
         session: req.session,
         admin: true,
@@ -296,7 +296,7 @@ router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req
         return;
     }
 
-    res.render('settings_page', {
+    res.render('settings-page', {
         title: 'Static pages',
         page: page,
         button_text: 'Update',
