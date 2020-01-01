@@ -1,0 +1,20 @@
+{
+    "properties": {
+        "orderStatus": {
+            "type": "string",
+            "enum": ["Completed", "Paid", "Pending"]
+        },
+        "buttonText": {
+            "type": "string"
+        },
+        "resultMessage": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "orderStatus",
+        "buttonText",
+        "resultMessage"
+    ],
+    "additionalProperties": false
+}

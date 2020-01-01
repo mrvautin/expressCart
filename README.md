@@ -2,7 +2,7 @@
 
 ![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
 
-`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Authorize.net and Adyen payments.
+`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Authorize.net, Adyen and Instore payments.
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
 [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
@@ -308,6 +308,19 @@ The Adyen config file is located: `/config/adyen.json`. A example Adyen settings
 
 Note: The `publicKey`, `apiKey` and `merchantAccount` is obtained from your Adyen account dashboard.
 
+##### Instore (Payments)
+
+The Instore config file is located: `/config/instore.json`. A example Instore settings file is provided:
+
+```
+{
+    "orderStatus": "Pending",
+    "buttonText": "Place order, pay instore",
+    "resultMessage": "The order is place. Please pay for your order instore on pickup."
+}
+```
+Note: No payment is actually processed. The order will move to the `orderStatus` set and the payment is completed instore.
+
 ## Email settings
 
 You will need to configure your SMTP details for expressCart to send email receipts to your customers.
@@ -362,9 +375,7 @@ New static pages are setup via `/admin/settings/pages`.
 
 ## TODO
 
-- Add some tests...
-- Separate API and frontend
-- Modernize the frontend
+- Modernize the frontend of the admin
 
 ## Contributing
 

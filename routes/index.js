@@ -55,7 +55,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         await hooker(order);
     };
 
-    res.render(`${config.themeViews}payment_complete`, {
+    res.render(`${config.themeViews}payment-complete`, {
         title: 'Payment complete',
         config: req.app.config,
         session: req.session,

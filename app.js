@@ -66,6 +66,12 @@ switch(config.paymentGateway){
             process.exit(2);
         }
         break;
+    case'instore':
+        if(ajv.validate(require('./config/instoreSchema'), require('./config/instore.json')) === false){
+            console.log(colors.red(`instore config is incorrect: ${ajv.errorsText()}`));
+            process.exit(2);
+        }
+        break;
 }
 
 // require the routes
@@ -79,6 +85,7 @@ const paypal = require('./routes/payments/paypal');
 const stripe = require('./routes/payments/stripe');
 const authorizenet = require('./routes/payments/authorizenet');
 const adyen = require('./routes/payments/adyen');
+const instore = require('./routes/payments/instore');
 
 const app = express();
 
@@ -259,6 +266,25 @@ handlebars = handlebars.create({
                 return options.fn(this);
             }
             return options.inverse(this);
+        },
+        paymentMessage: (status) => {
+            if(status === 'Paid'){
+                return'<h2 class="text-success">Your payment has been successfully processed</h2>';
+            }
+            if(status === 'Pending'){
+                const paymentConfig = common.getPaymentConfig();
+                if(config.paymentGateway === 'instore'){
+                    return`<h2 class="text-warning">${paymentConfig.resultMessage}</h2>`;
+                }
+                return'<h2 class="text-warning">The payment for this order is pending. We will be in contact shortly.</h2>';
+            }
+            return'<h2 class="text-success">Your payment has failed. Please try again or contact us.</h2>';
+        },
+        paymentOutcome: (status) => {
+            if(status === 'Paid' || status === 'Pending'){
+                return'<h3 class="text-success">Please retain the details above as a reference of payment</h3>';
+            }
+            return'';
         }
     }
 });
@@ -338,6 +364,7 @@ app.use('/paypal', paypal);
 app.use('/stripe', stripe);
 app.use('/authorizenet', authorizenet);
 app.use('/adyen', adyen);
+app.use('/instore', instore);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
