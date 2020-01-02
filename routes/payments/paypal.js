@@ -53,9 +53,7 @@ router.get('/checkout_return', (req, res, next) => {
 
             // clear the cart
             if(req.session.cart){
-                req.session.cart = null;
-                req.session.orderId = null;
-                req.session.totalCartAmount = 0;
+                common.emptyCart(req, res, 'function');
             }
         }
 
@@ -178,7 +176,8 @@ router.post('/checkout_action', (req, res, next) => {
                 orderComment: req.session.orderComment,
                 orderStatus: payment.state,
                 orderDate: new Date(),
-                orderProducts: req.session.cart
+                orderProducts: req.session.cart,
+                orderType: 'Single'
             };
 
             if(req.session.orderId){

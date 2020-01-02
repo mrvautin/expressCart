@@ -103,9 +103,7 @@ router.post('/checkout_action', (req, res, next) => {
 
                     // clear the cart
                     if(req.session.cart){
-                        req.session.cart = null;
-                        req.session.orderId = null;
-                        req.session.totalCartAmount = 0;
+                        common.emptyCart(req, res, 'function');
                     }
 
                     // send the email with the response
@@ -274,10 +272,7 @@ router.post('/checkout_action_subscription', async (req, res, next) => {
 
         // clear the cart
         if(req.session.cart){
-            req.session.cartSubscription = null;
-            req.session.cart = null;
-            req.session.orderId = null;
-            req.session.totalCartAmount = 0;
+            common.emptyCart(req, res, 'function');
         }
 
         // send the email with the response

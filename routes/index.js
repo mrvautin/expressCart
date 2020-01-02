@@ -11,6 +11,7 @@ const {
     getPaymentConfig,
     getImages,
     updateTotalCart,
+    emptyCart,
     updateSubscriptionCheck,
     getData,
     addSitemapProducts,
@@ -344,40 +345,6 @@ router.post('/product/emptycart', async (req, res, next) => {
     emptyCart(req, res, 'json');
 });
 
-const emptyCart = async (req, res, type, customMessage) => {
-    const db = req.app.db;
-
-    // Remove from session
-    delete req.session.cart;
-    delete req.session.shippingAmount;
-    delete req.session.orderId;
-
-    // Remove cart from DB
-    await db.cart.deleteOne({ sessionId: req.session.id });
-
-    // update total cart
-    updateTotalCart(req, res);
-
-    // Update checking cart for subscription
-    updateSubscriptionCheck(req, res);
-
-    // Set returned message
-    let message = 'Cart successfully emptied';
-    if(customMessage){
-        message = customMessage;
-    }
-
-    // If POST, return JSON else redirect nome
-    if(type === 'json'){
-        res.status(200).json({ message: message, totalCartItems: 0 });
-        return;
-    }
-
-    req.session.message = message;
-    req.session.messageType = 'success';
-    res.redirect('/');
-};
-
 // Add item to cart
 router.post('/product/addtocart', async (req, res, next) => {
     const db = req.app.db;
@@ -455,7 +422,6 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     const productPrice = parseFloat(product.productPrice).toFixed(2);
 
-    // Doc used to test if existing in the cart with the options. If not found, we add new.
     let options = {};
     if(req.body.productOptions){
         try{
