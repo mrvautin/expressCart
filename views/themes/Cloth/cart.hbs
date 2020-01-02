@@ -18,9 +18,9 @@
                         <div class="col-sm-12 text-left no-pad-left">
                         {{#each this.options}} 
                             {{#if @last}}
-                                {{#upperFirst this.name}}{{/upperFirst}}: {{this.value}}
+                                <strong>{{#upperFirst this.name}}{{/upperFirst}}</strong>: {{this.value}}
                                 {{else}} 
-                                {{#upperFirst this.name}}{{/upperFirst}}: {{this.value}} /
+                                 <strong>{{#upperFirst this.name}}{{/upperFirst}}:</strong> {{this.value}} /
                             {{/if}} 
                         {{/each}}
                         </div>
