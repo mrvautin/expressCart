@@ -329,6 +329,61 @@ $(document).ready(function (){
         }
     });
 
+    $(document).on('click', '#lookupCustomer', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: '/admin/customer/lookup',
+            data: {
+                customerEmail: $('#customerEmail').val()
+            }
+		})
+		.done(function(result){
+            showNotification(result.message, 'success');
+            $('#orderFirstName').val(result.customer.firstName);
+            $('#orderLastName').val(result.customer.lastName);
+            $('#orderAddress1').val(result.customer.address1);
+            $('#orderAddress2').val(result.customer.address2);
+            $('#orderCountry').val(result.customer.country);
+            $('#orderState').val(result.customer.state);
+            $('#orderPostcode').val(result.customer.postcode);
+            $('#orderPhone').val(result.customer.phone);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
+    $(document).on('click', '#orderCreate', function(e){
+        e.preventDefault();
+        if($('#createOrderForm').validator('validate').has('.has-error').length === 0){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/order/create',
+                data: {
+                    orderStatus: $('#orderStatus').val(),
+                    email: $('#customerEmail').val(),
+                    firstName: $('#orderFirstName').val(),
+                    lastName: $('#orderLastName').val(),
+                    address1: $('#orderAddress1').val(),
+                    address2: $('#orderAddress2').val(),
+                    country: $('#orderCountry').val(),
+                    state: $('#orderState').val(),
+                    postcode: $('#orderPostcode').val(),
+                    phone: $('#orderPhone').val(),
+                    orderComment: $('#orderComment').val()
+                }
+            })
+            .done(function(result){
+                showNotification(result.message, 'success');
+                window.location = `/admin/order/view/${result.orderId}`;
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
     $('#sendTestEmail').on('click', function(e){
         e.preventDefault();
         $.ajax({

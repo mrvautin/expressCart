@@ -285,6 +285,35 @@ router.get('/admin/customers/filter/:search', restrict, async (req, res, next) =
     });
 });
 
+router.post('/admin/customer/lookup', restrict, async (req, res, next) => {
+    const db = req.app.db;
+    const customerEmail = req.body.customerEmail;
+
+    // Search for a customer
+    const customer = await db.customers.findOne({ email: customerEmail });
+
+    if(customer){
+        req.session.customerPresent = true;
+        req.session.customerEmail = customer.email;
+        req.session.customerFirstname = customer.firstName;
+        req.session.customerLastname = customer.lastName;
+        req.session.customerAddress1 = customer.address1;
+        req.session.customerAddress2 = customer.address2;
+        req.session.customerCountry = customer.country;
+        req.session.customerState = customer.state;
+        req.session.customerPostcode = customer.postcode;
+        req.session.customerPhone = customer.phone;
+
+        return res.status(200).json({
+            message: 'Customer found',
+            customer
+        });
+    }
+    return res.status(400).json({
+        message: 'No customers found'
+    });
+});
+
 // login the customer and check the password
 router.post('/customer/login_action', async (req, res) => {
     const db = req.app.db;
@@ -451,18 +480,7 @@ router.post('/customer/reset/:token', async (req, res) => {
 // logout the customer
 router.post('/customer/logout', (req, res) => {
     // Clear our session
-    req.session.customerPresent = null;
-    req.session.customerEmail = null;
-    req.session.customerFirstname = null;
-    req.session.customerLastname = null;
-    req.session.customerAddress1 = null;
-    req.session.customerAddress2 = null;
-    req.session.customerCountry = null;
-    req.session.customerState = null;
-    req.session.customerPostcode = null;
-    req.session.customerPhone = null;
-    req.session.orderComment = null;
-
+    common.clearCustomer(req);
     res.status(200).json({});
 });
 
