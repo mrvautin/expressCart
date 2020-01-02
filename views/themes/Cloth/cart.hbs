@@ -17,10 +17,10 @@
                         </div>
                         <div class="col-sm-12 text-left no-pad-left">
                         {{#each this.options}} 
-                            {{#if @last}} 
-                                {{@key}}: {{this}} 
+                            {{#if @last}}
+                                {{#upperFirst this.name}}{{/upperFirst}}: {{this.value}}
                                 {{else}} 
-                                {{@key}}: {{this}} / 
+                                {{#upperFirst this.name}}{{/upperFirst}}: {{this.value}} /
                             {{/if}} 
                         {{/each}}
                         </div>

@@ -454,15 +454,37 @@ function updateCart(element){
 function getSelectedOptions(){
     var options = {};
     $('.product-opt').each(function(){
-        if($(this).attr('name') === 'opt-'){
-            options[$(this).val().trim()] = $(this).prop('checked');
-            return;
-        }
         var optionValue = $(this).val().trim();
-        if($(this).attr('type') === 'radio'){
-            optionValue = $('input[name="' + $(this).attr('name') + '"]:checked').val();
+        var optionLabel = $(this).attr('data-label');
+        var optionName = $(this).attr('name');
+        var optionType = $(this).attr('type');
+
+        // If select option
+        if(!optionType){
+            options[optionName] = {
+                label: optionLabel,
+                name: optionName,
+                value: optionValue
+            };
         }
-        options[$(this).attr('name').substring(4, $(this).attr('name').length)] = optionValue;
+
+        // If radio option
+        if(optionType === 'radio'){
+            options[optionName] = {
+                label: optionLabel,
+                name: optionName,
+                value: $('input[name="' + optionName + '"]:checked').val()
+            };
+        }
+
+        // If checkbox option
+        if(optionType === 'checkbox'){
+            options[optionName] = {
+                label: optionLabel,
+                name: optionName,
+                value: $('input[name="' + $(this).attr('name') + '"]').is(':checked')
+            };
+        }
     });
     return options;
 }

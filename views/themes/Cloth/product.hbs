@@ -33,19 +33,19 @@
                     {{#each productOptions}}
                         {{#ifCond this.optType '==' "select"}}
                             <strong>{{../this.optLabel}}</strong>
-                            <select name="opt-{{../this.optName}}" class="form-control product-opt">
+                            <select name="{{../this.optName}}" data-label="{{../this.optLabel}}" class="form-control product-opt">
                                 {{#each ../this.optOptions}}
                                     <option value="{{this}}">{{this}}</option>
                                 {{/each}}
                             </select>
                         {{/ifCond}}
                         {{#ifCond this.optType '==' "radio"}}
+                            <strong>{{../this.optLabel}}</strong>
                             {{#each ../this.optOptions}}
-                                <strong>{{../this.optLabel}}</strong>
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" class="product-opt" name="opt-{{../../this.optName}}" value="{{this}}">
-                                        {{this}}
+                                        <input type="radio" class="product-opt" data-label="{{../../this.optLabel}}" name="{{../../this.optName}}" value="{{this}}">
+                                        <span class="left-pad-10">{{this}}</span>
                                     </label>
                                 </div>
                             {{/each}}
@@ -53,7 +53,8 @@
                         {{#ifCond this.optType '==' "checkbox"}}
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" class="product-opt" name="opt-{{../this.optName}}" value="{{../this.optName}}"><strong class="left-pad-10">{{../this.optLabel}}</strong>
+                                    <input type="checkbox" class="product-opt" data-label="{{../this.optLabel}}" name="{{../this.optName}}" value="{{../this.optName}}">
+                                    <span class="left-pad-10">{{../this.optLabel}}</span>
                                 </label>
                             </div>
                         {{/ifCond}}
