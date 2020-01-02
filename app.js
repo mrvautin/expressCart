@@ -285,6 +285,11 @@ handlebars = handlebars.create({
                 return'<h3 class="text-success">Please retain the details above as a reference of payment</h3>';
             }
             return'';
+        },
+        upperFirst: (value) => {
+            return value.replace(/^\w/, (chr) => {
+                return chr.toUpperCase();
+            });
         }
     }
 });
