@@ -157,7 +157,6 @@ $(document).ready(function (){
     });
 
     $('#checkoutInformation').validator().on('click', function(e){
-        console.log('here?');
         e.preventDefault();
         if($('#shipping-form').validator('validate').has('.has-error').length === 0){
             // Change route if customer to be saved for later
