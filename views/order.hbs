@@ -53,12 +53,12 @@
                         &nbsp; > &nbsp;
                         <span class="text-warning"> {{ @root.__ "Options" }}: </span>
                         (
-                        {{#each this.options}}
+                        {{#each this.options}} 
                             {{#if @last}}
-                                {{@key}}: {{this}}
-                            {{else}}
-                                {{@key}}: {{this}} /
-                            {{/if}}
+                                <strong>{{#upperFirst this.name}}{{/upperFirst}}</strong>: {{this.value}}
+                                {{else}} 
+                                 <strong>{{#upperFirst this.name}}{{/upperFirst}}:</strong> {{this.value}} /
+                            {{/if}} 
                         {{/each}}
                         )
                     {{/if}}
