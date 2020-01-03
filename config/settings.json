@@ -10,8 +10,6 @@
     "emailPassword": "this_is_the_smtp_password",
     "emailAddress": "hi@markmoffat.com",
     "menuEnabled": true,
-    "flatShipping": 10,
-    "freeShippingAmount": 100,
     "productsPerRow": 3,
     "productsPerPage": 6,
     "menuTitle": "Menu",
@@ -25,5 +23,10 @@
     "trackStock": false,
     "orderHook": "",
     "availableLanguages": ["en", "it"],
-    "defaultLocale": "en"
+    "defaultLocale": "en",
+    "modules": {
+        "enabled": {
+            "shipping": "shipping-basic"
+        }
+    }
 }

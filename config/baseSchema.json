@@ -42,14 +42,6 @@
             "type": "boolean",
             "default": true
         },
-        "flatShipping": {
-            "type": "number",
-            "default": 10
-        },
-        "freeShippingAmount": {
-            "type": "number",
-            "default": 100
-        },
         "productsPerRow": {
             "type": "number",
             "default": 3
@@ -114,6 +106,26 @@
         "enableLanguages": {
             "type": "boolean",
             "default": true
+        },
+        "modules": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "object",
+                    "properties": {
+                        "shipping": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["shipping"]
+                }
+            },
+            "required": ["enabled"],
+            "default": {
+                "enabled": {
+                    "shipping": "shipping-basic"
+                }
+            }
         }
     },
     "required": [
@@ -125,7 +137,8 @@
         "emailPassword",
         "emailAddress",
         "paymentGateway",
-        "databaseConnectionString"
+        "databaseConnectionString",
+        "modules"
     ],
     "additionalProperties": false
 }

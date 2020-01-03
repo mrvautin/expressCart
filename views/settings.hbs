@@ -34,16 +34,6 @@
                     <p class="help-block">{{ @root.__ "This is used as the \"from\" email when sending receipts to your customers." }}</p>
                 </div>
                 <div class="form-group">
-                    <label>{{ @root.__ "Flat shipping rate" }} *</label>
-                    <input type="text" class="form-control" name="flatShipping" value="{{config.flatShipping}}" required>
-                    <p class="help-block">{{ @root.__ "A flat shipping rate applied to all orders." }}</p>
-                </div>
-                <div class="form-group">
-                    <label>{{ @root.__ "Free shipping threshold" }}</label>
-                    <input type="text" class="form-control" name="freeShippingAmount" value="{{config.freeShippingAmount}}">
-                    <p class="help-block">{{ @root.__ "Orders over this value will mean the shipped will the FREE. Set to high value if you always want to charge shipping." }}</p>
-                </div>
-                <div class="form-group">
                     <label>{{ @root.__ "Payment gateway" }}</label>
                     <select class="form-control" name="paymentGateway">
                         <option {{selectState 'paypal' config.paymentGateway}} value="paypal">Paypal</option>

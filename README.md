@@ -200,11 +200,6 @@ payments and the sitemap for search engine indexing.
 
 This email is used for any email receipts which are sent by your website.
 
-##### Free shipping threshold
-
-expressCart allows for the addition of a free shipping threshold. The cart will remove the shipping costs once the order has exceeded the `Free shipping threshold`
-value. If the value of the cart is beneath the `Free shipping threshold`, the cart will add the `Flat shipping rate` to the total amount.
-
 ##### Payment Gateway
 
 This determines which payment gateway to use. You will also need to configure your payment gateway configuration file here: `/config/<gateway_name>.json`
@@ -320,6 +315,9 @@ The Instore config file is located: `/config/instore.json`. A example Instore se
 }
 ```
 Note: No payment is actually processed. The order will move to the `orderStatus` set and the payment is completed instore.
+
+## Modules
+It's possible to extend the basic functionality of `expressCart` using modules. All modules are loaded from `/lib/modules` at startup and added to the `config` for use throughout the app. There is an example module `shipping-basic` to calculate the flat shipping rate. One way to extend this basic module is to call a Postage service like [easypost](https://www.easypost.com/) to get an accurate rate for your location, package size etc.
 
 ## Email settings
 
