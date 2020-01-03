@@ -282,7 +282,7 @@ handlebars = handlebars.create({
         },
         paymentOutcome: (status) => {
             if(status === 'Paid' || status === 'Pending'){
-                return'<h3 class="text-success">Please retain the details above as a reference of payment</h3>';
+                return'<h5 class="text-warning">Please retain the details above as a reference of payment</h5>';
             }
             return'';
         },
