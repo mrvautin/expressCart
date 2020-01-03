@@ -14,6 +14,7 @@ router.post('/checkout_action', async (req, res, next) => {
         orderPaymentGateway: 'Instore',
         orderPaymentMessage: 'Your payment was successfully completed',
         orderTotal: req.session.totalCartAmount,
+        orderShipping: 0,
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
         orderEmail: req.session.customerEmail,

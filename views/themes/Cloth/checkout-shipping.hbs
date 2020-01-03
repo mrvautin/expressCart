@@ -15,7 +15,7 @@
                     {{#unless @root.session.shippingOptions}}
                         <ul class="list-group">
                             {{#if @root.session.shippingCostApplied}}
-                            <li class="list-group-item">Standard shipping <span class="float-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.config.flatShipping}}</strong></span></li>
+                            <li class="list-group-item">Standard shipping <span class="float-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span></li>
                             {{else}}
                             <li class="list-group-item">FREE shipping <span class="float-right"></li>
                             {{/if}}

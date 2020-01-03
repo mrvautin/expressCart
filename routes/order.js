@@ -123,6 +123,7 @@ router.post('/admin/order/create', async (req, res, next) => {
         orderPaymentGateway: 'Instore',
         orderPaymentMessage: 'Your payment was successfully completed',
         orderTotal: req.session.totalCartAmount,
+        orderShipping: req.session.totalCartShipping,
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
         orderEmail: req.body.email || req.session.customerEmail,
