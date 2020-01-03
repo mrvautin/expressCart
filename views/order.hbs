@@ -31,6 +31,8 @@
             {{#if result.orderPaymentMessage}}
             <li class="list-group-item"><strong> {{ @root.__ "Payment Message" }}: </strong><span class="float-right">{{result.orderPaymentMessage}}</span></li>
             {{/if}}
+            <li class="list-group-item"><strong> {{ @root.__ "Order net amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount (math result.orderTotal '-' result.orderShipping)}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order shipping amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderShipping}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order total amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderTotal}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Email address" }}: </strong><span class="float-right">{{result.orderEmail}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "First name" }}: </strong><span class="float-right">{{result.orderFirstname}}</span></li>

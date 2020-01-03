@@ -170,5 +170,7 @@
 	"Return to information": "Return to information",
 	"Search shop": "Search shop",
 	"Dashboard": "Dashboard",
-	"Create order": "Create order"
+	"Create order": "Create order",
+	"Order shipping amount": "Order shipping amount",
+	"Order net amount": "Order net amount"
 }
