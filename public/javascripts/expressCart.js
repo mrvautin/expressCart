@@ -486,9 +486,9 @@ function updateCartDiv(){
 
         // Work out the shipping
         var shippingTotalAmt = numeral(session.totalCartShipping).format('0.00');
-        var shippingTotal = `<strong id="shipping-amount">${result.currencySymbol}${shippingTotalAmt}</strong>`;
-        if(shippingTotalAmt === 0){
-            shippingTotal = '<strong id="shipping-amount">FREE</strong>';
+        var shippingTotal = `${session.shippingMessage} :<strong id="shipping-amount">${result.currencySymbol}${shippingTotalAmt}</strong>`;
+        if(session.totalCartShipping === 0){
+            shippingTotal = `<strong id="shipping-amount">${session.shippingMessage}</strong>`;
         }
 
         // If the cart has contents
@@ -550,10 +550,10 @@ function updateCartDiv(){
                 </div>`;
             });
 
-            $('#cartBodyWrapper').html(productHtml);
+            $('.cartBodyWrapper').html(productHtml);
             $('#cart-count').text(session.totalCartItems);
         }else{
-            $('#cartBodyWrapper').html('');
+            $('.cartBodyWrapper').html('');
         }
 
         // Set the totals section
@@ -561,7 +561,7 @@ function updateCartDiv(){
             <div class="row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     <div class="text-right">
-                        Shipping: ${shippingTotal}
+                        ${shippingTotal}
                     </div>
                     <div class="text-right">
                         Total:
@@ -579,11 +579,11 @@ function updateCartDiv(){
 
         // Set depending on cart contents
         if(cart){
-            $('#cartTotalsWrapper').html(cartTotalsHtml);
-            $('#cart-buttons').removeClass('d-none');
+            $('.cartTotalsWrapper').html(cartTotalsHtml);
+            $('.cart-buttons').removeClass('d-none');
         }else{
-            $('#cartTotalsWrapper').html(cartTotalsEmptyHtml);
-            $('#cart-buttons').addClass('d-none');
+            $('.cartTotalsWrapper').html(cartTotalsEmptyHtml);
+            $('.cart-buttons').addClass('d-none');
         }
     })
     .fail(function(result){

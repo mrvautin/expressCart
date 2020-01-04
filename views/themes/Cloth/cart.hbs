@@ -1,7 +1,7 @@
 <div class="card top-marg-15 bottom-marg-15">
     <div class="card-body cart-body">
         <h5 class="card-title">{{ @root.__ "Cart contents" }}</h5>
-        <div id="cartBodyWrapper">
+        <div class="cartBodyWrapper">
             {{#each @root.session.cart}}
             <div class="d-flex flex-row bottom-pad-15">
                 <div class="col-4 col-md-3">
@@ -47,11 +47,11 @@
             </div>
             {{/each}}
         </div>
-        <div id="cartTotalsWrapper" class="container-fluid">
+        <div class="cartTotalsWrapper container-fluid">
             {{#if @root.session.cart}}
             <div class="row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
-                    {{#ifCond @root.session.shippingCostApplied '===' true}}
+                    {{#ifCond @root.session.totalCartShipping '>' 0}}
                     <div class="text-right">
                         {{ @root.__ "Shipping" }}
                         <strong id="shipping-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong>

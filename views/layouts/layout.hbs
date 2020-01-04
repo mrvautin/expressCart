@@ -139,7 +139,7 @@
                         <div id="cart" class="col-md-12">
                         {{> (getTheme 'cart')}}
                         <div class="row">
-                        <div id="cart-buttons" class="col-sm-12 {{showCartButtons @root.session.cart}}">
+                        <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
                             <button class="btn btn-outline-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                             <a href="/checkout/information" class="btn btn-outline-primary float-right">Checkout</a>
                         </div>

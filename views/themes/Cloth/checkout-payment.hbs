@@ -23,7 +23,7 @@
                         </li>
                     </ul>
                     <ul class="list-group bottom-pad-15">
-                        {{#if @root.session.shippingCostApplied}}
+                        {{#ifCond @root.session.totalCartShipping '>' 0}}
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-6">
@@ -37,7 +37,7 @@
                         </li>
                         {{else}}
                         <li class="list-group-item">FREE shipping <span class="float-right"><a href="/checkout/shipping">Change</a></span></li>
-                        {{/if}}
+                        {{/ifCond}}
                     </ul>
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
                     {{#if session.customerPresent}}

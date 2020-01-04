@@ -95,7 +95,6 @@ router.get('/checkout/information', async (req, res, next) => {
         config: req.app.config,
         session: req.session,
         paymentType,
-        cartSize: 'part',
         cartClose: false,
         page: 'checkout-information',
         countryList,
@@ -124,12 +123,21 @@ router.get('/checkout/shipping', async (req, res, next) => {
         return;
     }
 
+    // Net cart amount
+    const netCartAmount = req.session.totalCartAmount - req.session.totalCartShipping || 0;
+
+    // Recalculate shipping
+    config.modules.loaded.shipping.calculateShipping(
+        netCartAmount,
+        config,
+        req
+    );
+
     // render the payment page
     res.render(`${config.themeViews}checkout-shipping`, {
         title: 'Checkout',
         config: req.app.config,
         session: req.session,
-        cartSize: 'part',
         cartClose: false,
         cartReadOnly: true,
         page: 'checkout-shipping',
@@ -146,7 +154,6 @@ router.get('/checkout/cart', (req, res) => {
 
     res.render(`${config.themeViews}checkout-cart`, {
         page: req.query.path,
-        cartSize: 'full',
         config,
         session: req.session,
         message: clearSessionValue(req.session, 'message'),
@@ -189,7 +196,6 @@ router.get('/checkout/payment', (req, res) => {
         session: req.session,
         paymentPage: true,
         paymentType,
-        cartSize: 'part',
         cartClose: true,
         cartReadOnly: true,
         page: 'checkout-information',

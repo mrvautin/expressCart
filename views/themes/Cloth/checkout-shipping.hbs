@@ -14,11 +14,11 @@
                     <h5 class="card-title">{{ @root.__ "Shipping options" }}</h5>
                     {{#unless @root.session.shippingOptions}}
                         <ul class="list-group">
-                            {{#if @root.session.shippingCostApplied}}
-                            <li class="list-group-item">Standard shipping <span class="float-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span></li>
+                            {{#ifCond @root.session.totalCartShipping '>' 0}}
+                            <li class="list-group-item">{{@root.session.shippingMessage}} <span class="float-right"><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span></li>
                             {{else}}
                             <li class="list-group-item">FREE shipping <span class="float-right"></li>
-                            {{/if}}
+                            {{/ifCond}}
                         </ul>
                     {{/unless}}
                 </div>
@@ -29,7 +29,7 @@
         <div id="cart" class="col-md-7 d-none d-sm-block">
             {{> (getTheme 'cart')}}
             <div class="row">
-                <div id="cart-buttons" class="col-sm-12 {{showCartButtons @root.session.cart}}">
+                <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
                     <button class="btn btn-outline-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
             </div>
