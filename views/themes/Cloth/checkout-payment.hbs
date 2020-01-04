@@ -27,7 +27,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-6">
-                                    Standard shipping 
+                                    {{@root.session.shippingMessage}}
                                 </div>
                                 <div class="col-md-6">
                                     <span><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span>
