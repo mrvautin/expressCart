@@ -131,6 +131,7 @@ router.get('/checkout/shipping', async (req, res, next) => {
         session: req.session,
         cartSize: 'part',
         cartClose: false,
+        cartReadOnly: true,
         page: 'checkout-shipping',
         countryList,
         message: clearSessionValue(req.session, 'message'),
@@ -146,7 +147,7 @@ router.get('/checkout/cart', (req, res) => {
     res.render(`${config.themeViews}checkout-cart`, {
         page: req.query.path,
         cartSize: 'full',
-        config: req.app.config,
+        config,
         session: req.session,
         message: clearSessionValue(req.session, 'message'),
         messageType: clearSessionValue(req.session, 'messageType'),
@@ -156,7 +157,13 @@ router.get('/checkout/cart', (req, res) => {
 });
 
 router.get('/checkout/cartdata', (req, res) => {
-    res.status(200).json(req.session.cart);
+    const config = req.app.config;
+
+    res.status(200).json({
+        cart: req.session.cart,
+        session: req.session,
+        currencySymbol: config.currencySymbol || '$'
+    });
 });
 
 router.get('/checkout/payment', (req, res) => {

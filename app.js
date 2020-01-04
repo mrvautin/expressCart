@@ -302,6 +302,12 @@ handlebars = handlebars.create({
                 '/': lvalue / rvalue,
                 '%': lvalue % rvalue
             }[operator];
+        },
+        showCartButtons: (cart) => {
+            if(!cart){
+                return'd-none';
+            }
+            return'';
         }
     }
 });

@@ -39,6 +39,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/css/css.min.js" integrity="sha256-D5oJ11cOmRhXSYWELwG2U/XYH3YveZJr9taRYLZ2DSM=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/xml/xml.min.js" integrity="sha256-ERFGS58tayDq5kkyNwd/89iZZ+HglMH7eYXxG1hxTvA=" crossorigin="anonymous"></script>
         {{/if}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js" integrity="sha256-LlHVI5rUauudM5ZcZaD6hHPHKrA7CSefHHnKgq+/AZc=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js" integrity="sha256-4lietOiwRDBKx1goZZbRiwB06L+/bPYEGDIKZt82bgg=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
         <script src="/javascripts/jquery.bootpag.min.js"></script>
@@ -138,12 +139,10 @@
                         <div id="cart" class="col-md-12">
                         {{> (getTheme 'cart')}}
                         <div class="row">
-                        {{#if @root.session.cart}}
-                        <div class="col-sm-12">
+                        <div id="cart-buttons" class="col-sm-12 {{showCartButtons @root.session.cart}}">
                             <button class="btn btn-outline-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                             <a href="/checkout/information" class="btn btn-outline-primary float-right">Checkout</a>
                         </div>
-                        {{/if}}
                     </div>
                         </div>
                     </div>

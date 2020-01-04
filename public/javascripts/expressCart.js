@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals showNotification */
+/* globals showNotification, numeral */
 $(document).ready(function (){
     if($(window).width() < 768){
         $('.menu-side').on('click', function(e){
@@ -17,13 +17,6 @@ $(document).ready(function (){
         }
 
         $('#offcanvasClose').hide();
-    }
-
-    // If cart was open before reload, open it again
-    var isCartOpen = (localStorage.getItem('cartOpen') === 'true');
-    if(isCartOpen === true){
-        localStorage.setItem('cartOpen', false);
-        $('body').addClass('pushy-open-right');
     }
 
     $('#userSetupForm').validator().on('submit', function(e){
@@ -304,8 +297,8 @@ $(document).ready(function (){
             }
         })
 		.done(function(msg){
-            $('#cart-count').text(msg.totalCartItems);
-            showNotification(msg.message, 'success', true);
+            showNotification(msg.message, 'success');
+            updateCartDiv();
         })
         .fail(function(msg){
             showNotification(msg.responseJSON.message, 'danger');
@@ -335,8 +328,8 @@ $(document).ready(function (){
                 data: { productId: $(this).attr('data-id') }
             })
             .done(function(msg){
-                $('#cart-count').text(msg.totalCartItems);
-                showNotification(msg.message, 'success', true);
+                showNotification(msg.message, 'success');
+                updateCartDiv();
             })
             .fail(function(msg){
                 showNotification(msg.responseJSON.message, 'danger');
@@ -350,7 +343,7 @@ $(document).ready(function (){
             url: '/product/emptycart'
         })
 		.done(function(msg){
-            $('#cart-count').text(msg.totalCartItems);
+            updateCartDiv();
             showNotification(msg.message, 'success', true);
         });
     });
@@ -405,8 +398,8 @@ function deleteFromCart(element){
         data: { productId: element.attr('data-id') }
     })
     .done(function(msg){
-        setCartOpen();
-        showNotification(msg.message, 'success', true);
+        showNotification(msg.message, 'success');
+        updateCartDiv();
     })
     .fail(function(msg){
         showNotification(msg.responseJSON.message, 'danger');
@@ -423,14 +416,6 @@ function cartUpdate(element){
     }
 }
 
-function setCartOpen(){
-    if($('body').hasClass('pushy-open-right') === true){
-        localStorage.setItem('cartOpen', true);
-    }else{
-        localStorage.setItem('cartOpen', false);
-    }
-}
-
 function updateCart(element){
     // update cart on server
     $.ajax({
@@ -442,8 +427,7 @@ function updateCart(element){
         }
     })
     .done(function(msg){
-        setCartOpen();
-        showNotification(msg.message, 'success', true);
+        updateCartDiv();
     })
     .fail(function(msg){
         showNotification(msg.responseJSON.message, 'danger', true);
@@ -486,4 +470,129 @@ function getSelectedOptions(){
         }
     });
     return options;
+}
+
+function updateCartDiv(){
+    $.ajax({
+        method: 'GET',
+        url: '/checkout/cartdata'
+    })
+    .done(function(result){
+        // Update the cart div
+        var cart = result.cart;
+        var session = result.session;
+        var productHtml = '';
+        var totalAmount = numeral(session.totalCartAmount).format('0.00');
+
+        // Work out the shipping
+        var shippingTotalAmt = numeral(session.totalCartShipping).format('0.00');
+        var shippingTotal = `<strong id="shipping-amount">${result.currencySymbol}${shippingTotalAmt}</strong>`;
+        if(shippingTotalAmt === 0){
+            shippingTotal = '<strong id="shipping-amount">FREE</strong>';
+        }
+
+        // If the cart has contents
+        if(cart){
+            $('#cart-empty').empty();
+            Object.keys(cart).forEach(function(productId){
+                var item = cart[productId];
+                // Setup the product
+                var productTotalAmount = numeral(item.totalItemPrice).format('0.00');
+                var optionsHtml = '';
+                var optionIndex = 1;
+                Object.keys(item.options).forEach(function(key){
+                    var option = item.options[key];
+                    if(optionIndex === Object.keys(item.options).length){
+                        optionsHtml += `<strong>${upperFirst(option.name)}</strong>: ${option.value}`;
+                    }else{
+                        optionsHtml += `<strong>${upperFirst(option.name)}</strong>: ${option.value} / `;
+                    }
+                    optionIndex++;
+                });
+                var productImage = `<img class="img-fluid" src="/uploads/placeholder.png" alt="${item.title} product image"></img>`;
+                if(item.productImage){
+                    productImage = `<img class="img-fluid" src="${item.productImage}" alt="${item.title} product image"></img>`;
+                }
+
+                // Setup the product html
+                productHtml += `
+                <div class="d-flex flex-row bottom-pad-15">
+                    <div class="col-4 col-md-3">
+                        ${productImage}
+                    </div>
+                    <div class="col-12 col-md-7">
+                        <div class="row h-200">
+                            <div class="col-sm-12 text-left no-pad-left">
+                                <h6><a href="/product/${item.link}">${item.title}</a></h6>
+                            </div>
+                            <div class="col-sm-12 text-left no-pad-left">
+                                ${optionsHtml}
+                            </div>
+                            <div class="col-md-8 no-pad-left">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
+                                    </div>
+                                    <input type="number" class="form-control cart-product-quantity text-center" id="${productId}-qty" data-id="${productId}" maxlength="2" value="${item.quantity}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button class="btn btn-outline-danger btn-delete-from-cart" data-id="${productId}" type="button"><i class="far fa-trash-alt" data-id="${productId}" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 align-self-center text-right no-pad-right">
+                        <strong class="my-auto">${result.currencySymbol}${productTotalAmount}</strong>
+                    </div>
+                </div>`;
+            });
+
+            $('#cartBodyWrapper').html(productHtml);
+            $('#cart-count').text(session.totalCartItems);
+        }else{
+            $('#cartBodyWrapper').html('');
+        }
+
+        // Set the totals section
+        var cartTotalsHtml = `
+            <div class="row">
+                <div class="cart-contents-shipping col-md-12 no-pad-right">
+                    <div class="text-right">
+                        Shipping: ${shippingTotal}
+                    </div>
+                    <div class="text-right">
+                        Total:
+                        <strong id="total-cart-amount">${result.currencySymbol}${totalAmount}</strong>
+                    </div>
+                </div>
+            </div>`;
+
+        var cartTotalsEmptyHtml = `
+            <div id="cart-empty" class="row">
+                <div class="cart-contents-shipping col-md-12 no-pad-right">
+                    Cart empty
+                </div>
+            </div>`;
+
+        // Set depending on cart contents
+        if(cart){
+            $('#cartTotalsWrapper').html(cartTotalsHtml);
+            $('#cart-buttons').removeClass('d-none');
+        }else{
+            $('#cartTotalsWrapper').html(cartTotalsEmptyHtml);
+            $('#cart-buttons').addClass('d-none');
+        }
+    })
+    .fail(function(result){
+        showNotification(result.responseJSON.message, 'danger');
+    });
+}
+
+function upperFirst(value){
+    return value.replace(/^\w/, (chr) => {
+        return chr.toUpperCase();
+    });
 }

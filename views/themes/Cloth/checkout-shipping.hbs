@@ -29,11 +29,9 @@
         <div id="cart" class="col-md-7 d-none d-sm-block">
             {{> (getTheme 'cart')}}
             <div class="row">
-                {{#if @root.session.cart}}
-                <div class="col-sm-12">
+                <div id="cart-buttons" class="col-sm-12 {{showCartButtons @root.session.cart}}">
                     <button class="btn btn-outline-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
-                {{/if}}
             </div>
         </div>
     </div>

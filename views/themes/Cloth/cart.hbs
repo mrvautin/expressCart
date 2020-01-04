@@ -1,16 +1,15 @@
-
 <div class="card top-marg-15 bottom-marg-15">
     <div class="card-body cart-body">
         <h5 class="card-title">{{ @root.__ "Cart contents" }}</h5>
         <div id="cartBodyWrapper">
             {{#each @root.session.cart}}
             <div class="d-flex flex-row bottom-pad-15">
-                <div class="col-xs-4 col-md-3">
+                <div class="col-4 col-md-3">
                     {{#if productImage}}
                     <img class="img-fluid" src="{{this.productImage}}" alt="{{this.title}} product image"> {{else}}
                     <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image"> {{/if}}
                 </div>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-12 col-md-7">
                     <div class="row h-200">
                         <div class="col-sm-12 text-left no-pad-left">
                             <h6><a href="/product/{{this.link}}">{{this.title}}</a></h6>
@@ -20,18 +19,17 @@
                             {{#if @last}}
                                 <strong>{{#upperFirst this.name}}{{/upperFirst}}</strong>: {{this.value}}
                                 {{else}} 
-                                 <strong>{{#upperFirst this.name}}{{/upperFirst}}:</strong> {{this.value}} /
+                                <strong>{{#upperFirst this.name}}{{/upperFirst}}:</strong> {{this.value}} /
                             {{/if}} 
                         {{/each}}
                         </div>
-                        {{#ifCond cartReadOnly '!=' true}}
+                        {{#ifCond @root.cartReadOnly '!=' true}}
                         <div class="col-md-8 no-pad-left">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
                                 </div>
-                                <input type="number" class="form-control cart-product-quantity text-center" data-id="{{../this.productId}}" data-index="{{@key}}"
-                                    maxlength="2" value="{{../this.quantity}}">
+                                <input type="number" class="form-control cart-product-quantity text-center" id="{{../this.productId}}-qty" data-id="{{../this.productId}}" maxlength="2" value="{{../this.quantity}}">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
                                 </div>
@@ -43,35 +41,35 @@
                         {{/ifCond}}
                     </div>
                 </div>
-                <div class="align-self-center col-sm-12 col-md-2 text-right no-pad-right">
+                <div class="col-12 col-md-2 align-self-center text-right no-pad-right">
                     <strong class="my-auto">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
                 </div>
             </div>
             {{/each}}
         </div>
-        <div class="container-fluid">
+        <div id="cartTotalsWrapper" class="container-fluid">
             {{#if @root.session.cart}}
             <div class="row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     {{#ifCond @root.session.shippingCostApplied '===' true}}
                     <div class="text-right">
                         {{ @root.__ "Shipping" }}
-                        <strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong>
+                        <strong id="shipping-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong>
                     </div>
                     {{else}}
                     <div class="text-right">
                         {{ @root.__ "Shipping" }}
-                        <strong>FREE</strong>
+                        <strong id="shipping-amount">FREE</strong>
                     </div>
                     {{/ifCond}}
                     <div class="text-right">
                         Total:
-                        <strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartAmount}}</strong>
+                        <strong id="total-cart-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartAmount}}</strong>
                     </div>
                 </div>
             </div>
             {{else}}
-            <div class="row">
+            <div id="cart-empty" class="row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     Cart empty
                 </div>
