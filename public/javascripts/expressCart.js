@@ -343,8 +343,8 @@ $(document).ready(function (){
             url: '/product/emptycart'
         })
 		.done(function(msg){
-            updateCartDiv();
             showNotification(msg.message, 'success', true);
+            updateCartDiv();
         });
     });
 
@@ -553,10 +553,11 @@ function updateCartDiv(){
             });
 
             $('.cartBodyWrapper').html(productHtml);
-            $('#cart-count').text(session.totalCartItems);
         }else{
             $('.cartBodyWrapper').html('');
         }
+
+        $('#cart-count').text(session.totalCartItems);
 
         // Set the totals section
         var cartTotalsHtml = `
