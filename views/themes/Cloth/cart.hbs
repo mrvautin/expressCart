@@ -53,13 +53,11 @@
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     {{#ifCond @root.session.totalCartShipping '>' 0}}
                     <div class="text-right">
-                        {{ @root.__ "Shipping" }}
-                        <strong id="shipping-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong>
+                        {{@root.session.shippingMessage}}: <strong id="shipping-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong>
                     </div>
                     {{else}}
                     <div class="text-right">
-                        {{ @root.__ "Shipping" }}
-                        <strong id="shipping-amount">FREE</strong>
+                        <span id="shipping-amount">{{@root.session.shippingMessage}}</span>
                     </div>
                     {{/ifCond}}
                     <div class="text-right">

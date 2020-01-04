@@ -488,7 +488,7 @@ function updateCartDiv(){
         var shippingTotalAmt = numeral(session.totalCartShipping).format('0.00');
         var shippingTotal = `${session.shippingMessage} :<strong id="shipping-amount">${result.currencySymbol}${shippingTotalAmt}</strong>`;
         if(session.totalCartShipping === 0){
-            shippingTotal = `<strong id="shipping-amount">${session.shippingMessage}</strong>`;
+            shippingTotal = `<span id="shipping-amount">${session.shippingMessage}</span>`;
         }
 
         // If the cart has contents
