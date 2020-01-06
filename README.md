@@ -82,17 +82,17 @@ Adding your own custom style is done by accessing the `Admin` panel then selecti
 
 #### Demo images
 
-Sample homepage
-![Sample homepage](https://mrvautin.com/content/images/2018/01/expressCart-demo.jpg)
+Homepage:
+![Homepage](https://mrvautin.com/content/images/2020/01/expressCart-homepage.png)
 
-Admin page
-![Admin page](https://mrvautin.com/content/images/2018/01/admin-settings.png)
+Admin manage settings:
+![Admin manage settings](https://mrvautin.com/content/images/2020/01/expressCart-admin-settings.png)
 
-Popout cart
-![Popout cart](https://mrvautin.com/content/images/2018/02/popout-cart.png)
+Popout cart:
+![Popout cart](https://mrvautin.com/content/images/2020/01/expressCart-popout-cart.png)
 
-Great themes
-![Great themes](https://mrvautin.com/content/images/2018/02/expresscart-mono-theme.png)
+Dashboard:
+![Dashboard](https://mrvautin.com/content/images/2020/01/expressCart-admin-dashboard.png)
 
 ##### CSS
 
