@@ -40,6 +40,8 @@
                                 <div class="col-4 col-md-2 no-pad-left">
                                     <button class="btn btn-outline-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="far fa-trash-alt" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
                                 </div>
+                                {{else}}
+                                <div class="col-12 col-md-6 no-pad-left mb-2"></div>
                                 {{/ifCond}}
                                 <div class="col-8 col-md-4 align-self-center text-right">
                                     <strong class="my-auto">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
