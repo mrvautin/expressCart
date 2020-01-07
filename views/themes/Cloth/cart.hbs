@@ -4,7 +4,7 @@
         <div class="cartBodyWrapper">
             {{#each @root.session.cart}}
             <div class="d-flex flex-row bottom-pad-15">
-                <div class="p-2">
+                <div class="p-2 cart-product">
                     <div class="row h-200">
                         <div class="col-4 col-md-3 no-pad-left">
                             {{#if productImage}}
@@ -41,7 +41,7 @@
                                     <button class="btn btn-outline-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="far fa-trash-alt" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
                                 </div>
                                 {{else}}
-                                <div class="col-12 col-md-6 no-pad-left mb-2"></div>
+                                <div class="col-12 col-md-8 no-pad-left mb-2"></div>
                                 {{/ifCond}}
                                 <div class="col-8 col-md-4 align-self-center text-right">
                                     <strong class="my-auto">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</strong>
@@ -53,9 +53,9 @@
             </div>
             {{/each}}
         </div>
-        <div class="cartTotalsWrapper container-fluid">
+        <div class="cartTotalsWrapper">
             {{#if @root.session.cart}}
-            <div class="row">
+            <div class="d-flex flex-row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     {{#ifCond @root.session.totalCartShipping '>' 0}}
                     <div class="text-right">
@@ -73,8 +73,8 @@
                 </div>
             </div>
             {{else}}
-            <div id="cart-empty" class="row">
-                <div class="cart-contents-shipping col-md-12 no-pad-right">
+            <div id="cart-empty" class="d-flex flex-row">
+                <div class="cart-contents-shipping col-md-12 no-pad-left">
                     Cart empty
                 </div>
             </div>

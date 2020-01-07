@@ -49,6 +49,9 @@ body {
 .cart-link {
   padding-left: 7px;
 }
+.cart-product {
+  padding: 0 !important;
+}
 a.text-danger:hover,
 a.text-danger:focus {
   color: #cc3a2c;

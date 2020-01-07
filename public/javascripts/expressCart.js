@@ -517,7 +517,7 @@ function updateCartDiv(){
                 // Setup the product html
                 productHtml += `
                 <div class="d-flex flex-row bottom-pad-15">
-                    <div class="p-2">
+                    <div class="p-2 cart-product">
                         <div class="row h-200">
                             <div class="col-4 col-md-3 no-pad-left">
                                 ${productImage}
@@ -561,7 +561,7 @@ function updateCartDiv(){
 
         // Set the totals section
         var cartTotalsHtml = `
-            <div class="row">
+            <div class="d-flex flex-row">
                 <div class="cart-contents-shipping col-md-12 no-pad-right">
                     <div class="text-right">
                         ${shippingTotal}
@@ -574,8 +574,8 @@ function updateCartDiv(){
             </div>`;
 
         var cartTotalsEmptyHtml = `
-            <div id="cart-empty" class="row">
-                <div class="cart-contents-shipping col-md-12 no-pad-right">
+            <div id="cart-empty" class="d-flex flex-row">
+                <div class="cart-contents-shipping col-md-12 no-pad-left>
                     Cart empty
                 </div>
             </div>`;
