@@ -61,6 +61,9 @@
         "googleAnalytics": {
             "type": "string"
         },
+        "injectJs": {
+            "type": "string"
+        },
         "customCss": {
             "type": "string"
         },

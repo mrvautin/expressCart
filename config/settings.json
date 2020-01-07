@@ -15,6 +15,7 @@
     "menuTitle": "Menu",
     "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
     "googleAnalytics": "",
+    "injectJs": "",
     "customCss": ".footer{padding-top: 5px;}",
     "currencySymbol": "£",
     "paymentGateway": "stripe",
