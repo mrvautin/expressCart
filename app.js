@@ -287,9 +287,12 @@ handlebars = handlebars.create({
             return'';
         },
         upperFirst: (value) => {
-            return value.replace(/^\w/, (chr) => {
-                return chr.toUpperCase();
-            });
+            if(value){
+                return value.replace(/^\w/, (chr) => {
+                    return chr.toUpperCase();
+                });
+            }
+            return value;
         },
         math: (lvalue, operator, rvalue, options) => {
             lvalue = parseFloat(lvalue);
