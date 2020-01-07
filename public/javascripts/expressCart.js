@@ -282,8 +282,8 @@ $(document).ready(function (){
     $(document).on('click', '.product-add-to-cart', function(e){
         var productOptions = getSelectedOptions();
 
-        if(parseInt($('#product_quantity').val()) < 0){
-            $('#product_quantity').val(0);
+        if(parseInt($('#product_quantity').val()) < 1){
+            $('#product_quantity').val(1);
         }
 
         $.ajax({

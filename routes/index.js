@@ -366,7 +366,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     const productComment = req.body.productComment ? req.body.productComment : null;
 
     // Don't allow negative quantity
-    if(productQuantity < 0){
+    if(productQuantity < 1){
         productQuantity = 1;
     }
 
