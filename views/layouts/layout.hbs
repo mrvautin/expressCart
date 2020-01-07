@@ -119,6 +119,7 @@
                     {{/unless}}
                     {{#if admin}}
                     {{#if @root.session.user}}
+                        <li class="nav-item"><a href="#" data-toggle="modal" data-target="#globalSearchModal" class="pad-right-15"><i class="fas fa-search"></i></a></li>
                         <li class="nav-item"><a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     {{/if}}
                     {{/if}}
@@ -176,5 +177,28 @@
             </footer>
 		{{/if}}
         <script src="/javascripts/pushy.min.js"></script>
+        {{#if admin}}
+        <div class="modal fade" id="globalSearchModal" tabindex="-1" role="dialog" aria-labelledby="globalSearchModal"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content global-search-modal-content">
+                    <div class="modal-header global-search-modal-header"></div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group global-search-form">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text search-input-addon" for="global-search-value"><i class="fas fa-search"></i></label>
+                                    </div>
+                                    <input type="text" class="form-control form-control-lg" id="global-search-value">
+                                </div>
+                            </div>
+                        </form>
+                        <ul class="list-group col-12 invisible" id="global-search-results"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
 	</body>
 </html>

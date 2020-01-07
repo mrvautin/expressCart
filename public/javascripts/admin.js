@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals showNotification, slugify */
+/* globals showNotification, slugify, numeral */
 $(document).ready(function (){
     $(document).on('click', '#btnGenerateAPIkey', function(e){
         e.preventDefault();
@@ -646,4 +646,78 @@ $(document).ready(function (){
             showNotification(msg.responseJSON.message, 'danger');
         });
     });
+
+    $('#global-search-value').on('keyup', (e) => {
+        if($('#global-search-value').val() === ''){
+            $('#global-search-results').empty();
+            $('#global-search-results').addClass('invisible');
+        }
+        // Search when 3 or more characters are entered
+        if($('#global-search-value').val().length > 3){
+            $('#global-search').html('<span class="fa fa-spinner fa-spin"></span>');
+            globalSearch();
+        }
+    });
+
+    $('#globalSearchModal').on('shown.bs.modal', function (){
+        $('#global-search-value').focus();
+    });
+
+    $('body').on('click', '.gr-click', (e) => {
+        $('#global-search-value').val();
+        const url = $(e.currentTarget).closest('.global-result').attr('data-url');
+        if(url){
+            window.location = url;
+        }
+    });
 });
+
+function globalSearch(){
+    $('#global-search-results').empty();
+    $.ajax({
+        type: 'POST',
+        url: '/admin/searchall',
+        data: {
+            searchValue: $('#global-search-value').val()
+        }
+    }).done((res) => {
+        $('#global-search').html('<i class="fal fa-search"></i>');
+        let hasResult = false;
+        res.customers.forEach((value) => {
+            hasResult = true;
+            let result = '<li class="list-group-item global-result text-center" data-url="/admin/customer/view/' + value._id + '">';
+            result += '<div class="row">';
+            result += '<div class="col global-result-type gr-click"><i class="fas fa-users"></i> Customer</div>';
+            result += '<div class="col global-result-detail gr-click">' + value.firstName + ' ' + value.lastName + '</div>';
+            result += '<div class="col global-result-detail gr-click">' + value.email + '</div>';
+            result += '</div></li>';
+            $('#global-search-results').append(result);
+        });
+
+        res.orders.forEach((value) => {
+            hasResult = true;
+            let result = '<li class="list-group-item global-result text-center" data-url="/admin/order/view/' + value._id + '">';
+            result += '<div class="row">';
+            result += '<div class="col global-result-type gr-click"><i class="fas fa-cube"></i> Order</div>';
+            result += '<div class="col global-result-detail gr-click">' + value.orderFirstname + ' ' + value.orderLastname + '</div>';
+            result += '<div class="col global-result-detail gr-click">' + value.orderEmail + '</div>';
+            result += '</div></li>';
+            $('#global-search-results').append(result);
+        });
+
+        res.products.forEach((value) => {
+            hasResult = true;
+            let result = '<li class="list-group-item global-result text-center" data-url="/admin/product/edit/' + value._id + '">';
+            result += '<div class="row">';
+            result += '<div class="col global-result-type gr-click"><i class="fas fa-box-open"></i> Product</div>';
+            result += '<div class="col global-result-detail gr-click">' + value.productTitle + '</div>';
+            result += '<div class="col global-result-detail gr-click">' + numeral(value.productPrice).format('0.00') + '</div>';
+            result += '</div></li>';
+            $('#global-search-results').append(result);
+        });
+
+        if(hasResult === true){
+            $('#global-search-results').removeClass('invisible');
+        }
+    });
+}

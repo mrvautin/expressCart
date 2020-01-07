@@ -11,6 +11,10 @@ const mime = require('mime-type/with-db');
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 
+// Regex
+const emailRegex = /\S+@\S+\.\S+/;
+const numericRegex = /^\d*\.?\d*$/;
+
 // Admin section
 router.get('/admin', restrict, (req, res, next) => {
     res.redirect('/admin/dashboard');
@@ -495,6 +499,109 @@ router.post('/admin/testEmail', restrict, (req, res) => {
     // TODO: Should fix this to properly handle result
     common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json({ message: 'Test email sent' });
+});
+
+router.post('/admin/searchall', restrict, async (req, res, next) => {
+    const db = req.app.db;
+    const searchValue = req.body.searchValue;
+    const limitReturned = 5;
+
+    // Empty arrays
+    let customers = [];
+    let orders = [];
+    let products = [];
+
+    // Default queries
+    const customerQuery = {};
+    const orderQuery = {};
+    const productQuery = {};
+
+    // If an ObjectId is detected use that
+    if(ObjectId.isValid(req.body.searchValue)){
+        // Get customers
+        customers = await db.customers.find({
+            _id: ObjectId(searchValue)
+        })
+        .limit(limitReturned)
+        .sort({ created: 1 })
+        .toArray();
+
+        // Get orders
+        orders = await db.orders.find({
+            _id: ObjectId(searchValue)
+        })
+        .limit(limitReturned)
+        .sort({ orderDate: 1 })
+        .toArray();
+
+        // Get products
+        products = await db.products.find({
+            _id: ObjectId(searchValue)
+        })
+        .limit(limitReturned)
+        .sort({ productAddedDate: 1 })
+        .toArray();
+
+        return res.status(200).json({
+            customers,
+            orders,
+            products
+        });
+    }
+
+    // If email address is detected
+    if(emailRegex.test(req.body.searchValue)){
+        customerQuery.email = searchValue;
+        orderQuery.orderEmail = searchValue;
+    }else if(numericRegex.test(req.body.searchValue)){
+        // If a numeric value is detected
+        orderQuery.amount = common.cleanAmount(req.body.searchValue);
+        productQuery.productPrice = common.cleanAmount(req.body.searchValue);
+    }else{
+        // String searches
+        customerQuery.$or = [
+            { firstName: { $regex: new RegExp(searchValue, 'img') } },
+            { lastName: { $regex: new RegExp(searchValue, 'img') } }
+        ];
+        orderQuery.$or = [
+            { orderFirstname: { $regex: new RegExp(searchValue, 'img') } },
+            { orderLastname: { $regex: new RegExp(searchValue, 'img') } }
+        ];
+        productQuery.$or = [
+            { productTitle: { $regex: new RegExp(searchValue, 'img') } },
+            { productDescription: { $regex: new RegExp(searchValue, 'img') } }
+        ];
+    }
+
+    // Get customers
+    if(Object.keys(customerQuery).length > 0){
+        customers = await db.customers.find(customerQuery)
+        .limit(limitReturned)
+        .sort({ created: 1 })
+        .toArray();
+    }
+
+    // Get orders
+    if(Object.keys(orderQuery).length > 0){
+        orders = await db.orders.find(orderQuery)
+        .limit(limitReturned)
+        .sort({ orderDate: 1 })
+        .toArray();
+    }
+
+    // Get products
+    if(Object.keys(productQuery).length > 0){
+        products = await db.products.find(productQuery)
+        .limit(limitReturned)
+        .sort({ productAddedDate: 1 })
+        .toArray();
+    }
+
+    return res.status(200).json({
+        customers,
+        orders,
+        products
+    });
 });
 
 module.exports = router;

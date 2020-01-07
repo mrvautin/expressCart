@@ -116,6 +116,61 @@ body .popover{display:none !important; }
     font-size: 20px;
 }
 
+.global-result-type {
+    color: #8d8d8d;
+}
+
+.global-result:hover {
+    background-color: #007bff;
+}
+
+.global-result:hover .global-result-detail, 
+.global-result:hover .global-result-type, 
+.global-result:hover .global-result-type .fal {
+    color: #fff !important;
+}
+
+.global-result a {
+    text-decoration: none !important;
+}
+
+.global-result:hover {
+    cursor: pointer;
+}
+
+.global-result:first-child {
+    border-top-left-radius: 0; 
+    border-top-right-radius: 0;
+}
+
+.global-result {
+    border-left: 0;
+    border-right: 0;
+}
+
+.global-search-modal-content, .global-search-modal-header{
+    background-color: transparent;
+    border: none;
+}
+
+#global-search-results{
+    padding-right: 0;
+    border-bottom-left-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+}
+
+.global-search-form{
+    margin-bottom: 0;
+}
+
+#global-search-value {
+    border-bottom-right-radius: 0;
+}
+
+.search-input-addon {
+    border-bottom-left-radius: 0;
+}
+
 @media only screen and (max-width: 768px){
     .navbar-default .navbar-brand {
         padding-top: 10px;
