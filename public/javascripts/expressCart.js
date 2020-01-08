@@ -305,6 +305,14 @@ $(document).ready(function (){
         });
     });
 
+    $('#product_quantity').on('keyup', function(e){
+        checkMaxQuantity(e, $('#product_quantity'));
+    });
+
+    $('.cart-product-quantity').on('keyup', function(e){
+        checkMaxQuantity(e, $('.cart-product-quantity'));
+    });
+
     $('.cart-product-quantity').on('focusout', function(e){
         cartUpdate($(e.target));
     });
@@ -390,6 +398,20 @@ $(document).ready(function (){
         showNotification(messageVal, messageTypeVal || 'danger', false);
     }
 });
+
+function checkMaxQuantity(e, element){
+    if($('#maxQuantity').length){
+        if(e.keyCode === 46 || e.keyCode === 8){
+            return;
+        }
+        if(parseInt($(e.target).val()) > parseInt($('#maxQuantity').val())){
+            const qty = element.val();
+            e.preventDefault();
+            element.val(qty.slice(0, -1));
+            showNotification(`Exceeds maximum quantity: ${$('#maxQuantity').val()}`, 'warning', false);
+        }
+    }
+}
 
 function deleteFromCart(element){
     $.ajax({
