@@ -555,8 +555,8 @@ router.post('/admin/searchall', restrict, async (req, res, next) => {
         orderQuery.orderEmail = searchValue;
     }else if(numericRegex.test(req.body.searchValue)){
         // If a numeric value is detected
-        orderQuery.amount = common.cleanAmount(req.body.searchValue);
-        productQuery.productPrice = common.cleanAmount(req.body.searchValue);
+        orderQuery.amount = req.body.searchValue;
+        productQuery.productPrice = req.body.searchValue;
     }else{
         // String searches
         customerQuery.$or = [

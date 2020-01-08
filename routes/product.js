@@ -93,7 +93,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     const doc = {
         productPermalink: req.body.productPermalink,
         productTitle: common.cleanHtml(req.body.productTitle),
-        productPrice: common.safeParseInt(req.body.productPrice),
+        productPrice: req.body.productPrice,
         productDescription: common.cleanHtml(req.body.productDescription),
         productPublished: common.convertBool(req.body.productPublished),
         productTags: req.body.productTags,
@@ -237,7 +237,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productId: req.body.productId,
         productPermalink: req.body.productPermalink,
         productTitle: common.cleanHtml(req.body.productTitle),
-        productPrice: common.safeParseInt(req.body.productPrice),
+        productPrice: req.body.productPrice,
         productDescription: common.cleanHtml(req.body.productDescription),
         productPublished: common.convertBool(req.body.productPublished),
         productTags: req.body.productTags,

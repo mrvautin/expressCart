@@ -205,7 +205,7 @@ test('[Success] Add a product', async t => {
     const product = {
         productPermalink: 'test-jacket',
         productTitle: 'Test Jacket',
-        productPrice: 100,
+        productPrice: '100.00',
         productDescription: 'Test desc',
         productPublished: true,
         productTags: 'organic, jacket',
@@ -235,7 +235,7 @@ test('[Fail] Add a product - Duplicate permalink', async t => {
     const product = {
         productPermalink: 'test-jacket',
         productTitle: 'Test Jacket - blue',
-        productPrice: 100,
+        productPrice: '100.00',
         productDescription: 'Test desc blue',
         productPublished: true,
         productTags: 'organic, jacket, blue',
@@ -265,7 +265,7 @@ test('[Success] Update a product', async t => {
     const product = {
         productId: g.products[0]._id,
         productTitle: 'Test Jacket',
-        productPrice: 200,
+        productPrice: '200.00',
         productDescription: 'Test desc',
         productPublished: true,
         productTags: 'organic, jacket',

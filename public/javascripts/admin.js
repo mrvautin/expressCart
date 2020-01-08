@@ -652,8 +652,14 @@ $(document).ready(function (){
             $('#global-search-results').empty();
             $('#global-search-results').addClass('invisible');
         }
+
+        let minLength = 3;
+        if(/^\d*\.?\d*$/.test($('#global-search-value').val())){
+            minLength = 1;
+        }
+
         // Search when 3 or more characters are entered
-        if($('#global-search-value').val().length > 3){
+        if($('#global-search-value').val().length > minLength){
             $('#global-search').html('<span class="fa fa-spinner fa-spin"></span>');
             globalSearch();
         }
@@ -685,34 +691,40 @@ function globalSearch(){
         let hasResult = false;
         res.customers.forEach((value) => {
             hasResult = true;
-            let result = '<li class="list-group-item global-result text-center" data-url="/admin/customer/view/' + value._id + '">';
-            result += '<div class="row">';
-            result += '<div class="col global-result-type gr-click"><i class="fas fa-users"></i> Customer</div>';
-            result += '<div class="col global-result-detail gr-click">' + value.firstName + ' ' + value.lastName + '</div>';
-            result += '<div class="col global-result-detail gr-click">' + value.email + '</div>';
-            result += '</div></li>';
+            const result = `
+            <li class="list-group-item global-result text-center" data-url="/admin/customer/view/${value._id}">
+                <div class="row">
+                <div class="col global-result-type gr-click"><i class="fas fa-users"></i> Customer</div>
+                <div class="col global-result-detail gr-click">${value.firstName} ${value.lastName}</div>
+                <div class="col global-result-detail gr-click">${value.email}</div>
+                </div>
+            </li>`;
             $('#global-search-results').append(result);
         });
 
         res.orders.forEach((value) => {
             hasResult = true;
-            let result = '<li class="list-group-item global-result text-center" data-url="/admin/order/view/' + value._id + '">';
-            result += '<div class="row">';
-            result += '<div class="col global-result-type gr-click"><i class="fas fa-cube"></i> Order</div>';
-            result += '<div class="col global-result-detail gr-click">' + value.orderFirstname + ' ' + value.orderLastname + '</div>';
-            result += '<div class="col global-result-detail gr-click">' + value.orderEmail + '</div>';
-            result += '</div></li>';
+            const result = `
+            <li class="list-group-item global-result text-center" data-url="/admin/order/view/${value._id}">
+                <div class="row">
+                    <div class="col global-result-type gr-click"><i class="fas fa-cube"></i> Order</div>
+                    <div class="col global-result-detail gr-click">${value.orderFirstname} ${value.orderLastname}</div>
+                    <div class="col global-result-detail gr-click">${value.orderEmail}</div>
+                </div>
+            </li>`;
             $('#global-search-results').append(result);
         });
 
         res.products.forEach((value) => {
             hasResult = true;
-            let result = '<li class="list-group-item global-result text-center" data-url="/admin/product/edit/' + value._id + '">';
-            result += '<div class="row">';
-            result += '<div class="col global-result-type gr-click"><i class="fas fa-box-open"></i> Product</div>';
-            result += '<div class="col global-result-detail gr-click">' + value.productTitle + '</div>';
-            result += '<div class="col global-result-detail gr-click">' + numeral(value.productPrice).format('0.00') + '</div>';
-            result += '</div></li>';
+            const result =
+            `<li class="list-group-item global-result text-center" data-url="/admin/product/edit/${value._id}">
+                <div class="row">
+                    <div class="col global-result-type gr-click"><i class="fas fa-box-open"></i> Product</div>
+                    <div class="col global-result-detail gr-click">${value.productTitle}</div>
+                    <div class="col global-result-detail gr-click">${$('#currencySymbol').val()}${numeral(value.productPrice).format('0.00')}</div>
+                </div>
+            </li>`;
             $('#global-search-results').append(result);
         });
 
