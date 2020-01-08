@@ -169,15 +169,17 @@
         {{#if @root.config.maxQuantity}} <input type="hidden" id="maxQuantity" value="{{@root.config.maxQuantity}}">{{/if}}
 		<div id="notify_message"></div>
 		{{#if showFooter}}
-            <footer class="footer">
-                <div class="container-fluid">
+            <div class="footer">
+                <div class="d-flex h-100">
+                    <div class="col-12 align-self-center">
                     {{#isNull @root.config.footerHtml}}
                         <h5 class="text-center">Powered by expressCart</h5>
                     {{else}}
                         {{{@root.config.footerHtml}}}
                     {{/isNull}}
+                    </div>
                 </div>
-            </footer>
+            </div>
 		{{/if}}
         <script src="/javascripts/pushy.min.js"></script>
         {{#if admin}}
