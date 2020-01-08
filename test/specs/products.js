@@ -40,11 +40,23 @@ test('[Fail] Add product to cart when subscription already added', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[1]._id,
-            productQuantity: 100,
+            productQuantity: 1,
             productOptions: JSON.stringify(g.products[1].productOptions)
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Subscription already existing in cart. You cannot add more.');
+});
+
+test('[Fail] Add quantity which exceeds the maxQuantity', async t => {
+    const res = await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[4]._id,
+            productQuantity: 75,
+            productOptions: {}
+        })
+        .expect(400);
+    t.deepEqual(res.body.message, 'The quantity exceeds the max amount. Please contact us for larger orders.');
 });
 
 test('[Success] Empty cart', async t => {
@@ -113,7 +125,7 @@ test('[Fail] Add product to cart with not enough stock', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 100,
+            productQuantity: 20,
             productOptions: JSON.stringify(g.products[0].productOptions)
         })
         .expect(400);

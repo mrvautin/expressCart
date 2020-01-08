@@ -25,6 +25,7 @@
     "orderHook": "",
     "availableLanguages": ["en", "it"],
     "defaultLocale": "en",
+    "maxQuantity": 25,
     "modules": {
         "enabled": {
             "shipping": "shipping-basic"

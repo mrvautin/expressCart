@@ -365,6 +365,13 @@ router.post('/product/addtocart', async (req, res, next) => {
     let productQuantity = req.body.productQuantity ? parseInt(req.body.productQuantity) : 1;
     const productComment = req.body.productComment ? req.body.productComment : null;
 
+    // If maxQuantity set, ensure the quantity doesn't exceed that value
+    if(config.maxQuantity && productQuantity > config.maxQuantity){
+        return res.status(400).json({
+            message: 'The quantity exceeds the max amount. Please contact us for larger orders.'
+        });
+    }
+
     // Don't allow negative quantity
     if(productQuantity < 1){
         productQuantity = 1;

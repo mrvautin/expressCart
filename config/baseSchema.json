@@ -110,6 +110,9 @@
             "type": "boolean",
             "default": true
         },
+        "maxQuantity": {
+            "type": "number"
+        },
         "modules": {
             "type": "object",
             "properties": {
