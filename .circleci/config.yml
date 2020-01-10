@@ -3,6 +3,9 @@ jobs:
   build:
     docker:
        - image: 442983821453.dkr.ecr.us-east-1.amazonaws.com/nodejs:latest
+         aws_auth:
+           aws_access_key_id: $AWSAccessKeyId
+           aws_secret_access_key: $AWSSecretKey
     steps:
       - checkout
       - run: echo "A first hello"
