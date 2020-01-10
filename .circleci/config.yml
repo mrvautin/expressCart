@@ -1,11 +1,11 @@
-version: 2
-jobs:
-  build:
-    docker:
-       - image: 442983821453.dkr.ecr.us-east-1.amazonaws.com/nodejs:latest
-         aws_auth:
-           aws_access_key_id: $AWSAccessKeyId
-           aws_secret_access_key: $AWSSecretKey
-    steps:
-      - checkout
-      - run: echo "A first hello"
+version: 2.1
+orbs:
+   aws-ecr: circleci/aws-ecr@0.0.2
+workflows:
+  build-and-deploy:
+    jobs:
+      - aws-ecr/build_and_push_image:
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: "{CIRCLE_SHA1}"
