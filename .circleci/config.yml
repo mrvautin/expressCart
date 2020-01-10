@@ -8,4 +8,5 @@ workflows:
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           region: ${AWS_DEFAULT_REGION}
-          tag: 0.0.1
+          tag: ${CIRCLE_BUILD_NUM}
+
