@@ -1,4 +1,3 @@
-version: 2.1
 orbs:
   aws-eks: circleci/aws-eks@0.2.6
 version: 2.1
