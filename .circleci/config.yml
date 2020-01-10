@@ -7,22 +7,22 @@ workflows:
        - aws-eks/create-cluster:
            cluster-name: master
        - aws-eks/install-helm-on-cluster:
-           cluster-name: master
+           cluster-name: my-eks-helm-demo
            enable-cluster-wide-admin-access: true
            requires:
              - aws-eks/create-cluster
        - aws-eks/install-helm-chart:
            chart: stable/grafana
-           cluter-name: master
+           cluter-name: my-eks-helm-demo
            release-name: grafana-release
            requires:
              - aws-eks/install-helm-on-cluster
        - aws-eks/delete-helm-release:
-           cluster-name: master
+           cluster-name: my-eks-helm-demo
            release-name: grafana-release
            requires:
              - aws-eks/install-helm-chart
        - aws-eks/delete-cluster:
-           cluster-name: master
+           cluster-name: my-eks-helm-demo
            requires:
              - aws-eks/delete-helm-release
