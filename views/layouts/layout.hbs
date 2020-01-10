@@ -99,9 +99,9 @@
                 <ul class="navbar-nav ml-auto">
                     {{#unless admin}}
                     {{#ifCond @root.config.enableLanguages "!=" false}}
-                    <div class="dropdown">
+                    <div class="dropdown d-none d-sm-block">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ @root.__ "Languages" }}
+                            <i class="fas fa-globe-americas"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#availableLanguages}}
