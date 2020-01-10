@@ -21,7 +21,7 @@ workflows:
            cluster-name: master
            release-name: grafana-release
            requires:
-              - aws-eks/install-helm-chart
+             - aws-eks/install-helm-chart
        - aws-eks/delete-cluster:
            cluster-name: master
            requires:
