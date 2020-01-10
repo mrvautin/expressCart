@@ -5,7 +5,7 @@ workflows:
   build-and-deploy:
     jobs:
       - aws-ecr/build_and_push_image:
-          account-url: 442983821453.dkr.ecr.us-east-1.amazonaws.com
-          repo: nodejs
-          region: us-east-1
-          tag: 0.0.1
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: "${CIRCLE_SHA1}"
