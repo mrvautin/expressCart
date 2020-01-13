@@ -49,6 +49,7 @@
     "i18n": "^0.8.4",
     "lodash": "^4.17.15",
     "lunr": "^2.3.8",
+    "mime-db": "^1.43.0",
     "mime-type": "^3.0.7",
     "mkdirp": "^0.5.1",
     "moment": "^2.24.0",
@@ -83,7 +84,6 @@
     "gulp-minify": "^3.1.0",
     "gulp-rename": "^1.4.0",
     "less": "^3.10.3",
-    "mime-db": "^1.42.0",
     "supertest": "^3.4.2",
     "supertest-session": "^4.0.0"
   },
