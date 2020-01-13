@@ -4,6 +4,8 @@ services:
     image: "node:8"
     build: .
     container_name: "expresscart"
+    volumes:
+      - $PWD/.:/var/expressCart
     environment:
       NODE_ENV: development
       NODE_PATH: /
