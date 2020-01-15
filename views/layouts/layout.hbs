@@ -100,7 +100,7 @@
                     {{#unless admin}}
                     {{#ifCond @root.config.enableLanguages "!=" false}}
                     <div class="dropdown d-none d-sm-block">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-globe-americas"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -134,7 +134,7 @@
                 <div id="cart" class="col-md-12 pad-left-12 top-pad-10 pushy pushy-right">
                     <div class="row {{checkout}}">
                         <div class="col-sm-12 text-right">
-                            <button class="pushy-link btn btn-outline-primary" type="button">X</button>
+                            <button class="pushy-link btn btn-primary" type="button">X</button>
                         </div>
                     </div>
                     <div class="row">
@@ -142,8 +142,8 @@
                         {{> (getTheme 'cart')}}
                         <div class="row">
                         <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
-                            <button class="btn btn-outline-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
-                            <a href="/checkout/information" class="btn btn-outline-primary float-right">Checkout</a>
+                            <button class="btn btn-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                            <a href="/checkout/information" class="btn btn-primary float-right">Checkout</a>
                         </div>
                     </div>
                         </div>

@@ -23,14 +23,14 @@
                     {{/unless}}
                 </div>
             </div>
-            <a href="/checkout/information" class="btn btn-outline-primary float-left">{{ @root.__ "Return to information" }}</a>
-            <a href="/checkout/payment" class="btn btn-outline-primary float-right">{{ @root.__ "Proceed to payment" }}</a>
+            <a href="/checkout/information" class="btn btn-primary float-left">{{ @root.__ "Return to information" }}</a>
+            <a href="/checkout/payment" class="btn btn-primary float-right">{{ @root.__ "Proceed to payment" }}</a>
         </div>
         <div id="cart" class="col-md-7 d-none d-sm-block">
             {{> (getTheme 'cart')}}
             <div class="row">
                 <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
-                    <button class="btn btn-outline-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                    <button class="btn btn-danger float-right" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
                 </div>
             </div>
         </div>

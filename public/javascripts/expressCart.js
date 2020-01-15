@@ -585,16 +585,16 @@ function updateCartDiv(){
                                     <div class="col-12 col-md-6 no-pad-left mb-2">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
+                                                <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                             </div>
                                             <input type="number" class="form-control cart-product-quantity text-center" id="${productId}-qty" data-id="${productId}" maxlength="2" value="${item.quantity}">
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
+                                                <button class="btn btn-primary btn-qty-add" type="button">+</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-4 col-md-2 no-pad-left">
-                                        <button class="btn btn-outline-danger btn-delete-from-cart" data-id="${productId}" type="button"><i class="far fa-trash-alt" data-id="${productId}" aria-hidden="true"></i></button>
+                                        <button class="btn btn-danger btn-delete-from-cart" data-id="${productId}" type="button"><i class="far fa-trash-alt" data-id="${productId}" aria-hidden="true"></i></button>
                                     </div>
                                     <div class="col-8 col-md-4 align-self-center text-right">
                                         <strong class="my-auto">${result.currencySymbol}${productTotalAmount}</strong>
