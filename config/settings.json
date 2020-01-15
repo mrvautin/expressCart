@@ -28,7 +28,8 @@
     "maxQuantity": 25,
     "modules": {
         "enabled": {
-            "shipping": "shipping-basic"
+            "shipping": "shipping-basic",
+            "discount": "discount-voucher"
         }
     }
 }

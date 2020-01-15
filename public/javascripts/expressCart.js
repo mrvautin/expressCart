@@ -183,6 +183,38 @@ $(document).ready(function (){
         }
     });
 
+    $('#addDiscountCode').on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: '/checkout/adddiscountcode',
+            data: {
+                discountCode: $('#discountCode').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
+    $('#removeDiscountCode').on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            method: 'POST',
+            url: '/checkout/removediscountcode',
+            data: {}
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
     $('#loginForm').on('click', function(e){
         if(!e.isDefaultPrevented()){
             e.preventDefault();

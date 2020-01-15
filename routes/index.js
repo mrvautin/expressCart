@@ -207,6 +207,63 @@ router.get('/checkout/payment', (req, res) => {
     });
 });
 
+router.post('/checkout/adddiscountcode', (req, res) => {
+    const config = req.app.config;
+
+    // if there is no items in the cart return a failure
+    if(!req.session.cart){
+        res.status(400).json({
+            message: 'The are no items in your cart.'
+        });
+        return;
+    }
+
+    // Validate discount code
+    if(req.body.discountCode !== 'test'){
+        res.status(400).json({
+            message: 'Discount code is invalid or expired'
+        });
+        return;
+    }
+
+    // Set the discount code
+    req.session.discountCode = req.body.discountCode;
+
+    // Recalculate discounts
+    config.modules.loaded.discount.calculateDiscount(
+        config,
+        req
+    );
+
+    // Return the message
+    res.status(200).json({
+        message: 'Discount code applied'
+    });
+});
+
+router.post('/checkout/removediscountcode', (req, res) => {
+    const config = req.app.config;
+
+    // if there is no items in the cart return a failure
+    if(!req.session.cart){
+        res.status(400).json({
+            message: 'The are no items in your cart.'
+        });
+        return;
+    }
+
+    // Delete the discount code
+    delete req.session.discountCode;
+
+    // update total cart amount
+    updateTotalCart(req, res);
+
+    // Return the message
+    res.status(200).json({
+        message: 'Discount code removed'
+    });
+});
+
 // show an individual product
 router.get('/product/:id', async (req, res) => {
     const db = req.app.db;

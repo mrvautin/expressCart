@@ -66,6 +66,11 @@
                         <span id="shipping-amount">{{@root.session.shippingMessage}}</span>
                     </div>
                     {{/ifCond}}
+                    {{#ifCond @root.session.totalCartDiscount '>' 0}}
+                    <div class="text-right">
+                        Discount: <strong id="discount-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartDiscount}}</strong>
+                    </div>
+                    {{/ifCond}}
                     <div class="text-right">
                         Total:
                         <strong id="total-cart-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartAmount}}</strong>
