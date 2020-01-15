@@ -245,8 +245,6 @@ router.post('/checkout/adddiscountcode', (req, res) => {
 });
 
 router.post('/checkout/removediscountcode', (req, res) => {
-    const config = req.app.config;
-
     // if there is no items in the cart return a failure
     if(!req.session.cart){
         res.status(400).json({
