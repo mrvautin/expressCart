@@ -189,6 +189,9 @@ router.get('/checkout/payment', (req, res) => {
         paymentType = '_subscription';
     }
 
+    // update total cart amount one last time before payment
+    updateTotalCart(req, res);
+
     res.render(`${config.themeViews}checkout-payment`, {
         title: 'Checkout',
         config: req.app.config,
