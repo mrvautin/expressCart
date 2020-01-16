@@ -284,11 +284,11 @@ $(document).ready(function (){
     });
 
 	// Call to API to check if a permalink is available
-    $(document).on('click', '#validate_permalink', function(e){
+    $(document).on('click', '#validatePermalink', function(e){
         if($('#productPermalink').val() !== ''){
             $.ajax({
                 method: 'POST',
-                url: '/admin/api/validate_permalink',
+                url: '/admin/validatePermalink',
                 data: { permalink: $('#productPermalink').val(), docId: $('#productId').val() }
             })
             .done(function(msg){
@@ -404,10 +404,10 @@ $(document).ready(function (){
     });
 
     // Call to API for a change to the published state of a product
-    $('input[class="published_state"]').change(function(){
+    $('input[class="publishedState"]').change(function(){
         $.ajax({
             method: 'POST',
-            url: '/admin/product/published_state',
+            url: '/admin/product/publishedState',
             data: { id: this.id, state: this.checked }
         })
 		.done(function(msg){
@@ -613,7 +613,7 @@ $(document).ready(function (){
                 $.ajax({
                     data: { order: menuOrder },
                     type: 'POST',
-                    url: '/admin/settings/menu/save_order'
+                    url: '/admin/settings/menu/saveOrder'
                 })
                 .done(function(){
                     showNotification('Menu order saved', 'success', true);

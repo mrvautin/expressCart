@@ -305,7 +305,7 @@ router.post('/admin/product/delete', restrict, checkAccess, async (req, res) => 
 });
 
 // update the published state based on an ajax call from the frontend
-router.post('/admin/product/published_state', restrict, checkAccess, async (req, res) => {
+router.post('/admin/product/publishedState', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     try{

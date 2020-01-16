@@ -401,7 +401,7 @@ router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => 
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res) => {
+router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
     const result = common.orderMenu(req, res);
     if(result === false){
         res.status(400).json({ message: 'Failed saving menu order' });
@@ -411,7 +411,7 @@ router.post('/admin/settings/menu/save_order', restrict, checkAccess, (req, res)
 });
 
 // validate the permalink
-router.post('/admin/api/validate_permalink', async (req, res) => {
+router.post('/admin/validatePermalink', async (req, res) => {
     // if doc id is provided it checks for permalink in any products other that one provided,
     // else it just checks for any products with that permalink
     const db = req.app.db;
