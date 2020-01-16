@@ -1,0 +1,2 @@
+Get the application URL by running:
+  $ kubectl get svc/{{ .Release.Name }}-ptv-store -o wide

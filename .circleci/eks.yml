@@ -1,0 +1,28 @@
+orbs:
+  aws-eks: circleci/aws-eks@0.2.6
+version: 2.1
+workflows:
+   deployment:
+     jobs:
+       - aws-eks/create-cluster:
+           cluster-name: master
+       - aws-eks/install-helm-on-cluster:
+           cluster-name: my-eks-helm-demo
+           enable-cluster-wide-admin-access: true
+           requires:
+             - aws-eks/create-cluster
+       - aws-eks/install-helm-chart:
+           chart: stable/grafana
+           cluter-name: my-eks-helm-demo
+           release-name: grafana-release
+           requires:
+             - aws-eks/install-helm-on-cluster
+       - aws-eks/delete-helm-release:
+           cluster-name: my-eks-helm-demo
+           release-name: grafana-release
+           requires:
+             - aws-eks/install-helm-chart
+       - aws-eks/delete-cluster:
+           cluster-name: my-eks-helm-demo
+           requires:
+             - aws-eks/delete-helm-release
