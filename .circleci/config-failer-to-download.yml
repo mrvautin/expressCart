@@ -1,0 +1,10 @@
+orbs:
+  aws-eks: circleci/aws-eks@0.2.3
+version: 2.1
+workflows:
+  deployment:
+    jobs:
+      - aws-eks/install-helm-chart:
+          chart: helm/expresscart
+          cluster-name: k8s
+          release-name: manoj-release

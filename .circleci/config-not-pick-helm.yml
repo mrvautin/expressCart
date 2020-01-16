@@ -1,35 +1,18 @@
-version: 2
+version: 2.1
 orbs:
    aws-ecr: circleci/aws-ecr@0.0.2
    aws-eks: circleci/aws-eks@0.2.3
-   helm: circleci/helm@0.2.3
-jobs:
-  one:
-    build-and-push:
-    executor: machine
+workflows:
+  build-and-push:
+    jobs:
       - aws-ecr/build_and_push_image:
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
           region: ${AWS_DEFAULT_REGION}
           tag: ${CIRCLE_BUILD_NUM}
-    steps:
-      - checkout
-      - run: echo "testing"
-  two:
-    deploy:
-    executor: machine
-    steps:
       - aws-eks/install-helm-chart:
           chart: helm/expresscart
           cluster-name: k8s
           release-name: staging
-      - checkout
-      - run: echo "Deploy test"  
-workflows:
-  version: 2
-  one_and_two:
-    jobs:
-      - one
-      - two:
           requires:
-            - one	  
+            - aws-ecr/build_and_push_image 
