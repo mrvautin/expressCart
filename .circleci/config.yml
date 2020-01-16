@@ -3,26 +3,15 @@ orbs:
    aws-ecr: circleci/aws-ecr@0.0.2
    aws-eks: circleci/aws-eks@0.2.3
    helm-deploy: perxtech/helm-deploy@0.0.3
-jobs:
+workflows:
   build-and-push:
-    - aws-ecr/build_and_push_image:
-        account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-        repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
-        region: ${AWS_DEFAULT_REGION}
-        tag: ${CIRCLE_BUILD_NUM} 
-  deploy:
-     executor: helm-deploy/default
-     steps:
-       - helm-deploy/add-helm-repo:
-           helm_repo_name: helm
-       - helm-deploy/configure-kubectl
-       - helm-deploy/deploy:
-           helm_release: expresscart
-           helm_chart: helm/expresscart
-  workflows:
-    version: 2
-    build-and-push_and_deploy:
-      jobs:
-        - build-and-push
-        - deploy
-          
+    jobs:
+      - aws-ecr/build_and_push_image:
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: ${CIRCLE_BUILD_NUM}
+      -am deploy:
+        name: Deploy the helm charts
+        command: |
+          helm install --debug helm/expresscart --name Manoj
