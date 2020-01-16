@@ -545,6 +545,15 @@ function updateCartDiv(){
             shippingTotal = `<span id="shipping-amount">${session.shippingMessage}</span>`;
         }
 
+        var discountTotalAmt = numeral(session.totalCartDiscount).format('0.00');
+        var discountTotal = '';
+        if(session.totalCartDiscount > 0){
+            discountTotal = `
+                <div class="text-right">
+                    Discount: <strong id="discount-amount">${result.currencySymbol}${discountTotalAmt}</strong>
+                </div>`;
+        }
+
         // If the cart has contents
         if(cart){
             $('#cart-empty').empty();
@@ -620,6 +629,7 @@ function updateCartDiv(){
                     <div class="text-right">
                         ${shippingTotal}
                     </div>
+                    ${discountTotal}
                     <div class="text-right">
                         Total:
                         <strong id="total-cart-amount">${result.currencySymbol}${totalAmount}</strong>

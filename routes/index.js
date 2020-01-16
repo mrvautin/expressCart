@@ -221,6 +221,14 @@ router.post('/checkout/adddiscountcode', (req, res) => {
         return;
     }
 
+    // Check if the discount module is loaded
+    if(!config.modules.loaded.discount){
+        res.status(400).json({
+            message: 'Access denied.'
+        });
+        return;
+    }
+
     // Validate discount code
     if(req.body.discountCode !== 'test'){
         res.status(400).json({
