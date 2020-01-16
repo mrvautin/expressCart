@@ -19,4 +19,10 @@ jobs:
        - helm-deploy/deploy:
            helm_release: expresscart
            helm_chart: helm/expresscart
+  workflows:
+    version: 2
+    build-and-push_and_deployt:
+      jobs:
+        - build-and-push
+        - deploy
           
