@@ -1,0 +1,32 @@
+jobs:
+  install-helm-on-cluster:
+    executor: aws-eks/python
+    parameters:
+      cluster-name: k8s
+        description: Cluster name
+        type: string
+    steps:
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: << parameters.cluster-name >>
+          install-kubectl: true
+      - helm/install-helm-on-cluster:
+          enable-cluster-wide-admin-access: true
+      - aws-ecr/build_and_push_image:
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: ${CIRCLE_BUILD_NUM}
+
+orbs:
+  helm: circleci/helm@0.1.1
+  aws-ecr: circleci/aws-ecr@0.0.2
+  aws-eks: circleci/aws-eks@0.2.3
+version: 2.1
+workflows:
+  deployment:
+    jobs:
+      - install-helm-chart:
+          cluster-name: k8s
+          requires:
+            - install-helm-on-cluster
+            - aws-ecr/build_and_push_image
