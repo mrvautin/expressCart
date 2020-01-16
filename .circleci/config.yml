@@ -3,9 +3,8 @@ orbs:
    aws-ecr: circleci/aws-ecr@0.0.2
    aws-eks: circleci/aws-eks@0.2.3
    helm-deploy: perxtech/helm-deploy@0.0.3
-workflows:
-  build-and-push:
-    jobs:
+   jobs:
+    build-and-push:
       - aws-ecr/build_and_push_image:
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
