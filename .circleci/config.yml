@@ -11,7 +11,7 @@ workflows:
           repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
           region: ${AWS_DEFAULT_REGION}
           tag: ${CIRCLE_BUILD_NUM}
-      -am deploy:
+      - deploy:
         name: Deploy the helm charts
         command: |
           helm install --debug helm/expresscart --name Manoj
