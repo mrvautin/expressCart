@@ -1,32 +1,51 @@
-jobs:
-  install-helm-on-cluster:
-    executor: aws-eks/python
+version: 2.1
+description: |
+  Deploy a helm chart on AWS EKS
+commands:
+  setup-kube:
     parameters:
-      cluster-name: k8s
-        description: Cluster name
+      cluster:
+        type: string
+      namespace:
+        default: default
         type: string
     steps:
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: << parameters.cluster-name >>
-          install-kubectl: true
-      - helm/install-helm-on-cluster:
-          enable-cluster-wide-admin-access: true
-      - aws-ecr/build_and_push_image:
-          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-          repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
-          region: ${AWS_DEFAULT_REGION}
-          tag: ${CIRCLE_BUILD_NUM}
+    - run:
+        name: Configure Kubernetes Client
+        command: |
+          aws eks update-kubeconfig --name  << parameters.cluster >>
+          kubectl config set-context $(kubectl config current-context) --namespace << parameters.namespace >>
+          # sanity check
+          kubectl get services
 
-orbs:
-  helm: circleci/helm@0.1.1
-  aws-ecr: circleci/aws-ecr@0.0.2
-  aws-eks: circleci/aws-eks@0.2.3
-version: 2.1
-workflows:
-  deployment:
-    jobs:
-      - install-helm-chart:
-          cluster-name: k8s
-          requires:
-            - install-helm-on-cluster
-            - aws-ecr/build_and_push_image
+  init-helm:
+    parameters:
+      chart:
+        type: string
+    steps:
+    - run:
+        name: Initialise Helm
+        command: |
+          helm init --client-only
+          helm list | grep << parameters.chart >>
+          # download any missing subcharts
+          helm dep update
+  upgrade:
+    parameters:
+      helmparams:
+        default:
+        type: string
+      chart:
+        type: string
+    steps:
+    - run:
+        name: Update Cluster
+        command: |
+          helm upgrade << parameters.helmparams>> << parameters.chart >> . || export STATUS=$?
+          # cleanup
+          [ ${STATUS:-0} -eq 0 ] || helm rollback << parameters.chart >> $(helm history << parameters.chart >> | grep DEPLOYED | awk '{print $1}')
+          exit ${STATUS}
+executors:
+  default:
+    docker:
+      - image: civicteam/circle-aws-kube
