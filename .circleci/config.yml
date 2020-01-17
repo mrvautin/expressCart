@@ -15,5 +15,7 @@ workflows:
          chart: helm/expresscart
          cluster-name: k8s
          release-name: staging
+         requires:
+            - aws-ecr/build_and_push_image
       steps:
-      - run: echo "HAI"
+        - run: echo "HAI"
