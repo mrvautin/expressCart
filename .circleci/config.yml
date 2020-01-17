@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 orbs:
   aws-ecr: circleci/aws-ecr@0.0.4
   aws-eks: circleci/aws-eks@0.2.3
@@ -18,5 +18,3 @@ workflows:
           release-name: staging
           requires:
              - aws-ecr/build_and_push_image
-      steps:
-        - run: echo "HAI"
