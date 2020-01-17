@@ -4,14 +4,13 @@ orbs:
    aws-eks: circleci/aws-eks@0.2.3
    helm: circleci/helm@0.2.3
 jobs:
-  one:
-      - aws-ecr/build_and_push_image:
-          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-          repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
-          region: ${AWS_DEFAULT_REGION}
-          tag: ${CIRCLE_BUILD_NUM}
-   two:
-      - aws-eks/install-helm-chart:
+  - aws-ecr/build_and_push_image:
+      account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+      repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
+      region: ${AWS_DEFAULT_REGION}
+      tag: ${CIRCLE_BUILD_NUM}
+  two:
+    - aws-eks/install-helm-chart:
           chart: helm/expresscart
           cluster-name: k8s
           release-name: staging
