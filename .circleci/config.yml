@@ -5,19 +5,21 @@ orbs:
    helm: circleci/helm@0.2.3
 jobs:
   one:
-    build-and-push:
-    executor: machine
+    docker:
+      - image: circleci/node:10.15.3
+    working_directory: /opt
+    steps:
       - aws-ecr/build_and_push_image:
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
           region: ${AWS_DEFAULT_REGION}
           tag: ${CIRCLE_BUILD_NUM}
-    steps:
       - checkout
       - run: echo "testing"
   two:
-    deploy:
-    executor: machine
+    docker:
+      - image: circleci/node:10.15.3
+    working_directory: /opt
     steps:
       - aws-eks/install-helm-chart:
           chart: helm/expresscart
