@@ -1,21 +1,19 @@
-version: 2
+version: 2.1
 orbs:
-   aws-ecr: circleci/aws-ecr@0.0.2
-   aws-eks: circleci/aws-eks@0.2.3
-   helm: circleci/helm@0.2.3
-jobs:
+  aws-ecr: circleci/aws-ecr@0.0.4
+  aws-eks: circleci/aws-eks@0.2.3
+  helm: circleci/helm@0.2.3
+workflows:
+  build-and-deploy:
+    jobs:
       - aws-ecr/build_and_push_image:
         account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         repo: "${AWS_RESOURCE_MAHESH_PREFIX}"
         region: ${AWS_DEFAULT_REGION}
         tag: ${CIRCLE_BUILD_NUM}
       - aws-eks/install-helm-chart:
-          chart: helm/expresscart
-          cluster-name: k8s
-          release-name: staging
-workflows:
-  version: 2
-  one_and_two:
-    jobs:
-      - aws-ecr/build_and_push_image
-      - aws-eks/install-helm-chart
+         chart: helm/expresscart
+         cluster-name: k8s
+         release-name: staging
+      steps:
+      - run: echo "HAI"
