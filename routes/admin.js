@@ -4,10 +4,12 @@ const { restrict, checkAccess } = require('../lib/auth');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
+const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const mime = require('mime-type/with-db');
+const { validateJson } = require('../lib/schema');
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 
@@ -429,6 +431,169 @@ router.post('/admin/validatePermalink', async (req, res) => {
         return;
     }
     res.status(200).json({ message: 'Permalink validated successfully' });
+});
+
+// Discount codes
+router.get('/admin/settings/discounts', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    const discounts = await db.discounts.find({}).toArray();
+
+    res.render('settings-discounts', {
+        title: 'Discount code',
+        config: req.app.config,
+        session: req.session,
+        discounts,
+        admin: true,
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers
+    });
+});
+
+// Edit a discount code
+router.get('/admin/settings/discount/edit/:id', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    const discount = await db.discounts.findOne({ _id: common.getId(req.params.id) });
+
+    res.render('settings-discount-edit', {
+        title: 'Discount code edit',
+        session: req.session,
+        admin: true,
+        discount,
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config
+    });
+});
+
+// Update discount code
+router.post('/admin/settings/discount/update', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+     // Doc to insert
+     const discountDoc = {
+        discountId: req.body.discountId,
+        code: req.body.discountCode,
+        type: req.body.discountType,
+        value: parseInt(req.body.discountValue),
+        start: moment(req.body.discountStart, 'DD/MM/YYYY HH:mm').toDate(),
+        end: moment(req.body.discountEnd, 'DD/MM/YYYY HH:mm').toDate()
+    };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('editDiscount', discountDoc);
+    if(!schemaValidate.result){
+        console.log('schemaValidate errors', schemaValidate.errors);
+        res.status(400).json(schemaValidate.errors);
+        return;
+    }
+
+    // Check start is after today
+    if(moment(discountDoc.start).isBefore(moment())){
+        res.status(400).json({ message: 'Discount start date needs to be after today' });
+        return;
+    }
+
+    // Check end is after the start
+    if(!moment(discountDoc.end).isAfter(moment(discountDoc.start))){
+        res.status(400).json({ message: 'Discount end date needs to be after start date' });
+        return;
+    }
+
+    // Check if code exists
+    const checkCode = await db.discounts.countDocuments({
+        code: discountDoc.code,
+        _id: { $ne: common.getId(discountDoc.discountId) }
+    });
+    if(checkCode){
+        res.status(400).json({ message: 'Discount code already exists' });
+    }
+
+    // Remove discountID
+    delete discountDoc.discountId;
+
+    try{
+        await db.discounts.updateOne({ _id: common.getId(req.body.discountId) }, { $set: discountDoc }, {});
+        res.status(200).json({ message: 'Successfully saved', discount: discountDoc });
+    }catch(ex){
+        res.status(400).json({ message: 'Failed to save. Please try again' });
+    }
+});
+
+// Create a discount code
+router.get('/admin/settings/discount/new', restrict, checkAccess, async (req, res) => {
+    res.render('settings-discount-new', {
+        title: 'Discount code create',
+        session: req.session,
+        admin: true,
+        message: common.clearSessionValue(req.session, 'message'),
+        messageType: common.clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config
+    });
+});
+
+// Create a discount code
+router.post('/admin/settings/discount/create', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    // Doc to insert
+    const discountDoc = {
+        code: req.body.discountCode,
+        type: req.body.discountType,
+        value: parseInt(req.body.discountValue),
+        start: moment(req.body.discountStart, 'DD/MM/YYYY HH:mm').toDate(),
+        end: moment(req.body.discountEnd, 'DD/MM/YYYY HH:mm').toDate()
+    };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('newDiscount', discountDoc);
+    if(!schemaValidate.result){
+        console.log('schemaValidate errors', schemaValidate.errors);
+        res.status(400).json(schemaValidate.errors);
+        return;
+    }
+
+    // Check if code exists
+    const checkCode = await db.discounts.countDocuments({
+        code: discountDoc.code
+    });
+    if(checkCode){
+        res.status(400).json({ message: 'Discount code already exists' });
+        return;
+    }
+
+    // Check start is after today
+    if(moment(discountDoc.start).isBefore(moment())){
+        res.status(400).json({ message: 'Discount start date needs to be after today' });
+        return;
+    }
+
+    // Check end is after the start
+    if(!moment(discountDoc.end).isAfter(moment(discountDoc.start))){
+        res.status(400).json({ message: 'Discount end date needs to be after start date' });
+        return;
+    }
+
+    // Insert discount code
+    const discount = await db.discounts.insertOne(discountDoc);
+    res.status(200).json({ message: 'Discount code created successfully', discountId: discount.insertedId });
+});
+
+// Delete discount code
+router.delete('/admin/settings/discount/delete', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    try{
+        await db.discounts.deleteOne({ _id: common.getId(req.body.discountId) }, {});
+        res.status(200).json({ message: 'Discount code successfully deleted' });
+        return;
+    }catch(ex){
+        res.status(400).json({ message: 'Error deleting discount code. Please try again.' });
+    }
 });
 
 // upload the file

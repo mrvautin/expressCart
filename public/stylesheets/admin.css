@@ -4,11 +4,6 @@
   background-color: #000000;
   border-color: #000000;
 }
-.btn-outline-danger {
-  color: #ffffff !important;
-  background-color: #cc4135;
-  border-color: #cc4135;
-}
 .has-error input,
 .has-error textarea,
 .has-error div {

@@ -237,6 +237,9 @@ handlebars = handlebars.create({
         formatDate: (date, format) => {
             return moment(date).format(format);
         },
+        discountExpiry: (start, end) => {
+            return moment().isBetween(moment(start), moment(end));
+        },
         ifCond: (v1, operator, v2, options) => {
             switch(operator){
                 case'==':

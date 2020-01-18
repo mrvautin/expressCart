@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
+const moment = require('moment');
 const _ = require('lodash');
 const {
     getId,
@@ -210,8 +211,9 @@ router.get('/checkout/payment', (req, res) => {
     });
 });
 
-router.post('/checkout/adddiscountcode', (req, res) => {
+router.post('/checkout/adddiscountcode', async (req, res) => {
     const config = req.app.config;
+    const db = req.app.db;
 
     // if there is no items in the cart return a failure
     if(!req.session.cart){
@@ -229,20 +231,37 @@ router.post('/checkout/adddiscountcode', (req, res) => {
         return;
     }
 
-    // Validate discount code
-    if(req.body.discountCode !== 'test'){
+    // Check defined or null
+    if(!req.body.discountCode || req.body.discountCode === ''){
         res.status(400).json({
             message: 'Discount code is invalid or expired'
         });
         return;
     }
 
+    // Validate discount code
+    const discount = await db.discounts.findOne({ code: req.body.discountCode });
+    if(!discount){
+        res.status(400).json({
+            message: 'Discount code is invalid or expired'
+        });
+        return;
+    }
+
+    // Validate date validity
+    if(!moment().isBetween(moment(discount.start), moment(discount.end))){
+        res.status(400).json({
+            message: 'Discount is expired'
+        });
+        return;
+    }
+
     // Set the discount code
-    req.session.discountCode = req.body.discountCode;
+    req.session.discountCode = discount.code;
 
     // Recalculate discounts
     config.modules.loaded.discount.calculateDiscount(
-        config,
+        discount,
         req
     );
 

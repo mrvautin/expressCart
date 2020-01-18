@@ -544,6 +544,86 @@ $(document).ready(function (){
         }
     });
 
+    $('#discountNewForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/discount/create',
+                data: {
+                    discountCode: $('#discountCode').val(),
+                    discountType: $('#discountType').val(),
+                    discountValue: $('#discountValue').val(),
+                    discountStart: $('#discountStart').val(),
+                    discountEnd: $('#discountEnd').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', false, '/admin/settings/discount/edit/' + msg.discountId);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    $('#discountEditForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/discount/update',
+                data: {
+                    discountId: $('#discountId').val(),
+                    discountCode: $('#discountCode').val(),
+                    discountType: $('#discountType').val(),
+                    discountValue: $('#discountValue').val(),
+                    discountStart: $('#discountStart').val(),
+                    discountEnd: $('#discountEnd').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    $('#discountStart').datetimepicker({
+        uiLibrary: 'bootstrap4',
+        footer: true,
+        modal: true,
+        format: 'dd/mm/yyyy HH:MM',
+        showOtherMonths: true
+    });
+    $('#discountEnd').datetimepicker({
+        uiLibrary: 'bootstrap4',
+        footer: true,
+        modal: true,
+        format: 'dd/mm/yyyy HH:MM'
+    });
+
+    $(document).on('click', '#btnDiscountDelete', function(e){
+        e.preventDefault();
+        if(confirm('Are you sure?')){
+            $.ajax({
+                method: 'DELETE',
+                url: '/admin/settings/discount/delete',
+                data: {
+                    discountId: $(this).attr('data-id')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.message, 'danger', true);
+            });
+        }
+    });
+
     $(document).on('click', '#settings-menu-new', function(e){
         e.preventDefault();
         $.ajax({
