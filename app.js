@@ -20,7 +20,7 @@ const crypto = require('crypto');
 const common = require('./lib/common');
 const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
-const { initDb } = require('./lib/db');
+const { initDb, getDbUri } = require('./lib/db');
 let handlebars = require('express-handlebars');
 const i18n = require('i18n');
 
@@ -320,7 +320,7 @@ handlebars = handlebars.create({
 
 // session store
 const store = new MongoStore({
-    uri: config.databaseConnectionString,
+    uri: getDbUri(config.databaseConnectionString),
     collection: 'sessions'
 });
 

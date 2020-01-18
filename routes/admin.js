@@ -476,17 +476,16 @@ router.post('/admin/settings/discount/update', restrict, checkAccess, async (req
      // Doc to insert
      const discountDoc = {
         discountId: req.body.discountId,
-        code: req.body.discountCode,
-        type: req.body.discountType,
-        value: parseInt(req.body.discountValue),
-        start: moment(req.body.discountStart, 'DD/MM/YYYY HH:mm').toDate(),
-        end: moment(req.body.discountEnd, 'DD/MM/YYYY HH:mm').toDate()
+        code: req.body.code,
+        type: req.body.type,
+        value: parseInt(req.body.value),
+        start: moment(req.body.start, 'DD/MM/YYYY HH:mm').toDate(),
+        end: moment(req.body.end, 'DD/MM/YYYY HH:mm').toDate()
     };
 
     // Validate the body again schema
     const schemaValidate = validateJson('editDiscount', discountDoc);
     if(!schemaValidate.result){
-        console.log('schemaValidate errors', schemaValidate.errors);
         res.status(400).json(schemaValidate.errors);
         return;
     }
@@ -510,6 +509,7 @@ router.post('/admin/settings/discount/update', restrict, checkAccess, async (req
     });
     if(checkCode){
         res.status(400).json({ message: 'Discount code already exists' });
+        return;
     }
 
     // Remove discountID
@@ -542,17 +542,16 @@ router.post('/admin/settings/discount/create', restrict, checkAccess, async (req
 
     // Doc to insert
     const discountDoc = {
-        code: req.body.discountCode,
-        type: req.body.discountType,
-        value: parseInt(req.body.discountValue),
-        start: moment(req.body.discountStart, 'DD/MM/YYYY HH:mm').toDate(),
-        end: moment(req.body.discountEnd, 'DD/MM/YYYY HH:mm').toDate()
+        code: req.body.code,
+        type: req.body.type,
+        value: parseInt(req.body.value),
+        start: moment(req.body.start, 'DD/MM/YYYY HH:mm').toDate(),
+        end: moment(req.body.end, 'DD/MM/YYYY HH:mm').toDate()
     };
 
     // Validate the body again schema
     const schemaValidate = validateJson('newDiscount', discountDoc);
     if(!schemaValidate.result){
-        console.log('schemaValidate errors', schemaValidate.errors);
         res.status(400).json(schemaValidate.errors);
         return;
     }

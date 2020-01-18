@@ -551,11 +551,11 @@ $(document).ready(function (){
                 method: 'POST',
                 url: '/admin/settings/discount/create',
                 data: {
-                    discountCode: $('#discountCode').val(),
-                    discountType: $('#discountType').val(),
-                    discountValue: $('#discountValue').val(),
-                    discountStart: $('#discountStart').val(),
-                    discountEnd: $('#discountEnd').val()
+                    code: $('#discountCode').val(),
+                    type: $('#discountType').val(),
+                    value: $('#discountValue').val(),
+                    start: $('#discountStart').val(),
+                    end: $('#discountEnd').val()
                 }
             })
             .done(function(msg){
@@ -575,11 +575,11 @@ $(document).ready(function (){
                 url: '/admin/settings/discount/update',
                 data: {
                     discountId: $('#discountId').val(),
-                    discountCode: $('#discountCode').val(),
-                    discountType: $('#discountType').val(),
-                    discountValue: $('#discountValue').val(),
-                    discountStart: $('#discountStart').val(),
-                    discountEnd: $('#discountEnd').val()
+                    code: $('#discountCode').val(),
+                    type: $('#discountType').val(),
+                    value: $('#discountValue').val(),
+                    start: $('#discountStart').val(),
+                    end: $('#discountEnd').val()
                 }
             })
             .done(function(msg){

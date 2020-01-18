@@ -246,6 +246,36 @@
             "orderProducts": []
         }
     ],
+    "discounts": [
+        {
+            "code": "valid_10_amount_code",
+            "type": "amount",
+            "value": 10,
+            "start": "",
+            "end": ""
+        },
+        {
+            "code": "valid_10_percent_code",
+            "type": "percent",
+            "value": 10,
+            "start": "",
+            "end": ""
+        },
+        {
+            "code": "expired_10_percent_code",
+            "type": "percent",
+            "value": 10,
+            "start": "",
+            "end": ""
+        },
+        {
+            "code": "future_10_percent_code",
+            "type": "percent",
+            "value": 10,
+            "start": "",
+            "end": ""
+        }
+    ],
     "menu": {
         "items": [
             {
