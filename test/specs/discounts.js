@@ -43,7 +43,7 @@ test('[Success] Add valid amount discount', async t => {
     const session = sessions[0].session;
     t.deepEqual(session.discountCode, g.discounts[0].code);
     t.deepEqual(session.totalCartDiscount, g.discounts[0].value);
-    t.deepEqual(session.totalCartAmount, totalCartAmount);
+    t.deepEqual(session.totalCartAmount, totalCartAmount - g.discounts[0].value);
 });
 
 test('[Success] Add valid percent discount', async t => {
@@ -80,7 +80,7 @@ test('[Success] Add valid percent discount', async t => {
 
     const session = sessions[0].session;
     t.deepEqual(session.discountCode, g.discounts[1].code);
-    t.deepEqual(session.totalCartAmount, totalCartAmount);
+    t.deepEqual(session.totalCartAmount, totalCartAmount - expectedDiscount);
     t.deepEqual(session.totalCartDiscount, expectedDiscount);
 });
 

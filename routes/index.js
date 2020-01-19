@@ -174,7 +174,7 @@ router.get('/checkout/cartdata', (req, res) => {
     });
 });
 
-router.get('/checkout/payment', (req, res) => {
+router.get('/checkout/payment', async (req, res) => {
     const config = req.app.config;
 
     // if there is no items in the cart then render a failure
@@ -191,7 +191,7 @@ router.get('/checkout/payment', (req, res) => {
     }
 
     // update total cart amount one last time before payment
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     res.render(`${config.themeViews}checkout-payment`, {
         title: 'Checkout',
@@ -259,11 +259,8 @@ router.post('/checkout/adddiscountcode', async (req, res) => {
     // Set the discount code
     req.session.discountCode = discount.code;
 
-    // Recalculate discounts
-    config.modules.loaded.discount.calculateDiscount(
-        discount,
-        req
-    );
+    // Update the cart amount
+    await updateTotalCart(req, res);
 
     // Return the message
     res.status(200).json({
@@ -271,7 +268,7 @@ router.post('/checkout/adddiscountcode', async (req, res) => {
     });
 });
 
-router.post('/checkout/removediscountcode', (req, res) => {
+router.post('/checkout/removediscountcode', async (req, res) => {
     // if there is no items in the cart return a failure
     if(!req.session.cart){
         res.status(400).json({
@@ -284,7 +281,7 @@ router.post('/checkout/removediscountcode', (req, res) => {
     delete req.session.discountCode;
 
     // update total cart amount
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Return the message
     res.status(200).json({
@@ -395,7 +392,7 @@ router.post('/product/updatecart', async (req, res, next) => {
     req.session.cart[cartItem.productId].totalItemPrice = productPrice * productQuantity;
 
     // update total cart amount
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -430,7 +427,7 @@ router.post('/product/removefromcart', async (req, res, next) => {
         $set: { cart: req.session.cart }
     });
     // update total cart
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -574,7 +571,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }, { upsert: true });
 
     // update total cart amount
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
