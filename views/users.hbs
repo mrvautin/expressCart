@@ -17,9 +17,9 @@
                             {{else}}
                                 <span>{{ @root.__ "User" }}</span>
                             {{/isAnAdmin}}
-                            {{#isAnAdmin ../session.isAdmin}}
-                                <a href="/admin/user/edit/{{../this._id}}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
-                                <a href="#" class="userDelete" data-id="{{../this._id}}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+                            {{#isAnAdmin @root.session.isAdmin}}
+                                <a href="/admin/user/edit/{{../this._id}}"><i class="fas fa-pencil-alt"></i></a>
+                                <a href="#" class="userDelete" data-id="{{../this._id}}"><i class="far fa-trash-alt"></i></a>
                             {{/isAnAdmin}}
 						</span>
 					</li>
