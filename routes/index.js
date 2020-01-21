@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
+const hash = require('object-hash');
 const moment = require('moment');
 const _ = require('lodash');
 const {
@@ -362,12 +363,12 @@ router.post('/product/updatecart', async (req, res, next) => {
 
     if(productQuantity === 0){
         // quantity equals zero so we remove the item
-        delete req.session.cart[cartItem.productId];
+        delete req.session.cart[cartItem.cartId];
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
         return;
     }
 
-    const product = await db.products.findOne({ _id: getId(cartItem.productId) });
+    const product = await db.products.findOne({ _id: getId(req.session.cart[cartItem.cartId].productId) });
     if(!product){
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
         return;
@@ -382,14 +383,14 @@ router.post('/product/updatecart', async (req, res, next) => {
     }
 
     const productPrice = parseFloat(product.productPrice).toFixed(2);
-    if(!req.session.cart[cartItem.productId]){
+    if(!req.session.cart[cartItem.cartId]){
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
         return;
     }
 
     // Update the cart
-    req.session.cart[cartItem.productId].quantity = productQuantity;
-    req.session.cart[cartItem.productId].totalItemPrice = productPrice * productQuantity;
+    req.session.cart[cartItem.cartId].quantity = productQuantity;
+    req.session.cart[cartItem.cartId].totalItemPrice = productPrice * productQuantity;
 
     // update total cart amount
     await updateTotalCart(req, res);
@@ -410,12 +411,12 @@ router.post('/product/removefromcart', async (req, res, next) => {
     const db = req.app.db;
 
     // Check for item in cart
-    if(!req.session.cart[req.body.productId]){
+    if(!req.session.cart[req.body.cartId]){
         return res.status(400).json({ message: 'Product not found in cart' });
     }
 
     // remove item from cart
-    delete req.session.cart[req.body.productId];
+    delete req.session.cart[req.body.cartId];
 
     // If not items in cart, empty it
     if(Object.keys(req.session.cart).length === 0){
@@ -535,19 +536,25 @@ router.post('/product/addtocart', async (req, res, next) => {
         }catch(ex){}
     }
 
+    // Product with options hash
+    const productHash = hash({
+        productId: product._id.toString(),
+        options
+    });
+
     // if exists we add to the existing value
     let cartQuantity = 0;
-    if(req.session.cart[product._id]){
-        cartQuantity = parseInt(req.session.cart[product._id].quantity) + productQuantity;
-        req.session.cart[product._id].quantity = cartQuantity;
-        req.session.cart[product._id].totalItemPrice = productPrice * parseInt(req.session.cart[product._id].quantity);
+    if(req.session.cart[productHash]){
+        cartQuantity = parseInt(req.session.cart[productHash].quantity) + productQuantity;
+        req.session.cart[productHash].quantity = cartQuantity;
+        req.session.cart[productHash].totalItemPrice = productPrice * parseInt(req.session.cart[productHash].quantity);
     }else{
         // Set the card quantity
         cartQuantity = productQuantity;
 
         // new product deets
         const productObj = {};
-        productObj.productId = req.body.productId;
+        productObj.productId = product._id;
         productObj.title = product.productTitle;
         productObj.quantity = productQuantity;
         productObj.totalItemPrice = productPrice * productQuantity;
@@ -562,7 +569,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
 
         // merge into the current cart
-        req.session.cart[product._id] = productObj;
+        req.session.cart[productHash] = productObj;
     }
 
     // Update cart to the DB
@@ -580,7 +587,11 @@ router.post('/product/addtocart', async (req, res, next) => {
         req.session.cartSubscription = product.productSubscription;
     }
 
-    return res.status(200).json({ message: 'Cart successfully updated', totalCartItems: req.session.totalCartItems });
+    return res.status(200).json({
+        message: 'Cart successfully updated',
+        cartId: productHash,
+        totalCartItems: req.session.totalCartItems
+    });
 });
 
 // search products

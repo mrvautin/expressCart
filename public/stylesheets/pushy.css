@@ -8,7 +8,7 @@
   width: 500px;
   height: 100%;
   top: 0;
-  z-index: 9999;
+  z-index: 999;
   background: #fff;
   overflow: auto;
   visibility: hidden;
@@ -80,7 +80,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 9998;
+  z-index: 998;
   background-color: rgba(0, 0, 0, 0.5);
   -webkit-animation: fade 500ms;
   animation: fade 500ms;

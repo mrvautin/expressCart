@@ -377,15 +377,17 @@ $(document).ready(function (){
         }
     });
 
+    // On empty cart click
     $(document).on('click', '#empty-cart', function(e){
-        $.ajax({
-            method: 'POST',
-            url: '/product/emptycart'
-        })
-		.done(function(msg){
-            showNotification(msg.message, 'success', true);
-            updateCartDiv();
-        });
+        $('#confirmModal').modal('show');
+        $('#buttonConfirm').attr('data-func', 'emptyCart');
+    });
+
+    $(document).on('click', '#buttonConfirm', function(e){
+        // Get the function and run it
+        var func = $(e.target).attr('data-func');
+        window[func]();
+        $('#confirmModal').modal('hide');
     });
 
     $('.qty-btn-minus').on('click', function(){
@@ -449,7 +451,9 @@ function deleteFromCart(element){
     $.ajax({
         method: 'POST',
         url: '/product/removefromcart',
-        data: { productId: element.attr('data-id') }
+        data: {
+            cartId: element.attr('data-cartid')
+        }
     })
     .done(function(msg){
         showNotification(msg.message, 'success');
@@ -476,6 +480,7 @@ function updateCart(element){
         method: 'POST',
         url: '/product/updatecart',
         data: {
+            cartId: element.attr('data-cartid'),
             productId: element.attr('data-id'),
             quantity: element.val()
         }
@@ -596,14 +601,14 @@ function updateCartDiv(){
                                             <div class="input-group-prepend">
                                                 <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                             </div>
-                                            <input type="number" class="form-control cart-product-quantity text-center" id="${productId}-qty" data-id="${productId}" maxlength="2" value="${item.quantity}">
+                                            <input type="number" class="form-control cart-product-quantity text-center" data-cartid="${productId}" data-id="${item.id}" maxlength="2" value="${item.quantity}">
                                             <div class="input-group-append">
                                                 <button class="btn btn-primary btn-qty-add" type="button">+</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-4 col-md-2 no-pad-left">
-                                        <button class="btn btn-danger btn-delete-from-cart" data-id="${productId}" type="button"><i class="far fa-trash-alt" data-id="${productId}" aria-hidden="true"></i></button>
+                                        <button class="btn btn-danger btn-delete-from-cart" data-cartid="${productId}" type="button"><i class="far fa-trash-alt" data-cartid="${productId}" aria-hidden="true"></i></button>
                                     </div>
                                     <div class="col-8 col-md-4 align-self-center text-right">
                                         <strong class="my-auto">${result.currencySymbol}${productTotalAmount}</strong>
@@ -661,5 +666,17 @@ function updateCartDiv(){
 function upperFirst(value){
     return value.replace(/^\w/, (chr) => {
         return chr.toUpperCase();
+    });
+}
+
+// eslint-disable-next-line no-unused-vars
+function emptyCart(){
+    $.ajax({
+        method: 'POST',
+        url: '/product/emptycart'
+    })
+    .done(function(msg){
+        showNotification(msg.message, 'success', true);
+        updateCartDiv();
     });
 }
