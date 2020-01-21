@@ -22,7 +22,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
         <link rel="stylesheet" href="/stylesheets/pushy{{config.env}}.css">
         {{#if admin}}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/css/gijgo.min.css" integrity="sha256-bH0WSMuCFoG/dxeox/5aOWmaZl729yDg4ylckwSRTfU=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.css" integrity="sha256-MdzaXfGXzZdeHw/XEV2LNNycipsLk4uZ0FYzO3hbuvI=" crossorigin="anonymous" />
         {{/if}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css" integrity="sha256-4qBzeX420hElp9/FzsuqUNqVobcClz1BjnXoxUDSYQ0=" crossorigin="anonymous" />
@@ -36,6 +37,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha256-x3YZWtRjM8bJqf48dFAv/qmgL68SI4jqNWeSLMZaMGA=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
         {{#if admin}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/js/gijgo.min.js" integrity="sha256-YZhUu69bCn9uTqQyKwwQ3GyRypS7eaxp/wmVS282sDI=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.min.js" integrity="sha256-K1exjHe1X4MP24jRizgBaSbUDUrNhFDRSwGoEYGmtJE=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/css/css.min.js" integrity="sha256-D5oJ11cOmRhXSYWELwG2U/XYH3YveZJr9taRYLZ2DSM=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/xml/xml.min.js" integrity="sha256-ERFGS58tayDq5kkyNwd/89iZZ+HglMH7eYXxG1hxTvA=" crossorigin="anonymous"></script>
@@ -100,7 +103,7 @@
                     {{#unless admin}}
                     {{#ifCond @root.config.enableLanguages "!=" false}}
                     <div class="dropdown d-none d-sm-block">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-globe-americas"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -134,7 +137,7 @@
                 <div id="cart" class="col-md-12 pad-left-12 top-pad-10 pushy pushy-right">
                     <div class="row {{checkout}}">
                         <div class="col-sm-12 text-right">
-                            <button class="pushy-link btn btn-outline-primary" type="button">X</button>
+                            <button class="pushy-link btn btn-primary" type="button">X</button>
                         </div>
                     </div>
                     <div class="row">
@@ -142,8 +145,8 @@
                         {{> (getTheme 'cart')}}
                         <div class="row">
                         <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
-                            <button class="btn btn-outline-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
-                            <a href="/checkout/information" class="btn btn-outline-primary float-right">Checkout</a>
+                            <button class="btn btn-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                            <a href="/checkout/information" class="btn btn-primary float-right">Checkout</a>
                         </div>
                     </div>
                         </div>

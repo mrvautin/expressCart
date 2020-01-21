@@ -1,0 +1,34 @@
+{
+    "$id": "newDiscount",
+    "type": "object",
+    "properties": {
+        "code": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "amount",
+                "percent"
+            ]
+        },
+        "value": {
+            "type": "number"
+        },
+        "start": {
+            "type": "object",
+            "format" : "datetime"
+        },
+        "end": {
+            "type": "object",
+            "format" : "datetime"
+        }
+    },
+    "required": [
+        "code",
+        "type",
+        "value",
+        "start",
+        "end"
+    ]
+}

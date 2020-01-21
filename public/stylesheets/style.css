@@ -391,24 +391,26 @@ input.form-control.customerDetails {
   color: #000000;
 }
 .btn-warning,
-.btn-outline-primary {
+.btn-primary {
   color: #ffffff;
   background-color: #000000;
   border-color: #000000;
 }
-.btn-warning:hover,
-.btn-outline-primary:hover {
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.focus,
+.btn-primary:focus {
   color: #ffffff !important;
   background-color: #000000 !important;
   border-color: #000000 !important;
   opacity: 0.65;
 }
-.btn-outline-danger {
+.btn-danger {
   color: #ffffff;
   background-color: #cc3a2c;
   border-color: #cc3a2c;
 }
-.btn-outline-danger:hover {
+.btn-danger:hover {
   color: #ffffff !important;
   background-color: #cc3a2c !important;
   border-color: #cc3a2c !important;

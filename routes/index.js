@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
+const moment = require('moment');
 const _ = require('lodash');
 const {
     getId,
@@ -173,7 +174,7 @@ router.get('/checkout/cartdata', (req, res) => {
     });
 });
 
-router.get('/checkout/payment', (req, res) => {
+router.get('/checkout/payment', async (req, res) => {
     const config = req.app.config;
 
     // if there is no items in the cart then render a failure
@@ -188,6 +189,9 @@ router.get('/checkout/payment', (req, res) => {
     if(req.session.cartSubscription){
         paymentType = '_subscription';
     }
+
+    // update total cart amount one last time before payment
+    await updateTotalCart(req, res);
 
     res.render(`${config.themeViews}checkout-payment`, {
         title: 'Checkout',
@@ -204,6 +208,84 @@ router.get('/checkout/payment', (req, res) => {
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         showFooter: 'showFooter'
+    });
+});
+
+router.post('/checkout/adddiscountcode', async (req, res) => {
+    const config = req.app.config;
+    const db = req.app.db;
+
+    // if there is no items in the cart return a failure
+    if(!req.session.cart){
+        res.status(400).json({
+            message: 'The are no items in your cart.'
+        });
+        return;
+    }
+
+    // Check if the discount module is loaded
+    if(!config.modules.loaded.discount){
+        res.status(400).json({
+            message: 'Access denied.'
+        });
+        return;
+    }
+
+    // Check defined or null
+    if(!req.body.discountCode || req.body.discountCode === ''){
+        res.status(400).json({
+            message: 'Discount code is invalid or expired'
+        });
+        return;
+    }
+
+    // Validate discount code
+    const discount = await db.discounts.findOne({ code: req.body.discountCode });
+    if(!discount){
+        res.status(400).json({
+            message: 'Discount code is invalid or expired'
+        });
+        return;
+    }
+
+    // Validate date validity
+    if(!moment().isBetween(moment(discount.start), moment(discount.end))){
+        res.status(400).json({
+            message: 'Discount is expired'
+        });
+        return;
+    }
+
+    // Set the discount code
+    req.session.discountCode = discount.code;
+
+    // Update the cart amount
+    await updateTotalCart(req, res);
+
+    // Return the message
+    res.status(200).json({
+        message: 'Discount code applied'
+    });
+});
+
+router.post('/checkout/removediscountcode', async (req, res) => {
+    // if there is no items in the cart return a failure
+    if(!req.session.cart){
+        res.status(400).json({
+            message: 'The are no items in your cart.'
+        });
+        return;
+    }
+
+    // Delete the discount code
+    delete req.session.discountCode;
+
+    // update total cart amount
+    await updateTotalCart(req, res);
+
+    // Return the message
+    res.status(200).json({
+        message: 'Discount code removed'
     });
 });
 
@@ -310,7 +392,7 @@ router.post('/product/updatecart', async (req, res, next) => {
     req.session.cart[cartItem.productId].totalItemPrice = productPrice * productQuantity;
 
     // update total cart amount
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -345,7 +427,7 @@ router.post('/product/removefromcart', async (req, res, next) => {
         $set: { cart: req.session.cart }
     });
     // update total cart
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);
@@ -489,7 +571,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }, { upsert: true });
 
     // update total cart amount
-    updateTotalCart(req, res);
+    await updateTotalCart(req, res);
 
     // Update checking cart for subscription
     updateSubscriptionCheck(req, res);

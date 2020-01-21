@@ -29,16 +29,16 @@
                                 <div class="col-12 col-md-6 no-pad-left mb-2">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-outline-primary btn-qty-minus" type="button">-</button>
+                                            <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                         </div>
                                         <input type="number" class="form-control cart-product-quantity text-center" id="{{../this.productId}}-qty" data-id="{{../this.productId}}" maxlength="2" value="{{../this.quantity}}">
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-primary btn-qty-add" type="button">+</button>
+                                            <button class="btn btn-primary btn-qty-add" type="button">+</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-4 col-md-2 no-pad-left">
-                                    <button class="btn btn-outline-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="far fa-trash-alt" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
+                                    <button class="btn btn-danger btn-delete-from-cart" data-id="{{../this.productId}}" type="button"><i class="far fa-trash-alt" data-id="{{../this.productId}}" aria-hidden="true"></i></button>
                                 </div>
                                 {{else}}
                                 <div class="col-12 col-md-8 no-pad-left mb-2"></div>
@@ -64,6 +64,11 @@
                     {{else}}
                     <div class="text-right">
                         <span id="shipping-amount">{{@root.session.shippingMessage}}</span>
+                    </div>
+                    {{/ifCond}}
+                    {{#ifCond @root.session.totalCartDiscount '>' 0}}
+                    <div class="text-right">
+                        Discount: <strong id="discount-amount">{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartDiscount}}</strong>
                     </div>
                     {{/ifCond}}
                     <div class="text-right">

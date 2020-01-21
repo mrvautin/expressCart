@@ -39,6 +39,17 @@
                         <li class="list-group-item">FREE shipping <span class="float-right"><a href="/checkout/shipping">Change</a></span></li>
                         {{/ifCond}}
                     </ul>
+                    {{#if @root.config.modules.loaded.discount}}
+                    <div class="input-group bottom-pad-15">
+                        <input class="form-control" id="discountCode" type="search" placeholder="{{ @root.__ "Discount code" }}" value="{{@root.session.discountCode}}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success" id="addDiscountCode">{{ @root.__ "Apply" }}</button>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger" id="removeDiscountCode"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
                     {{#if session.customerPresent}}
                     {{#ifCond config.paymentGateway '==' 'paypal'}}

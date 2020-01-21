@@ -284,11 +284,11 @@ $(document).ready(function (){
     });
 
 	// Call to API to check if a permalink is available
-    $(document).on('click', '#validate_permalink', function(e){
+    $(document).on('click', '#validatePermalink', function(e){
         if($('#productPermalink').val() !== ''){
             $.ajax({
                 method: 'POST',
-                url: '/admin/api/validate_permalink',
+                url: '/admin/validatePermalink',
                 data: { permalink: $('#productPermalink').val(), docId: $('#productId').val() }
             })
             .done(function(msg){
@@ -404,10 +404,10 @@ $(document).ready(function (){
     });
 
     // Call to API for a change to the published state of a product
-    $('input[class="published_state"]').change(function(){
+    $('input[class="publishedState"]').change(function(){
         $.ajax({
             method: 'POST',
-            url: '/admin/product/published_state',
+            url: '/admin/product/publishedState',
             data: { id: this.id, state: this.checked }
         })
 		.done(function(msg){
@@ -544,6 +544,86 @@ $(document).ready(function (){
         }
     });
 
+    $('#discountNewForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/discount/create',
+                data: {
+                    code: $('#discountCode').val(),
+                    type: $('#discountType').val(),
+                    value: $('#discountValue').val(),
+                    start: $('#discountStart').val(),
+                    end: $('#discountEnd').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', false, '/admin/settings/discount/edit/' + msg.discountId);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    $('#discountEditForm').validator().on('submit', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/admin/settings/discount/update',
+                data: {
+                    discountId: $('#discountId').val(),
+                    code: $('#discountCode').val(),
+                    type: $('#discountType').val(),
+                    value: $('#discountValue').val(),
+                    start: $('#discountStart').val(),
+                    end: $('#discountEnd').val()
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
+    $('#discountStart').datetimepicker({
+        uiLibrary: 'bootstrap4',
+        footer: true,
+        modal: true,
+        format: 'dd/mm/yyyy HH:MM',
+        showOtherMonths: true
+    });
+    $('#discountEnd').datetimepicker({
+        uiLibrary: 'bootstrap4',
+        footer: true,
+        modal: true,
+        format: 'dd/mm/yyyy HH:MM'
+    });
+
+    $(document).on('click', '#btnDiscountDelete', function(e){
+        e.preventDefault();
+        if(confirm('Are you sure?')){
+            $.ajax({
+                method: 'DELETE',
+                url: '/admin/settings/discount/delete',
+                data: {
+                    discountId: $(this).attr('data-id')
+                }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.message, 'danger', true);
+            });
+        }
+    });
+
     $(document).on('click', '#settings-menu-new', function(e){
         e.preventDefault();
         $.ajax({
@@ -613,7 +693,7 @@ $(document).ready(function (){
                 $.ajax({
                     data: { order: menuOrder },
                     type: 'POST',
-                    url: '/admin/settings/menu/save_order'
+                    url: '/admin/settings/menu/saveOrder'
                 })
                 .done(function(){
                     showNotification('Menu order saved', 'success', true);

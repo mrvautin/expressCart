@@ -22,5 +22,8 @@
         <li class="list-group-item"><i class="fas fa-cog fa-icon"></i> &nbsp; <a href="/admin/settings">{{ @root.__ "General settings" }}</a></li>
         <li class="list-group-item"><i class="fas fa-bars fa-icon"></i> &nbsp; <a href="/admin/settings/menu">Menu</a></li>
         <li class="list-group-item"><i class="far fa-file fa-icon"></i> &nbsp; <a href="/admin/settings/pages">{{ @root.__ "Static pages" }}</a></li>
+        {{#ifCond session.isAdmin '===' true}}
+        <li class="list-group-item"><i class="fas fa-tag"></i> &nbsp; <a href="/admin/settings/discounts">{{ @root.__ "Discount codes" }}</a></li>
+        {{/ifCond}}
     </ul>
 </div>
