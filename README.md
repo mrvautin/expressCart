@@ -20,6 +20,10 @@ Admin User:
 Customer:
 - User: `test@test.com`
 - Password: `test`
+
+Discount code:
+- 10 amount: `DEMO_AMT10`
+- 10 percent: `DEMO_PCT10`
 ```
 
 ## Installation

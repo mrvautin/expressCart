@@ -1,6 +1,6 @@
 {
   "name": "express-cart",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "A fully functioning Node.js shopping cart with Stripe, PayPal and Authorize.net payments.",
   "private": false,
   "scripts": {
