@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
         {{#if config.injectJs}}{{{config.injectJs}}}{{/if}}
-		<title>{{config.cartTitle}} - {{title}}</title>
+		<title>{{title}}</title>
 	    <meta charset="utf-8">
     	<meta http-equiv="X-UA-Compatible" content="IE=edge">
         {{#if admin}}
@@ -13,10 +13,14 @@
         <!--[if IE]><link rel="SHORTCUT ICON" href="/favicon.ico"/><![endif]-->
         {{/if}}
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        {{#if productDescription}}
+        <meta name="description" content="{{snip productDescription}}">
+        {{else}}
         {{#if metaDescription}}
         <meta name="description" content="{{snip metaDescription}}">
         {{else}}
-		<meta name="description" content="{{snip config.cartDescription}}">
+        <meta name="description" content="{{snip config.cartDescription}}">
+        {{/if}}
         {{/if}}
 		<meta name="keywords" content="{{config.cartTitle}}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
@@ -70,11 +74,10 @@
         <meta property="og:url" content="{{config.baseUrl}}" />
         {{/if}}
         {{#if result.productImage}}
-        <meta property="og:image" content="{{result.productImage}}" />
+        <meta property="og:image" content="{{config.baseUrl}}{{result.productImage}}" />
         {{/if}}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="{{title}}" />
-        <meta name="twitter:url" content="{{config.baseUrl}}" />
         {{#if pageUrl}}
         <meta name="twitter:url" content="{{pageUrl}}" />
         {{else}}
