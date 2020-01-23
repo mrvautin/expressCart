@@ -65,6 +65,9 @@
         <link rel="canonical" href="{{config.baseUrl}}" />
         {{/if}}
         <meta name="referrer" content="origin" />
+        {{#if @root.config.facebookAppId}}
+        <meta property="fb:app_id" content="{{@root.config.facebookAppId}}" />
+        {{/if}}
         <meta property="og:site_name" content="{{config.cartTitle}}" />
         {{#if result.productTitle}}
         <meta property="og:type" content="product" />
@@ -89,6 +92,9 @@
         <meta property="og:description" content="{{snip config.cartDescription}}">
         {{/if}}
         {{/if}}
+        {{#if @root.config.twitterHandle}}
+        <meta property="twitter:site" content="{{@root.config.twitterHandle}}">
+        {{/if}}
         {{#if result.productTitle}}
         <meta property="twitter:card" content="product" />
         {{else}}
@@ -102,12 +108,38 @@
         {{/if}}
         <script type="application/ld+json">
             {
-                "@context": "http://schema.org",
-                "@type": "WebSite",
+                "@context": "https://schema.org/",
+                {{#if result.productTitle}}
+                "@type": "Product",
+                "name": "{{result.productTitle}}",
+                "offers": {
+                    "price": "{{result.productPrice}}",
+                    "priceCurrency": "{{config.currencyISO}}",
+                    "description": "{{snip productDescription}}",
+                    "sku": "{{result._id}}",
+                    "url": "{{pageUrl}}"
+                },
+                {{else}}
                 "publisher": "{{config.cartTitle}}",
+                "@type": "WebSite",
+                {{/if}}
+                {{#if result.productImage}}
+                "image": "{{config.baseUrl}}{{result.productImage}}",
+                {{/if}}
+                {{#if productDescription}}
+                "description": "{{snip productDescription}}",
+                {{/if}}
+                {{#if result.productTitle}}
+                "sku": "{{result._id}}",
+                {{/if}}
+                {{#if pageUrl}}
+                "url": "{{pageUrl}}"
+                {{else}}
                 "url": "{{config.baseUrl}}"
+                {{/if}}
             }
         </script>
+        
         <!-- SEO data -->
         {{~#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
         {{~#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}

@@ -71,6 +71,10 @@
             "type": "string",
             "default": "£"
         },
+        "currencyISO": {
+            "type": "string",
+            "default": "USD"
+        },
         "paymentGateway": {
             "type": "string",
             "enum": ["paypal", "stripe", "authorizenet", "adyen", "instore"]
@@ -112,6 +116,12 @@
         },
         "maxQuantity": {
             "type": "number"
+        },
+        "twitterHandle": {
+            "type": "string"
+        },
+        "facebookAppId": {
+            "type": "string"
         },
         "modules": {
             "type": "object",

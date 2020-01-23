@@ -26,6 +26,8 @@
     "availableLanguages": ["en", "it"],
     "defaultLocale": "en",
     "maxQuantity": 25,
+    "twitterHandle": "",
+    "facebookAppId": "",
     "modules": {
         "enabled": {
             "shipping": "shipping-basic",
