@@ -14,9 +14,9 @@
         {{/if}}
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         {{#if metaDescription}}
-        <meta name="description" content="{{metaDescription}}">
+        <meta name="description" content="{{snip metaDescription}}">
         {{else}}
-		<meta name="description" content="{{config.cartDescription}}">
+		<meta name="description" content="{{snip config.cartDescription}}">
         {{/if}}
 		<meta name="keywords" content="{{config.cartTitle}}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
@@ -55,15 +55,31 @@
         {{/if}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js" integrity="sha256-jdwX0QzXB7z7Xc7Vz0ovtIHWO5qIZWg0aLcGv44JDgE=" crossorigin="anonymous"></script>
         <!-- SEO data -->
+        {{#if pageUrl}}
+        <link rel="canonical" href="{{pageUrl}}" />
+        {{else}}
         <link rel="canonical" href="{{config.baseUrl}}" />
+        {{/if}}
         <meta name="referrer" content="origin" />
         <meta property="og:site_name" content="{{config.cartTitle}}" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="{{title}}" />
+        {{#if pageUrl}}
+        <meta property="og:url" content="{{pageUrl}}" />
+        {{else}}
         <meta property="og:url" content="{{config.baseUrl}}" />
+        {{/if}}
+        {{#if result.productImage}}
+        <meta property="og:image" content="{{result.productImage}}" />
+        {{/if}}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="{{title}}" />
         <meta name="twitter:url" content="{{config.baseUrl}}" />
+        {{#if pageUrl}}
+        <meta name="twitter:url" content="{{pageUrl}}" />
+        {{else}}
+        <meta name="twitter:url" content="{{config.baseUrl}}" />
+        {{/if}}
         <script type="application/ld+json">
             {
                 "@context": "http://schema.org",

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const colors = require('colors');
 const hash = require('object-hash');
+const stripHtml = require('string-strip-html');
 const moment = require('moment');
 const _ = require('lodash');
 const {
@@ -320,7 +321,7 @@ router.get('/product/:id', async (req, res) => {
         result: product,
         productOptions: productOptions,
         images: images,
-        productDescription: product.productDescription,
+        productDescription: stripHtml(product.productDescription),
         metaDescription: config.cartTitle + ' - ' + product.productTitle,
         config: config,
         session: req.session,

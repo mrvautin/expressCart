@@ -66,6 +66,7 @@
     "rimraf": "^2.7.1",
     "sanitize-html": "^1.20.1",
     "sitemap": "^1.6.0",
+    "string-strip-html": "^4.3.14",
     "strip-bom": "^3.0.0",
     "stripe": "^7.12.0",
     "uglifycss": "0.0.27",

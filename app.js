@@ -314,6 +314,12 @@ handlebars = handlebars.create({
                 return'd-none';
             }
             return'';
+        },
+        snip: (text) => {
+            if(text.length > 155){
+                return text.substring(0, 155) + '...';
+            }
+            return text;
         }
     }
 });
