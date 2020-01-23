@@ -66,7 +66,11 @@
         {{/if}}
         <meta name="referrer" content="origin" />
         <meta property="og:site_name" content="{{config.cartTitle}}" />
+        {{#if result.productTitle}}
+        <meta property="og:type" content="product" />
+        {{else}}
         <meta property="og:type" content="website" />
+        {{/if}}
         <meta property="og:title" content="{{title}}" />
         {{#if pageUrl}}
         <meta property="og:url" content="{{pageUrl}}" />
@@ -85,7 +89,11 @@
         <meta property="og:description" content="{{snip config.cartDescription}}">
         {{/if}}
         {{/if}}
+        {{#if result.productTitle}}
+        <meta property="twitter:card" content="product" />
+        {{else}}
         <meta property="twitter:card" content="summary" />
+        {{/if}}
         <meta property="twitter:title" content="{{title}}" />
         {{#if pageUrl}}
         <meta property="twitter:url" content="{{pageUrl}}" />
