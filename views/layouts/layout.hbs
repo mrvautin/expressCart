@@ -76,6 +76,15 @@
         {{#if result.productImage}}
         <meta property="og:image" content="{{config.baseUrl}}{{result.productImage}}" />
         {{/if}}
+        {{#if productDescription}}
+        <meta name="og:description" content="{{snip productDescription}}">
+        {{else}}
+        {{#if metaDescription}}
+        <meta name="og:description" content="{{snip metaDescription}}">
+        {{else}}
+        <meta name="og:description" content="{{snip config.cartDescription}}">
+        {{/if}}
+        {{/if}}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="{{title}}" />
         {{#if pageUrl}}
