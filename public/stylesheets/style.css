@@ -68,6 +68,9 @@ a.text-danger:focus {
 .product-layout {
   padding-top: 30px;
 }
+.product-results h1 {
+  font-size: 22px;
+}
 .product-title-image {
   margin: auto;
   max-height: 400px;

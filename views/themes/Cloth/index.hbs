@@ -1,11 +1,11 @@
 {{> themes/Cloth/front-menu}}
 <div class="productsWrapper col-sm-12 col-md-8 offset-md-2">
     {{#if filtered}}
-        <div class="product-layout col-sm-12">
+        <div class="product-layout product-results col-sm-12">
             {{#ifCond @root.paginateUrl '==' 'category'}}
-            <h4>{{ @root.__ "Category" }}: <strong>{{@root.searchTerm}}</strong></h4>
+            <h1>{{ @root.__ "Category" }}: <strong>{{@root.searchTerm}}</strong></h1>
             {{else}}
-            <h4>{{ @root.__ "Search results" }}: <strong>{{@root.searchTerm}}</strong></h4>
+            <h1>{{ @root.__ "Search results" }}: <strong>{{@root.searchTerm}}</strong></h1>
             {{/ifCond}}
         </div>
     {{/if}}

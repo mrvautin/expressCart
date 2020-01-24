@@ -94,7 +94,7 @@ router.get('/checkout/information', async (req, res, next) => {
 
     // render the payment page
     res.render(`${config.themeViews}checkout-information`, {
-        title: 'Checkout',
+        title: 'Checkout - Information',
         config: req.app.config,
         session: req.session,
         paymentType,
@@ -138,7 +138,7 @@ router.get('/checkout/shipping', async (req, res, next) => {
 
     // render the payment page
     res.render(`${config.themeViews}checkout-shipping`, {
-        title: 'Checkout',
+        title: 'Checkout - Shipping',
         config: req.app.config,
         session: req.session,
         cartClose: false,
@@ -156,6 +156,7 @@ router.get('/checkout/cart', (req, res) => {
     const config = req.app.config;
 
     res.render(`${config.themeViews}checkout-cart`, {
+        title: 'Checkout - Cart',
         page: req.query.path,
         config,
         session: req.session,
@@ -196,7 +197,7 @@ router.get('/checkout/payment', async (req, res) => {
     await updateTotalCart(req, res);
 
     res.render(`${config.themeViews}checkout-payment`, {
-        title: 'Checkout',
+        title: 'Checkout - Payment',
         config: req.app.config,
         paymentConfig: getPaymentConfig(),
         session: req.session,
