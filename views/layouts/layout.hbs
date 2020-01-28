@@ -106,6 +106,7 @@
         {{else}}
         <meta property="twitter:url" content="{{config.baseUrl}}" />
         {{/if}}
+        {{#unless result.productTitle}}
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org/",
@@ -139,7 +140,7 @@
                 {{/if}}
             }
         </script>
-        
+        {{/unless}}
         <!-- SEO data -->
         {{~#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
         {{~#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}

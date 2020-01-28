@@ -316,7 +316,7 @@ handlebars = handlebars.create({
             return'';
         },
         snip: (text) => {
-            if(text.length > 155){
+            if(text && text.length > 155){
                 return text.substring(0, 155) + '...';
             }
             return text;
