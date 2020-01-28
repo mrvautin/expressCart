@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals showNotification, slugify, numeral */
+/* globals showNotification, slugify, numeral, moment */
 $(document).ready(function (){
     $(document).on('click', '#btnGenerateAPIkey', function(e){
         e.preventDefault();
@@ -789,6 +789,7 @@ function globalSearch(){
                 <div class="row">
                     <div class="col global-result-type gr-click"><i class="fas fa-cube"></i> Order</div>
                     <div class="col global-result-detail gr-click">${value.orderFirstname} ${value.orderLastname}</div>
+                    <div class="col global-result-detail gr-click">${moment(value.orderDate).format('YYYY/MM/DD')}</div>
                     <div class="col global-result-detail gr-click">${value.orderEmail}</div>
                 </div>
             </li>`;
@@ -809,6 +810,14 @@ function globalSearch(){
         });
 
         if(hasResult === true){
+            $('#global-search-results').removeClass('invisible');
+        }else{
+            const noResult = `<li class="list-group-item text-center">
+                <div class="row">
+                    <div class="col global-result-type gr-click">Nothing found</div>
+                </div>
+            </li>`;
+            $('#global-search-results').append(noResult);
             $('#global-search-results').removeClass('invisible');
         }
     });
