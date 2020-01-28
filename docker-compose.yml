@@ -4,6 +4,8 @@ services:
     image: "node:8"
     build: .
     container_name: "expresscart"
+    volumes:
+      - $PWD/.:/var/expressCart
     environment:
       NODE_ENV: development
       NODE_PATH: /
@@ -17,9 +19,7 @@ services:
     image: mongo:3.4.10
     container_name: "expresscart-mongodb"
     volumes:
-      - expresscart-mongo-data:/data/db
+      - $PWD/data/db:/data/db
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null
-volumes:
-  expresscart-mongo-data:

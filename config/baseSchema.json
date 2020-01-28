@@ -141,7 +141,9 @@
                 "enabled": {
                     "shipping": "shipping-basic"
                 }
-            }
+            },
+        "productViews": {
+            "type": "array"
         }
     },
     "required": [
@@ -157,4 +159,4 @@
         "modules"
     ],
     "additionalProperties": false
-}
+}}
