@@ -12,7 +12,7 @@ spec:
     metadata:
       annotations:
         name: {{ .Release.Name }}-expresscart
-        author: cloudifyops
+        author: test
       labels:
         app: {{ .Release.Name }}-expresscart
         env: dev
