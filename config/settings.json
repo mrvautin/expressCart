@@ -1,29 +1,32 @@
 {
-    "cartTitle": "CLOTH",
-    "cartDescription": "expressCart",
+    "cartTitle": "ShoppingNG.com",
+    "cartDescription": "Nigerian shopping site for jewellery, car parts, kids toys and so much more",
     "cartLogo": "",
     "baseUrl": "http://localhost:1111",
-    "emailHost": "smtp-mail.outlook.com",
+    "emailHost": "smtp.gmail.com",
     "emailPort": 587,
-    "emailSecure": false,
-    "emailUser": "hi@markmoffat.com",
-    "emailPassword": "this_is_the_smtp_password",
-    "emailAddress": "hi@markmoffat.com",
+    "emailSecure": true,
+    "emailUser": "adekunle@gmail.com",
+    "emailPassword": "SarahAde4114!",
+    "emailAddress": "adekunle@shoppingng.com",
     "menuEnabled": true,
     "productsPerRow": 3,
     "productsPerPage": 6,
     "menuTitle": "Menu",
-    "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
+    "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by Silver Lining Engineering and Trading&lt;/h4&gt;",
     "googleAnalytics": "",
     "injectJs": "",
     "customCss": "",
-    "currencySymbol": "£",
+    "currencySymbol": "N",
     "paymentGateway": "stripe",
-    "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
+    "databaseConnectionString": "mongodb://207.154.236.126:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
-    "availableLanguages": ["en", "it"],
+    "availableLanguages": [
+        "en",
+        "it"
+    ],
     "defaultLocale": "en",
     "maxQuantity": 25,
     "twitterHandle": "",
@@ -32,6 +35,14 @@
         "enabled": {
             "shipping": "shipping-basic",
             "discount": "discount-voucher"
+        },
+        "loaded": {
+            "shipping": {},
+            "discount": {}
         }
-    }
+    },
+    "secretCookie": "cd1b084c24bb8dd6caad693bd938a2e2f017f444",
+    "secretSession": "1d973e952b626c0588e2edbd137c0a067279ca60",
+    "themeViews": "../views/themes/Cloth/",
+    "env": ".min"
 }

@@ -180,7 +180,7 @@ development:
   databaseConnectionString: mongodb://127.0.0.1:27017/expresscart
 production:
   port: 2222
-  databaseConnectionString: mongodb://prod_db_url:27017/expresscart
+  databaseConnectionString: mongodb://207.154.236.126:27017/expresscart
 ```
 
 The app will read in the `NODE_ENV` and switch and override any valid settings. Eg: `databaseConnectionString` set in the `env.yaml` file will override anything in `settings.json` file (including local).
