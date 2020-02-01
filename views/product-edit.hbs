@@ -1,16 +1,16 @@
 {{> partials/menu}}
-<div class="col-sm-9 top-pad-5">
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
     <form class="form-horizontal" id="productEditForm" data-toggle="validator">
-            <div class="col-sm-12">
+            <div class="col-12">
                 <div class="page-header">
                     <div class="float-right">
                         <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
-                        <button id="productUpdate" class="btn btn-outline-success">{{ @root.__ "Save product" }} <i class="far fa-save"></i></button>
+                        <button id="productUpdate" class="btn btn-outline-success">{{ @root.__ "Save product" }}</button>
                     </div>
                     <h2>{{ @root.__ "Edit product" }}</h2>
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
                     <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
@@ -44,13 +44,13 @@
                 </div>
             </div>
             {{/if}}
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
                     <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="control-label">Permalink</label>
                     <div class="input-group">
@@ -62,7 +62,7 @@
                     <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <input type="hidden" id="productOptions" value="{{stringify result.productOptions}}" />
                     <label class="control-label">{{ @root.__ "Product options" }}</label>
@@ -111,7 +111,7 @@
                 </div>
             </div>
             {{#ifCond config.paymentGateway '==' 'stripe'}}
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label class="control-label">Subscription plan</label>
                     <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX" value={{@root.result.productSubscription}}>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             {{/ifCond}}
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
                     <div class="checkbox">
@@ -130,7 +130,7 @@
                     <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-12">
                 <div class="form-group">
                     <label for="productTags" class="control-label">{{ @root.__ "Product tag words" }}</label>
                     <input type="text" class="form-control" id="productTags" value="{{result.productTags}}">
@@ -164,7 +164,7 @@
         </div>
         <input type="hidden" id="productId" value="{{result._id}}" />
     </form>
-</div>
+</main>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

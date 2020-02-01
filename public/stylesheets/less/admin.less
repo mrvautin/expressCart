@@ -1,13 +1,44 @@
 @accent-color: #cc4135;
+@danger-color: #dc3545;
 @nav-menu-bg: #f5f5f5;
 @btn-danger-color-txt: #ffffff;
 @btn-danger-color-bg: #000000;
 @btn-danger-color-border: #000000;
 
-.btn-warning, .btn-outline-primary {
+html,body {
+    height: 100%;
+    background-color: #f8f9fa !important;
+}
+
+.content-body {
+    margin-bottom: 0;
+}
+
+.feather{
+    width: 16px;
+    height: 16px;
+}
+
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info {
+    background-color: white;
+}
+
+.btn-outline-primary {
     color: @btn-danger-color-txt !important;
     background-color:@btn-danger-color-bg;
     border-color: @btn-danger-color-border;
+}
+
+.btn-outline-danger{
+    color: @danger-color !important;
+}
+
+.btn-outline-danger:hover{
+    color: @btn-danger-color-txt !important;
 }
 
 .has-error input, .has-error textarea, .has-error div {
@@ -21,6 +52,14 @@
 
 .footer{
     padding-top: 20px;
+}
+
+.admin-menu{
+    padding-left: 0;
+}
+
+.admin-menu .list-group-item {
+    border-bottom: none;
 }
 
 .navbarMenuWrapper{
@@ -51,6 +90,18 @@
 
 .pagination>li>a{
     background-color: @accent-color !important;
+}
+
+.admin-card {
+    background-color: white !important;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 0 1px rgba(0,0,0,.12), 0 1px 6px rgba(0,0,0,.03), 0 6px 10px -8px rgba(0,0,0,.1);
+}
+
+.admin-card-body {
+    padding: 5px;
 }
 
 /* Fixes summernote editor issue: https://github.com/summernote/summernote/issues/2516 */
@@ -149,6 +200,98 @@ body .popover{display:none !important; }
 
 .search-input-addon {
     border-bottom-left-radius: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    background-color: white;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+  
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: 100vh;
+    padding-top: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+  
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+    .sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+}
+  
+.sidebar .nav-link {
+    font-weight: 400;
+    color: #333;
+}
+  
+.sidebar .nav-link .feather {
+    margin-right: 4px;
+    color: #999;
+}
+  
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+    color: inherit;
+}
+  
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+.sidebar-brand {
+    width: 80%;
+}
+
+.sidebar-search {
+    text-align: center;
+    width: 20%;
+}
+
+.sidebar-addon {
+    height: 40px;
+}
+
+.sidebar-link {
+    display: inline-block;
+    width: 80%;
+}
+
+.sidebar-link-addon {
+    display: inline-block;
+    width: 10%;
+}
+
+/*
+ * Content
+ */
+
+[role="main"] {
+    padding-top: 20px;
+    margin-bottom: 20px;
+    min-height: 100%;
+    height: 100%;
+}
+  
+@media (min-width: 768px) {
+    [role="main"] {
+        padding-top: 20px; 
+        padding-bottom: 20px;
+    }
 }
 
 @media only screen and (max-width: 768px){

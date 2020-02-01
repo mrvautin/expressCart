@@ -47,6 +47,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/css/css.min.js" integrity="sha256-D5oJ11cOmRhXSYWELwG2U/XYH3YveZJr9taRYLZ2DSM=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/xml/xml.min.js" integrity="sha256-ERFGS58tayDq5kkyNwd/89iZZ+HglMH7eYXxG1hxTvA=" crossorigin="anonymous"></script>
         {{/if}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.25.0/feather.min.js" integrity="sha256-NvgyqkM9Vu1DLHkzxTxXQxZNdDymUlwhXcSJEqUfPiU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js" integrity="sha256-LlHVI5rUauudM5ZcZaD6hHPHKrA7CSefHHnKgq+/AZc=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js" integrity="sha256-4lietOiwRDBKx1goZZbRiwB06L+/bPYEGDIKZt82bgg=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
@@ -158,22 +159,18 @@
     {{else}}
     <body>
     {{/if}}
+        {{#unless admin}}
         <nav class="navbar navbar-expand-lg justify-content-between mainNavBar">
-            {{#if admin}}
-            <a class="navbar-brand" href="/admin"><img class="img-fluid" src="/images/logo-admin.png"></a>
-            {{else}}
             <a class="navbar-brand" href="/">{{@root.config.cartTitle}}</a>
-            {{/if}}
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fa fa-bars" aria-hidden="true"></i>
+                <i class="feather" data-feather="menu"></i>
             </button>
             <div id="navbarText">
                 <ul class="navbar-nav ml-auto">
-                    {{#unless admin}}
                     {{#ifCond @root.config.enableLanguages "!=" false}}
                     <div class="dropdown d-none d-sm-block">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-globe-americas"></i>
+                            <i class="feather" data-feather="globe"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#availableLanguages}}
@@ -182,23 +179,15 @@
                         </div>
                     </div>
                     {{/ifCond}}
-                    {{/unless}}
-                    {{#unless admin}}
-                        {{#if @root.session.cart}}
-                            <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
-                            {{else}}
-                            <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
-                        {{/if}}
-                    {{/unless}}
-                    {{#if admin}}
-                    {{#if @root.session.user}}
-                        <li class="nav-item"><a href="#" data-toggle="modal" data-target="#globalSearchModal" class="pad-right-15"><i class="fas fa-search"></i></a></li>
-                        <li class="nav-item"><a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    {{/if}}
+                    {{#if @root.session.cart}}
+                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="feather" data-feather="shopping-cart"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
+                        {{else}}
+                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="feather" data-feather="shopping-cart"></i></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
                     {{/if}}
                 </ul>
             </div>
         </nav>
+        {{/unless}}
         <div class="site-overlay"></div>
         {{#unless admin}}
             {{#ifCond page '!=' 'checkout'}}
@@ -206,7 +195,7 @@
                 <div id="cart" class="col-md-12 pad-left-12 top-pad-10 pushy pushy-right">
                     <div class="row {{checkout}}">
                         <div class="col-sm-12 text-right">
-                            <button class="pushy-link btn btn-primary" type="button">X</button>
+                            <button class="pushy-link btn btn-primary" type="button"><i class="feather" data-feather="x"></i></button>
                         </div>
                     </div>
                     <div class="row">
@@ -224,13 +213,9 @@
             {{/ifCond}}
             {{/ifCond}}
         {{/unless}}
-		<div class="container-fluid content-body" id="container">
-            <div class="row">
-                {{#if admin}}
-                    {{{body}}}
-                {{else}}
+		<div class="container-fluid content-body h-100" id="container">
+            <div class="row h-100">
                 {{{body}}}
-                {{/if}}
             </div>
 		</div>
 		<input type="hidden" id="input_notify_message" value="{{message}}">
@@ -265,7 +250,7 @@
                             <div class="form-group global-search-form">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text search-input-addon" for="global-search-value"><i class="fas fa-search"></i></label>
+                                        <label class="input-group-text search-input-addon" for="global-search-value"><i class="feather" data-feather="search"></i></label>
                                     </div>
                                     <input type="text" class="form-control form-control-lg" id="global-search-value">
                                 </div>
@@ -278,5 +263,8 @@
         </div>
         {{/if}}
         {{> partials/confirmModal}}
+        <script>
+            feather.replace();
+        </script>
 	</body>
 </html>

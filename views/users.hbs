@@ -1,30 +1,30 @@
 {{> partials/menu}}
-<div class="col-sm-9">
-	<div class="row">
-		<div class="col-md-8">
-			<h2>Users <span class="float-right"><a href="/admin/user/new" class="btn btn-outline-success">{{ @root.__ "New user" }}</a></span></h2>
-			<ul class="list-group">
-				{{#each users}}
-					<li class="list-group-item">
-						<strong>{{ @root.__ "User" }}:</strong> {{this.usersName}} - ({{this.userEmail}})
-				  		<span class="float-right">
-                            <strong>{{ @root.__ "Role" }}: </strong>
-                            {{#isAnAdmin this.isAdmin}}
-                                <span>Admin</span>
-								{{#if ../this.isOwner}}
-								 (Owner)
-								{{/if}}
-                            {{else}}
-                                <span>{{ @root.__ "User" }}</span>
-                            {{/isAnAdmin}}
-                            {{#isAnAdmin @root.session.isAdmin}}
-                                <a href="/admin/user/edit/{{../this._id}}"><i class="fas fa-pencil-alt"></i></a>
-                                <a href="#" class="userDelete" data-id="{{../this._id}}"><i class="far fa-trash-alt"></i></a>
-                            {{/isAnAdmin}}
-						</span>
-					</li>
-				{{/each}}
-			</ul>
-		</div>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <h2>{{ @root.__ "Users" }} <span class="float-right"><a href="/admin/user/new" class="btn btn-outline-success">{{ @root.__ "New user" }}</a></span></h2>
+    </div>
+	<div class="col-md-12">
+		<ul class="list-group">
+			{{#each users}}
+				<li class="list-group-item">
+					<strong>{{ @root.__ "User" }}:</strong> {{this.usersName}} - ({{this.userEmail}})
+					<span class="float-right">
+						<strong>{{ @root.__ "Role" }}: </strong>
+						{{#isAnAdmin this.isAdmin}}
+							<span>Admin</span>
+							{{#if ../this.isOwner}}
+								(Owner)
+							{{/if}}
+						{{else}}
+							<span>{{ @root.__ "User" }}</span>
+						{{/isAnAdmin}}
+						{{#isAnAdmin @root.session.isAdmin}}
+							<a href="/admin/user/edit/{{../this._id}}"><i class="feather" data-feather="edit"></i></a>
+							<a href="#" class="userDelete text-danger" data-id="{{../this._id}}"><i class="feather" data-feather="trash-2"></i></a>
+						{{/isAnAdmin}}
+					</span>
+				</li>
+			{{/each}}
+		</ul>
 	</div>
-</div>
+</main>

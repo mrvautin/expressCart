@@ -1,5 +1,5 @@
 {{> partials/menu}}
-<div class="col-sm-9">
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
     <div class="col-sm-12">
         <h2>Customers</h2>
     </div>
@@ -8,7 +8,7 @@
             <input type="text" name="customer_filter" id="customer_filter" class="form-control" placeholder="Filter customers">
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-success" id="btn_customer_filter">Filter</button>
-                <a href="/admin/customers" class="hidden-xs btn btn-outline-warning"><i class="fa fa-times" aria-hidden="true"></i></a>
+                <a href="/admin/customers" class="hidden-xs btn btn-outline-warning"><i class="feather" data-feather="x-octagon"></i></a>
             </div>
         </div>
         <p class="text-warning top-pad-10">{{ @root.__ "Customers can be filtered by: email, name or phone number" }}</p>
@@ -61,4 +61,4 @@
         {{ @root.__ "No orders found" }}
     </h4>
     {{/if}}
-</div>
+</main>

@@ -8,7 +8,7 @@ $(document).ready(function (){
         });
 
         $('.menu-side li:not(".active")').hide();
-        $('.menu-side>.active').html('<i class="fa fa-bars" aria-hidden="true"></i>');
+        $('.menu-side>.active').html('<i class="feather" data-feather="menu"></i>');
         $('.menu-side>.active').addClass('menu-side-mobile');
 
         // hide menu if there are no items in it
@@ -608,7 +608,7 @@ function updateCartDiv(){
                                         </div>
                                     </div>
                                     <div class="col-4 col-md-2 no-pad-left">
-                                        <button class="btn btn-danger btn-delete-from-cart" data-cartid="${productId}" type="button"><i class="far fa-trash-alt" data-cartid="${productId}" aria-hidden="true"></i></button>
+                                        <button class="btn btn-danger btn-delete-from-cart" data-cartid="${productId}" type="button"><i class="feather" data-feather="trash-2" data-cartid="${productId}"></i></button>
                                     </div>
                                     <div class="col-8 col-md-4 align-self-center text-right">
                                         <strong class="my-auto">${result.currencySymbol}${productTotalAmount}</strong>
@@ -657,6 +657,7 @@ function updateCartDiv(){
             $('.cartTotalsWrapper').html(cartTotalsEmptyHtml);
             $('.cart-buttons').addClass('d-none');
         }
+        feather.replace();
     })
     .fail(function(result){
         showNotification(result.responseJSON.message, 'danger');

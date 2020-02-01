@@ -1,6 +1,6 @@
 {{> partials/menu}}
-<form class="form-horizontal col-sm-7" id="discountEditForm" data-toggle="validator">
-    <div class="row">
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <form class="form-horizontal" id="discountEditForm" data-toggle="validator">
         <div class="col-sm-12">
             <div class="page-header">
                 <div class="float-right">
@@ -9,13 +9,13 @@
                 <h2>{{ @root.__ "Edit discount" }}</h2>
             </div>
         </div>
-        <div class="col-10">
+        <div class="col-12">
             <div class="form-group">
                 <label for="discountCode" class="control-label">{{ @root.__ "Discount code" }} *</label>
                 <input type="text" id="discountCode" class="form-control" minlength="1" maxlength="50" value="{{discount.code}}" required/>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-12">
             <div class="form-group">
                 <label for="discountType" class="control-label">{{ @root.__ "Discount type" }} *</label>
                 <select class="form-control" id="discountType">
@@ -24,24 +24,24 @@
                 </select>
             </div>
         </div>
-        <div class="col-sm-10">
+        <div class="col-12">
             <div class="form-group">
                 <label for="discountValue" class="control-label">{{ @root.__ "Discount value" }} *</label>
                 <input type="number" id="discountValue" class="form-control" minlength="1" maxlength="50" value="{{discount.value}}" required/>
             </div>
         </div>
-        <div class="col-sm-10">
+        <div class="col-12">
             <div class="form-group">
                 <label for="discountStart" class="control-label">{{ @root.__ "Discount start" }} *</label>
                 <input id="discountStart" value="{{formatDate discount.start 'DD/MM/YYYY kk:mm'}}" />
             </div>
         </div>
-        <div class="col-sm-10">
+        <div class="col-12">
             <div class="form-group">
                 <label for="discountEnd" class="control-label">{{ @root.__ "Discount end" }} *</label>
                 <input id="discountEnd" value="{{formatDate discount.end 'DD/MM/YYYY kk:mm'}}" />
             </div>
         </div>
         <input type="hidden" id="discountId" value="{{discount._id}}">
-    </div>
-</form>
+    </form>
+</main>

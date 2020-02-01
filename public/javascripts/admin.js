@@ -767,14 +767,14 @@ function globalSearch(){
             searchValue: $('#global-search-value').val()
         }
     }).done((res) => {
-        $('#global-search').html('<i class="fal fa-search"></i>');
+        $('#global-search').html('<i class="feather" data-feather="search"></i>');
         let hasResult = false;
         res.customers.forEach((value) => {
             hasResult = true;
             const result = `
             <li class="list-group-item global-result text-center" data-url="/admin/customer/view/${value._id}">
                 <div class="row">
-                <div class="col global-result-type gr-click"><i class="fas fa-users"></i> Customer</div>
+                <div class="col global-result-type gr-click"><i class="feather" data-feather="user"></i> Customer</div>
                 <div class="col global-result-detail gr-click">${value.firstName} ${value.lastName}</div>
                 <div class="col global-result-detail gr-click">${value.email}</div>
                 </div>
@@ -787,7 +787,7 @@ function globalSearch(){
             const result = `
             <li class="list-group-item global-result text-center" data-url="/admin/order/view/${value._id}">
                 <div class="row">
-                    <div class="col global-result-type gr-click"><i class="fas fa-cube"></i> Order</div>
+                    <div class="col global-result-type gr-click"><i class="feather" data-feather="package"></i> Order</div>
                     <div class="col global-result-detail gr-click">${value.orderFirstname} ${value.orderLastname}</div>
                     <div class="col global-result-detail gr-click">${moment(value.orderDate).format('YYYY/MM/DD')}</div>
                     <div class="col global-result-detail gr-click">${value.orderEmail}</div>
@@ -801,7 +801,7 @@ function globalSearch(){
             const result =
             `<li class="list-group-item global-result text-center" data-url="/admin/product/edit/${value._id}">
                 <div class="row">
-                    <div class="col global-result-type gr-click"><i class="fas fa-box-open"></i> Product</div>
+                    <div class="col global-result-type gr-click"><i class="feather" data-feather="tag"></i> Product</div>
                     <div class="col global-result-detail gr-click">${value.productTitle}</div>
                     <div class="col global-result-detail gr-click">${$('#currencySymbol').val()}${numeral(value.productPrice).format('0.00')}</div>
                 </div>
@@ -820,5 +820,7 @@ function globalSearch(){
             $('#global-search-results').append(noResult);
             $('#global-search-results').removeClass('invisible');
         }
+
+        feather.replace()
     });
 }

@@ -191,5 +191,9 @@
 	"Discount end": "Discount end",
 	"Start": "Start",
 	"Running": "Running",
-	"Not running": "Not running"
+	"Not running": "Not running",
+	"Menu": "Menu",
+	"Users": "Users",
+	"Create Order": "Create Order",
+	"User edit": "User edit"
 }

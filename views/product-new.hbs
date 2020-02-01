@@ -1,141 +1,143 @@
 {{> partials/menu}}
-<form class="form-horizontal" id="productNewForm" data-toggle="validator">
-    <div class="col-sm-12">
-        <div class="page-header">
-            <div class="float-right">
-                <button id="frm_edit_product_save" class="btn btn-outline-success" type="submit">Add product <i class="far fa-plus-square"></i></button>
-            </div>
-            <h2>{{ @root.__ "New product" }}</h2>
-        </div>
-    </div>
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
-            <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <form class="form-horizontal" id="productNewForm" data-toggle="validator">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="float-right">
+                    <button id="frm_edit_product_save" class="btn btn-outline-success" type="submit">Add product</button>
                 </div>
-                <input type="number" id="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
+                <h2>{{ @root.__ "New product" }}</h2>
             </div>
         </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
-            <select class="form-control" id="productPublished">
-                <option value="true" selected>{{ @root.__ "Published" }}</option>
-                <option value="false">{{ @root.__ "Draft" }}</option>
-            </select>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
+                <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
+            </div>
         </div>
-    </div>
-    {{#if config.trackStock}}
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
-            <input type="number" id="productStock" class="form-control" value="{{productStock}}" step="any" />
-        </div>
-    </div>
-    {{/if}}
-    <div class="col-sm-10">
-        <div class="form-group" id="editor-wrapper">
-            <label for="editor" class="control-label">{{ @root.__ "Product description" }} *</label>
-            <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{productDescription}}</textarea>
-        </div>
-    </div>
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label class="control-label">Permalink</label>
-            <div class="input-group">
-                <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-success" id="validatePermalink" type="button">Validate</button>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+                    </div>
+                    <input type="number" id="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
                 </div>
             </div>
-            <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
         </div>
-    </div>
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label class="control-label">{{ @root.__ "Product options" }}</label>
-            <input type="hidden" id="productOptions" value="{{result.productOptions}}" />
-            <ul class="list-group" id="product_opt_wrapper">
-                <li class="list-group-item">
-                    <div class="row">
-                    <div class="col-sm-2">
-                        <strong>{{ @root.__ "Name" }}:</strong>
-                        <input type="text" id="product_optName" class="form-control" placeholder="Size" />
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
+                <select class="form-control" id="productPublished">
+                    <option value="true" selected>{{ @root.__ "Published" }}</option>
+                    <option value="false">{{ @root.__ "Draft" }}</option>
+                </select>
+            </div>
+        </div>
+        {{#if config.trackStock}}
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
+                <input type="number" id="productStock" class="form-control" value="{{productStock}}" step="any" />
+            </div>
+        </div>
+        {{/if}}
+        <div class="col-12">
+            <div class="form-group" id="editor-wrapper">
+                <label for="editor" class="control-label">{{ @root.__ "Product description" }} *</label>
+                <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{productDescription}}</textarea>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label">Permalink</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success" id="validatePermalink" type="button">Validate</button>
                     </div>
-                    <div class="col-sm-2">
-                        <strong>{{ @root.__ "Label" }}:</strong>
-                        <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
-                    </div>
-                    <div class="col-sm-2">
-                        <strong>{{ @root.__ "Type" }}:</strong>
-                        <select id="product_optType" class="form-control">
-                            <option value="select">Select</option>
-                            <option value="radio">Radio</option>
-                            <option value="checkbox">Checkbox</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <strong>{{ @root.__ "Options" }}:</strong>
-                        <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
-                    </div>
-                    <div class="col-sm-2 text-right"></br>
-                        <button id="product_opt_add" class="btn btn-outline-success">{{ @root.__ "Add" }}</button>
-                    </div></div>
-                </li>
-                {{#each options}}
+                </div>
+                <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label">{{ @root.__ "Product options" }}</label>
+                <input type="hidden" id="productOptions" value="{{result.productOptions}}" />
+                <ul class="list-group" id="product_opt_wrapper">
                     <li class="list-group-item">
                         <div class="row">
-                            <div class='col-sm-2 opt-name'>{{this.optName}}</div>
-                            <div class='col-sm-2'>{{this.optLabel}}</div>
-                            <div class='col-sm-2'>{{this.optType}}</div>
-                            <div class='col-sm-4'>{{{this.optOptions}}}</div>
-                            <div class='col-sm-2 text-right'>
-                                <button class='product_opt_remove btn btn-outline-danger'>{{ @root.__ "Remove" }}</button>
-                            </div>
+                        <div class="col-sm-2">
+                            <strong>{{ @root.__ "Name" }}:</strong>
+                            <input type="text" id="product_optName" class="form-control" placeholder="Size" />
                         </div>
+                        <div class="col-sm-2">
+                            <strong>{{ @root.__ "Label" }}:</strong>
+                            <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <strong>{{ @root.__ "Type" }}:</strong>
+                            <select id="product_optType" class="form-control">
+                                <option value="select">Select</option>
+                                <option value="radio">Radio</option>
+                                <option value="checkbox">Checkbox</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>{{ @root.__ "Options" }}:</strong>
+                            <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
+                        </div>
+                        <div class="col-sm-2 text-right"></br>
+                            <button id="product_opt_add" class="btn btn-outline-success">{{ @root.__ "Add" }}</button>
+                        </div></div>
                     </li>
-                {{/each}}
-            </ul>
-            <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
-        </div>
-    </div>
-    {{#ifCond config.paymentGateway '==' 'stripe'}}
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label class="control-label">Subscription plan</label>
-            <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX">
-            <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
-        </div>
-    </div>
-    {{/ifCond}}
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
-            <div class="checkbox">
-                <label>
-                    <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
-                </label>
+                    {{#each options}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class='col-sm-2 opt-name'>{{this.optName}}</div>
+                                <div class='col-sm-2'>{{this.optLabel}}</div>
+                                <div class='col-sm-2'>{{this.optType}}</div>
+                                <div class='col-sm-4'>{{{this.optOptions}}}</div>
+                                <div class='col-sm-2 text-right'>
+                                    <button class='product_opt_remove btn btn-outline-danger'>{{ @root.__ "Remove" }}</button>
+                                </div>
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+                <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
             </div>
-            <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
         </div>
-    </div>
-    <div class="col-sm-10">
-        <div class="form-group">
-            <label for="productTags" class="control-label">Product tag words</label>
-            <input type="text" class="form-control" id="productTags">
-            <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
+        {{#ifCond config.paymentGateway '==' 'stripe'}}
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label">Subscription plan</label>
+                <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX">
+                <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
+            </div>
         </div>
-    </div>
-</form>
+        {{/ifCond}}
+        <div class="col-12">
+            <div class="form-group">
+                <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
+                <div class="checkbox">
+                    <label>
+                        <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
+                    </label>
+                </div>
+                <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="productTags" class="control-label">Product tag words</label>
+                <input type="text" class="form-control" id="productTags">
+                <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
+            </div>
+        </div>
+    </form>
+</main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
 <script>
