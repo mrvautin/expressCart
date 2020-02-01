@@ -8,7 +8,7 @@
             <input type="text" name="customer_filter" id="customer_filter" class="form-control" placeholder="Filter customers">
             <div class="input-group-append">
                 <button type="button" class="btn btn-outline-success" id="btn_customer_filter">Filter</button>
-                <a href="/admin/customers" class="hidden-xs btn btn-outline-warning"><i class="feather" data-feather="x-octagon"></i></a>
+                <a href="/admin/customers" class="hidden-xs btn btn-outline-warning">{{{feather 'x-octagon'}}}</a>
             </div>
         </div>
         <p class="text-warning top-pad-10">{{ @root.__ "Customers can be filtered by: email, name or phone number" }}</p>

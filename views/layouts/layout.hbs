@@ -162,14 +162,14 @@
         <nav class="navbar navbar-expand-lg justify-content-between mainNavBar">
             <a class="navbar-brand" href="/">{{@root.config.cartTitle}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="feather" data-feather="menu"></i>
+                {{{feather 'menu'}}}
             </button>
             <div id="navbarText">
                 <ul class="navbar-nav ml-auto">
                     {{#ifCond @root.config.enableLanguages "!=" false}}
                     <div class="dropdown d-none d-sm-block">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="feather" data-feather="globe"></i>
+                            {{{feather 'globe'}}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#availableLanguages}}
@@ -179,9 +179,9 @@
                     </div>
                     {{/ifCond}}
                     {{#if @root.session.cart}}
-                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="feather" data-feather="shopping-cart"></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
+                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}} {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
                         {{else}}
-                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn"><i class="feather" data-feather="shopping-cart"></i></i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
+                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}}</i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
                     {{/if}}
                 </ul>
             </div>
@@ -194,7 +194,7 @@
                 <div id="cart" class="col-md-12 pad-left-12 top-pad-10 pushy pushy-right">
                     <div class="row {{checkout}}">
                         <div class="col-sm-12 text-right">
-                            <button class="pushy-link btn btn-primary" type="button"><i class="feather" data-feather="x"></i></button>
+                            <button class="pushy-link btn btn-primary" type="button">{{{feather 'x'}}}</button>
                         </div>
                     </div>
                     <div class="row">
@@ -249,7 +249,7 @@
                             <div class="form-group global-search-form">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text search-input-addon" for="global-search-value"><i class="feather" data-feather="search"></i></label>
+                                        <label class="input-group-text search-input-addon" for="global-search-value">{{{feather 'search'}}}</label>
                                     </div>
                                     <input type="text" class="form-control form-control-lg" id="global-search-value">
                                 </div>

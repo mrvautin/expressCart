@@ -320,6 +320,21 @@ handlebars = handlebars.create({
                 return text.substring(0, 155) + '...';
             }
             return text;
+        },
+        feather: (icon) => {
+            // eslint-disable-next-line keyword-spacing
+            return `<svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-${icon}"
+                >
+                <use xlink:href="/dist/feather-sprite.svg#${icon}"/>
+            </svg>`;
         }
     }
 });
@@ -375,6 +390,9 @@ app.use(i18n.init);
 // serving static content
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views', 'themes')));
+app.use(express.static(path.join(__dirname, 'node_modules', 'feather-icons')));
+
+console.log('test', path.join(__dirname, 'node_modules', 'feather-icons', 'dist'));
 
 // Make stuff accessible to our router
 app.use((req, res, next) => {

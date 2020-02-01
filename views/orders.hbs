@@ -9,7 +9,7 @@
             <div class="input-group-append">
                 <button class="btn btn-outline-success" id="btn_order_filter">{{ @root.__ "Filter" }}</button>
                 <a href="/admin/orders/bystatus/" class="hidden-xs btn btn-outline-info orderFilterByStatus">{{ @root.__ "By status" }}</a>
-                <a href="/admin/orders" class="hidden-xs btn btn-outline-warning"><i class="feather" data-feather="x-octagon"></i></a>
+                <a href="/admin/orders" class="hidden-xs btn btn-outline-warning">{{{feather 'x-octagon'}}}</a>
             </div>
         </div>
         <div class="orderFilter">
@@ -46,7 +46,7 @@
                 <li class="list-group-item">
                     <div class="float-right top-pad-5">
                         {{ @root.__ "Status" }}: <span class="text-{{getStatusColor this.orderStatus}}">{{this.orderStatus}}</span>
-                        <a class="text-danger" href="/admin/order/delete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this order?');"> <i class="feather" data-feather="trash-2"></i></a>
+                        <a class="text-danger" href="/admin/order/delete/{{this._id}}" onclick="return confirm('Are you sure you want to delete this order?');"> {{{feather 'trash-2'}}}</a>
                     </div>
                     <div class="top-pad-5">
                         <a href="/admin/order/view/{{this._id}}" class="text-success">View order</a> - <span class="text-info">Date: </span>{{formatDate this.orderDate "DD/MM/YYYY hh:mm"}} | <span class="text-info">Email:</span> {{this.orderEmail}} | <span class="text-info">{{ @root.__ "Last name" }}:</span> {{this.orderLastname}}

@@ -4,9 +4,9 @@
         <div class="col-sm-12 col-md-6 mr-auto">
             {{#if result.productImage}}
                 <div class="title-image-container">
-                    <div class="image-prev image-button"> <i class="feather" data-feather="chevron-right"></i></div>
+                    <div class="image-prev image-button"> {{{feather 'chevron-left'}}}</div>
                     <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-fluid" alt="...">
-                    <div class="image-next image-button"> <i class="feather" data-feather="chevron-left"></i></div>
+                    <div class="image-next image-button"> {{{feather 'chevron-right'}}}</div>
                 </div>
             {{else}}
                 <div class="title-image-container">

@@ -8,7 +8,7 @@
             <input type="text" name="product_filter" id="product_filter" class="form-control" placeholder="Filter products">
             <div class="input-group-append">
                 <button class="btn btn-outline-success" id="btn_product_filter">Filter</button>
-                <a href="/admin/products" class="hidden-xs btn btn-outline-warning"><i class="feather" data-feather="x-octagon"></i></a>
+                <a href="/admin/products" class="hidden-xs btn btn-outline-warning">{{{feather 'x-octagon'}}}</a>
             </div>
         </div>
         <p class="text-warning top-pad-10">{{ @root.__ "Products can be filtered by: product title or product description keywords" }}</p>
@@ -25,7 +25,7 @@
             </li>
             {{#each results}}
                 <li class="list-group-item">
-                    <button class="float-right btn text-danger btn-delete-product" data-id="{{this._id}}"> <i class="feather" data-feather="trash-2"></i></button>
+                    <button class="float-right btn text-danger btn-delete-product" data-id="{{this._id}}"> {{{feather 'trash-2'}}}</button>
                     <h4 class="float-right"><input id="{{this._id}}" class="publishedState" type="checkbox" {{checkedState this.productPublished}}></h4>
                     <div class="top-pad-8"><a href="/admin/product/edit/{{this._id}}">{{this.productTitle}}</a></div>
                 </li>

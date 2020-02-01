@@ -19,8 +19,8 @@
 							<span>{{ @root.__ "User" }}</span>
 						{{/isAnAdmin}}
 						{{#isAnAdmin @root.session.isAdmin}}
-							<a href="/admin/user/edit/{{../this._id}}"><i class="feather" data-feather="edit"></i></a>
-							<a href="#" class="userDelete text-danger" data-id="{{../this._id}}"><i class="feather" data-feather="trash-2"></i></a>
+							<a href="/admin/user/edit/{{../this._id}}">{{{feather 'edit'}}}</a>
+							<a href="#" class="userDelete text-danger" data-id="{{../this._id}}">{{{feather 'trash-2'}}}</a>
 						{{/isAnAdmin}}
 					</span>
 				</li>

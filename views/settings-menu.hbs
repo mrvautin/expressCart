@@ -11,7 +11,7 @@
             {{#each menu.items}}
                 <div class="row drag-row" id="menuId-{{@key}}">
                     <input type="hidden" class="navId" value="{{title}}">
-                    <div class="col-sm-1 dragable_item"><i class="feather" data-feather="move"></i></div>
+                    <div class="col-sm-1 dragable_item">{{{feather 'move'}}}</div>
                     <div class="col-sm-2 dragable_item">
                         <input type="text" class="form-control navMenu navItem" value="{{title}}">
                     </div>
@@ -20,10 +20,10 @@
                     </div>
                     <div class="col-sm-3 dragable_item">
                         <a class="btn btn-outline-danger settings-menu-delete" data-id="{{@key}}">
-                            <i class="feather" data-feather="trash-2"></i>
+                            {{{feather 'trash-2'}}}
                         </a>
                         <button type="submit" class="btn btn-outline-success" id="settings-menu-update" data-id="{{@key}}">
-                            <i class="feather" data-feather="save"></i>
+                            {{{feather 'save'}}}
                         </button>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
             </div>
             <div class="col-sm-3">
                 <button type="submit" id="settings-menu-new" class="btn btn-outline-success">
-                    <i class="feather" data-feather="plus"></i>
+                    {{{feather 'plus'}}}
                 </button>
             </div>
         </div>

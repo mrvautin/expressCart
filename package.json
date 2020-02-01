@@ -42,6 +42,7 @@
     "express-handlebars": "^3.1.0",
     "express-rate-limit": "^5.0.0",
     "express-session": "^1.17.0",
+    "feather-icons": "^4.25.0",
     "glob": "^7.1.5",
     "gulp-less": "^4.0.1",
     "helmet": "^3.21.2",

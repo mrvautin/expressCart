@@ -3,11 +3,11 @@
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a href="/admin"><img class="sidebar-brand" src="/images/logo-admin.png"></a>
-                <a href="#" data-toggle="modal" data-target="#globalSearchModal" class="sidebar-search text-muted"><i class="feather" data-feather="search"></i></a>
+                <a href="#" data-toggle="modal" data-target="#globalSearchModal" class="sidebar-search text-muted">{{{feather 'search'}}}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/dashboard">
-                    <i class="feather" data-feather="bar-chart"></i> &nbsp;
+                    {{{feather 'bar-chart'}}} &nbsp;
                     {{ @root.__ "Dashboard" }}
                 </a>
             </li>
@@ -17,43 +17,43 @@
             {{#ifCond session.isAdmin '===' true}}
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/products">
-                    <i class="feather" data-feather="tag"></i> &nbsp;
+                    {{{feather 'tag'}}} &nbsp;
                     Products
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/product/new">
-                    <i class="feather" data-feather="plus"></i>
+                    {{{feather 'plus'}}}
                 </a>
             </li>
             {{else}}
             <li class="nav-item">
                 <a class="nav-link" href="/admin/products">
-                    <i class="feather" data-feather="tag"></i> &nbsp;
+                    {{{feather 'tag'}}} &nbsp;
                     Products
                 </a>
             </li>
             {{/ifCond}}
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/orders">
-                    <i class="feather" data-feather="package"></i> &nbsp;
+                    {{{feather 'package'}}} &nbsp;
                     Orders
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/order/create">
-                    <i class="feather" data-feather="plus"></i>
+                    {{{feather 'plus'}}}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/customers">
-                    <i class="feather" data-feather="users"></i> &nbsp;
+                    {{{feather 'users'}}} &nbsp;
                     Customers
                 </a>
             </li>
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/users">
-                    <i class="feather" data-feather="user"></i> &nbsp;
+                    {{{feather 'user'}}} &nbsp;
                     Users
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/user/new">
-                    <i class="feather" data-feather="plus"></i>
+                    {{{feather 'plus'}}}
                 </a>
             </li>
         </ul>
@@ -64,26 +64,26 @@
         <ul class="nav flex-column mb-2">
             <li class="nav-item">
                 <a class="nav-link" href="/admin/settings">
-                    <i class="feather" data-feather="sliders"></i> &nbsp;
+                    {{{feather 'sliders'}}} &nbsp;
                     {{ @root.__ "General settings" }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/settings/menu">
-                    <i class="feather" data-feather="menu"></i> &nbsp;
+                    {{{feather 'menu'}}} &nbsp;
                     {{ @root.__ "Menu" }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin/settings/pages">
-                    <i class="feather" data-feather="file-text"></i> &nbsp;
+                    {{{feather 'file-text'}}} &nbsp;
                     {{ @root.__ "Static pages" }}
                 </a>
             </li>
             {{#ifCond session.isAdmin '===' true}}
             <li class="nav-item">
                 <a class="nav-link" href="/admin/settings/discounts">
-                    <i class="feather" data-feather="code"></i> &nbsp;
+                    {{{feather 'code'}}} &nbsp;
                     {{ @root.__ "Discount codes" }}
                 </a>
             </li>
