@@ -8,7 +8,7 @@
     "deploy": "gulp deploy",
     "testdata": "node lib/testdata.js",
     "test": "ava",
-    "dev": "nodemon app.js",
+    "dev": "gulp watch",
     "lint": "eslint ./"
   },
   "ava": {
@@ -84,6 +84,7 @@
     "gulp": "^4.0.2",
     "gulp-clean-css": "^3.10.0",
     "gulp-minify": "^3.1.0",
+    "gulp-nodemon": "^2.4.2",
     "gulp-rename": "^1.4.0",
     "less": "^3.10.3",
     "supertest": "^4.0.2"
