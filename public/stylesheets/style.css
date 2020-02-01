@@ -118,6 +118,9 @@ input[type=number]::-webkit-outer-spin-button {
 .thumbnail-image-container {
   height: 350px;
 }
+.img-thumbnail {
+  border: 0;
+}
 .product-title {
   font-size: 20px;
   margin-top: 0px;
