@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals showNotification, slugify, numeral, moment */
+/* globals showNotification, slugify, numeral, moment, feather */
 $(document).ready(function (){
     $(document).on('click', '#btnGenerateAPIkey', function(e){
         e.preventDefault();
@@ -821,6 +821,6 @@ function globalSearch(){
             $('#global-search-results').removeClass('invisible');
         }
 
-        feather.replace()
+        feather.replace();
     });
 }

@@ -1,5 +1,5 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals showNotification, numeral */
+/* globals showNotification, numeral, feather */
 $(document).ready(function (){
     if($(window).width() < 768){
         $('.menu-side').on('click', function(e){
