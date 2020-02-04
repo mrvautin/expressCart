@@ -1,5 +1,5 @@
 {
-    "cartTitle": "CLOTH",
+    "cartTitle": "GECO DEV CLOTH",
     "cartDescription": "expressCart",
     "cartLogo": "",
     "baseUrl": "http://localhost:1111",
@@ -18,12 +18,15 @@
     "injectJs": "",
     "customCss": "",
     "currencySymbol": "£",
-    "paymentGateway": "stripe",
+    "paymentGateway": "blockonomics",
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
-    "availableLanguages": ["en", "it"],
+    "availableLanguages": [
+        "en",
+        "it"
+    ],
     "defaultLocale": "en",
     "maxQuantity": 25,
     "twitterHandle": "",
@@ -32,6 +35,14 @@
         "enabled": {
             "shipping": "shipping-basic",
             "discount": "discount-voucher"
+        },
+        "loaded": {
+            "shipping": {},
+            "discount": {}
         }
-    }
+    },
+    "secretCookie": "378f764ea5992d9e910b1868b3a049874eac5829",
+    "secretSession": "2ecec0412ca77a479a4440d84d824c6b47a68ad9",
+    "themeViews": "../views/themes/Cloth/",
+    "env": ""
 }

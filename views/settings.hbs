@@ -36,6 +36,7 @@
                 <select class="form-control" name="paymentGateway">
                     <option {{selectState 'paypal' config.paymentGateway}} value="paypal">Paypal</option>
                     <option {{selectState 'stripe' config.paymentGateway}} value="stripe">Stripe</option>
+                    <option {{selectState 'blockonomics' config.paymentGateway}} value="blockonomics">Blockonomics</option>
                 </select>
                 <p class="help-block">{{ @root.__ "Payment_Gateway_Info" }}</p>
             </div>
