@@ -214,6 +214,32 @@ router.get('/checkout/payment', async (req, res) => {
     });
 });
 
+router.get('/blockonomics_payment', (req, res, next) => {
+    const config = req.app.config;
+    let paymentType = '';
+    if(req.session.cartSubscription){
+        paymentType = '_subscription';
+    }
+// show bitcoin address and wait for payment, subscribing to wss @TODO SUBSCRIBE TO WSS, and also poll db to check if we were notified with callback URL
+
+    res.render(`${config.themeViews}checkout-blockonomics`, {
+        title: 'Checkout - Payment',
+        config: req.app.config,
+        paymentConfig: getPaymentConfig(),
+        session: req.session,
+        paymentPage: true,
+        paymentType,
+        cartClose: true,
+        cartReadOnly: true,
+        page: 'checkout-information',
+        countryList,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        showFooter: 'showFooter'
+    });
+});
+
 router.post('/checkout/adddiscountcode', async (req, res) => {
     const config = req.app.config;
     const db = req.app.db;

@@ -168,5 +168,8 @@
 	"Return to information": "Return to information",
 	"Proceed to payment": "Proceed to payment",
 	"Discount code": "Discount code",
-	"Apply": "Apply"
+	"Apply": "Apply",
+	"Currency ISO": "Currency ISO",
+	"Currency used for Blockonomics conversion": "Currency used for Blockonomics conversion",
+	"Blockonomics payment details": "Blockonomics payment details"
 }

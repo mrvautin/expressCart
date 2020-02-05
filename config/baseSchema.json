@@ -69,10 +69,11 @@
         },
         "currencySymbol": {
             "type": "string",
-            "default": "£"
+            "default": "$"
         },
         "currencyISO": {
             "type": "string",
+            "enum": ["USD", "EUR", "GBP"],
             "default": "USD"
         },
         "paymentGateway": {
