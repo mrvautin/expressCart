@@ -76,6 +76,10 @@ $(document).ready(function (){
         $('#product_optOptions').val('');
     });
 
+    $(document).on('click', '#btnSettingsUpdate', function(e){
+        $('#settingsForm').submit();
+    });
+
     // call update settings API
     $('#settingsForm').validator().on('submit', function(e){
         if(!e.isDefaultPrevented()){
