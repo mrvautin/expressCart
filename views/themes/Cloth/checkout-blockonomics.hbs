@@ -14,7 +14,7 @@
         {{/if}}
         <div class="col-md-5">
             <div class="card top-marg-15">
-                <div class="card-body">
+                <div class="card-body" id="blockonomics_div" data-address="{{@root.session.blockonomicsParams.address}}" data-amount="{{@root.session.blockonomicsParams.expectedBtc}}" data-timestamp="{{@root.session.blockonomicsParams.timestamp}}">
                     <h5 class="card-title">{{ @root.__ "Blockonomics payment details" }}</h5>
                     <ul class="list-group bottom-pad-15">
                         <li class="list-group-item">
@@ -53,7 +53,7 @@
                     <ul class="list-group bottom-pad-15">
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12" }>
                                     Address:<br>
                                     <span style="font-size:14px;"><strong>{{@root.session.blockonomicsParams.address}}</strong></span>
                                 </div>
@@ -61,7 +61,18 @@
                         </li>
 
                     </ul>         
-                </div>
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-12" id="blockonomics_waiting" style="text-align:center;">
+                                    Waiting for payment<br>
+                                    <img src="/images/spinner.gif">
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>  
+                  </div>
             </div>
         </div>
         <div id="cart" class="col-md-7">

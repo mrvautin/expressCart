@@ -35,6 +35,7 @@ router.post('/checkout_action', (req, res, next) => {
       .headers({'Content-Type': 'application/json', 'User-Agent': 'blockonomics','Accept': 'application/json', 'Authorization': 'Bearer ' + blockonomicsConfig.apiKey})
       .then((response) => {
         blockonomicsParams.address = response.body.address;
+        blockonomicsParams.timestamp = Math.floor(new Date() / 1000);
         req.session.blockonomicsParams = blockonomicsParams;
         res.redirect('/blockonomics_payment');
       })

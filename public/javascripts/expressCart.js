@@ -431,6 +431,33 @@ $(document).ready(function (){
 		// alert
         showNotification(messageVal, messageTypeVal || 'danger', false);
     }
+    
+    
+    // checkout-blockonomics page (blockonomics_payment route) handling START ***
+    if ($("#blockonomics_div").length > 0) {
+      var amount = $("#blockonomics_div").data("amount") || 0;
+      var timestamp = $("#blockonomics_div").data("timestamp") || -1;
+      var address = $("#blockonomics_div").data("address") || '';
+      //console.log(timestamp+","+amount+","+address);
+      var blSocket = new WebSocket("wss://www.blockonomics.co/payment/"+address+"?timestamp="+timestamp);
+      blSocket.onopen = function (msg) {
+        console.log('Connected');
+      };      
+      blSocket.onmessage = function (msg) {
+        var data = JSON.parse(msg.data);
+        if (data.status === 0) {
+          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>), waiting for confirmation.");
+        } else if (data.status === 1) {
+          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>), confirmation 1/2.");
+        } else if (data.status === 2) {
+          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC</b>).");          
+        }
+      }
+      
+      
+    }
+    // checkout-blockonomics page (blockonomics_payment route) handling ***  END 
+
 });
 
 function checkMaxQuantity(e, element){
