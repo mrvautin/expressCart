@@ -130,7 +130,7 @@ router.post('/admin/user/delete', restrict, async (req, res) => {
 router.post('/admin/user/update', restrict, async (req, res) => {
     const db = req.app.db;
 
-    let isAdmin = req.body.userAdmin === 'on';
+    let isAdmin = req.body.userAdmin === 'true';
 
     // get the user we want to update
     const user = await db.users.findOne({ _id: common.getId(req.body.userId) });
