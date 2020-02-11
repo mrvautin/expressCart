@@ -3,12 +3,12 @@
     "cartDescription": "expressCart",
     "cartLogo": "",
     "baseUrl": "http://localhost:1111",
-    "emailHost": "smtp-mail.outlook.com",
+    "emailHost": "",
     "emailPort": 587,
     "emailSecure": false,
-    "emailUser": "hi@markmoffat.com",
-    "emailPassword": "this_is_the_smtp_password",
-    "emailAddress": "hi@markmoffat.com",
+    "emailUser": "",
+    "emailPassword": "",
+    "emailAddress": "",
     "menuEnabled": true,
     "productsPerRow": 4,
     "productsPerPage": 6,
@@ -24,8 +24,7 @@
     "trackStock": false,
     "orderHook": "",
     "availableLanguages": [
-        "en",
-        "it"
+        "en"
     ],
     "defaultLocale": "en",
     "maxQuantity": 25,
