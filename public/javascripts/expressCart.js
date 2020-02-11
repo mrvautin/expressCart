@@ -445,6 +445,7 @@ $(document).ready(function (){
       };      
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
+        // TODO CHECK IF AMOUNT IS >=
         if (data.status === 0) {
           $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>), waiting for confirmation.");
         } else if (data.status === 1) {

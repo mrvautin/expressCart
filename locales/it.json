@@ -171,5 +171,9 @@
 	"Apply": "Apply",
 	"Currency ISO": "Currency ISO",
 	"Currency used for Blockonomics conversion": "Currency used for Blockonomics conversion",
-	"Blockonomics payment details": "Blockonomics payment details"
+	"Blockonomics payment details": "Blockonomics payment details",
+	"Payment Message": "Payment Message",
+	"Order net amount": "Order net amount",
+	"Order shipping amount": "Order shipping amount",
+	"Order type": "Order type"
 }

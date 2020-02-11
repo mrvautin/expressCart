@@ -220,7 +220,7 @@ router.get('/blockonomics_payment', (req, res, next) => {
     if(req.session.cartSubscription){
         paymentType = '_subscription';
     }
-// show bitcoin address and wait for payment, subscribing to wss @TODO SUBSCRIBE TO WSS, and also poll db to check if we were notified with callback URL
+// show bitcoin address and wait for payment, subscribing to wss
 
     res.render(`${config.themeViews}checkout-blockonomics`, {
         title: 'Checkout - Payment',
