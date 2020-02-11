@@ -162,6 +162,7 @@ $(document).ready(function (){
                 url: route,
                 data: {
                     email: $('#shipEmail').val(),
+                    shipCompanyName: $('#shipCompanyName').val(),
                     firstName: $('#shipFirstname').val(),
                     lastName: $('#shipLastname').val(),
                     address1: $('#shipAddr1').val(),

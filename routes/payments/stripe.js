@@ -57,6 +57,7 @@ router.post('/checkout_action', (req, res, next) => {
             orderItemCount: req.session.totalCartItems,
             orderProductCount: req.session.totalCartProducts,
             orderEmail: req.session.customerEmail,
+            shipCompanyName: req.session.shipCompanyName,
             orderFirstname: req.session.customerFirstname,
             orderLastname: req.session.customerLastname,
             orderAddr1: req.session.customerAddress1,

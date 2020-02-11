@@ -1,5 +1,5 @@
 {
-    "cartTitle": "CLOTH",
+    "cartTitle": "Southern Auto Body",
     "cartDescription": "expressCart",
     "cartLogo": "",
     "baseUrl": "http://localhost:1111",
@@ -10,20 +10,23 @@
     "emailPassword": "this_is_the_smtp_password",
     "emailAddress": "hi@markmoffat.com",
     "menuEnabled": true,
-    "productsPerRow": 3,
+    "productsPerRow": 4,
     "productsPerPage": 6,
     "menuTitle": "Menu",
     "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
     "googleAnalytics": "",
     "injectJs": "",
     "customCss": "",
-    "currencySymbol": "£",
+    "currencySymbol": "$",
     "paymentGateway": "stripe",
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
-    "availableLanguages": ["en", "it"],
+    "availableLanguages": [
+        "en",
+        "it"
+    ],
     "defaultLocale": "en",
     "maxQuantity": 25,
     "twitterHandle": "",
@@ -32,6 +35,14 @@
         "enabled": {
             "shipping": "shipping-basic",
             "discount": "discount-voucher"
+        },
+        "loaded": {
+            "shipping": {},
+            "discount": {}
         }
-    }
+    },
+    "secretCookie": "24565e652c5baf4a225a6381615b3896abb53bff",
+    "secretSession": "3bfcadcc2de9ac9bc3e8ddbe449585cf7fdb744f",
+    "themeViews": "../views/themes/Cloth/",
+    "env": ""
 }

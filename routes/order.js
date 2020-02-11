@@ -118,6 +118,7 @@ router.post('/admin/order/create', async (req, res, next) => {
         });
     }
 
+    console.log(req.body)
     const orderDoc = {
         orderPaymentId: getId(),
         orderPaymentGateway: 'Instore',
@@ -127,6 +128,7 @@ router.post('/admin/order/create', async (req, res, next) => {
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
         orderEmail: req.body.email || req.session.customerEmail,
+        orderCompanyName: req.body.shipCompanyName || req.session.shipCompanyName,
         orderFirstname: req.body.firstName || req.session.customerFirstname,
         orderLastname: req.body.lastName || req.session.customerLastname,
         orderAddr1: req.body.address1 || req.session.customerAddress1,

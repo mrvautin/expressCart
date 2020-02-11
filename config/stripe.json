@@ -1,6 +1,6 @@
 {
-    "secretKey": "sk_test_this_is_not_real",
-    "publicKey": "pk_test_this_is_not_real",
+    "secretKey": "sk_test_ZmWaFEiBn0H63gNmfCacBolp",
+    "publicKey": "pk_test_RIU7I4O49GFzLUZHRafKTrtF",
     "stripeCurrency": "usd",
     "stripeDescription": "expressCart payment",
     "stripeLogoURL": "http://localhost:1111/images/stripelogo.png",

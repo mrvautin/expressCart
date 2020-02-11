@@ -7,6 +7,14 @@
             </div>
         </div>
     </div>
+        <div class="col-sm-12 col-md-12">
+        <div class="form-group">
+            <input type="text" class="form-control customerDetails" id="shipCompanyName" name="shipCompanyName" minlength="5" placeholder="Company Name" value="{{@root.session.companyName}}" required>
+            <div class="invalid-feedback">
+                Please enter a valid email address
+            </div>
+        </div>
+    </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <input type="text" class="form-control customerDetails" id="shipFirstname" name="shipFirstname" placeholder="First name" value="{{@root.session.customerFirstname}}" required>

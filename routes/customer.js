@@ -17,17 +17,18 @@ const apiLimiter = rateLimit({
 // insert a customer
 router.post('/customer/create', async (req, res) => {
     const db = req.app.db;
-
+    const {email, shipCompanyName, firstName, lastName, address1, address2, country, state, postcode, phone} = req.body
     const customerObj = {
-        email: req.body.email,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        country: req.body.country,
-        state: req.body.state,
-        postcode: req.body.postcode,
-        phone: req.body.phone,
+        email,
+        shipCompanyName,
+        firstName,
+        lastName,
+        address1,
+        address2,
+        country,
+        state,
+        postcode,
+        phone,
         password: bcrypt.hashSync(req.body.password, 10),
         created: new Date()
     };
@@ -39,7 +40,7 @@ router.post('/customer/create', async (req, res) => {
     }
 
     // check for existing customer
-    const customer = await db.customers.findOne({ email: req.body.email });
+    const customer = await db.customers.findOne({ email: email });
     if(customer){
         res.status(400).json({
             message: 'A customer already exists with that email address'
@@ -58,6 +59,7 @@ router.post('/customer/create', async (req, res) => {
             // Set the customer into the session
             req.session.customerPresent = true;
             req.session.customerEmail = customerReturn.email;
+            req.session.shipCompanyName = customerReturn.shipCompanyName;
             req.session.customerFirstname = customerReturn.firstName;
             req.session.customerLastname = customerReturn.lastName;
             req.session.customerAddress1 = customerReturn.address1;
@@ -80,16 +82,18 @@ router.post('/customer/create', async (req, res) => {
 });
 
 router.post('/customer/save', async (req, res) => {
+    const {email, shipCompanyName, firstName, lastName, address1, address2, country, state, postcode, phone} = req.body
     const customerObj = {
-        email: req.body.email,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        country: req.body.country,
-        state: req.body.state,
-        postcode: req.body.postcode,
-        phone: req.body.phone
+        email,
+        shipCompanyName,
+        firstName,
+        lastName,
+        address1,
+        address2,
+        country,
+        state,
+        postcode,
+        phone
     };
 
     const schemaResult = validateJson('saveCustomer', customerObj);
@@ -120,6 +124,7 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
 
     const customerObj = {
         email: req.body.email,
+        shipCompanyName: req.body.shipCompanyName,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         address1: req.body.address1,
@@ -295,6 +300,7 @@ router.post('/admin/customer/lookup', restrict, async (req, res, next) => {
     if(customer){
         req.session.customerPresent = true;
         req.session.customerEmail = customer.email;
+        req.session.shipCompanyName = customer.shipCompanyName;
         req.session.customerFirstname = customer.firstName;
         req.session.customerLastname = customer.lastName;
         req.session.customerAddress1 = customer.address1;
@@ -340,6 +346,7 @@ router.post('/customer/login_action', async (req, res) => {
         // Customer login successful
         req.session.customerPresent = true;
         req.session.customerEmail = customer.email;
+        req.session.shipCompanyName = customer.shipCompanyName;
         req.session.customerFirstname = customer.firstName;
         req.session.customerLastname = customer.lastName;
         req.session.customerAddress1 = customer.address1;
