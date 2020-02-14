@@ -436,16 +436,17 @@ $(document).ready(function (){
     // checkout-blockonomics page (blockonomics_payment route) handling START ***
     if ($("#blockonomics_div").length > 0) {
       var amount = $("#blockonomics_div").data("amount") || 0;
+      var orderid = $("#blockonomics_div").data("orderid") || '';
       var timestamp = $("#blockonomics_div").data("timestamp") || -1;
       var address = $("#blockonomics_div").data("address") || '';
       //console.log(timestamp+","+amount+","+address);
       var blSocket = new WebSocket("wss://www.blockonomics.co/payment/"+address+"?timestamp="+timestamp);
       blSocket.onopen = function (msg) {
         console.log('Connected');
-      };      
+      };
+      var blfinished = false;
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
-        // TODO CHECK IF AMOUNT IS >=
         var messageInsufficient = '';
         if ((data.status === 0) || (data.status === 1) || (data.status === 2)) {
           if (data.value/1e8 < amount) messageInsufficient = ', insufficient amount!';
@@ -455,7 +456,16 @@ $(document).ready(function (){
         } else if (data.status === 1) {
           $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), confirmation 1/2.");
         } else if (data.status === 2) {
-          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>).");          
+          var orderMessage = '';
+          if ((data.value/1e8 >= amount) && !blfinished) {
+            blfinished = true;
+            orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
+            blSocket.close();
+            $("#cart-count").html("0");
+            showNotification('Payment confirmed', 'success');            
+          }
+          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)."+orderMessage);          
+
         }
       }
       

@@ -12,11 +12,47 @@ router.get('/checkout_cancel', (req, res, next) => {
     res.redirect('/checkout');
 });
 
-router.get('/checkout_return', (req, res, next) => {
-
-  /* @TODO */
+router.get('/checkout_return', async (req, res, next) => {
+  const db = req.app.db;
+  var status = req.query.status || -1;
+  var address = req.query.addr || 'na';
+  var amount = (req.query.value || 0)/1e8;
+  var txid = req.query.txid || 'na';
   console.log(req.query);
-  // confirm order and then on frontend redirect to http://de.selfand.com:1111/payment/5e42e1811e047d7a3de11563
+  /*
+  @TODO remove console.log
+  @TODO here we have to clear cart server side
+  */
+  if (Number(status) == 2) {
+    // we are interested only in final confirmations
+    const order = await db.orders.findOne({ orderPaymentId: address });
+    if (!!order) {
+      if (amount >= order.orderExpectedBtc) {
+        try{
+            await db.orders.updateOne({
+                _id: order._id },
+                { $set: { orderStatus: 'Paid', orderReceivedBtc: amount, orderBlockonomicsTxid: txid }
+            }, { multi: false });
+        }catch(ex){
+            console.info('Error updating status success blockonomics', ex);
+        }        
+        return;
+      }
+      console.info('Amount not sufficient blockonomics', address);
+      try{
+          await db.orders.updateOne({
+              _id: order._id },
+              { $set: { orderReceivedBtc: amount }
+          }, { multi: false });
+      }catch(ex){
+          console.info('Error updating status insufficient blockonomics', ex);
+      }        
+      return;
+    }
+    console.info('Order not found blockonomics', address);
+  }
+  console.info('Payment not final blockonomics', address);
+
 });
 
 router.post('/checkout_action', (req, res, next) => {

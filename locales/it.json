@@ -175,5 +175,8 @@
 	"Payment Message": "Payment Message",
 	"Order net amount": "Order net amount",
 	"Order shipping amount": "Order shipping amount",
-	"Order type": "Order type"
+	"Order type": "Order type",
+	"Order Expected BTC": "Order Expected BTC",
+	"Order Received BTC": "Order Received BTC",
+	"Order Blockonomics Txid": "Order Blockonomics Txid"
 }
