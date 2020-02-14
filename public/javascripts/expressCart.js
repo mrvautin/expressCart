@@ -446,12 +446,16 @@ $(document).ready(function (){
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
         // TODO CHECK IF AMOUNT IS >=
+        var messageInsufficient = '';
+        if ((data.status === 0) || (data.status === 1) || (data.status === 2)) {
+          if (data.value/1e8 < amount) messageInsufficient = ', insufficient amount!';
+        }
         if (data.status === 0) {
-          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>), waiting for confirmation.");
+          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), waiting for confirmation.");
         } else if (data.status === 1) {
-          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>), confirmation 1/2.");
+          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), confirmation 1/2.");
         } else if (data.status === 2) {
-          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC</b>).");          
+          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>).");          
         }
       }
       
