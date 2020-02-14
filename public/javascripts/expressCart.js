@@ -442,7 +442,6 @@ $(document).ready(function (){
       //console.log(timestamp+","+amount+","+address);
       var blSocket = new WebSocket("wss://www.blockonomics.co/payment/"+address+"?timestamp="+timestamp);
       blSocket.onopen = function (msg) {
-        console.log('Connected');
       };
       var blfinished = false;
       blSocket.onmessage = function (msg) {
@@ -461,8 +460,9 @@ $(document).ready(function (){
             blfinished = true;
             orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
             blSocket.close();
+            showNotification('Payment confirmed', 'success');
             $("#cart-count").html("0");
-            showNotification('Payment confirmed', 'success');            
+            $.ajax({ method: 'POST', url: '/product/emptycart' });            
           }
           $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)."+orderMessage);          
 

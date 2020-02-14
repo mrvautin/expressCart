@@ -18,11 +18,7 @@ router.get('/checkout_return', async (req, res, next) => {
   var address = req.query.addr || 'na';
   var amount = (req.query.value || 0)/1e8;
   var txid = req.query.txid || 'na';
-  console.log(req.query);
-  /*
-  @TODO remove console.log
-  @TODO here we have to clear cart server side
-  */
+
   if (Number(status) == 2) {
     // we are interested only in final confirmations
     const order = await db.orders.findOne({ orderPaymentId: address });
