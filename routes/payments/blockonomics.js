@@ -38,7 +38,7 @@ router.get('/checkout_return', async (req, res, next) => {
       try{
           await db.orders.updateOne({
               _id: order._id },
-              { $set: { orderReceivedBtc: amount }
+              { $set: { orderStatus: 'Declined', orderReceivedBtc: amount }
           }, { multi: false });
       }catch(ex){
           console.info('Error updating status insufficient blockonomics', ex);

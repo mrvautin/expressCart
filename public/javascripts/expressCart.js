@@ -456,15 +456,17 @@ $(document).ready(function (){
           $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), confirmation 1/2.");
         } else if (data.status === 2) {
           var orderMessage = '';
+          var orderStatus = "<b>declined</b>";
           if ((data.value/1e8 >= amount) && !blfinished) {
             blfinished = true;
             orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
+            orderStatus = "confirmed";
             blSocket.close();
             showNotification('Payment confirmed', 'success');
             $("#cart-count").html("0");
             $.ajax({ method: 'POST', url: '/product/emptycart' });            
           }
-          $("#blockonomics_waiting").html("Payment confirmed (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)."+orderMessage);          
+          $("#blockonomics_waiting").html("Payment "+orderStatus+" (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)."+orderMessage);          
 
         }
       }
