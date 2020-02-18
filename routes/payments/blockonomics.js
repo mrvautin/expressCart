@@ -14,6 +14,8 @@ router.get('/checkout_cancel', (req, res, next) => {
 
 router.get('/checkout_return', async (req, res, next) => {
   const db = req.app.db;
+  const config = req.app.config;
+  
   var status = req.query.status || -1;
   var address = req.query.addr || 'na';
   var amount = (req.query.value || 0)/1e8;
@@ -29,6 +31,21 @@ router.get('/checkout_return', async (req, res, next) => {
                 _id: order._id },
                 { $set: { orderStatus: 'Paid', orderReceivedBtc: amount, orderBlockonomicsTxid: txid }
             }, { multi: false });
+            // if approved, send email etc
+                    // set payment results for email
+            const paymentResults = {
+                message: 'Your payment was successfully completed',
+                messageType: 'success',
+                paymentEmailAddr: order.orderEmail,
+                paymentApproved: true,
+                paymentDetails: '<p><strong>Order ID: </strong>' + order._id + '</p><p><strong>Transaction ID: </strong>' + order.orderPaymentId + '</p>'
+            };
+            
+            // send the email with the response
+            // TODO: Should fix this to properly handle result            
+            common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
+            
+            
         }catch(ex){
             console.info('Error updating status success blockonomics', ex);
         }        
@@ -100,11 +117,18 @@ router.post('/checkout_action', (req, res, next) => {
                 }
                 // get the new ID
                 const newId = newDoc.insertedId;
-
-                // set the order ID in the session, to link to it from blockonomics payment page
-                blockonomicsParams.pendingOrderId = newId;
-                req.session.blockonomicsParams = blockonomicsParams;
-                res.redirect('/blockonomics_payment');
+                // add to lunr index
+                indexOrders(req.app)
+                .then(() => {
+                  
+                    // set the order ID in the session, to link to it from blockonomics payment page
+                    blockonomicsParams.pendingOrderId = newId;
+                    req.session.blockonomicsParams = blockonomicsParams;
+                    res.redirect('/blockonomics_payment');
+                    
+                });
+                
+                
             });        
         
 
