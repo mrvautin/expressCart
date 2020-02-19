@@ -444,31 +444,37 @@ $(document).ready(function (){
       blSocket.onopen = function (msg) {
       };
       var blfinished = false;
+      var timeOutMinutes = 10;
+      setTimeout(function() {
+        $("#blockonomics_waiting").html("<b>Payment expired</b><br><br><b><a href='/checkout/payment'>Click here</a></b> to try again.<br><br>If you already paid, your order will be processed automatically.");        
+        blfinished = true;
+        showNotification('Payment expired', 'danger');
+        blSocket.close();
+      }, 1000*60*timeOutMinutes);
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
         var messageInsufficient = '';
         if ((data.status === 0) || (data.status === 1) || (data.status === 2)) {
-          if (data.value/1e8 < amount) messageInsufficient = ', insufficient amount!';
-        }
-        if (data.status === 0) {
-          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), waiting for confirmation.");
-        } else if (data.status === 1) {
-          $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>), confirmation 1/2.");
-        } else if (data.status === 2) {
-          var orderMessage = '';
-          var orderStatus = "<b>declined</b>";
-          if ((data.value/1e8 >= amount) && !blfinished) {
+          if (data.value/1e8 < amount) {
+            messageInsufficient = ', insufficient amount!';
+            $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)<br><br><b><a href='/checkout/payment'>Click here</a></b> to to try again.");
             blfinished = true;
-            orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
-            orderStatus = "confirmed";
+            showNotification('Insufficient amount', 'danger');
             blSocket.close();
-            showNotification('Payment confirmed', 'success');
-            $("#cart-count").html("0");
-            $.ajax({ method: 'POST', url: '/product/emptycart' });            
-          }
-          $("#blockonomics_waiting").html("Payment "+orderStatus+" (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)."+orderMessage);          
-
+          } else {
+              // redirect to order confirmation page
+              blfinished = true;
+              orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
+              $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC</b>)."+orderMessage);          
+              showNotification('Payment detected', 'success');
+              $("#cart-count").html("0");
+              blSocket.close();
+              $.ajax({ method: 'POST', url: '/product/emptycart' }).done(function() {
+                window.location.replace("/payment/"+orderid);
+              });            
+            }
         }
+
       }
       
       

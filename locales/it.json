@@ -178,5 +178,11 @@
 	"Order type": "Order type",
 	"Order Expected BTC": "Order Expected BTC",
 	"Order Received BTC": "Order Received BTC",
-	"Order Blockonomics Txid": "Order Blockonomics Txid"
+	"Order Blockonomics Txid": "Order Blockonomics Txid",
+	"Users": "Users",
+	"New user": "New user",
+	"Customers can be filtered by: email, name or phone number": "Customers can be filtered by: email, name or phone number",
+	"Password": "Password",
+	"Create Order": "Create Order",
+	"Create order": "Create order"
 }
