@@ -1,6 +1,12 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
 /* globals showNotification, slugify, numeral, moment, feather */
 $(document).ready(function (){
+    $.ajaxSetup({
+        headers: {
+            'csrf-token': $('meta[name="csrfToken"]').attr('content')
+        }
+    });
+
     $(document).on('click', '#btnGenerateAPIkey', function(e){
         e.preventDefault();
         $.ajax({
