@@ -1,6 +1,12 @@
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
 /* globals showNotification, slugify, numeral, moment, feather */
 $(document).ready(function (){
+    $.ajaxSetup({
+        headers: {
+            'csrf-token': $('meta[name="csrfToken"]').attr('content')
+        }
+    });
+
     $(document).on('click', '#btnGenerateAPIkey', function(e){
         e.preventDefault();
         $.ajax({
@@ -74,6 +80,10 @@ $(document).ready(function (){
         $('#product_optName').val('');
         $('#product_optLabel').val('');
         $('#product_optOptions').val('');
+    });
+
+    $(document).on('click', '#btnSettingsUpdate', function(e){
+        $('#settingsForm').submit();
     });
 
     // call update settings API

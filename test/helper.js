@@ -76,6 +76,11 @@ const runBefore = async () => {
                 await g.db.orders.insertOne(order);
             });
 
+            // Get csrf token
+            const csrf = await g.request
+            .get('/admin/csrf');
+            g.csrf = csrf.body.csrf;
+
             // Index everything
             await runIndexing(app);
 
