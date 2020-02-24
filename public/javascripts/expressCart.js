@@ -451,6 +451,21 @@ $(document).ready(function (){
         showNotification('Payment expired', 'danger');
         blSocket.close();
       }, 1000*60*timeOutMinutes);
+      
+      var countdownel = $("#blockonomics_timeout");
+      var endDatebl = new Date((new Date()).getTime() + 1000*60*timeOutMinutes);
+      var blcountdown = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = endDatebl - now;
+        if (distance < 0) {
+          clearInterval(blcountdown);
+          return;
+        }
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        countdownel.html(minutes + "m " + seconds + "s");
+      }, 1000);
+
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
         var messageInsufficient = '';
