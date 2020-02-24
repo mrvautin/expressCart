@@ -275,7 +275,7 @@ The Stripe config file is located: `/config/stripe.json`. A example Stripe setti
 
 Note: The `secretKey`, `publicKey` and `stripeWebhookSecret` is obtained from your Stripe account dashboard.
 
-##### Blockonomics (Payments)
+##### Blockonomics (Bitcoin Payments)
 
 The Blockonomics config file is located: `/config/blockonomics.json`. A example Blockonomics settings file is provided:
 
