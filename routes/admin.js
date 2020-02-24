@@ -9,9 +9,11 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const mime = require('mime-type/with-db');
+const csrf = require('csurf');
 const { validateJson } = require('../lib/schema');
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
+const csrfProtection = csrf({ cookie: true });
 
 // Regex
 const emailRegex = /\S+@\S+\.\S+/;
@@ -29,6 +31,15 @@ router.get('/admin/logout', (req, res) => {
     req.session.messageType = null;
     res.redirect('/');
 });
+
+// Used for tests only
+if(process.env.NODE_ENV === 'test'){
+    router.get('/admin/csrf', csrfProtection, (req, res, next) => {
+        res.json({
+            csrf: req.csrfToken()
+        });
+    });
+}
 
 // login form
 router.get('/admin/login', async (req, res) => {
@@ -134,7 +145,7 @@ router.post('/admin/setup_action', async (req, res) => {
 });
 
 // dashboard
-router.get('/admin/dashboard', restrict, async (req, res) => {
+router.get('/admin/dashboard', csrfProtection, restrict, async (req, res) => {
     const db = req.app.db;
 
     // Collate data for dashboard
@@ -183,12 +194,13 @@ router.get('/admin/dashboard', restrict, async (req, res) => {
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: req.app.config
+        config: req.app.config,
+        csrfToken: req.csrfToken()
     });
 });
 
 // settings
-router.get('/admin/settings', restrict, (req, res) => {
+router.get('/admin/settings', csrfProtection, restrict, (req, res) => {
     res.render('settings', {
         title: 'Cart settings',
         session: req.session,
@@ -199,7 +211,8 @@ router.get('/admin/settings', restrict, (req, res) => {
         helpers: req.handlebars.helpers,
         config: req.app.config,
         footerHtml: typeof req.app.config.footerHtml !== 'undefined' ? escape.decode(req.app.config.footerHtml) : null,
-        googleAnalytics: typeof req.app.config.googleAnalytics !== 'undefined' ? escape.decode(req.app.config.googleAnalytics) : null
+        googleAnalytics: typeof req.app.config.googleAnalytics !== 'undefined' ? escape.decode(req.app.config.googleAnalytics) : null,
+        csrfToken: req.csrfToken()
     });
 });
 
@@ -236,7 +249,7 @@ router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
 });
 
 // settings menu
-router.get('/admin/settings/menu', restrict, async (req, res) => {
+router.get('/admin/settings/menu', csrfProtection, restrict, async (req, res) => {
     const db = req.app.db;
     res.render('settings-menu', {
         title: 'Cart menu',
@@ -246,12 +259,13 @@ router.get('/admin/settings/menu', restrict, async (req, res) => {
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db))
+        menu: common.sortMenu(await common.getMenu(db)),
+        csrfToken: req.csrfToken()
     });
 });
 
 // page list
-router.get('/admin/settings/pages', restrict, async (req, res) => {
+router.get('/admin/settings/pages', csrfProtection, restrict, async (req, res) => {
     const db = req.app.db;
     const pages = await db.pages.find({}).toArray();
 
@@ -264,12 +278,13 @@ router.get('/admin/settings/pages', restrict, async (req, res) => {
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db))
+        menu: common.sortMenu(await common.getMenu(db)),
+        csrfToken: req.csrfToken()
     });
 });
 
 // pages new
-router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) => {
+router.get('/admin/settings/pages/new', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     res.render('settings-page', {
@@ -281,12 +296,13 @@ router.get('/admin/settings/pages/new', restrict, checkAccess, async (req, res) 
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db))
+        menu: common.sortMenu(await common.getMenu(db)),
+        csrfToken: req.csrfToken()
     });
 });
 
 // pages editor
-router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req, res) => {
+router.get('/admin/settings/pages/edit/:page', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     const page = await db.pages.findOne({ _id: common.getId(req.params.page) });
     const menu = common.sortMenu(await common.getMenu(db));
@@ -312,7 +328,8 @@ router.get('/admin/settings/pages/edit/:page', restrict, checkAccess, async (req
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu
+        menu,
+        csrfToken: req.csrfToken()
     });
 });
 
@@ -434,7 +451,7 @@ router.post('/admin/validatePermalink', async (req, res) => {
 });
 
 // Discount codes
-router.get('/admin/settings/discounts', restrict, checkAccess, async (req, res) => {
+router.get('/admin/settings/discounts', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     const discounts = await db.discounts.find({}).toArray();
@@ -447,12 +464,13 @@ router.get('/admin/settings/discounts', restrict, checkAccess, async (req, res) 
         admin: true,
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers
+        helpers: req.handlebars.helpers,
+        csrfToken: req.csrfToken()
     });
 });
 
 // Edit a discount code
-router.get('/admin/settings/discount/edit/:id', restrict, checkAccess, async (req, res) => {
+router.get('/admin/settings/discount/edit/:id', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     const discount = await db.discounts.findOne({ _id: common.getId(req.params.id) });
@@ -465,7 +483,8 @@ router.get('/admin/settings/discount/edit/:id', restrict, checkAccess, async (re
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: req.app.config
+        config: req.app.config,
+        csrfToken: req.csrfToken()
     });
 });
 
@@ -524,7 +543,7 @@ router.post('/admin/settings/discount/update', restrict, checkAccess, async (req
 });
 
 // Create a discount code
-router.get('/admin/settings/discount/new', restrict, checkAccess, async (req, res) => {
+router.get('/admin/settings/discount/new', csrfProtection, restrict, checkAccess, async (req, res) => {
     res.render('settings-discount-new', {
         title: 'Discount code create',
         session: req.session,
@@ -532,12 +551,13 @@ router.get('/admin/settings/discount/new', restrict, checkAccess, async (req, re
         message: common.clearSessionValue(req.session, 'message'),
         messageType: common.clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
-        config: req.app.config
+        config: req.app.config,
+        csrfToken: req.csrfToken()
     });
 });
 
 // Create a discount code
-router.post('/admin/settings/discount/create', restrict, checkAccess, async (req, res) => {
+router.post('/admin/settings/discount/create', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
     // Doc to insert

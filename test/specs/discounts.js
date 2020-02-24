@@ -139,6 +139,7 @@ test('[Fail] Add a bogus code', async t => {
         .send({
             discountCode: 'some_bogus_code'
         })
+        .set('csrf-token', g.csrf)
         .expect(400);
 
     t.deepEqual(res.body.message, 'Discount code is invalid or expired');
@@ -156,6 +157,7 @@ test('[Success] Create a new discount code', async t => {
             end: moment().add(7, 'days').format('DD/MM/YYYY HH:mm')
         })
         .set('apiKey', g.users[0].apiKey)
+        .set('csrf-token', g.csrf)
         .expect(200);
 
     t.deepEqual(res.body.message, 'Discount code created successfully');
@@ -173,6 +175,7 @@ test('[Fail] Create a new discount code with invalid type', async t => {
             end: moment().add(7, 'days').format('DD/MM/YYYY HH:mm')
         })
         .set('apiKey', g.users[0].apiKey)
+        .set('csrf-token', g.csrf)
         .expect(400);
 
     t.deepEqual(res.body[0].message, 'should be equal to one of the allowed values');
@@ -190,6 +193,7 @@ test('[Fail] Create a new discount code with existing code', async t => {
             end: moment().add(7, 'days').format('DD/MM/YYYY HH:mm')
         })
         .set('apiKey', g.users[0].apiKey)
+        .set('csrf-token', g.csrf)
         .expect(400);
 
     t.deepEqual(res.body.message, 'Discount code already exists');
