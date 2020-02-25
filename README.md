@@ -277,6 +277,9 @@ Note: The `secretKey`, `publicKey` and `stripeWebhookSecret` is obtained from yo
 
 ##### Blockonomics (Bitcoin Payments)
 
+You have to configure the `HTTP Callback URL` parameter into Blockonomics -> Merchants -> Settings:
+http://CartURL/blockonomics/checkout_return where [**CartURL**](#cart-url) is the address of your server
+
 The Blockonomics config file is located: `/config/blockonomics.json`. A example Blockonomics settings file is provided:
 
 ```
