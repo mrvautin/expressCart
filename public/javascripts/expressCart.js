@@ -468,15 +468,8 @@ $(document).ready(function (){
 
       blSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
-        var messageInsufficient = '';
         if ((data.status === 0) || (data.status === 1) || (data.status === 2)) {
-          if (data.value/1e8 < amount) {
-            messageInsufficient = ', insufficient amount!';
-            $("#blockonomics_waiting").html("Payment detected (<b>"+data.value/1e8+" BTC"+messageInsufficient+"</b>)<br><br><b><a href='/checkout/payment'>Click here</a></b> to to try again.");
-            blfinished = true;
-            showNotification('Insufficient amount', 'danger');
-            blSocket.close();
-          } else {
+
               // redirect to order confirmation page
               blfinished = true;
               orderMessage = '<br>View <b><a href="/payment/'+orderid+'">Order</a></b>';
@@ -487,7 +480,6 @@ $(document).ready(function (){
               $.ajax({ method: 'POST', url: '/product/emptycart' }).done(function() {
                 window.location.replace("/payment/"+orderid);
               });            
-            }
         }
 
       }
