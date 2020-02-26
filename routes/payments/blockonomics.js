@@ -44,11 +44,13 @@ router.get('/checkout_return', async (req, res, next) => {
             // send the email with the response
             // TODO: Should fix this to properly handle result            
             common.sendEmail(req.session.paymentEmailAddr, 'Your payment with ' + config.cartTitle, common.getEmailTemplate(paymentResults));
-            
-            
+            res.status(200).json({ err: '' });        
+                        
         }catch(ex){
             console.info('Error updating status success blockonomics', ex);
-        }        
+            res.status(200).json({ err: 'Error updating status' });        
+
+        }
         return;
       }
       console.info('Amount not sufficient blockonomics', address);
@@ -59,11 +61,15 @@ router.get('/checkout_return', async (req, res, next) => {
           }, { multi: false });
       }catch(ex){
           console.info('Error updating status insufficient blockonomics', ex);
-      }        
+      }
+      res.status(200).json({ err: 'Amount not sufficient' });             
       return;
     }
+    res.status(200).json({ err: 'Order not found' });             
     console.info('Order not found blockonomics', address);
+    return;
   }
+  res.status(200).json({ err: 'Payment not final' });             
   console.info('Payment not final blockonomics', address);
 
 });
