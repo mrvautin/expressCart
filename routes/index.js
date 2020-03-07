@@ -827,7 +827,7 @@ router.get('/:page?', async (req, res, next) => {
             return;
         }
         // lets look for a page
-        const page = db.pages.findOne({ pageSlug: req.params.page, pageEnabled: 'true' });
+        const page = await db.pages.findOne({ pageSlug: req.params.page, pageEnabled: 'true' });
         // if we have a page lets render it, else throw 404
         if(page){
             res.render(`${config.themeViews}page`, {
