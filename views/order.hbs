@@ -35,6 +35,7 @@
             <li class="list-group-item"><strong> {{ @root.__ "Order shipping amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderShipping}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order total amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderTotal}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Email address" }}: </strong><span class="float-right">{{result.orderEmail}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Company" }}: </strong><span class="float-right">{{result.orderCompany}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "First name" }}: </strong><span class="float-right">{{result.orderFirstname}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Last name" }}: </strong><span class="float-right">{{result.orderLastname}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Address 1" }}: </strong><span class="float-right">{{result.orderAddr1}}</span></li>

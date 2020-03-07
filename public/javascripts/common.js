@@ -64,6 +64,7 @@ $(document).ready(function (){
                             url: '/adyen/checkout_action',
                             data: {
                                 shipEmail: $('#shipEmail').val(),
+                                shipCompany: $('#shipCompany').val(),
                                 shipFirstname: $('#shipFirstname').val(),
                                 shipLastname: $('#shipLastname').val(),
                                 shipAddr1: $('#shipAddr1').val(),
