@@ -59,7 +59,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         await hooker(order);
     };
     let paymentView = `${config.themeViews}payment-complete`;
-    if (order.orderPaymentGateway == 'Blockonomics') paymentView = `${config.themeViews}payment-complete-blockonomics`;
+    if(order.orderPaymentGateway === 'Blockonomics') paymentView = `${config.themeViews}payment-complete-blockonomics`;
     res.render(paymentView, {
         title: 'Payment complete',
         config: req.app.config,
