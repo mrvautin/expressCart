@@ -69,7 +69,7 @@
         },
         "currencySymbol": {
             "type": "string",
-            "default": "$"
+            "default": "£"
         },
         "currencyISO": {
             "type": "string",
