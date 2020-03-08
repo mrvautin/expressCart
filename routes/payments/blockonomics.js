@@ -2,8 +2,7 @@ const express = require('express');
 const common = require('../../lib/common');
 const { indexOrders } = require('../../lib/indexing');
 const router = express.Router();
-const unirest = require('unirest');
-
+const axios = require('axios').default;
 
 
 
@@ -81,16 +80,15 @@ router.post('/checkout_action', (req, res, next) => {
   const db = req.app.db;
   var blockonomicsParams = {};
   // get current rate
-  unirest
+  axios
   .get(blockonomicsConfig.hostUrl+blockonomicsConfig.priceApi+config.currencyISO)
   .then((response) => {
-    blockonomicsParams.expectedBtc = Math.round(req.session.totalCartAmount / response.body.price * Math.pow(10, 8)) / Math.pow(10, 8);
+    blockonomicsParams.expectedBtc = Math.round(req.session.totalCartAmount / response.data.price * Math.pow(10, 8)) / Math.pow(10, 8);
     // get new address
-    unirest
-      .post(blockonomicsConfig.hostUrl+blockonomicsConfig.newAddressApi)
-      .headers({'Content-Type': 'application/json', 'User-Agent': 'blockonomics','Accept': 'application/json', 'Authorization': 'Bearer ' + blockonomicsConfig.apiKey})
+    axios
+      .post(blockonomicsConfig.hostUrl+blockonomicsConfig.newAddressApi, {}, { headers:{'Content-Type': 'application/json', 'User-Agent': 'blockonomics','Accept': 'application/json', 'Authorization': 'Bearer ' + blockonomicsConfig.apiKey}})
       .then((response) => {
-          blockonomicsParams.address = response.body.address;
+          blockonomicsParams.address = response.data.address;
           blockonomicsParams.timestamp = Math.floor(new Date() / 1000);
           // create order with status Pending and save ref
         
