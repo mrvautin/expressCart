@@ -201,6 +201,7 @@
 	"Order Received BTC": "Order Received BTC",
 	"Order Blockonomics Txid": "Order Blockonomics Txid",
 	"Currency ISO": "Currency ISO",
-	"Currency used for Blockonomics conversion": "Currency used for Blockonomics conversion"
-	"Logout": "Logout"
+	"Currency used for Blockonomics conversion": "Currency used for Blockonomics conversion",
+	"Logout": "Logout",
+	"Company": "Company"
 }

@@ -20,6 +20,7 @@ router.post('/customer/create', async (req, res) => {
 
     const customerObj = {
         email: req.body.email,
+        company: req.body.company,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         address1: req.body.address1,
@@ -58,6 +59,7 @@ router.post('/customer/create', async (req, res) => {
             // Set the customer into the session
             req.session.customerPresent = true;
             req.session.customerEmail = customerReturn.email;
+            req.session.customerCompany = customerReturn.company;
             req.session.customerFirstname = customerReturn.firstName;
             req.session.customerLastname = customerReturn.lastName;
             req.session.customerAddress1 = customerReturn.address1;
@@ -82,6 +84,7 @@ router.post('/customer/create', async (req, res) => {
 router.post('/customer/save', async (req, res) => {
     const customerObj = {
         email: req.body.email,
+        company: req.body.company,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         address1: req.body.address1,
@@ -101,6 +104,7 @@ router.post('/customer/save', async (req, res) => {
     // Set the customer into the session
     req.session.customerPresent = true;
     req.session.customerEmail = customerObj.email;
+    req.session.customerCompany = customerObj.company;
     req.session.customerFirstname = customerObj.firstName;
     req.session.customerLastname = customerObj.lastName;
     req.session.customerAddress1 = customerObj.address1;
@@ -295,6 +299,7 @@ router.post('/admin/customer/lookup', restrict, async (req, res, next) => {
     if(customer){
         req.session.customerPresent = true;
         req.session.customerEmail = customer.email;
+        req.session.customerCompany = customer.company;
         req.session.customerFirstname = customer.firstName;
         req.session.customerLastname = customer.lastName;
         req.session.customerAddress1 = customer.address1;
@@ -340,6 +345,7 @@ router.post('/customer/login_action', async (req, res) => {
         // Customer login successful
         req.session.customerPresent = true;
         req.session.customerEmail = customer.email;
+        req.session.customerCompany = customer.company;
         req.session.customerFirstname = customer.firstName;
         req.session.customerLastname = customer.lastName;
         req.session.customerAddress1 = customer.address1;

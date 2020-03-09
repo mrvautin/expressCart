@@ -11,6 +11,7 @@ test.before(async () => {
 test('[Success] Create a customer', async t => {
     const customer = {
         email: 'sarah.jones@test.com',
+        company: 'Acme Co',
         firstName: 'Sarah',
         lastName: 'Jones',
         address1: '1 Sydney Street',
@@ -34,6 +35,7 @@ test('[Success] Create a customer', async t => {
 test('[Fail] Try create a duplicate customer', async t => {
     const customer = {
         email: 'sarah.jones@test.com',
+        company: 'Acme Co',
         firstName: 'Sarah',
         lastName: 'Jones',
         address1: '1 Sydney Street',
@@ -56,6 +58,7 @@ test('[Fail] Try create a duplicate customer', async t => {
 test('[Fail] Create with invalid email address', async t => {
     const customer = {
         email: 'sarah.jones@test',
+        company: 'Acme Co',
         firstName: 'Sarah',
         lastName: 'Jones',
         address1: '1 Sydney Street',
