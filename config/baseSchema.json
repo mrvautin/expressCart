@@ -73,11 +73,12 @@
         },
         "currencyISO": {
             "type": "string",
+            "enum": ["USD", "EUR", "GBP"],
             "default": "USD"
         },
         "paymentGateway": {
             "type": "string",
-            "enum": ["paypal", "stripe", "authorizenet", "adyen", "instore"]
+            "enum": ["paypal", "blockonomics", "stripe", "authorizenet", "adyen", "instore"]
         },
         "databaseConnectionString": {
             "type": "string"

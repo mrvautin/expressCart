@@ -196,6 +196,12 @@
 	"Users": "Users",
 	"Create Order": "Create Order",
 	"User edit": "User edit",
+	"Blockonomics payment details": "Blockonomics payment details",
+	"Order Expected BTC": "Order Expected BTC",
+	"Order Received BTC": "Order Received BTC",
+	"Order Blockonomics Txid": "Order Blockonomics Txid",
+	"Currency ISO": "Currency ISO",
+	"Currency used for Blockonomics conversion": "Currency used for Blockonomics conversion",
 	"Logout": "Logout",
 	"Company": "Company"
 }

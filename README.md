@@ -2,7 +2,7 @@
 
 ![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
 
-`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Authorize.net, Adyen and Instore payments.
+`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Blockonomics, Authorize.net, Adyen and Instore payments.
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
 [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
@@ -274,6 +274,23 @@ The Stripe config file is located: `/config/stripe.json`. A example Stripe setti
 ```
 
 Note: The `secretKey`, `publicKey` and `stripeWebhookSecret` is obtained from your Stripe account dashboard.
+
+##### Blockonomics (Bitcoin Payments)
+
+You have to configure the `HTTP Callback URL` parameter into Blockonomics -> Merchants -> Settings:
+http://CartURL/blockonomics/checkout_return where [**CartURL**](#cart-url) is the address of your server
+
+The Blockonomics config file is located: `/config/blockonomics.json`. A example Blockonomics settings file is provided:
+
+```
+{
+    "apiKey": "this_is_not_real",
+    "hostUrl": "https://www.blockonomics.co", // You usually don't need to change this
+    "newAddressApi": "/api/new_address", // You usually don't need to change this
+    "priceApi": "/api/price?currency=" // You usually don't need to change this
+}
+```
+Note: The `apiKey` is obtained from your Blockonomics account.
 
 ##### Authorize.net (Payments)
 

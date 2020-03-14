@@ -58,8 +58,9 @@ router.get('/payment/:orderId', async (req, res, next) => {
     if(config.orderHook){
         await hooker(order);
     };
-
-    res.render(`${config.themeViews}payment-complete`, {
+    let paymentView = `${config.themeViews}payment-complete`;
+    if(order.orderPaymentGateway === 'Blockonomics') paymentView = `${config.themeViews}payment-complete-blockonomics`;
+    res.render(paymentView, {
         title: 'Payment complete',
         config: req.app.config,
         session: req.session,
@@ -197,6 +198,32 @@ router.get('/checkout/payment', async (req, res) => {
     await updateTotalCart(req, res);
 
     res.render(`${config.themeViews}checkout-payment`, {
+        title: 'Checkout - Payment',
+        config: req.app.config,
+        paymentConfig: getPaymentConfig(),
+        session: req.session,
+        paymentPage: true,
+        paymentType,
+        cartClose: true,
+        cartReadOnly: true,
+        page: 'checkout-information',
+        countryList,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        showFooter: 'showFooter'
+    });
+});
+
+router.get('/blockonomics_payment', (req, res, next) => {
+    const config = req.app.config;
+    let paymentType = '';
+    if(req.session.cartSubscription){
+        paymentType = '_subscription';
+    }
+// show bitcoin address and wait for payment, subscribing to wss
+
+    res.render(`${config.themeViews}checkout-blockonomics`, {
         title: 'Checkout - Payment',
         config: req.app.config,
         paymentConfig: getPaymentConfig(),

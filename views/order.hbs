@@ -28,6 +28,15 @@
             <li class="list-group-item"><strong> {{ @root.__ "Order ID" }}: </strong><span class="float-right">{{result._id}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway ref" }}: </strong><span class="float-right">{{result.orderPaymentId}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway" }}: </strong><span class="float-right">{{result.orderPaymentGateway}}</span></li>
+            {{#if result.orderExpectedBtc }}
+            <li class="list-group-item"><strong> {{ @root.__ "Order Expected BTC" }}: </strong><span class="float-right">{{result.orderExpectedBtc}}</span></li>
+            {{/if}}
+            {{#if result.orderReceivedBtc }}
+            <li class="list-group-item"><strong> {{ @root.__ "Order Received BTC" }}: </strong><span class="float-right">{{result.orderReceivedBtc}}</span></li>
+            {{/if}}
+            {{#if result.orderBlockonomicsTxid }}
+            <li class="list-group-item"><strong> {{ @root.__ "Order Blockonomics Txid" }}: </strong><span class="float-right">{{result.orderBlockonomicsTxid}}</span></li>
+            {{/if}}
             {{#if result.orderPaymentMessage}}
             <li class="list-group-item"><strong> {{ @root.__ "Payment Message" }}: </strong><span class="float-right">{{result.orderPaymentMessage}}</span></li>
             {{/if}}

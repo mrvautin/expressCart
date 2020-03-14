@@ -1,10 +1,10 @@
 {{> partials/menu}}
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+  <form id="settingsForm" data-toggle="validator">
     <div class="col-sm-12">
         <h2>{{ @root.__ "General settings" }} <span class="float-right"><button type="submit" id="btnSettingsUpdate" class="btn btn-outline-success">{{ @root.__ "Update" }}</button></span></h2>
     </div>
     <div class="col-md-12">
-        <form id="settingsForm" data-toggle="validator">
             <div class="form-group">
                 <label>{{ @root.__ "Cart name" }} *</label>
                 <input type="text" class="form-control" name="cartTitle" value="{{config.cartTitle}}" required>
@@ -36,6 +36,7 @@
                 <select class="form-control" name="paymentGateway">
                     <option {{selectState 'paypal' config.paymentGateway}} value="paypal">Paypal</option>
                     <option {{selectState 'stripe' config.paymentGateway}} value="stripe">Stripe</option>
+                    <option {{selectState 'blockonomics' config.paymentGateway}} value="blockonomics">Blockonomics</option>
                 </select>
                 <p class="help-block">{{ @root.__ "Payment_Gateway_Info" }}</p>
             </div>
@@ -44,6 +45,15 @@
                 <input type="text" class="form-control" name="currencySymbol" value="{{currencySymbol config.currencySymbol}}">
                 <p class="help-block">{{ @root.__ "Set this to your currency symbol. Eg: $, £, €" }}</p>
             </div>
+            <div class="form-group">
+                <label>{{ @root.__ "Currency ISO" }}</label>
+                <select class="form-control" name="currencyISO">
+                    <option {{selectState 'USD' config.currencyISO}} value="USD">USD</option>
+                    <option {{selectState 'EUR' config.currencyISO}} value="EUR">EUR</option>
+                    <option {{selectState 'GBP' config.currencyISO}} value="GBP">GBP</option>
+                </select>
+                <p class="help-block">{{ @root.__ "Currency used for Blockonomics conversion" }}</p>
+            </div>            
             <div class="form-group">
                 <label>{{ @root.__ "Theme" }}</label>
                 <select class="form-control" name="theme">
@@ -128,6 +138,6 @@
             <div class="form-group">
                 <button id="sendTestEmail" class="btn btn-outline-success">{{ @root.__ "Send test email" }}</button>
             </div>
-        </form>
     </div>
+  </form>
 </main>

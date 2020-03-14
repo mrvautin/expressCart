@@ -1,0 +1,6 @@
+{
+    "apiKey": "WQh8bEZkDbWZQSDUnKEUr24W02p7NxAEJsvmDhS6ymU",
+    "hostUrl": "https://www.blockonomics.co",
+    "newAddressApi": "/api/new_address",
+    "priceApi": "/api/price?currency="
+}
