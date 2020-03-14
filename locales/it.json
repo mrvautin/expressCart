@@ -111,7 +111,7 @@
 	"Cart Email": "Cart Email",
 	"Orders over this value will mean the shipped will the FREE. Set to high value if you always want to charge shipping.": "Ordini oltre questo valore avranno la spedizione GRATUITA. Configura un alto valore se vuoi sempre addebitare la spedizione.",
 	"Payment gateway": "Gateway pagamento",
-	"Payment_Gateway_Info": "Dovrai configurare anche le tue credenziali per il gateway di pagamento nel file `/config/&lt;gateway_name&gt;.json`.",
+	"Payment_Gateway_Info": "Dovrai configurare anche le tue credenziali per il gateway di pagamento nel file `/config/<gateway_name>.json`.",
 	"Currency symbol": "Simbolo valuta",
 	"Set this to your currency symbol. Eg: $, £, €": "Configura il simbolo della tua valuta. Es: $, £, €",
 	"Theme": "Tema",
