@@ -435,47 +435,47 @@ $(document).ready(function (){
 
     // checkout-blockonomics page (blockonomics_payment route) handling START ***
     if($('#blockonomics_div').length > 0){
-      var orderid = $('#blockonomics_div').data('orderid') || '';
-      var timestamp = $('#blockonomics_div').data('timestamp') || -1;
-      var address = $('#blockonomics_div').data('address') || '';
-      var blSocket = new WebSocket('wss://www.blockonomics.co/payment/' + address + '?timestamp=' + timestamp);
-      blSocket.onopen = function (msg){
-      };
-      var timeOutMinutes = 10;
-      setTimeout(function(){
-        $('#blockonomics_waiting').html('<b>Payment expired</b><br><br><b><a href=\'/checkout/payment\'>Click here</a></b> to try again.<br><br>If you already paid, your order will be processed automatically.');
-        showNotification('Payment expired', 'danger');
-        blSocket.close();
-      }, 1000 * 60 * timeOutMinutes);
+        var orderid = $('#blockonomics_div').data('orderid') || '';
+        var timestamp = $('#blockonomics_div').data('timestamp') || -1;
+        var address = $('#blockonomics_div').data('address') || '';
+        var blSocket = new WebSocket('wss://www.blockonomics.co/payment/' + address + '?timestamp=' + timestamp);
+        blSocket.onopen = function (msg){
+        };
+        var timeOutMinutes = 10;
+        setTimeout(function (){
+            $('#blockonomics_waiting').html('<b>Payment expired</b><br><br><b><a href=\'/checkout/payment\'>Click here</a></b> to try again.<br><br>If you already paid, your order will be processed automatically.');
+            showNotification('Payment expired', 'danger');
+            blSocket.close();
+        }, 1000 * 60 * timeOutMinutes);
 
-      var countdownel = $('#blockonomics_timeout');
-      var endDatebl = new Date((new Date()).getTime() + 1000 * 60 * timeOutMinutes);
-      var blcountdown = setInterval(function(){
-        var now = new Date().getTime();
-        var distance = endDatebl - now;
-        if(distance < 0){
-          clearInterval(blcountdown);
-          return;
-        }
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        countdownel.html(minutes + 'm ' + seconds + 's');
-      }, 1000);
+        var countdownel = $('#blockonomics_timeout');
+        var endDatebl = new Date((new Date()).getTime() + 1000 * 60 * timeOutMinutes);
+        var blcountdown = setInterval(function (){
+            var now = new Date().getTime();
+            var distance = endDatebl - now;
+            if(distance < 0){
+                clearInterval(blcountdown);
+                return;
+            }
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            countdownel.html(minutes + 'm ' + seconds + 's');
+        }, 1000);
 
-      blSocket.onmessage = function (msg){
-        var data = JSON.parse(msg.data);
-        if((data.status === 0) || (data.status === 1) || (data.status === 2)){
-              // redirect to order confirmation page
-              var orderMessage = '<br>View <b><a href="/payment/' + orderid + '">Order</a></b>';
-              $('#blockonomics_waiting').html('Payment detected (<b>' + data.value / 1e8 + ' BTC</b>).' + orderMessage);
-              showNotification('Payment detected', 'success');
-              $('#cart-count').html('0');
-              blSocket.close();
-              $.ajax({ method: 'POST', url: '/product/emptycart' }).done(function(){
-                window.location.replace('/payment/' + orderid);
-              });
-        }
-      };
+        blSocket.onmessage = function (msg){
+            var data = JSON.parse(msg.data);
+            if((data.status === 0) || (data.status === 1) || (data.status === 2)){
+                // redirect to order confirmation page
+                var orderMessage = '<br>View <b><a href="/payment/' + orderid + '">Order</a></b>';
+                $('#blockonomics_waiting').html('Payment detected (<b>' + data.value / 1e8 + ' BTC</b>).' + orderMessage);
+                showNotification('Payment detected', 'success');
+                $('#cart-count').html('0');
+                blSocket.close();
+                $.ajax({ method: 'POST', url: '/product/emptycart' }).done(function (){
+                    window.location.replace('/payment/' + orderid);
+                });
+            }
+        };
     }
     // checkout-blockonomics page (blockonomics_payment route) handling ***  END
 });
