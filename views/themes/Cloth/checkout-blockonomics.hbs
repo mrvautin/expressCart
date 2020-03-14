@@ -22,8 +22,9 @@
                             {{@root.session.customerEmail}}
                         </li>
                     </ul>
+                    {{#ifCond @root.session.totalCartShipping '>' 0}}
                     <ul class="list-group bottom-pad-15">
-                        {{#ifCond @root.session.totalCartShipping '>' 0}}
+                        
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-md-6">
@@ -34,9 +35,8 @@
                                 </div>
                             </div>
                         </li>
-                        {{else}}
-                        {{/ifCond}}
                     </ul>
+                    {{/ifCond}}
                     <ul class="list-group bottom-pad-15">
                         <li class="list-group-item">
                             <div class="row">
