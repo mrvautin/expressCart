@@ -50,6 +50,13 @@
                     <div class="card-body">
                         <h5 class="card-heading">{{ @root.__ "Orders" }}</h5>
                         <div id="accordion">
+                            {{#unless orders}}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    There are no orders for this account. <a class="text-success" href="/">Order here</a>
+                                </div>
+                            </div>
+                            {{/unless}}
                             {{#each orders}}
                             <div class="card mb-3">
                                 <div class="card-header" id="headingOne">
