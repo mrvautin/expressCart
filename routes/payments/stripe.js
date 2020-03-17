@@ -56,6 +56,7 @@ router.post('/checkout_action', (req, res, next) => {
             orderShipping: req.session.totalCartShipping,
             orderItemCount: req.session.totalCartItems,
             orderProductCount: req.session.totalCartProducts,
+            orderCustomer: common.getId(req.session.customerId),
             orderEmail: req.session.customerEmail,
             orderCompany: req.session.customerCompany,
             orderFirstname: req.session.customerFirstname,
@@ -72,6 +73,9 @@ router.post('/checkout_action', (req, res, next) => {
             orderProducts: req.session.cart,
             orderType: 'Single'
         };
+
+        console.log('orderDoc', orderDoc);
+        console.log('req.session', req.session);
 
         // insert order into DB
         db.orders.insertOne(orderDoc, (err, newDoc) => {
