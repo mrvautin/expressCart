@@ -2,6 +2,9 @@
     "$id": "editCustomer",
     "type": "object",
     "properties": {
+        "company": {
+            "type": "string"
+        },
         "email": {
             "type": "string",
             "format": "emailAddress"

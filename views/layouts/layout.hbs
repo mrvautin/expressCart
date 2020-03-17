@@ -185,6 +185,19 @@
                         </div>
                     </div>
                     {{/ifCond}}
+                    {{#if @root.session.customerPresent}}
+                    <div class="dropdown d-none d-sm-block">
+                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{{feather 'user'}}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="/customer/account">Account</a></li>
+                            <li><a class="dropdown-item" href="/customer/logout">Logout</a></li>
+                        </div>
+                    </div>
+                    {{else}}
+                        <li class="nav-item ml-3"><a href="/customer/account" class="btn">{{{feather 'user'}}}</a></li>
+                    {{/if}}
                     {{#if @root.session.cart}}
                         <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}} {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
                         {{else}}

@@ -1,0 +1,12 @@
+<div class="col-md-4 offset-md-4 top-pad-100">
+	<form class="form-signin"  method="post" role="form" data-toggle="validator">
+		<h2 class="form-signin-heading">{{ @root.__ "Please sign in" }}</h2>
+		<div class="form-group">
+			<input type="email" id="email" name="email" class="form-control" placeholder="email address" required autofocus>
+		</div>
+		<div class="form-group">
+			<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+		</div>
+		<button class="btn btn-outline-primary btn-block" id="customerloginForm" type="submit">{{ @root.__ "Sign in" }}</button>
+	</form>
+</div>

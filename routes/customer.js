@@ -3,7 +3,14 @@ const router = express.Router();
 const colors = require('colors');
 const randtoken = require('rand-token');
 const bcrypt = require('bcryptjs');
-const common = require('../lib/common');
+const {
+    getId,
+    clearSessionValue,
+    getCountryList,
+    mongoSanitize,
+    sendEmail,
+    clearCustomer
+} = require('../lib/common');
 const rateLimit = require('express-rate-limit');
 const { indexCustomers } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
@@ -58,6 +65,7 @@ router.post('/customer/create', async (req, res) => {
 
             // Set the customer into the session
             req.session.customerPresent = true;
+            req.session.customerId = customerReturn._id;
             req.session.customerEmail = customerReturn.email;
             req.session.customerCompany = customerReturn.company;
             req.session.customerFirstname = customerReturn.firstName;
@@ -118,11 +126,107 @@ router.post('/customer/save', async (req, res) => {
     res.status(200).json(customerObj);
 });
 
+// Get customer orders
+router.get('/customer/account', async (req, res) => {
+    const db = req.app.db;
+    const config = req.app.config;
+
+    if(!req.session.customerPresent){
+        res.redirect('/customer/login');
+        return;
+    }
+
+    const orders = await db.orders.find({
+        orderCustomer: getId(req.session.customerId)
+    })
+    .sort({ orderDate: -1 })
+    .toArray();
+    res.render(`${config.themeViews}customer-account`, {
+        title: 'Orders',
+        session: req.session,
+        orders,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        countryList: getCountryList(),
+        config: req.app.config,
+        helpers: req.handlebars.helpers
+    });
+});
+
+// Update a customer
+router.post('/customer/update', async (req, res) => {
+    const db = req.app.db;
+
+    if(!req.session.customerPresent){
+        res.redirect('/customer/login');
+        return;
+    }
+
+    const customerObj = {
+        company: req.body.company,
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        country: req.body.country,
+        state: req.body.state,
+        postcode: req.body.postcode,
+        phone: req.body.phone
+    };
+
+    const schemaResult = validateJson('editCustomer', customerObj);
+    if(!schemaResult.result){
+        console.log('errors', schemaResult.errors);
+        res.status(400).json(schemaResult.errors);
+        return;
+    }
+
+    // check for existing customer
+    const customer = await db.customers.findOne({ _id: getId(req.session.customerId) });
+    if(!customer){
+        res.status(400).json({
+            message: 'Customer not found'
+        });
+        return;
+    }
+    // Update customer
+    try{
+        const updatedCustomer = await db.customers.findOneAndUpdate(
+            { _id: getId(req.session.customerId) },
+            {
+                $set: customerObj
+            }, { multi: false, returnOriginal: false }
+        );
+        indexCustomers(req.app)
+        .then(() => {
+            // Set the customer into the session
+            req.session.customerEmail = customerObj.email;
+            req.session.customerCompany = customerObj.company;
+            req.session.customerFirstname = customerObj.firstName;
+            req.session.customerLastname = customerObj.lastName;
+            req.session.customerAddress1 = customerObj.address1;
+            req.session.customerAddress2 = customerObj.address2;
+            req.session.customerCountry = customerObj.country;
+            req.session.customerState = customerObj.state;
+            req.session.customerPostcode = customerObj.postcode;
+            req.session.customerPhone = customerObj.phone;
+            req.session.orderComment = req.body.orderComment;
+
+            res.status(200).json({ message: 'Customer updated', customer: updatedCustomer.value });
+        });
+    }catch(ex){
+        console.error(colors.red('Failed updating customer: ' + ex));
+        res.status(400).json({ message: 'Failed to update customer' });
+    }
+});
+
 // Update a customer
 router.post('/admin/customer/update', restrict, async (req, res) => {
     const db = req.app.db;
 
     const customerObj = {
+        company: req.body.company,
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -145,7 +249,7 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
     }
 
     // check for existing customer
-    const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
+    const customer = await db.customers.findOne({ _id: getId(req.body.customerId) });
     if(!customer){
         res.status(400).json({
             message: 'Customer not found'
@@ -155,7 +259,7 @@ router.post('/admin/customer/update', restrict, async (req, res) => {
     // Update customer
     try{
         const updatedCustomer = await db.customers.findOneAndUpdate(
-            { _id: common.getId(req.body.customerId) },
+            { _id: getId(req.body.customerId) },
             {
                 $set: customerObj
             }, { multi: false, returnOriginal: false }
@@ -177,7 +281,7 @@ router.delete('/admin/customer', restrict, async (req, res) => {
     const db = req.app.db;
 
     // check for existing customer
-    const customer = await db.customers.findOne({ _id: common.getId(req.body.customerId) });
+    const customer = await db.customers.findOne({ _id: getId(req.body.customerId) });
     if(!customer){
         res.status(400).json({
             message: 'Failed to delete customer. Customer not found'
@@ -186,7 +290,7 @@ router.delete('/admin/customer', restrict, async (req, res) => {
     }
     // Update customer
     try{
-        await db.customers.deleteOne({ _id: common.getId(req.body.customerId) });
+        await db.customers.deleteOne({ _id: getId(req.body.customerId) });
         indexCustomers(req.app)
         .then(() => {
             res.status(200).json({ message: 'Customer deleted' });
@@ -201,7 +305,7 @@ router.delete('/admin/customer', restrict, async (req, res) => {
 router.get('/admin/customer/view/:id?', restrict, async (req, res) => {
     const db = req.app.db;
 
-    const customer = await db.customers.findOne({ _id: common.getId(req.params.id) });
+    const customer = await db.customers.findOne({ _id: getId(req.params.id) });
 
     if(!customer){
          // If API request, return json
@@ -223,9 +327,9 @@ router.get('/admin/customer/view/:id?', restrict, async (req, res) => {
         result: customer,
         admin: true,
         session: req.session,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
-        countryList: common.getCountryList(),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        countryList: getCountryList(),
         config: req.app.config,
         editor: true,
         helpers: req.handlebars.helpers
@@ -249,8 +353,8 @@ router.get('/admin/customers', restrict, async (req, res) => {
         customers: customers,
         session: req.session,
         helpers: req.handlebars.helpers,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config
     });
 });
@@ -263,7 +367,7 @@ router.get('/admin/customers/filter/:search', restrict, async (req, res, next) =
 
     const lunrIdArray = [];
     customersIndex.search(searchTerm).forEach((id) => {
-        lunrIdArray.push(common.getId(id.ref));
+        lunrIdArray.push(getId(id.ref));
     });
 
     // we search on the lunr indexes
@@ -283,8 +387,8 @@ router.get('/admin/customers/filter/:search', restrict, async (req, res, next) =
         config: req.app.config,
         session: req.session,
         searchTerm: searchTerm,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers
     });
 });
@@ -298,6 +402,7 @@ router.post('/admin/customer/lookup', restrict, async (req, res, next) => {
 
     if(customer){
         req.session.customerPresent = true;
+        req.session.customerId = customer._id;
         req.session.customerEmail = customer.email;
         req.session.customerCompany = customer.company;
         req.session.customerFirstname = customer.firstName;
@@ -319,11 +424,24 @@ router.post('/admin/customer/lookup', restrict, async (req, res, next) => {
     });
 });
 
+router.get('/customer/login', async (req, res, next) => {
+    const config = req.app.config;
+
+    res.render(`${config.themeViews}customer-login`, {
+        title: 'Customer login',
+        config: req.app.config,
+        session: req.session,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers
+    });
+});
+
 // login the customer and check the password
 router.post('/customer/login_action', async (req, res) => {
     const db = req.app.db;
 
-    const customer = await db.customers.findOne({ email: common.mongoSanitize(req.body.loginEmail) });
+    const customer = await db.customers.findOne({ email: mongoSanitize(req.body.loginEmail) });
     // check if customer exists with that email
     if(customer === undefined || customer === null){
         res.status(400).json({
@@ -344,6 +462,7 @@ router.post('/customer/login_action', async (req, res) => {
 
         // Customer login successful
         req.session.customerPresent = true;
+        req.session.customerId = customer._id;
         req.session.customerEmail = customer.email;
         req.session.customerCompany = customer.company;
         req.session.customerFirstname = customer.firstName;
@@ -375,8 +494,8 @@ router.get('/customer/forgotten', (req, res) => {
         forgotType: 'customer',
         config: req.app.config,
         helpers: req.handlebars.helpers,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         showFooter: 'showFooter'
     });
 });
@@ -411,7 +530,7 @@ router.post('/customer/forgotten_action', apiLimiter, async (req, res) => {
 
         // send the email with token to the user
         // TODO: Should fix this to properly handle result
-        common.sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
+        sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
         res.status(200).json({
             message: 'If your account exists, a password reset has been sent to your email'
         });
@@ -441,8 +560,8 @@ router.get('/customer/reset/:token', async (req, res) => {
         token: req.params.token,
         route: 'customer',
         config: req.app.config,
-        message: common.clearSessionValue(req.session, 'message'),
-        message_type: common.clearSessionValue(req.session, 'message_type'),
+        message: clearSessionValue(req.session, 'message'),
+        message_type: clearSessionValue(req.session, 'message_type'),
         show_footer: 'show_footer',
         helpers: req.handlebars.helpers
     });
@@ -471,7 +590,7 @@ router.post('/customer/reset/:token', async (req, res) => {
         };
 
         // TODO: Should fix this to properly handle result
-        common.sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
+        sendEmail(mailOpts.to, mailOpts.subject, mailOpts.body);
         req.session.message = 'Password successfully updated';
         req.session.message_type = 'success';
         return res.redirect('/checkout/payment');
@@ -486,8 +605,15 @@ router.post('/customer/reset/:token', async (req, res) => {
 // logout the customer
 router.post('/customer/logout', (req, res) => {
     // Clear our session
-    common.clearCustomer(req);
+    clearCustomer(req);
     res.status(200).json({});
+});
+
+// logout the customer
+router.get('/customer/logout', (req, res) => {
+    // Clear our session
+    clearCustomer(req);
+    res.redirect('/customer/login');
 });
 
 module.exports = router;

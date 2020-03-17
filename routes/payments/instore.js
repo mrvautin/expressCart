@@ -17,6 +17,7 @@ router.post('/checkout_action', async (req, res, next) => {
         orderShipping: 0,
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
+        orderCustomer: common.getId(req.session.customerId),
         orderEmail: req.session.customerEmail,
         orderCompany: req.session.customerCompany,
         orderFirstname: req.session.customerFirstname,

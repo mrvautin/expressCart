@@ -237,6 +237,27 @@ $(document).ready(function (){
         e.preventDefault();
     });
 
+    $('#customerloginForm').on('click', function(e){
+        if(!e.isDefaultPrevented()){
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: '/customer/login_action',
+                data: {
+                    loginEmail: $('#email').val(),
+                    loginPassword: $('#password').val()
+                }
+            })
+            .done(function(msg){
+                window.location = '/customer/account';
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+        e.preventDefault();
+    });
+
     // call update settings API
     $('#customerLogin').on('click', function(e){
         if(!e.isDefaultPrevented()){
@@ -268,6 +289,37 @@ $(document).ready(function (){
             });
         }
         e.preventDefault();
+    });
+
+    // Customer saving own details
+    $('#customerSave').validator().on('click', function(e){
+        e.preventDefault();
+        if($('#customer-form').validator('validate').has('.has-error').length === 0){
+            $.ajax({
+                method: 'POST',
+                url: '/customer/update',
+                data: {
+                    email: $('#shipEmail').val(),
+                    company: $('#shipCompany').val(),
+                    firstName: $('#shipFirstname').val(),
+                    lastName: $('#shipLastname').val(),
+                    address1: $('#shipAddr1').val(),
+                    address2: $('#shipAddr2').val(),
+                    country: $('#shipCountry').val(),
+                    state: $('#shipState').val(),
+                    postcode: $('#shipPostcode').val(),
+                    phone: $('#shipPhoneNumber').val(),
+                    password: $('#newCustomerPassword').val(),
+                    orderComment: $('#orderComment').val()
+                }
+            })
+            .done(function(){
+                showNotification('Customer saved', 'success');
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
     });
 
     $(document).on('click', '.image-next', function(e){

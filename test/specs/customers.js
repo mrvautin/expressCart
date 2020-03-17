@@ -78,9 +78,10 @@ test('[Fail] Create with invalid email address', async t => {
     t.deepEqual(res.body[0].message, 'should match format "emailAddress"');
 });
 
-test('[Success] Update existing customer', async t => {
+test('[Success] Update existing customer from dashboard', async t => {
     const customer = {
         customerId: g.customers[1]._id,
+        company: 'Acme Co',
         email: 'sarah.jones@test.com',
         firstName: 'Sarah',
         lastName: 'Jones',
@@ -99,6 +100,47 @@ test('[Success] Update existing customer', async t => {
         .expect(200);
 
     t.deepEqual(res.body.message, 'Customer updated');
+    t.deepEqual(res.body.customer.company, customer.company);
+    t.deepEqual(res.body.customer.email, customer.email);
+    t.deepEqual(res.body.customer.firstName, customer.firstName);
+    t.deepEqual(res.body.customer.lastName, customer.lastName);
+    t.deepEqual(res.body.customer.address1, customer.address1);
+    t.deepEqual(res.body.customer.country, customer.country);
+    t.deepEqual(res.body.customer.state, customer.state);
+    t.deepEqual(res.body.customer.postcode, customer.postcode);
+    t.deepEqual(res.body.customer.phone, customer.phone);
+});
+
+test('[Success] Update existing customer from customer page', async t => {
+    const customer = {
+        customerId: g.customers[1]._id,
+        company: 'Acme Company',
+        email: 'sarah.jones@test.com',
+        firstName: 'Tina',
+        lastName: 'Smith',
+        address1: '2 Sydney Street',
+        address2: '',
+        country: 'Australia',
+        state: 'NSW',
+        postcode: '2000',
+        phone: '0444444444'
+    };
+
+    await g.request
+        .post('/customer/login_action')
+        .send({
+            loginEmail: 'sarah.jones@test.com',
+            loginPassword: 'test'
+        })
+        .expect(200);
+
+    const res = await g.request
+        .post('/customer/update')
+        .send(customer)
+        .expect(200);
+
+    t.deepEqual(res.body.message, 'Customer updated');
+    t.deepEqual(res.body.customer.company, customer.company);
     t.deepEqual(res.body.customer.email, customer.email);
     t.deepEqual(res.body.customer.firstName, customer.firstName);
     t.deepEqual(res.body.customer.lastName, customer.lastName);
