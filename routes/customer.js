@@ -136,7 +136,11 @@ router.get('/customer/account', async (req, res) => {
         return;
     }
 
-    const orders = await db.orders.find({ orderCustomer: getId(req.session.customerId) }).toArray();
+    const orders = await db.orders.find({
+        orderCustomer: getId(req.session.customerId)
+    })
+    .sort({ orderDate: -1 })
+    .toArray();
     res.render(`${config.themeViews}customer-account`, {
         title: 'Orders',
         session: req.session,
