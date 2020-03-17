@@ -74,9 +74,6 @@ router.post('/checkout_action', (req, res, next) => {
             orderType: 'Single'
         };
 
-        console.log('orderDoc', orderDoc);
-        console.log('req.session', req.session);
-
         // insert order into DB
         db.orders.insertOne(orderDoc, (err, newDoc) => {
             if(err){
