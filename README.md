@@ -90,13 +90,13 @@ Homepage:
 ![Homepage](https://mrvautin.com/content/images/2020/01/expressCart-homepage.png)
 
 Admin manage settings:
-![Admin manage settings](https://mrvautin.com/content/images/2020/01/expressCart-admin-settings.png)
+![Admin manage settings](https://mrvautin.com/content/images/2020/03/expressCart-admin-settings.png)
 
 Popout cart:
 ![Popout cart](https://mrvautin.com/content/images/2020/01/expressCart-popout-cart.png)
 
 Dashboard:
-![Dashboard](https://mrvautin.com/content/images/2020/01/expressCart-admin-dashboard.png)
+![Dashboard](https://mrvautin.com/content/images/2020/03/expressCart-admin-dashboard.png)
 
 ##### CSS
 
