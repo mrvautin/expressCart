@@ -218,6 +218,12 @@ $(document).ready(function (){
                 showNotification(msg.message, 'success', false, '/admin/product/edit/' + msg.productId);
             })
             .fail(function(msg){
+                if(msg.responseJSON.length > 0){
+                    var errorMessages = validationErrors(msg.responseJSON);
+                    $('#validationModalBody').html(errorMessages);
+                    $('#validationModal').modal('show');
+                    return;
+                }
                 showNotification(msg.responseJSON.message, 'danger');
             });
         }
@@ -250,6 +256,13 @@ $(document).ready(function (){
                 showNotification(msg.message, 'success', true);
             })
             .fail(function(msg){
+                if(msg.responseJSON.length > 0){
+                    var errorMessages = validationErrors(msg.responseJSON);
+                    console.log('errorMessages', errorMessages);
+                    $('#validationModalBody').html(errorMessages);
+                    $('#validationModal').modal('show');
+                    return;
+                }
                 showNotification(msg.responseJSON.message, 'danger');
             });
         }
@@ -841,4 +854,12 @@ function globalSearch(){
 
         feather.replace();
     });
+}
+
+function validationErrors(errors){
+    var errorMessage = '';
+    errors.forEach((value) => {
+        errorMessage += `<p>${value.dataPath.replace('/', '')} - <span class="text-danger">${value.message}<span></p>`;
+    });
+    return errorMessage;
 }

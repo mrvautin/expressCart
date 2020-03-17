@@ -3,17 +3,23 @@
     "type": "object",
     "properties": {
         "productPermalink": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true,
+            "minLength": 2
         },
         "productTitle": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true,
+            "minLength": 5
         },
         "productPrice": {
             "type": "string",
             "format": "amount"
         },
         "productDescription": {
-            "type": "string"
+            "type": "string",
+            "isNotEmpty": true,
+            "minLength": 25
         },
         "productPublished": {
             "type": "boolean"
@@ -29,6 +35,13 @@
         },
         "productStock": {
             "type": ["number", "null"]
+        }
+    },
+    "errorMessage": {
+        "properties": {
+            "productPrice": "Should be a full 2 decimal value. Eg: 10.99",
+            "productPublished": "Should be either true or false",
+            "productComment": "Should be either true or false"
         }
     },
     "required": [

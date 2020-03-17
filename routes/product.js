@@ -249,10 +249,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);
     if(!schemaValidate.result){
-        res.status(400).json({
-            message: 'Form invalid. Please check values and try again.',
-            error: schemaValidate.errors
-        });
+        res.status(400).json(schemaValidate.errors);
         return;
     }
 
