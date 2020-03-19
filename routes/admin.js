@@ -165,8 +165,7 @@ router.get('/admin/dashboard', csrfProtection, restrict, async (req, res) => {
             { $project: { o: { $objectToArray: '$orderProducts' } } },
             { $unwind: '$o' },
             { $group: {
-                    _id: '$o.v.productId',
-                    title: { $last: '$o.v.title' },
+                    _id: '$o.v.title',
                     productImage: { $last: '$o.v.productImage' },
                     count: { $sum: '$o.v.quantity' }
             } },
