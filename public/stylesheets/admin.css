@@ -75,6 +75,12 @@ body {
 .pagination > li > a {
   background-color: #cc4135 !important;
 }
+.page-item.active .page-link {
+  color: #762323 !important;
+}
+.page-link:hover {
+  color: #762323 !important;
+}
 .admin-card {
   background-color: white !important;
   border-radius: 5px;

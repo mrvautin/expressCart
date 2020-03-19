@@ -4,6 +4,7 @@
 @btn-danger-color-txt: #ffffff;
 @btn-danger-color-bg: #000000;
 @btn-danger-color-border: #000000;
+@pagination-hover: #762323;
 
 html,body {
     height: 100%;
@@ -90,6 +91,14 @@ html,body {
 
 .pagination>li>a{
     background-color: @accent-color !important;
+}
+
+.page-item.active .page-link {
+    color: @pagination-hover !important;
+}
+
+.page-link:hover {
+    color: @pagination-hover !important;
 }
 
 .admin-card {

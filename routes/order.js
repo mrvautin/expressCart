@@ -6,18 +6,22 @@ const {
     getId,
     sendEmail,
     getEmailTemplate,
-    clearCustomer
+    clearCustomer,
+    paginateData
 } = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
 const { indexOrders } = require('../lib/indexing');
 const router = express.Router();
 
 // Show orders
-router.get('/admin/orders', restrict, async (req, res, next) => {
-    const db = req.app.db;
+router.get('/admin/orders/:page?', restrict, async (req, res, next) => {
+    let pageNum = 1;
+    if(req.params.page){
+        pageNum = req.params.page;
+    }
 
-    // Top 10 products
-    const orders = await db.orders.find({}).sort({ orderDate: -1 }).limit(10).toArray();
+    // Get our paginated data
+    const orders = await paginateData(false, req, pageNum, 'orders', {}, { productAddedDate: -1 });
 
     // If API request, return json
     if(req.apiAuthenticated){
@@ -29,7 +33,10 @@ router.get('/admin/orders', restrict, async (req, res, next) => {
 
     res.render('orders', {
         title: 'Cart',
-        orders: orders,
+        orders: orders.data,
+        totalItemCount: orders.totalItems,
+        pageNum,
+        paginateUrl: 'admin/orders',
         admin: true,
         config: req.app.config,
         session: req.session,
