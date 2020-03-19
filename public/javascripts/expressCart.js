@@ -80,8 +80,8 @@ $(document).ready(function (){
 
     if($('#pager').length){
         var pageNum = $('#pageNum').val();
-        var pageLen = $('#productsPerPage').val();
-        var productCount = $('#totalProductCount').val();
+        var pageLen = $('#itemsPerPage').val();
+        var itemCount = $('#totalItemCount').val();
         var paginateUrl = $('#paginateUrl').val();
         var searchTerm = $('#searchTerm').val();
 
@@ -90,11 +90,12 @@ $(document).ready(function (){
         }
 
         var pagerHref = '/' + paginateUrl + '/' + searchTerm + '{{number}}';
-        var totalProducts = Math.ceil(productCount / pageLen);
+        var totalItems = Math.ceil(itemCount / pageLen);
 
-        if(parseInt(productCount) > parseInt(pageLen)){
+        if(parseInt(itemCount) > parseInt(pageLen)){
+            console.log('here?');
             $('#pager').bootpag({
-                total: totalProducts,
+                total: totalItems,
                 page: pageNum,
                 maxVisible: 5,
                 href: pagerHref,

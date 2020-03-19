@@ -16,7 +16,7 @@ const {
     updateTotalCart,
     emptyCart,
     updateSubscriptionCheck,
-    getData,
+    paginateData,
     addSitemapProducts,
     getCountryList
 } = require('../lib/common');
@@ -642,38 +642,38 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        getData(req, pageNum, { _id: { $in: lunrIdArray } }),
+        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }),
         getMenu(db)
     ])
-        .then(([results, menu]) => {
-            // If JSON query param return json instead
-            if(req.query.json === 'true'){
-                res.status(200).json(results.data);
-                return;
-            }
+    .then(([results, menu]) => {
+        // If JSON query param return json instead
+        if(req.query.json === 'true'){
+            res.status(200).json(results.data);
+            return;
+        }
 
-            res.render(`${config.themeViews}index`, {
-                title: 'Results',
-                results: results.data,
-                filtered: true,
-                session: req.session,
-                metaDescription: req.app.config.cartTitle + ' - Search term: ' + searchTerm,
-                searchTerm: searchTerm,
-                message: clearSessionValue(req.session, 'message'),
-                messageType: clearSessionValue(req.session, 'messageType'),
-                productsPerPage: numberProducts,
-                totalProductCount: results.totalProducts,
-                pageNum: pageNum,
-                paginateUrl: 'search',
-                config: config,
-                menu: sortMenu(menu),
-                helpers: req.handlebars.helpers,
-                showFooter: 'showFooter'
-            });
-        })
-        .catch((err) => {
-            console.error(colors.red('Error searching for products', err));
+        res.render(`${config.themeViews}index`, {
+            title: 'Results',
+            results: results.data,
+            filtered: true,
+            session: req.session,
+            metaDescription: req.app.config.cartTitle + ' - Search term: ' + searchTerm,
+            searchTerm: searchTerm,
+            message: clearSessionValue(req.session, 'message'),
+            messageType: clearSessionValue(req.session, 'messageType'),
+            productsPerPage: numberProducts,
+            totalProductCount: results.totalItems,
+            pageNum: pageNum,
+            paginateUrl: 'search',
+            config: config,
+            menu: sortMenu(menu),
+            helpers: req.handlebars.helpers,
+            showFooter: 'showFooter'
         });
+    })
+    .catch((err) => {
+        console.error(colors.red('Error searching for products', err));
+    });
 });
 
 // search products
@@ -695,7 +695,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        getData(req, pageNum, { _id: { $in: lunrIdArray } }),
+        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -717,7 +717,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
                 productsPerPage: numberProducts,
-                totalProductCount: results.totalProducts,
+                totalProductCount: results.totalItems,
                 pageNum: pageNum,
                 menuLink: _.find(sortedMenu.items, (obj) => { return obj.link === searchTerm; }),
                 paginateUrl: 'category',
@@ -777,7 +777,7 @@ router.get('/page/:pageNum', (req, res, next) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
-        getData(req, req.params.pageNum),
+        paginateData(true, req, req.params.pageNum, 'products'),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -796,7 +796,7 @@ router.get('/page/:pageNum', (req, res, next) => {
                 metaDescription: req.app.config.cartTitle + ' - Products page: ' + req.params.pageNum,
                 config: req.app.config,
                 productsPerPage: numberProducts,
-                totalProductCount: results.totalProducts,
+                totalProductCount: results.totalItems,
                 pageNum: req.params.pageNum,
                 paginateUrl: 'page',
                 helpers: req.handlebars.helpers,
@@ -818,7 +818,7 @@ router.get('/:page?', async (req, res, next) => {
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
-            getData(req, 1, {}),
+            paginateData(true, req, 1, 'products', {}),
             getMenu(db)
         ])
             .then(([results, menu]) => {
@@ -827,6 +827,8 @@ router.get('/:page?', async (req, res, next) => {
                     res.status(200).json(results.data);
                     return;
                 }
+
+                console.log('results', results);
 
                 res.render(`${config.themeViews}index`, {
                     title: `${config.cartTitle} - Shop`,
@@ -837,7 +839,7 @@ router.get('/:page?', async (req, res, next) => {
                     messageType: clearSessionValue(req.session, 'messageType'),
                     config,
                     productsPerPage: numberProducts,
-                    totalProductCount: results.totalProducts,
+                    totalProductCount: results.totalItems,
                     pageNum: 1,
                     paginateUrl: 'page',
                     helpers: req.handlebars.helpers,
