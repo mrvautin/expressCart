@@ -15,7 +15,7 @@ test('[Success] Get orders', async t => {
         .expect(200);
 
     // Check the returned order length
-    t.deepEqual(g.jsonData.orders.length, res.body.orders.length);
+    t.deepEqual(g.jsonData.orders.length, res.body.orders.data.length);
 });
 
 test('[Fail] Try get orders with a bogus apiKey', async t => {
