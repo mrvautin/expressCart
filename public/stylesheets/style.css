@@ -452,12 +452,18 @@ a {
   padding: 0px;
   height: 70px;
 }
+.pagination > li > a {
+  background-color: #000000 !important;
+}
 .page-item.disabled .page-link {
   color: #b7b7b7;
 }
 .page-link {
   color: white;
   border: 0;
+}
+.page-link:hover {
+  color: #aaaaaa !important;
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
