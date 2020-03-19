@@ -828,8 +828,6 @@ router.get('/:page?', async (req, res, next) => {
                     return;
                 }
 
-                console.log('results', results);
-
                 res.render(`${config.themeViews}index`, {
                     title: `${config.cartTitle} - Shop`,
                     theme: config.theme,
