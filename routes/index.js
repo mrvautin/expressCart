@@ -36,22 +36,36 @@ router.get('/payment/:orderId', async (req, res, next) => {
 
     // If stock management is turned on payment approved update stock level
     if(config.trackStock && req.session.paymentApproved){
-        order.orderProducts.forEach(async (product) => {
-            const dbProduct = await db.products.findOne({ _id: getId(product.productId) });
-            let newStockLevel = dbProduct.productStock - product.quantity;
-            if(newStockLevel < 1){
-                newStockLevel = 0;
-            }
-
-            // Update product stock
-            await db.products.updateOne({
-                _id: getId(product.productId)
-            }, {
-                $set: {
-                    productStock: newStockLevel
+        // Check to see if already updated to avoid duplicate updating of stock
+        if(order.productStockUpdated !== true){
+            Object.keys(order.orderProducts).forEach(async (productKey) => {
+                const product = order.orderProducts[productKey];
+                const dbProduct = await db.products.findOne({ _id: getId(product.productId) });
+                let newStockLevel = dbProduct.productStock - product.quantity;
+                if(newStockLevel < 1){
+                    newStockLevel = 0;
                 }
-            }, { multi: false });
-        });
+
+                // Update product stock
+                await db.products.updateOne({
+                    _id: getId(product.productId)
+                }, {
+                    $set: {
+                        productStock: newStockLevel
+                    }
+                }, { multi: false });
+
+                // Add stock updated flag to order
+                await db.orders.updateOne({
+                    _id: getId(order._id)
+                }, {
+                    $set: {
+                        productStockUpdated: true
+                    }
+                }, { multi: false });
+            });
+            console.info('Updated stock levels');
+        }
     }
 
     // If hooks are configured, send hook
