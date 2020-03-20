@@ -39,8 +39,8 @@ if(baseConfig === false){
 
 // Validate the payment gateway config
 if(ajv.validate(
-        require(`./config/payment/schema/${config.paymentGateway}Schema`),
-        require(`./config/payment/config/${config.paymentGateway}.json`)) === false
+        require(`./config/payment/schema/${config.paymentGateway}`),
+        require(`./config/payment/config/${config.paymentGateway}`)) === false
     ){
     console.log(colors.red(`${config.paymentGateway} config is incorrect: ${ajv.errorsText()}`));
     process.exit(2);
