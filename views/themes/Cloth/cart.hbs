@@ -31,14 +31,20 @@
                                         <div class="input-group-prepend">
                                             <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                         </div>
-                                        <input type="number" class="form-control cart-product-quantity text-center" data-cartid="{{../this.productId}}" data-id="{{../this.id}}" maxlength="2" value="{{../this.quantity}}">
+                                        <input type="number" 
+                                            class="form-control cart-product-quantity text-center" 
+                                            data-cartid="{{@key}}" 
+                                            data-id="{{../this.productId}}"
+                                            maxlength="2" 
+                                            value="{{../this.quantity}}"
+                                        >
                                         <div class="input-group-append">
                                             <button class="btn btn-primary btn-qty-add" type="button">+</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-4 col-md-2 no-pad-left">
-                                    <button class="btn btn-danger btn-delete-from-cart" data-id="{{../this.productId}}" data-cartid="{{../this.productId}}" type="button">{{{feather 'trash-2'}}}</button>
+                                    <button class="btn btn-danger btn-delete-from-cart" data-cartid="{{../this.productId}}" data-cartid="{{@key}}" type="button">{{{feather 'trash-2'}}}</button>
                                 </div>
                                 {{else}}
                                 <div class="col-12 col-md-8 no-pad-left mb-2"></div>

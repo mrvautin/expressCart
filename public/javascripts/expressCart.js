@@ -662,8 +662,8 @@ function updateCartDiv(){
         // If the cart has contents
         if(cart){
             $('#cart-empty').empty();
-            Object.keys(cart).forEach(function(productId){
-                var item = cart[productId];
+            Object.keys(cart).forEach(function(cartId){
+                var item = cart[cartId];
                 // Setup the product
                 var productTotalAmount = numeral(item.totalItemPrice).format('0.00');
                 var optionsHtml = '';
@@ -701,14 +701,21 @@ function updateCartDiv(){
                                             <div class="input-group-prepend">
                                                 <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                             </div>
-                                            <input type="number" class="form-control cart-product-quantity text-center" data-cartid="${productId}" data-id="${item.id}" maxlength="2" value="${item.quantity}">
+                                            <input 
+                                                type="number" 
+                                                class="form-control cart-product-quantity text-center"
+                                                data-cartid="${cartId}"
+                                                data-id="${item.productId}" 
+                                                maxlength="2" 
+                                                value="${item.quantity}"
+                                            >
                                             <div class="input-group-append">
                                                 <button class="btn btn-primary btn-qty-add" type="button">+</button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-4 col-md-2 no-pad-left">
-                                        <button class="btn btn-danger btn-delete-from-cart" data-cartid="${productId}" type="button"><i class="feather" data-feather="trash-2" data-cartid="${productId}"></i></button>
+                                        <button class="btn btn-danger btn-delete-from-cart" data-cartid="${cartId}" type="button"><i class="feather" data-feather="trash-2" data-cartid="${cartId}"></i></button>
                                     </div>
                                     <div class="col-8 col-md-4 align-self-center text-right">
                                         <strong class="my-auto">${result.currencySymbol}${productTotalAmount}</strong>

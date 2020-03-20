@@ -77,7 +77,7 @@ test('[Success] Update cart', async t => {
         .expect(200);
 
     const cartId = Object.keys(cart.body.cart)[0];
-    const productId = cart.body.cart[cartId].id;
+    const productId = cart.body.cart[cartId].productId;
 
     const res = await g.request
         .post('/product/updatecart')

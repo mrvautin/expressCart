@@ -384,6 +384,12 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
+    const product = await db.products.findOne({ _id: getId(cartItem.productId) });
+    if(!product){
+        res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
+
     // Calculate the quantity to update
     let productQuantity = cartItem.quantity ? cartItem.quantity : 1;
     if(typeof productQuantity === 'string'){
@@ -397,14 +403,8 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
-    const product = await db.products.findOne({ _id: getId(req.session.cart[cartItem.cartId].productId) });
-    if(!product){
-        res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
-        return;
-    }
-
     // If stock management on check there is sufficient stock for this product
-    if(config.trackStock){
+    if(config.trackStock && product.productStock){
         if(productQuantity > product.productStock){
             res.status(400).json({ message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length });
             return;
