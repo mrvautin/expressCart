@@ -38,40 +38,12 @@ if(baseConfig === false){
 }
 
 // Validate the payment gateway config
-switch(config.paymentGateway){
-    case 'paypal':
-        if(ajv.validate(require('./config/paypalSchema'), require('./config/paypal.json')) === false){
-            console.log(colors.red(`PayPal config is incorrect: ${ajv.errorsText()}`));
-            process.exit(2);
-        }
-        break;
-
-    case 'stripe':
-        if(ajv.validate(require('./config/stripeSchema'), require('./config/stripe.json')) === false){
-            console.log(colors.red(`Stripe config is incorrect: ${ajv.errorsText()}`));
-            process.exit(2);
-        }
-        break;
-
-    case 'authorizenet':
-        if(ajv.validate(require('./config/authorizenetSchema'), require('./config/authorizenet.json')) === false){
-            console.log(colors.red(`Authorizenet config is incorrect: ${ajv.errorsText()}`));
-            process.exit(2);
-        }
-        break;
-
-    case 'adyen':
-        if(ajv.validate(require('./config/adyenSchema'), require('./config/adyen.json')) === false){
-            console.log(colors.red(`adyen config is incorrect: ${ajv.errorsText()}`));
-            process.exit(2);
-        }
-        break;
-    case 'instore':
-        if(ajv.validate(require('./config/instoreSchema'), require('./config/instore.json')) === false){
-            console.log(colors.red(`instore config is incorrect: ${ajv.errorsText()}`));
-            process.exit(2);
-        }
-        break;
+if(ajv.validate(
+        require(`./config/payment/schema/${config.paymentGateway}Schema`),
+        require(`./config/payment/config/${config.paymentGateway}.json`)) === false
+    ){
+    console.log(colors.red(`${config.paymentGateway} config is incorrect: ${ajv.errorsText()}`));
+    process.exit(2);
 }
 
 // require the routes
@@ -81,12 +53,9 @@ const product = require('./routes/product');
 const customer = require('./routes/customer');
 const order = require('./routes/order');
 const user = require('./routes/user');
-const paypal = require('./routes/payments/paypal');
-const stripe = require('./routes/payments/stripe');
-const blockonomics = require('./routes/payments/blockonomics');
-const authorizenet = require('./routes/payments/authorizenet');
-const adyen = require('./routes/payments/adyen');
-const instore = require('./routes/payments/instore');
+
+// Add the payment route
+const paymentRoute = require(`./lib/payments/${config.paymentGateway}`);
 
 const app = express();
 
@@ -410,19 +379,16 @@ app.use((req, res, next) => {
     next();
 });
 
-// setup the routes
+// Setup the routes
 app.use('/', index);
 app.use('/', customer);
 app.use('/', product);
 app.use('/', order);
 app.use('/', user);
 app.use('/', admin);
-app.use('/paypal', paypal);
-app.use('/stripe', stripe);
-app.use('/blockonomics', blockonomics);
-app.use('/authorizenet', authorizenet);
-app.use('/adyen', adyen);
-app.use('/instore', instore);
+
+// Payment route
+app.use(`/${config.paymentGateway}`, paymentRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
