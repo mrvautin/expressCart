@@ -31,7 +31,7 @@ const ajv = new Ajv({ useDefaults: true });
 // get config
 const config = common.getConfig();
 
-const baseConfig = ajv.validate(require('./config/baseSchema'), config);
+const baseConfig = ajv.validate(require('./config/settingsSchema'), config);
 if(baseConfig === false){
     console.log(colors.red(`settings.json incorrect: ${ajv.errorsText()}`));
     process.exit(2);
