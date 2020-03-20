@@ -1,6 +1,6 @@
 {
   "name": "express-cart",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "description": "A fully functioning Node.js shopping cart with Stripe, PayPal and Authorize.net payments.",
   "private": false,
   "scripts": {
@@ -87,7 +87,7 @@
     "gulp": "^4.0.2",
     "gulp-clean-css": "^3.10.0",
     "gulp-minify": "^3.1.0",
-    "gulp-nodemon": "^2.4.2",
+    "gulp-nodemon": "^2.5.0",
     "gulp-rename": "^1.4.0",
     "less": "^3.10.3",
     "supertest": "^4.0.2"
