@@ -402,6 +402,6 @@ New static pages are setup via `/admin/settings/pages`.
 
 I'm looking for contributors of any kind. I'm working on turning the admin panel into something more modern and using Vue.js. The frontend part of the website will always be a normal webapp with no SPA frameworks as I believe eCommerce apps should have SEO as top priority.
 
-Contributing payment providers and themes would be much appreciated. Payment providers are added by simply adding the payment provider file to `/routes/payments/providerName.js`, then adding the route to the `app.js` file by adding `const providerName = require('./routes/payments/{providerName}');` and mounting the route `app.use('/providerName', providerName);`.
+Contributing payment providers and themes would be much appreciated. Payment providers are added by simply adding the payment provider file to `/lib/payments/provider.js`.
 
 If you see current code which could be enhanced (note: parts of the code is quite old but new to Github) you are welcome to submit a PR.
