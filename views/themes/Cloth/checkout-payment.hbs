@@ -67,6 +67,9 @@
                     {{#ifCond config.paymentGateway '==' 'adyen'}}
                         {{> partials/payments/adyen}}
                     {{/ifCond}}
+                    {{#ifCond config.paymentGateway '==' 'payway'}}
+                        {{> partials/payments/payway}}
+                    {{/ifCond}}
                     {{#ifCond config.paymentGateway '==' 'instore'}}
                         {{> partials/payments/instore}}
                     {{/ifCond}}

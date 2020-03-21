@@ -2,7 +2,16 @@
 
 ![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
 
-`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal, Blockonomics, Authorize.net, Adyen and Instore payments.
+`expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with built in popular payment providers.
+
+Payment providers included:
+- Stripe
+- PayPal
+- Blockonomics
+- Authorize.net
+- Adyen
+- PayWay
+- Instore
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
 [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
@@ -325,6 +334,20 @@ The Adyen config file is located: `/config/payment/config/adyen.json`. A example
 ```
 
 Note: The `publicKey`, `apiKey` and `merchantAccount` is obtained from your Adyen account dashboard.
+
+##### Westpac PayWay (Payments)
+
+The PayWay config file is located: `/config/payment/config/payway.json`. A example PayWay settings file is provided:
+
+```
+{
+    "apiKey": "TXXXXX_SEC_btbqXxXxqgtzXk2p27hapvxXXXXxw28gh3febtuaf2etnkXxXxehdqu98u",
+    "publishableApiKey": "T11266_PUB_btbq8r6sqgtz5k2p27hapvx8nurxw28gh3fepbtua2f2etnkp4bmehdqu98u",
+    "merchantId": "TEST"
+}
+```
+
+Note: The `apiKey`, `publishableApiKey` and `merchantId` is obtained from your PayWay account dashboard.
 
 ##### Instore (Payments)
 

@@ -1,0 +1,19 @@
+{
+    "properties": {
+        "apiKey": {
+            "type": "string"
+        },
+        "publishableApiKey": {
+            "type": "string"
+        },
+        "merchantId": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "apiKey",
+        "publishableApiKey",
+        "merchantId"
+    ],
+    "additionalProperties": false
+}
