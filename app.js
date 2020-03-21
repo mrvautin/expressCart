@@ -251,7 +251,7 @@ handlebars = handlebars.create({
                 }
                 return '<h2 class="text-warning">The payment for this order is pending. We will be in contact shortly.</h2>';
             }
-            return '<h2 class="text-success">Your payment has failed. Please try again or contact us.</h2>';
+            return '<h2 class="text-danger">Your payment has failed. Please try again or contact us.</h2>';
         },
         paymentOutcome: (status) => {
             if(status === 'Paid' || status === 'Pending'){
