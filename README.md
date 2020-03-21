@@ -5,12 +5,12 @@
 `expressCart` is a fully functional shopping cart built in Node.js (Express, MongoDB) with built in popular payment providers.
 
 Payment providers included:
-- Stripe
-- PayPal
-- Blockonomics
-- Authorize.net
-- Adyen
-- PayWay
+- [Stripe](https://stripe.com/)
+- [PayPal](http://paypal.com/)
+- [Blockonomics](https://www.blockonomics.co/)
+- [Authorize.net](https://www.authorize.net/)
+- [Adyen](https://www.adyen.com/)
+- [PayWay](https://www.payway.com.au/)
 - Instore
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
