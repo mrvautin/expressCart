@@ -528,7 +528,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     }
 
     // If stock management on check there is sufficient stock for this product
-    if(config.trackStock && product.productStock){
+    if(config.trackStock){
         // If there is more stock than total (ignoring held)
         if(productQuantity > product.productStock){
             return res.status(400).json({ message: 'There is insufficient stock of this product.' });
