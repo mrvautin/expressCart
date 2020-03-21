@@ -93,7 +93,6 @@ $(document).ready(function (){
         var totalItems = Math.ceil(itemCount / pageLen);
 
         if(parseInt(itemCount) > parseInt(pageLen)){
-            console.log('here?');
             $('#pager').bootpag({
                 total: totalItems,
                 page: pageNum,
