@@ -96,6 +96,9 @@ handlebars = handlebars.create({
             }
             return total;
         },
+        partial: (provider) => {
+            return `partials/payments/${provider}`;
+        },
         perRowClass: (numProducts) => {
             if(parseInt(numProducts) === 1){
                 return 'col-6 col-md-12 product-item';

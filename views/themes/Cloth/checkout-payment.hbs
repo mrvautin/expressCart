@@ -52,27 +52,7 @@
                     {{/if}}
                     <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
                     {{#if session.customerPresent}}
-                    {{#ifCond config.paymentGateway '==' 'paypal'}}
-                        {{> partials/payments/paypal}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'blockonomics'}}
-                        {{> partials/payments/blockonomics}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'stripe'}}
-                        {{> partials/payments/stripe}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'authorizenet'}}
-                        {{> partials/payments/authorizenet}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'adyen'}}
-                        {{> partials/payments/adyen}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'payway'}}
-                        {{> partials/payments/payway}}
-                    {{/ifCond}}
-                    {{#ifCond config.paymentGateway '==' 'instore'}}
-                        {{> partials/payments/instore}}
-                    {{/ifCond}}
+                    {{> (partial config.paymentGateway) }}
                     {{/if}}
                     </form>
                 </div>
