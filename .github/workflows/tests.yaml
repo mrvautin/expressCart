@@ -1,5 +1,4 @@
-name: expressCart tests
-
+name: expressCart-tests
 on:
   push:
     branches: [ master ]
