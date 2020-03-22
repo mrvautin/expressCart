@@ -97,5 +97,59 @@
             </div>
         </div>
     </div>
+    {{#if config.showRelatedProducts}}
+        {{#if relatedProducts}}
+        <div class="col-sm-12">
+            <h4>Related products</h4>
+            <div class="row">
+                {{#each relatedProducts}}
+                <div class="col-md-3">
+                    <div>
+                        {{#if productPermalink}}
+                            <div class="product-wrapper">
+                                <a href="/product/{{this.productPermalink}}">
+                                    <div class="vertical-center img-thumbnail">
+                                        {{#if productImage}}
+                                            <img class="img-fluid" src="{{this.productImage}}" alt="...">
+                                        {{else}}
+                                            <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                        {{/if}}
+                                    </div>
+                                    <h3 class="product-title product-title-home top-pad-10">
+                                        {{this.productTitle}}
+                                    </h3>
+                                </a>
+                            </div>
+                        {{else}}
+                            <a href="/product/{{this._id}}">
+                                <div class="vertical-center img-thumbnail">
+                                    {{#if productImage}}
+                                        <img class="img-fluid" src="{{this.productImage}}" alt="...">
+                                    {{else}}
+                                        <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                    {{/if}}
+                                </div>
+                                <h3 class="product-title product-title-home top-pad-10">
+                                    {{this.productTitle}}
+                                </h3>
+                            </a>
+                        {{/if}}
+                        <h3 class="product-price mp-0 text-center">
+                            {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
+                        </h3>
+                        <p class="text-center">
+                            {{#if productPermalink}}
+                            <a class="btn btn-primary" href="/product/{{this.productPermalink}}">{{ @root.__ "View" }}</a>
+                            {{else}}
+                            <a class="btn btn-primary" href="/product/{{this._id}}">{{ @root.__ "View" }}</a>
+                            {{/if}}
+                        </p>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    {{/if}}
 </div>
 <input type="hidden" id="productId" value="{{result._id}}">

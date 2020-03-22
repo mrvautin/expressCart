@@ -337,6 +337,7 @@ router.post('/checkout/removediscountcode', async (req, res) => {
 router.get('/product/:id', async (req, res) => {
     const db = req.app.db;
     const config = req.app.config;
+    const productsIndex = req.app.productsIndex;
 
     const product = await db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] });
     if(!product){
@@ -358,11 +359,29 @@ router.get('/product/:id', async (req, res) => {
     // show the view
     const images = await getImages(product._id, req, res);
 
+    // Related products
+    let relatedProducts = {};
+    if(config.showRelatedProducts){
+        const lunrIdArray = [];
+        const productTags = product.productTags.split(',');
+        const productTitleWords = product.productTitle.split(' ');
+        const searchWords = productTags.concat(productTitleWords);
+        searchWords.forEach((word) => {
+            productsIndex.search(word).forEach((id) => {
+                lunrIdArray.push(getId(id.ref));
+            });
+        });
+        relatedProducts = await db.products.find({
+            _id: { $in: lunrIdArray, $ne: product._id }
+        }).limit(4).toArray();
+    }
+
     res.render(`${config.themeViews}product`, {
         title: product.productTitle,
         result: product,
         productOptions: productOptions,
         images: images,
+        relatedProducts,
         productDescription: stripHtml(product.productDescription),
         metaDescription: config.cartTitle + ' - ' + product.productTitle,
         config: config,

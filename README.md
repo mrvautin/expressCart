@@ -249,11 +249,6 @@ Enables/disable the menu setup in `/admin/settings/menu`.
 
 This is the text which will be displayed at the top of your menu.
 
-##### Menu position
-
-You can set position where your menu will be displayed. Setting the value to `side` will position the menu to the left of your products, setting the value to `top`
-will create a 'breadcrumb' menu at the top of the page
-
 ##### Paypal (Payments)
 
 The Paypal config file is located: `/config/payment/config/paypal.json`. A example Paypal settings file is provided:

@@ -40,5 +40,6 @@
             "shipping": {},
             "discount": {}
         }
-    }
+    },
+    "showRelatedProducts": true
 }

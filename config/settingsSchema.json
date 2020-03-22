@@ -143,6 +143,10 @@
                     "shipping": "shipping-basic"
                 }
             }
+        },
+        "showRelatedProducts": {
+            "type": "boolean",
+            "default": true
         }
     },
     "required": [
