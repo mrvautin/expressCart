@@ -162,8 +162,9 @@
             "productPublished": true,
             "productTags": "subscription",
             "productOptions": "",
-            "productStock": null,
-            "productSubscription": "plan_XXXXXXXXXXXXXX"
+            "productStock": 0,
+            "productSubscription": "plan_XXXXXXXXXXXXXX",
+            "productStockDisable": true
         }
     ],
     "customers": [

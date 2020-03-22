@@ -244,6 +244,7 @@ $(document).ready(function (){
                     productPrice: $('#productPrice').val(),
                     productPublished: $('#productPublished').val(),
                     productStock: $('#productStock').val(),
+                    productStockDisable: $('#productStockDisable').is(':checked'),
                     productDescription: $('#productDescription').val(),
                     productPermalink: $('#productPermalink').val(),
                     productOptions: $('#productOptions').val(),

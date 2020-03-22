@@ -37,10 +37,20 @@
                 </div>
             </div>
             {{#if config.trackStock}}
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
-                    <input type="number" id="productStock" class="form-control" value="{{result.productStock}}" step="any" />
+            <div class="row">
+                <div class="col-sm-5 ml-3">
+                    <div class="form-group">
+                        <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
+                        <input type="number" id="productStock" class="form-control" value="{{result.productStock}}" step="any" />
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <label for="productStockDisable" class="control-label">{{ @root.__ "Disable stock tracking" }}</label>
+                    <div class="checkbox">
+                        <label>
+                            <input class="productStockDisable" type="checkbox" {{checkedState result.productStockDisable}} id="productStockDisable">
+                        </label>
+                    </div>
                 </div>
             </div>
             {{/if}}

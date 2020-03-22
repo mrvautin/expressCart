@@ -108,7 +108,8 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productOptions: productOptions || null,
         productComment: common.checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
-        productStock: common.safeParseInt(req.body.productStock) || null
+        productStock: common.safeParseInt(req.body.productStock) || null,
+        productStockDisable: common.convertBool(req.body.productStockDisable)
     };
 
     // Validate the body again schema
@@ -251,7 +252,8 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTags: req.body.productTags,
         productOptions: productOptions || null,
         productComment: common.checkboxBool(req.body.productComment),
-        productStock: common.safeParseInt(req.body.productStock) || null
+        productStock: common.safeParseInt(req.body.productStock) || null,
+        productStockDisable: common.convertBool(req.body.productStockDisable)
     };
 
     // Validate the body again schema

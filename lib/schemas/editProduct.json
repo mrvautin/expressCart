@@ -38,6 +38,9 @@
         },
         "productStock": {
             "type": ["number", "null"]
+        },
+        "productStockDisable": {
+            "type": "boolean"
         }
     },
     "errorMessage": {

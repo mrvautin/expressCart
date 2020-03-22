@@ -548,39 +548,42 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // If stock management on check there is sufficient stock for this product
     if(config.trackStock){
-        // If there is more stock than total (ignoring held)
-        if(productQuantity > product.productStock){
-            return res.status(400).json({ message: 'There is insufficient stock of this product.' });
-        }
-
-        const stockHeld = await db.cart.aggregate(
-            {
-                $match: {
-                    cart: { $elemMatch: { productId: product._id.toString() } }
-                }
-            },
-            { $unwind: '$cart' },
-            {
-                $group: {
-                    _id: '$cart.productId',
-                    sumHeld: { $sum: '$cart.quantity' }
-                }
-            },
-            {
-                $project: {
-                    sumHeld: 1
-                }
-            }
-        ).toArray();
-
-        // If there is stock
-        if(stockHeld.length > 0){
-            const totalHeld = _.find(stockHeld, { _id: product._id.toString() }).sumHeld;
-            const netStock = product.productStock - totalHeld;
-
-            // Check there is sufficient stock
-            if(productQuantity > netStock){
+        // Only if not disabled
+        if(product.productStockDisable !== true){
+            // If there is more stock than total (ignoring held)
+            if(productQuantity > product.productStock){
                 return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+            }
+
+            const stockHeld = await db.cart.aggregate(
+                {
+                    $match: {
+                        cart: { $elemMatch: { productId: product._id.toString() } }
+                    }
+                },
+                { $unwind: '$cart' },
+                {
+                    $group: {
+                        _id: '$cart.productId',
+                        sumHeld: { $sum: '$cart.quantity' }
+                    }
+                },
+                {
+                    $project: {
+                        sumHeld: 1
+                    }
+                }
+            ).toArray();
+
+            // If there is stock
+            if(stockHeld.length > 0){
+                const totalHeld = _.find(stockHeld, { _id: product._id.toString() }).sumHeld;
+                const netStock = product.productStock - totalHeld;
+
+                // Check there is sufficient stock
+                if(productQuantity > netStock){
+                    return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                }
             }
         }
     }
