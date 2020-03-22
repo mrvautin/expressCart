@@ -16,11 +16,7 @@ jobs:
         ports:
         - 27017:27017
     steps:
-    - uses: actions/checkout@v1     
-    - run: npm ci
-      working-directory: ./mongodb
-    - run: node client.js
-      working-directory: ./mongodb
+    - uses: actions/checkout@v1
       env:
         # use mongodb for the host here because we have specified a container for the job.
         # If we were running the job on the VM this would be localhost
