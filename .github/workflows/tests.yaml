@@ -6,11 +6,26 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  services:
-    mongodb:
-      image: mongo:3.4.23
-      ports:
+  container-job:
+    runs-on: ubuntu-latest
+    container:
+      image:  node:10.16-jessie
+    services:
+      mongodb:
+        image: mongo
+        ports:
         - 27017:27017
+    steps:
+    - uses: actions/checkout@v1     
+    - run: npm ci
+      working-directory: ./mongodb
+    - run: node client.js
+      working-directory: ./mongodb
+      env:
+        # use mongodb for the host here because we have specified a container for the job.
+        # If we were running the job on the VM this would be localhost
+        MONGODB_HOST: mongodb
+        MONGODB_PORT: ${{ job.services.mongodb.ports[27017] }}
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -27,4 +42,4 @@ jobs:
     - name: npm test
       run: npm run test
       env:
-        test: true
+        databaseConnectionString: mongodb://mongodb:27017/expresscart
