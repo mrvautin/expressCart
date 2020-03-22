@@ -5,12 +5,12 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-services:
+jobs:
+  services:
   mongodb:
     image: mongo:3.4.23
     ports:
       - 27017:27017
-jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
