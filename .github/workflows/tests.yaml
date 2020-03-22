@@ -6,22 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  container-job:
-    runs-on: ubuntu-latest
-    container:
-      image:  node:10.16-jessie
-    services:
-      mongodb:
-        image: mongo
-        ports:
-        - 27017:27017
-    steps:
-    - uses: actions/checkout@v1
-      env:
-        # use mongodb for the host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be localhost
-        MONGODB_HOST: mongodb
-        MONGODB_PORT: ${{ job.services.mongodb.ports[27017] }}
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -33,9 +17,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Start MongoDB v${{ matrix.mongodb-version }}
+      uses: superchargejs/mongodb-github-action@1.1.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
     - name: npm install
       run: npm i
     - name: npm test
       run: npm run test
       env:
-        databaseConnectionString: mongodb://mongodb:27017/expresscart
+        test: true
