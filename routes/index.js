@@ -17,6 +17,7 @@ const {
     emptyCart,
     updateSubscriptionCheck,
     paginateData,
+    getSort,
     addSitemapProducts,
     getCountryList
 } = require('../lib/common');
@@ -731,7 +732,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }),
+        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -813,7 +814,7 @@ router.get('/page/:pageNum', (req, res, next) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
-        paginateData(true, req, req.params.pageNum, 'products'),
+        paginateData(true, req, req.params.pageNum, 'products', {}, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -854,7 +855,7 @@ router.get('/:page?', async (req, res, next) => {
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
-            paginateData(true, req, 1, 'products', {}),
+            paginateData(true, req, 1, 'products', {}, getSort()),
             getMenu(db)
         ])
             .then(([results, menu]) => {

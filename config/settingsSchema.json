@@ -124,6 +124,16 @@
         "facebookAppId": {
             "type": "string"
         },
+        "productOrderBy": {
+            "type": "string",
+            "enum": ["date", "title"],
+            "default": "date"
+        },
+        "productOrder": {
+            "type": "string",
+            "enum": ["descending", "ascending"],
+            "default": "descending"
+        },
         "modules": {
             "type": "object",
             "properties": {

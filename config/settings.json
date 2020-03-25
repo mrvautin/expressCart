@@ -31,6 +31,8 @@
     "maxQuantity": 25,
     "twitterHandle": "",
     "facebookAppId": "",
+    "productOrderBy": "date",
+    "productOrder": "descending",
     "modules": {
         "enabled": {
             "shipping": "shipping-basic",
