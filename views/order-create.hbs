@@ -46,6 +46,12 @@
                     </div>
                     <div class="col-12">
                         <div class="form-group">
+                            <label class="control-label">{{ @root.__ "Company name" }}</label>   
+                            <input type="text" class="form-control" name="orderCompany" id="orderCompany" value="{{session.customerCompany}}" placeholder="Company name">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
                             <label class="control-label">{{ @root.__ "Address 1" }} *</label>   
                             <input type="text" class="form-control" name="orderAddress1" id="orderAddress1" value="{{session.customerAddress1}}" placeholder="Address line 1" required>
                         </div>

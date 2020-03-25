@@ -21,7 +21,7 @@ router.get('/admin/orders/:page?', restrict, async (req, res, next) => {
     }
 
     // Get our paginated data
-    const orders = await paginateData(false, req, pageNum, 'orders', {}, { productAddedDate: -1 });
+    const orders = await paginateData(false, req, pageNum, 'orders', {}, { orderDate: -1 });
 
     // If API request, return json
     if(req.apiAuthenticated){
@@ -133,7 +133,9 @@ router.post('/admin/order/create', async (req, res, next) => {
         orderShipping: req.session.totalCartShipping,
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
+        orderCustomer: getId(req.session.customerId),
         orderEmail: req.body.email || req.session.customerEmail,
+        orderCompany: req.body.company || req.session.customerCompany,
         orderFirstname: req.body.firstName || req.session.customerFirstname,
         orderLastname: req.body.lastName || req.session.customerLastname,
         orderAddr1: req.body.address1 || req.session.customerAddress1,
