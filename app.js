@@ -479,7 +479,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         try{
             await runIndexing(app);
         }catch(ex){
-            console.error(colors.red('Error setting up indexes:' + err));
+            console.error(colors.red('Error setting up indexes:' + ex.message));
         }
     }
 
@@ -491,7 +491,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
             console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
         }
     }catch(ex){
-        console.error(colors.red('Error starting expressCart app:' + err));
+        console.error(colors.red('Error starting expressCart app:' + ex.message));
         process.exit(2);
     }
 });
