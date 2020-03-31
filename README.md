@@ -1,4 +1,6 @@
-# expressCart
+# expressCartPlus
+
+Some additional fetures to already amazing shopping cart. 
 
 ![expressCart](https://raw.githubusercontent.com/mrvautin/expressCart/master/public/images/logo.png)
 
