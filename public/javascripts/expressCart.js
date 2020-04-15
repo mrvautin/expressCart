@@ -382,8 +382,8 @@ $(document).ready(function (){
             }
         })
 		.done(function(msg){
-            showNotification(msg.message, 'success');
             updateCartDiv();
+            showNotification(msg.message, 'success');
         })
         .fail(function(msg){
             showNotification(msg.responseJSON.message, 'danger');
@@ -421,8 +421,8 @@ $(document).ready(function (){
                 data: { productId: $(this).attr('data-id') }
             })
             .done(function(msg){
-                showNotification(msg.message, 'success');
                 updateCartDiv();
+                showNotification(msg.message, 'success');
             })
             .fail(function(msg){
                 showNotification(msg.responseJSON.message, 'danger');
@@ -555,8 +555,8 @@ function deleteFromCart(element){
         }
     })
     .done(function(msg){
-        showNotification(msg.message, 'success');
         updateCartDiv();
+        showNotification(msg.message, 'success');
     })
     .fail(function(msg){
         showNotification(msg.responseJSON.message, 'danger');
@@ -783,7 +783,7 @@ function emptyCart(){
         url: '/product/emptycart'
     })
     .done(function(msg){
-        showNotification(msg.message, 'success', true);
         updateCartDiv();
+        showNotification(msg.message, 'success', true);
     });
 }
