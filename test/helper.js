@@ -15,6 +15,7 @@ const g = {
     db: {},
     config: {},
     products: {},
+    variants: {},
     discounts: {},
     customers: {},
     users: {},
@@ -28,6 +29,7 @@ const setup = (db) => {
         db.users.deleteMany({}, {}),
         db.customers.deleteMany({}, {}),
         db.products.deleteMany({}, {}),
+        db.variants.deleteMany({}, {}),
         db.discounts.deleteMany({}, {}),
         db.orders.deleteMany({}, {}),
         db.sessions.deleteMany({}, {})
@@ -55,9 +57,17 @@ const runBefore = async () => {
 
             // Get some data from DB to use in compares
             g.products = await g.db.products.find({}).toArray();
+            g.variants = await g.db.variants.find({}).toArray();
             g.customers = await g.db.customers.find({}).toArray();
             g.discounts = await g.db.discounts.find({}).toArray();
             g.users = await g.db.users.find({}).toArray();
+
+            // Insert variants using product ID's
+            _(jsonData.variants).each(async (variant) => {
+                variant.product = g.products[getRandom(g.products.length)]._id;
+                await g.db.variants.insertOne(variant);
+            });
+            g.variants = await g.db.variants.find({}).toArray();
 
             // Insert orders using product ID's
             _(jsonData.orders).each(async (order) => {
@@ -66,15 +76,14 @@ const runBefore = async () => {
                     title: g.products[0].productTitle,
                     quantity: 1,
                     totalItemPrice: g.products[0].productPrice,
-                    options: {
-                        size: '7.5'
-                    },
+                    variant: g.variants[1]._id,
                     productImage: g.products[0].productImage,
                     productComment: null
                 });
                 order.orderDate = new Date();
                 await g.db.orders.insertOne(order);
             });
+            g.orders = await g.db.orders.find({}).toArray();
 
             // Get csrf token
             const csrf = await g.request
@@ -137,10 +146,15 @@ const addApiKey = (users) => {
     return users;
 };
 
+const getRandom = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+};
+
 module.exports = {
     runBefore,
     setup,
     g,
     fixProductDates,
-    fixDiscountDates
+    fixDiscountDates,
+    getRandom
 };

@@ -1,4 +1,6 @@
-import{ serial as test }from'ava';
+const {
+    serial: test
+} = require('ava');
 const {
     runBefore,
     g
