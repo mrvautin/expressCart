@@ -32,7 +32,7 @@
                     <div class="col-md-10">
                         <select id="product_variant" class="form-control">
                         {{#each variants}}
-                            <option value="{{this._id}}">{{this.title}}</option>
+                            <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
                         {{/each}}
                         </select>
                     </div>
@@ -129,3 +129,4 @@
     {{/if}}
 </div>
 <input type="hidden" id="productId" value="{{result._id}}">
+<input type="hidden" id="currencySymbol" value="{{currencySymbol config.currencySymbol}}">

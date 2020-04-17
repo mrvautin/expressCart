@@ -364,6 +364,12 @@ $(document).ready(function (){
         $('#product-title-image').attr('src', $(thumbnails).eq(matchedIndex).attr('src'));
     });
 
+    $(document).on('change', '#product_variant', function(e){
+        var variantPrice = $(this).find(':selected').attr('data-price');
+        var currencySymbol = $('#currencySymbol').val();
+        $('h4.product-price:first').html(currencySymbol + variantPrice);
+    });
+
     $(document).on('click', '.product-add-to-cart', function(e){
         if(parseInt($('#product_quantity').val()) < 1){
             $('#product_quantity').val(1);
