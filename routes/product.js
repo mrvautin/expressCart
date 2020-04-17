@@ -191,7 +191,8 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         product: common.getId(req.body.productId),
         title: req.body.title,
         price: req.body.price,
-        stock: common.safeParseInt(req.body.stock) || null
+        stock: common.safeParseInt(req.body.stock) || null,
+        added: new Date()
     };
 
     try{

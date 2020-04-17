@@ -41,19 +41,40 @@ router.get('/payment/:orderId', async (req, res, next) => {
             Object.keys(order.orderProducts).forEach(async (productKey) => {
                 const product = order.orderProducts[productKey];
                 const dbProduct = await db.products.findOne({ _id: getId(product.productId) });
-                let newStockLevel = dbProduct.productStock - product.quantity;
+                let productCurrentStock = dbProduct.productStock;
+
+                // If variant, get the stock from the variant
+                if(product.variantId){
+                    const variant = await db.variants.findOne({ _id: getId(product.variantId) });
+                    productCurrentStock = variant.stock;
+                }
+
+                // Calc the new stock level
+                let newStockLevel = productCurrentStock - product.quantity;
                 if(newStockLevel < 1){
                     newStockLevel = 0;
                 }
 
-                // Update product stock
-                await db.products.updateOne({
-                    _id: getId(product.productId)
-                }, {
-                    $set: {
-                        productStock: newStockLevel
-                    }
-                }, { multi: false });
+                // Update stock
+                if(product.variantId){
+                    // Update variant stock
+                    await db.variants.updateOne({
+                        _id: getId(product.variantId)
+                    }, {
+                        $set: {
+                            stock: newStockLevel
+                        }
+                    }, { multi: false });
+                }else{
+                    // Update product stock
+                    await db.products.updateOne({
+                        _id: getId(product.productId)
+                    }, {
+                        $set: {
+                            productStock: newStockLevel
+                        }
+                    }, { multi: false });
+                }
 
                 // Add stock updated flag to order
                 await db.orders.updateOne({
@@ -350,7 +371,7 @@ router.get('/product/:id', async (req, res) => {
     }
 
     // Get variants for this product
-    const variants = await db.variants.find({ product: product._id }).toArray();
+    const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
 
     // If JSON query param return json instead
     if(req.query.json === 'true'){
