@@ -167,6 +167,28 @@
             "productStockDisable": true
         }
     ],
+    "variants": [
+        {
+            "title" : "Large",
+            "price" : "50.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Medium",
+            "price" : "40.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Small",
+            "price" : "30.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Extra Small",
+            "price" : "20.00",
+            "stock" : 20
+        }
+    ],
     "customers": [
         {
             "email": "test@test.com",
