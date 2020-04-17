@@ -207,5 +207,8 @@
 	"View": "View",
 	"Related products": "Related products",
 	"Disable stock tracking": "Disable stock tracking",
-	"Company name": "Company name"
+	"Company name": "Company name",
+	"Product variants": "Product variants",
+	"Shown in the variant dropdown": "Shown in the variant dropdown",
+	"Here you can set variants for your product. Eg: Size, color, style": "Here you can set variants for your product. Eg: Size, color, style"
 }

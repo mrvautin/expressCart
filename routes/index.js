@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
-const hash = require('object-hash');
 const stripHtml = require('string-strip-html');
 const moment = require('moment');
 const _ = require('lodash');
@@ -16,7 +15,7 @@ const {
     updateTotalCart,
     emptyCart,
     updateSubscriptionCheck,
-    paginateData,
+    paginateProducts,
     getSort,
     addSitemapProducts,
     getCountryList
@@ -342,14 +341,16 @@ router.get('/product/:id', async (req, res) => {
 
     const product = await db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] });
     if(!product){
-        res.render('error', { title: 'Not found', message: 'Order not found', helpers: req.handlebars.helpers, config });
+        res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         return;
     }
     if(product.productPublished === false){
         res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         return;
     }
-    const productOptions = product.productOptions;
+
+    // Get variants for this product
+    const variants = await db.variants.find({ product: product._id }).toArray();
 
     // If JSON query param return json instead
     if(req.query.json === 'true'){
@@ -380,7 +381,7 @@ router.get('/product/:id', async (req, res) => {
     res.render(`${config.themeViews}product`, {
         title: product.productTitle,
         result: product,
-        productOptions: productOptions,
+        variants,
         images: images,
         relatedProducts,
         productDescription: stripHtml(product.productDescription),
@@ -530,6 +531,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // Get the product from the DB
     const product = await db.products.findOne({ _id: getId(req.body.productId) });
+
     // No product found
     if(!product){
         return res.status(400).json({ message: 'Error updating cart. Please try again.' });
@@ -589,31 +591,29 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
     }
 
-    const productPrice = parseFloat(product.productPrice).toFixed(2);
+    let productCartId = product._id.toString();
+    let productPrice = parseFloat(product.productPrice).toFixed(2);
+    let productVariantId;
+    let productVariantTitle;
 
-    let options = {};
-    if(req.body.productOptions){
-        try{
-            if(typeof req.body.productOptions === 'object'){
-                options = req.body.productOptions;
-            }else{
-                options = JSON.parse(req.body.productOptions);
-            }
-        }catch(ex){}
+    // Check if a variant is supplied and override values
+    if(req.body.productVariant){
+        const variant = await db.variants.findOne({ _id: getId(req.body.productVariant) });
+        if(!variant){
+            return res.status(400).json({ message: 'Error updating cart. Please try again.' });
+        }
+        productVariantId = getId(req.body.productVariant);
+        productVariantTitle = variant.title;
+        productCartId = req.body.productVariant;
+        productPrice = parseFloat(variant.price).toFixed(2);
     }
-
-    // Product with options hash
-    const productHash = hash({
-        productId: product._id.toString(),
-        options
-    });
 
     // if exists we add to the existing value
     let cartQuantity = 0;
-    if(req.session.cart[productHash]){
-        cartQuantity = parseInt(req.session.cart[productHash].quantity) + productQuantity;
-        req.session.cart[productHash].quantity = cartQuantity;
-        req.session.cart[productHash].totalItemPrice = productPrice * parseInt(req.session.cart[productHash].quantity);
+    if(req.session.cart[productCartId]){
+        cartQuantity = parseInt(req.session.cart[productCartId].quantity) + productQuantity;
+        req.session.cart[productCartId].quantity = cartQuantity;
+        req.session.cart[productCartId].totalItemPrice = productPrice * parseInt(req.session.cart[productCartId].quantity);
     }else{
         // Set the card quantity
         cartQuantity = productQuantity;
@@ -624,10 +624,11 @@ router.post('/product/addtocart', async (req, res, next) => {
         productObj.title = product.productTitle;
         productObj.quantity = productQuantity;
         productObj.totalItemPrice = productPrice * productQuantity;
-        productObj.options = options;
         productObj.productImage = product.productImage;
         productObj.productComment = productComment;
         productObj.productSubscription = product.productSubscription;
+        productObj.variantId = productVariantId;
+        productObj.variantTitle = productVariantTitle;
         if(product.productPermalink){
             productObj.link = product.productPermalink;
         }else{
@@ -635,7 +636,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
 
         // merge into the current cart
-        req.session.cart[productHash] = productObj;
+        req.session.cart[productCartId] = productObj;
     }
 
     // Update cart to the DB
@@ -655,7 +656,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     return res.status(200).json({
         message: 'Cart successfully updated',
-        cartId: productHash,
+        cartId: productCartId,
         totalCartItems: req.session.totalCartItems
     });
 });
@@ -679,7 +680,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }),
+        paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
         getMenu(db)
     ])
     .then(([results, menu]) => {
@@ -732,7 +733,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }, getSort()),
+        paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -814,7 +815,7 @@ router.get('/page/:pageNum', (req, res, next) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
-        paginateData(true, req, req.params.pageNum, 'products', {}, getSort()),
+        paginateProducts(true, db, req.params.pageNum, {}, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -855,10 +856,10 @@ router.get('/:page?', async (req, res, next) => {
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
-            paginateData(true, req, 1, 'products', {}, getSort()),
+            paginateProducts(true, db, 1, {}, getSort()),
             getMenu(db)
         ])
-            .then(([results, menu]) => {
+            .then(async([results, menu]) => {
                 // If JSON query param return json instead
                 if(req.query.json === 'true'){
                     res.status(200).json(results.data);

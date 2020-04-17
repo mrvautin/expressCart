@@ -1,0 +1,33 @@
+<div class="modal fade" id="variantModal" tabindex="-1" role="dialog" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="confirmModalLabel">Product variant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="variant-product" value="{{result._id}}">
+                <div class="form-group">
+                    <label for="variant-title" class="col-form-label">Title:</label>
+                    <input type="text" class="form-control" id="variant-title" placeholder="Small">
+                    <p class="help-block">{{ @root.__ "Shown in the variant dropdown" }}</p>
+                </div>
+                <div class="form-group">
+                    <label for="variant-price" class="col-form-label">Price:</label>
+                    <input type="number" class="form-control" id="variant-price" placeholder="29.99">
+                </div>
+                <div class="form-group">
+                    <label for="variant-stock" class="col-form-label">Stock:</label>
+                    <input type="number" class="form-control" id="variant-stock" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger mr-auto" data-dismiss="modal">Cancel</button>
+                <button type="button" id="addVariant" class="btn btn-outline-success">Add variant</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

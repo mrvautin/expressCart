@@ -159,8 +159,8 @@ handlebars = handlebars.create({
                     return 'danger';
             }
         },
-        checkProductOptions: (opts) => {
-            if(opts){
+        checkProductVariants: (variants) => {
+            if(variants){
                 return 'true';
             }
             return 'false';
