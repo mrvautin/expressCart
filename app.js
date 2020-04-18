@@ -160,7 +160,7 @@ handlebars = handlebars.create({
             }
         },
         checkProductVariants: (variants) => {
-            if(variants){
+            if(variants && variants.length > 0){
                 return 'true';
             }
             return 'false';
