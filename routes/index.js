@@ -459,18 +459,65 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
-    // If stock management on check there is sufficient stock for this product
-    if(config.trackStock && product.productStock){
-        if(productQuantity > product.productStock){
-            res.status(400).json({ message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length });
-            return;
-        }
-    }
-
-    const productPrice = parseFloat(product.productPrice).toFixed(2);
+    // Check for a cart
     if(!req.session.cart[cartItem.cartId]){
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
         return;
+    }
+
+    const cartProduct = req.session.cart[cartItem.cartId];
+
+    // Set default stock
+    let productStock = product.productStock;
+    let productPrice = parseFloat(product.productPrice).toFixed(2);
+
+    // Check if a variant is supplied and override values
+    if(cartProduct.variantId){
+        const variant = await db.variants.findOne({ _id: getId(cartProduct.variantId) });
+        if(!variant){
+            res.status(400).json({ message: 'Error updating cart. Please try again.' });
+            return;
+        }
+        productPrice = parseFloat(variant.price).toFixed(2);
+        productStock = variant.stock;
+    }
+
+    // If stock management on check there is sufficient stock for this product
+    if(config.trackStock){
+        // Only if not disabled
+        if(product.productStockDisable !== true){
+            // If there is more stock than total (ignoring held)
+            if(productQuantity > productStock){
+                res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                return;
+            }
+
+            // Aggregate our current stock held from all users carts
+            const stockHeld = await db.cart.aggregate([
+                { $match: { sessionId: { $ne: req.session.id } } },
+                { $project: { _id: 0 } },
+                { $project: { o: { $objectToArray: '$cart' } } },
+                { $unwind: '$o' },
+                { $group: {
+                    _id: {
+                        $ifNull: ['$o.v.variantId', '$o.v.productId']
+                    },
+                    sumHeld: { $sum: '$o.v.quantity' }
+                } }
+            ]).toArray();
+
+            // If there is stock
+            if(stockHeld.length > 0){
+                const totalHeld = _.find(stockHeld, ['_id', getId(cartItem.cartId)]).sumHeld;
+                const netStock = productStock - totalHeld;
+
+                // Check there is sufficient stock
+                if(productQuantity > netStock){
+                    res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                    return;
+                }
+            }
+        }
     }
 
     // Update the cart
@@ -570,52 +617,12 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
     }
 
-    // If stock management on check there is sufficient stock for this product
-    if(config.trackStock){
-        // Only if not disabled
-        if(product.productStockDisable !== true){
-            // If there is more stock than total (ignoring held)
-            if(productQuantity > product.productStock){
-                return res.status(400).json({ message: 'There is insufficient stock of this product.' });
-            }
-
-            const stockHeld = await db.cart.aggregate(
-                {
-                    $match: {
-                        cart: { $elemMatch: { productId: product._id.toString() } }
-                    }
-                },
-                { $unwind: '$cart' },
-                {
-                    $group: {
-                        _id: '$cart.productId',
-                        sumHeld: { $sum: '$cart.quantity' }
-                    }
-                },
-                {
-                    $project: {
-                        sumHeld: 1
-                    }
-                }
-            ).toArray();
-
-            // If there is stock
-            if(stockHeld.length > 0){
-                const totalHeld = _.find(stockHeld, { _id: product._id.toString() }).sumHeld;
-                const netStock = product.productStock - totalHeld;
-
-                // Check there is sufficient stock
-                if(productQuantity > netStock){
-                    return res.status(400).json({ message: 'There is insufficient stock of this product.' });
-                }
-            }
-        }
-    }
-
+    // Variant checks
     let productCartId = product._id.toString();
     let productPrice = parseFloat(product.productPrice).toFixed(2);
     let productVariantId;
     let productVariantTitle;
+    let productStock = product.productStock;
 
     // Check if a variant is supplied and override values
     if(req.body.productVariant){
@@ -627,6 +634,45 @@ router.post('/product/addtocart', async (req, res, next) => {
         productVariantTitle = variant.title;
         productCartId = req.body.productVariant;
         productPrice = parseFloat(variant.price).toFixed(2);
+        productStock = variant.stock;
+    }
+
+    // If stock management on check there is sufficient stock for this product
+    if(config.trackStock){
+        // Only if not disabled
+        if(product.productStockDisable !== true){
+            // If there is more stock than total (ignoring held)
+            if(productQuantity > productStock){
+                return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+            }
+
+            // Aggregate our current stock held from all users carts
+            const stockHeld = await db.cart.aggregate([
+                { $match: { sessionId: { $ne: req.session.id } } },
+                { $project: { _id: 0 } },
+                { $project: { o: { $objectToArray: '$cart' } } },
+                { $unwind: '$o' },
+                { $group: {
+                        _id: {
+                            $ifNull: ['$o.v.variantId', '$o.v.productId']
+                        },
+                        sumHeld: { $sum: '$o.v.quantity' }
+                } }
+            ]).toArray();
+
+            // If there is stock
+            if(stockHeld.length > 0){
+                const heldProduct = _.find(stockHeld, ['_id', getId(productCartId)]);
+                if(heldProduct){
+                    const netStock = productStock - heldProduct.sumHeld;
+
+                    // Check there is sufficient stock
+                    if(productQuantity > netStock){
+                        return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                    }
+                }
+            }
+        }
     }
 
     // if exists we add to the existing value
