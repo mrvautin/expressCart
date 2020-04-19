@@ -76,7 +76,7 @@ const runBefore = async () => {
                     title: g.products[0].productTitle,
                     quantity: 1,
                     totalItemPrice: g.products[0].productPrice,
-                    variant: g.variants[1]._id,
+                    variant: g.variants[0]._id,
                     productImage: g.products[0].productImage,
                     productComment: null
                 });

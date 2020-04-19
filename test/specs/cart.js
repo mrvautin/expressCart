@@ -15,8 +15,7 @@ test('[Success] Add subscripton product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[7]._id,
-            productQuantity: 1,
-            productOptions: {}
+            productQuantity: 1
         })
         .expect(200);
     const sessions = await g.db.cart.find({}).toArray();
@@ -31,8 +30,7 @@ test('[Fail] Add product to cart when subscription already added', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[1]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[1].productOptions)
+            productQuantity: 1
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Subscription already existing in cart. You cannot add more.');
@@ -43,8 +41,7 @@ test('[Fail] Add quantity which exceeds the maxQuantity', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[4]._id,
-            productQuantity: 75,
-            productOptions: {}
+            productQuantity: 75
         })
         .expect(400);
     t.deepEqual(res.body.message, 'The quantity exceeds the max amount. Please contact us for larger orders.');
@@ -62,8 +59,7 @@ test('[Success] Add product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
     const sessions = await g.db.cart.find({}).toArray();
@@ -106,8 +102,7 @@ test('[Fail] Cannot add subscripton when other product in cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[7]._id,
-            productQuantity: 1,
-            productOptions: {}
+            productQuantity: 1
         })
         .expect(400);
     t.deepEqual(res.body.message, 'You cannot combine subscription products with existing in your cart. Empty your cart and try again.');
@@ -118,8 +113,7 @@ test('[Fail] Add product to cart with not enough stock', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 20,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 20
         })
         .expect(400);
     t.deepEqual(res.body.message, 'There is insufficient stock of this product.');
@@ -130,8 +124,7 @@ test('[Fail] Add incorrect product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: 'fake_product_id',
-            productQuantity: 20,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 20
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Error updating cart. Please try again.');
@@ -143,8 +136,7 @@ test('[Success] Remove item previously added to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[1]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[1].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 

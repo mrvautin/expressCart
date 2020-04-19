@@ -19,8 +19,7 @@ test('[Success] Add valid amount discount', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
@@ -56,8 +55,7 @@ test('[Success] Add valid percent discount', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
@@ -91,8 +89,7 @@ test('[Fail] Add an expired discount code', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
@@ -111,8 +108,7 @@ test('[Fail] Add a future discount code', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
@@ -131,8 +127,7 @@ test('[Fail] Add a bogus code', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
