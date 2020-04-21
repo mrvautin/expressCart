@@ -45,8 +45,15 @@ router.get('/payment/:orderId', async (req, res, next) => {
 
                 // If variant, get the stock from the variant
                 if(product.variantId){
-                    const variant = await db.variants.findOne({ _id: getId(product.variantId) });
-                    productCurrentStock = variant.stock;
+                    const variant = await db.variants.findOne({
+                        _id: getId(product.variantId),
+                        product: getId(product._id)
+                    });
+                    if(variant){
+                        productCurrentStock = variant.stock;
+                    }else{
+                        productCurrentStock = 0;
+                    }
                 }
 
                 // Calc the new stock level
@@ -473,7 +480,10 @@ router.post('/product/updatecart', async (req, res, next) => {
 
     // Check if a variant is supplied and override values
     if(cartProduct.variantId){
-        const variant = await db.variants.findOne({ _id: getId(cartProduct.variantId) });
+        const variant = await db.variants.findOne({
+            _id: getId(cartProduct.variantId),
+            product: getId(product._id)
+        });
         if(!variant){
             res.status(400).json({ message: 'Error updating cart. Please try again.' });
             return;
@@ -626,9 +636,12 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // Check if a variant is supplied and override values
     if(req.body.productVariant){
-        const variant = await db.variants.findOne({ _id: getId(req.body.productVariant) });
+        const variant = await db.variants.findOne({
+            _id: getId(req.body.productVariant),
+            product: getId(req.body.productId)
+        });
         if(!variant){
-            return res.status(400).json({ message: 'Error updating cart. Please try again.' });
+            return res.status(400).json({ message: 'Error updating cart. Variant not found.' });
         }
         productVariantId = getId(req.body.productVariant);
         productVariantTitle = variant.title;
