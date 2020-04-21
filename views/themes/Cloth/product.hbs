@@ -27,8 +27,9 @@
             <div class="row">
                 <h1 class="col-md-10 product-title text-truncate">{{result.productTitle}}</h1>
                 {{#if variants}}
-                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{variants.1.price}}</h4>
+                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{variants.0.price}}</h4>
                 {{else}}
+
                     <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
                 {{/if}}
                 {{#if variants}}
