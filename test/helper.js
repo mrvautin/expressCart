@@ -137,6 +137,18 @@ const fixDiscountDates = (discounts) => {
     return discounts;
 };
 
+const fixProductIds = async (variants, products) => {
+    let index = 0;
+    variants.forEach(() => {
+        // Set to a random product ID
+        const product = products[getRandom(products.length)];
+        variants[index].product = product._id;
+        index++;
+    });
+
+    return variants;
+};
+
 const addApiKey = (users) => {
     let index = 0;
     users.forEach(() => {
@@ -156,5 +168,6 @@ module.exports = {
     g,
     fixProductDates,
     fixDiscountDates,
+    fixProductIds,
     getRandom
 };
