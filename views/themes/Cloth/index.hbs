@@ -49,7 +49,7 @@
                     {{/if}}
                     {{#if variants}}
                         <h3 class="product-price mp-0 text-center">
-                            From: {{currencySymbol @root.config.currencySymbol}}{{formatAmount 0.price}}
+                            From: {{currencySymbol @root.config.currencySymbol}}{{formatAmount variants.0.price}}
                         </h3>
                     {{else}}
                         <h3 class="product-price mp-0 text-center">
