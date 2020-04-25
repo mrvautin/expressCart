@@ -176,7 +176,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     });
 });
 
-// Update an existing product form action
+// Add a variant to a product
 router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
@@ -201,6 +201,38 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
+    }
+});
+
+// Update an existing product variant
+router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
+    if(!product){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    const variant = await db.variants.findOne({ _id: common.getId(req.body.variantId) });
+    if(!variant){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    try{
+        await db.variants.updateOne({
+            _id: common.getId(req.body.variantId)
+        }, {
+            $set: {
+                title: req.body.title,
+                price: req.body.price,
+                stock: req.body.stock
+            }
+        }, {});
+        res.status(200).json({ message: 'Successfully saved variant', product });
+    }catch(ex){
+        res.status(400).json({ message: 'Failed to save variant. Please try again' });
     }
 });
 

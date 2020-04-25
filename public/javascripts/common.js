@@ -99,6 +99,11 @@ function showNotification(msg, type, reloadPage, redirect){
     // defaults to null
     redirect = redirect || null;
 
+    // Check for message or fallback to unknown
+    if(!msg){
+        msg = 'Unknown error has occured. Check inputs.';
+    }
+
     $('#notify_message').removeClass();
     $('#notify_message').addClass('alert-' + type);
     $('#notify_message').html(msg);

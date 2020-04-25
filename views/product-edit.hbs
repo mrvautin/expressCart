@@ -98,6 +98,12 @@
                                 <div class='col-sm-3'>N/A</div>
                                 {{/if}}
                                 <div class='col-sm-3 text-right'>
+                                    <button class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
+                                        data-id="{{this._id}}"
+                                        data-title="{{this.title}}"
+                                        data-price="{{this.price}}"
+                                        data-stock="{{this.stock}}"
+                                    >{{ @root.__ "Edit" }}</button>
                                     <button class='btn btn-outline-danger removeVariant' data-id="{{this._id}}">{{ @root.__ "Remove" }}</button>
                                 </div>
                             </div>

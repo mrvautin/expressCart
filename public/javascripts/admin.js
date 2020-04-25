@@ -38,9 +38,39 @@ $(document).ready(function (){
         });
     });
 
-    // Variant adding
-    $('#variantModal').on('shown.bs.modal', function (){
-        $('#variant-title').focus();
+    $(document).on('click', '.editVariant', function(e){
+        e.preventDefault();
+    });
+
+    $(document).on('click', '#saveVariant', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/editvariant',
+            data: {
+                productId: $('#variant-edit-product').val(),
+                variantId: $('#variant-edit-id').val(),
+                title: $('#variant-edit-title').val(),
+                price: $('#variant-edit-price').val(),
+                stock: $('#variant-edit-stock').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
+    // Variant modal
+    $('#variantEditModal').on('shown.bs.modal', function (e){
+        $('#variant-edit-title').focus();
+        $('#variant-edit-id').val($(e.relatedTarget).data('id'));
+        $('#variant-edit-title').val($(e.relatedTarget).data('title'));
+        $('#variant-edit-price').val($(e.relatedTarget).data('price'));
+        $('#variant-edit-stock').val($(e.relatedTarget).data('stock'));
     });
 
     $(document).on('click', '#addVariant', function(e){
