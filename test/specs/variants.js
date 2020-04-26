@@ -32,6 +32,46 @@ test('[Success] Add a variant to a product', async t => {
     t.deepEqual(res.body.product.variants[0].product, g.products[0]._id.toString());
 });
 
+test('[Success] Add a variant with null stock', async t => {
+    const variant = {
+        title: 'test-jacket-variant',
+        price: '200.00',
+        stock: null,
+        productId: g.products[0]._id
+    };
+
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Successfully added variant');
+    t.deepEqual(res.body.product.variants[0].title, variant.title);
+    t.deepEqual(res.body.product.variants[0].price, variant.price);
+    t.deepEqual(res.body.product.variants[0].stock, variant.stock);
+    t.deepEqual(res.body.product.variants[0].product, g.products[0]._id.toString());
+});
+
+test('[Fail] Add a variant with invalid price', async t => {
+    const variant = {
+        title: 'test-jacket-variant',
+        price: '200',
+        stock: null,
+        productId: g.products[0]._id
+    };
+
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+
+    // Check the returned message
+    t.deepEqual(res.body[0].message, 'Should be a full 2 decimal value. Eg: 10.99');
+});
+
 test('[Fail] Add a variant to an invalid product', async t => {
     const variant = {
         title: 'test-jacket-variant',

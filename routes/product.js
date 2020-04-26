@@ -191,9 +191,21 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         product: common.getId(req.body.productId),
         title: req.body.title,
         price: req.body.price,
-        stock: common.safeParseInt(req.body.stock) || null,
-        added: new Date()
+        stock: common.safeParseInt(req.body.stock) || null
     };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('newVariant', variantDoc);
+    if(!schemaValidate.result){
+        if(process.env.NODE_ENV !== 'test'){
+            console.log('schemaValidate errors', schemaValidate.errors);
+        }
+        res.status(400).json(schemaValidate.errors);
+        return;
+    }
+
+    // Add date
+    variantDoc.added = new Date();
 
     try{
         const variant = await db.variants.insertOne(variantDoc);
@@ -220,15 +232,33 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
         return;
     }
 
+    const variantDoc = {
+        product: req.body.productId,
+        variantId: req.body.variantId,
+        title: req.body.title,
+        price: req.body.price,
+        stock: common.safeParseInt(req.body.stock) || null
+    };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('editVariant', variantDoc);
+    if(!schemaValidate.result){
+        if(process.env.NODE_ENV !== 'test'){
+            console.log('schemaValidate errors', schemaValidate.errors);
+        }
+        res.status(400).json(schemaValidate.errors);
+        return;
+    }
+
+    // Removed props not needed
+    delete variantDoc.product;
+    delete variantDoc.variantId;
+
     try{
         const updatedVariant = await db.variants.findOneAndUpdate({
             _id: common.getId(req.body.variantId)
         }, {
-            $set: {
-                title: req.body.title,
-                price: req.body.price,
-                stock: req.body.stock
-            }
+            $set: variantDoc
         }, {
             returnOriginal: false
         });
