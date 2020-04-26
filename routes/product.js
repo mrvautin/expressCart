@@ -197,7 +197,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
 
     try{
         const variant = await db.variants.insertOne(variantDoc);
-        product.variants = variant;
+        product.variants = variant.ops;
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
@@ -221,7 +221,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
     }
 
     try{
-        await db.variants.updateOne({
+        const updatedVariant = await db.variants.findOneAndUpdate({
             _id: common.getId(req.body.variantId)
         }, {
             $set: {
@@ -229,8 +229,10 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
                 price: req.body.price,
                 stock: req.body.stock
             }
-        }, {});
-        res.status(200).json({ message: 'Successfully saved variant', product });
+        }, {
+            returnOriginal: false
+        });
+        res.status(200).json({ message: 'Successfully saved variant', variant: updatedVariant.value });
     }catch(ex){
         res.status(400).json({ message: 'Failed to save variant. Please try again' });
     }
