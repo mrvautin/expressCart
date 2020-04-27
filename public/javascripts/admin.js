@@ -28,7 +28,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/product/removevariant',
-            data: { variantId: $(this).attr('data-id') }
+            data: { variant: $(this).attr('data-id') }
         })
         .done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -49,8 +49,8 @@ $(document).ready(function (){
             method: 'POST',
             url: '/admin/product/editvariant',
             data: {
-                productId: $('#variant-edit-product').val(),
-                variantId: $('#variant-edit-id').val(),
+                product: $('#variant-edit-product').val(),
+                variant: $('#variant-edit-id').val(),
                 title: $('#variant-edit-title').val(),
                 price: $('#variant-edit-price').val(),
                 stock: $('#variant-edit-stock').val()
@@ -78,7 +78,7 @@ $(document).ready(function (){
             method: 'POST',
             url: '/admin/product/addvariant',
             data: {
-                productId: $('#variant-product').val(),
+                product: $('#variant-product').val(),
                 title: $('#variant-title').val(),
                 price: $('#variant-price').val(),
                 stock: $('#variant-stock').val()

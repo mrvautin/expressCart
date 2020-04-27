@@ -15,7 +15,7 @@ test('[Success] Add a variant to a product', async t => {
         title: 'test-jacket-variant',
         price: '200.00',
         stock: 10,
-        productId: g.products[0]._id
+        product: g.products[0]._id
     };
 
     const res = await g.request
@@ -37,7 +37,7 @@ test('[Success] Add a variant with null stock', async t => {
         title: 'test-jacket-variant',
         price: '200.00',
         stock: null,
-        productId: g.products[0]._id
+        product: g.products[0]._id
     };
 
     const res = await g.request
@@ -59,7 +59,7 @@ test('[Fail] Add a variant with invalid price', async t => {
         title: 'test-jacket-variant',
         price: '200',
         stock: null,
-        productId: g.products[0]._id
+        product: g.products[0]._id
     };
 
     const res = await g.request
@@ -77,7 +77,7 @@ test('[Fail] Add a variant to an invalid product', async t => {
         title: 'test-jacket-variant',
         price: '200.00',
         stock: 10,
-        productId: 'invalid-product-id'
+        product: 'invalid-product-id'
     };
 
     const res = await g.request
@@ -87,13 +87,13 @@ test('[Fail] Add a variant to an invalid product', async t => {
         .expect(400);
 
     // Check the returned message
-    t.deepEqual(res.body.message, 'Failed to add product variant');
+    t.deepEqual(res.body[0].message, 'should match format "objectid"');
 });
 
 test('[Success] Update existing variant', async t => {
     const editVariant = {
-        productId: g.variants[0].product,
-        variantId: g.variants[0]._id,
+        product: g.variants[0].product,
+        variant: g.variants[0]._id,
         title: 'edited-title',
         price: '55.55',
         stock: 55
@@ -107,8 +107,8 @@ test('[Success] Update existing variant', async t => {
 
     // Check the returned message
     t.deepEqual(res.body.message, 'Successfully saved variant');
-    t.deepEqual(res.body.variant._id, editVariant.variantId.toString());
-    t.deepEqual(res.body.variant.product, editVariant.productId.toString());
+    t.deepEqual(res.body.variant._id, editVariant.variant.toString());
+    t.deepEqual(res.body.variant.product, editVariant.product.toString());
     t.deepEqual(res.body.variant.title, editVariant.title);
     t.deepEqual(res.body.variant.price, editVariant.price);
     t.deepEqual(res.body.variant.stock, editVariant.stock);
@@ -118,7 +118,7 @@ test('[Success] Remove existing variant', async t => {
     const res = await g.request
         .post('/admin/product/removevariant')
         .send({
-            variantId: g.variants[1]._id
+            variant: g.variants[1]._id
         })
         .set('apiKey', g.users[0].apiKey)
         .expect(200);
@@ -131,7 +131,7 @@ test('[Fail] Remove non existing variant', async t => {
     const res = await g.request
         .post('/admin/product/removevariant')
         .send({
-            variantId: 'non-existing-variant-id'
+            variant: 'non-existing-variant-id'
         })
         .set('apiKey', g.users[0].apiKey)
         .expect(400);

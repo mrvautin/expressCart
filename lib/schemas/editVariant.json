@@ -2,11 +2,13 @@
     "$id": "editVariant",
     "type": "object",
     "properties": {
-        "productId": {
-            "type": "string"
+        "product": {
+            "type": "string",
+            "format": "objectid"
         },
-        "variantId": {
-            "type": "string"
+        "variant": {
+            "type": "string",
+            "format": "objectid"
         },
         "title": {
             "type": "string",
@@ -28,7 +30,7 @@
         }
     },
     "required": [
-        "variantId",
+        "variant",
         "product",
         "title",
         "price",

@@ -2,8 +2,9 @@
     "$id": "newVariant",
     "type": "object",
     "properties": {
-        "productId": {
-            "type": "string"
+        "product": {
+            "type": "string",
+            "format": "objectid"
         },
         "title": {
             "type": "string",

@@ -180,15 +180,8 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
 router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
-
-    if(!product){
-        res.status(400).json({ message: 'Failed to add product variant' });
-        return;
-    }
-
     const variantDoc = {
-        product: common.getId(req.body.productId),
+        product: req.body.product,
         title: req.body.title,
         price: req.body.price,
         stock: common.safeParseInt(req.body.stock) || null
@@ -204,7 +197,17 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         return;
     }
 
-    // Add date
+    // Check product exists
+    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+
+    if(!product){
+        console.log('here1?');
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    // Fix values
+    variantDoc.product = common.getId(req.body.product);
     variantDoc.added = new Date();
 
     try{
@@ -212,6 +215,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         product.variants = variant.ops;
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
+        console.log('here?');
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
     }
 });
@@ -220,21 +224,9 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
 router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
-    if(!product){
-        res.status(400).json({ message: 'Failed to add product variant' });
-        return;
-    }
-
-    const variant = await db.variants.findOne({ _id: common.getId(req.body.variantId) });
-    if(!variant){
-        res.status(400).json({ message: 'Failed to add product variant' });
-        return;
-    }
-
     const variantDoc = {
-        product: req.body.productId,
-        variantId: req.body.variantId,
+        product: req.body.product,
+        variant: req.body.variant,
         title: req.body.title,
         price: req.body.price,
         stock: common.safeParseInt(req.body.stock) || null
@@ -250,13 +242,26 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
         return;
     }
 
+    // Validate ID's
+    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+    if(!product){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
+    if(!variant){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
     // Removed props not needed
     delete variantDoc.product;
-    delete variantDoc.variantId;
+    delete variantDoc.variant;
 
     try{
         const updatedVariant = await db.variants.findOneAndUpdate({
-            _id: common.getId(req.body.variantId)
+            _id: common.getId(req.body.variant)
         }, {
             $set: variantDoc
         }, {
@@ -272,7 +277,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
 router.post('/admin/product/removevariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const variant = await db.variants.findOne({ _id: common.getId(req.body.variantId) });
+    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
     if(!variant){
         res.status(400).json({ message: 'Failed to remove product variant' });
         return;
