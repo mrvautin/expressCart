@@ -430,7 +430,12 @@ router.get('/cart/retrieve', async (req, res, next) => {
     const db = req.app.db;
 
     // Get the cart from the DB using the session id
-    const cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+    let cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+
+    // Check for empty/null cart
+    if(!cart){
+        cart = [];
+    }
 
     res.status(200).json({ cart: cart.cart });
 });
@@ -661,15 +666,14 @@ router.post('/product/addtocart', async (req, res, next) => {
 
             // Aggregate our current stock held from all users carts
             const stockHeld = await db.cart.aggregate([
-                { $match: { sessionId: { $ne: req.session.id } } },
                 { $project: { _id: 0 } },
                 { $project: { o: { $objectToArray: '$cart' } } },
                 { $unwind: '$o' },
                 { $group: {
-                        _id: {
-                            $ifNull: ['$o.v.variantId', '$o.v.productId']
-                        },
-                        sumHeld: { $sum: '$o.v.quantity' }
+                    _id: {
+                        $ifNull: ['$o.v.variantId', '$o.v.productId']
+                    },
+                    sumHeld: { $sum: '$o.v.quantity' }
                 } }
             ]).toArray();
 
