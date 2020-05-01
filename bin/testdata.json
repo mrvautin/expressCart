@@ -77,6 +77,11 @@
     ],
     "variants": [
         {
+            "title" : "Extra Large",
+            "price" : "60.00",
+            "stock" : 20
+        },
+        {
             "title" : "Large",
             "price" : "50.00",
             "stock" : 20
