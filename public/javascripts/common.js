@@ -78,7 +78,6 @@ $(document).ready(function (){
                         }).done((response) => {
                             window.location = '/payment/' + response.paymentId;
                         }).fail((response) => {
-                            console.log('Response', response);
                             showNotification('Failed to complete transaction', 'danger', true);
                         });
                     }
@@ -99,6 +98,11 @@ function showNotification(msg, type, reloadPage, redirect){
 
     // defaults to null
     redirect = redirect || null;
+
+    // Check for message or fallback to unknown
+    if(!msg){
+        msg = 'Unknown error has occured. Check inputs.';
+    }
 
     $('#notify_message').removeClass();
     $('#notify_message').addClass('alert-' + type);

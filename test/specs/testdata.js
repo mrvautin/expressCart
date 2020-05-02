@@ -1,4 +1,6 @@
-import{ serial as test }from'ava';
+const {
+    serial: test
+} = require('ava');
 
 test('[Success] Run test data', async t => {
     const spawnSync = require('child_process').spawnSync;

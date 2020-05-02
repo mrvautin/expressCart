@@ -364,9 +364,13 @@ $(document).ready(function (){
         $('#product-title-image').attr('src', $(thumbnails).eq(matchedIndex).attr('src'));
     });
 
-    $(document).on('click', '.product-add-to-cart', function(e){
-        var productOptions = getSelectedOptions();
+    $(document).on('change', '#product_variant', function(e){
+        var variantPrice = $(this).find(':selected').attr('data-price');
+        var currencySymbol = $('#currencySymbol').val();
+        $('h4.product-price:first').html(currencySymbol + variantPrice);
+    });
 
+    $(document).on('click', '.product-add-to-cart', function(e){
         if(parseInt($('#product_quantity').val()) < 1){
             $('#product_quantity').val(1);
         }
@@ -377,7 +381,7 @@ $(document).ready(function (){
             data: {
                 productId: $('#productId').val(),
                 productQuantity: $('#product_quantity').val(),
-                productOptions: JSON.stringify(productOptions),
+                productVariant: $('#product_variant').val(),
                 productComment: $('#product_comment').val()
             }
         })
@@ -412,7 +416,7 @@ $(document).ready(function (){
             productLink = '/product/' + $(this).attr('data-link');
         }
 
-        if($(this).attr('data-has-options') === 'true'){
+        if($(this).attr('data-has-variants') === 'true'){
             window.location = productLink;
         }else{
             $.ajax({
@@ -592,44 +596,6 @@ function updateCart(element){
     });
 }
 
-function getSelectedOptions(){
-    var options = {};
-    $('.product-opt').each(function(){
-        var optionValue = $(this).val().trim();
-        var optionLabel = $(this).attr('data-label');
-        var optionName = $(this).attr('name');
-        var optionType = $(this).attr('type');
-
-        // If select option
-        if(!optionType){
-            options[optionName] = {
-                label: optionLabel,
-                name: optionName,
-                value: optionValue
-            };
-        }
-
-        // If radio option
-        if(optionType === 'radio'){
-            options[optionName] = {
-                label: optionLabel,
-                name: optionName,
-                value: $('input[name="' + optionName + '"]:checked').val()
-            };
-        }
-
-        // If checkbox option
-        if(optionType === 'checkbox'){
-            options[optionName] = {
-                label: optionLabel,
-                name: optionName,
-                value: $('input[name="' + $(this).attr('name') + '"]').is(':checked')
-            };
-        }
-    });
-    return options;
-}
-
 function updateCartDiv(){
     $.ajax({
         method: 'GET',
@@ -665,17 +631,10 @@ function updateCartDiv(){
                 var item = cart[cartId];
                 // Setup the product
                 var productTotalAmount = numeral(item.totalItemPrice).format('0.00');
-                var optionsHtml = '';
-                var optionIndex = 1;
-                Object.keys(item.options).forEach(function(key){
-                    var option = item.options[key];
-                    if(optionIndex === Object.keys(item.options).length){
-                        optionsHtml += `<strong>${upperFirst(option.name)}</strong>: ${option.value}`;
-                    }else{
-                        optionsHtml += `<strong>${upperFirst(option.name)}</strong>: ${option.value} / `;
-                    }
-                    optionIndex++;
-                });
+                var variantHtml = '';
+                if(item.variantId){
+                    variantHtml += `<strong>Option:</strong> ${item.variantTitle}`;
+                }
                 var productImage = `<img class="img-fluid" src="/uploads/placeholder.png" alt="${item.title} product image"></img>`;
                 if(item.productImage){
                     productImage = `<img class="img-fluid" src="${item.productImage}" alt="${item.title} product image"></img>`;
@@ -693,7 +652,7 @@ function updateCartDiv(){
                                 <div class="row">
                                     <div class="col-12 no-pad-left mt-md-4">
                                         <h6><a href="/product/${item.link}">${item.title}</a></h6>
-                                        ${optionsHtml}
+                                        ${variantHtml}
                                     </div>
                                     <div class="col-12 col-md-6 no-pad-left mb-2">
                                         <div class="input-group">
@@ -767,12 +726,6 @@ function updateCartDiv(){
     })
     .fail(function(result){
         showNotification(result.responseJSON.message, 'danger');
-    });
-}
-
-function upperFirst(value){
-    return value.replace(/^\w/, (chr) => {
-        return chr.toUpperCase();
     });
 }
 

@@ -1,0 +1,39 @@
+{
+    "$id": "editVariant",
+    "type": "object",
+    "properties": {
+        "product": {
+            "type": "string",
+            "format": "objectid"
+        },
+        "variant": {
+            "type": "string",
+            "format": "objectid"
+        },
+        "title": {
+            "type": "string",
+            "isNotEmpty": true,
+            "minLength": 2
+        },
+        "price": {
+            "type": "string",
+            "format": "amount"
+        },
+        "stock": {
+            "type": ["number", "null"]
+        }
+    },
+    "errorMessage": {
+        "isNotEmpty": "This is my custom error message",
+        "properties": {
+            "price": "Should be a full 2 decimal value. Eg: 10.99"
+        }
+    },
+    "required": [
+        "variant",
+        "product",
+        "title",
+        "price",
+        "stock"
+    ]
+}

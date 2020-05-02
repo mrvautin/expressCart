@@ -1,4 +1,6 @@
-import{ serial as test }from'ava';
+const {
+    serial: test
+} = require('ava');
 const {
     runBefore,
     g
@@ -67,14 +69,6 @@ test('[Success] Add a product', async t => {
         productDescription: 'Test product description used to describe the product',
         productPublished: true,
         productTags: 'organic, jacket',
-        productOptions: {
-            Size: {
-                optName: 'Size',
-                optLabel: 'Select size',
-                optType: 'select',
-                optOptions: ['S', 'M', 'L', 'XL']
-            }
-        },
         productComment: false,
         productStock: 50
     };
@@ -97,14 +91,6 @@ test('[Fail] Add a product - Duplicate permalink', async t => {
         productDescription: 'Test product description used to describe the product',
         productPublished: true,
         productTags: 'organic, jacket, blue',
-        productOptions: {
-            Size: {
-                optName: 'Size',
-                optLabel: 'Select size',
-                optType: 'select',
-                optOptions: ['S', 'M', 'L', 'XL']
-            }
-        },
         productComment: false,
         productStock: 50
     };
@@ -127,14 +113,6 @@ test('[Success] Update a product', async t => {
         productDescription: 'Test product description used to describe the product',
         productPublished: true,
         productTags: 'organic, jacket',
-        productOptions: {
-            Size: {
-                optName: 'Size',
-                optLabel: 'Select size',
-                optType: 'select',
-                optOptions: ['S', 'M', 'L', 'XL']
-            }
-        },
         productComment: true,
         productStock: 50
     };

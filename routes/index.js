@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const colors = require('colors');
-const hash = require('object-hash');
 const stripHtml = require('string-strip-html');
 const moment = require('moment');
 const _ = require('lodash');
@@ -16,7 +15,7 @@ const {
     updateTotalCart,
     emptyCart,
     updateSubscriptionCheck,
-    paginateData,
+    paginateProducts,
     getSort,
     addSitemapProducts,
     getCountryList
@@ -42,19 +41,47 @@ router.get('/payment/:orderId', async (req, res, next) => {
             Object.keys(order.orderProducts).forEach(async (productKey) => {
                 const product = order.orderProducts[productKey];
                 const dbProduct = await db.products.findOne({ _id: getId(product.productId) });
-                let newStockLevel = dbProduct.productStock - product.quantity;
+                let productCurrentStock = dbProduct.productStock;
+
+                // If variant, get the stock from the variant
+                if(product.variantId){
+                    const variant = await db.variants.findOne({
+                        _id: getId(product.variantId),
+                        product: getId(product._id)
+                    });
+                    if(variant){
+                        productCurrentStock = variant.stock;
+                    }else{
+                        productCurrentStock = 0;
+                    }
+                }
+
+                // Calc the new stock level
+                let newStockLevel = productCurrentStock - product.quantity;
                 if(newStockLevel < 1){
                     newStockLevel = 0;
                 }
 
-                // Update product stock
-                await db.products.updateOne({
-                    _id: getId(product.productId)
-                }, {
-                    $set: {
-                        productStock: newStockLevel
-                    }
-                }, { multi: false });
+                // Update stock
+                if(product.variantId){
+                    // Update variant stock
+                    await db.variants.updateOne({
+                        _id: getId(product.variantId)
+                    }, {
+                        $set: {
+                            stock: newStockLevel
+                        }
+                    }, { multi: false });
+                }else{
+                    // Update product stock
+                    await db.products.updateOne({
+                        _id: getId(product.productId)
+                    }, {
+                        $set: {
+                            productStock: newStockLevel
+                        }
+                    }, { multi: false });
+                }
 
                 // Add stock updated flag to order
                 await db.orders.updateOne({
@@ -342,14 +369,16 @@ router.get('/product/:id', async (req, res) => {
 
     const product = await db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] });
     if(!product){
-        res.render('error', { title: 'Not found', message: 'Order not found', helpers: req.handlebars.helpers, config });
+        res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         return;
     }
     if(product.productPublished === false){
         res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         return;
     }
-    const productOptions = product.productOptions;
+
+    // Get variants for this product
+    const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
 
     // If JSON query param return json instead
     if(req.query.json === 'true'){
@@ -380,7 +409,7 @@ router.get('/product/:id', async (req, res) => {
     res.render(`${config.themeViews}product`, {
         title: product.productTitle,
         result: product,
-        productOptions: productOptions,
+        variants,
         images: images,
         relatedProducts,
         productDescription: stripHtml(product.productDescription),
@@ -401,7 +430,12 @@ router.get('/cart/retrieve', async (req, res, next) => {
     const db = req.app.db;
 
     // Get the cart from the DB using the session id
-    const cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+    let cart = await db.cart.findOne({ sessionId: getId(req.session.id) });
+
+    // Check for empty/null cart
+    if(!cart){
+        cart = [];
+    }
 
     res.status(200).json({ cart: cart.cart });
 });
@@ -437,18 +471,68 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
-    // If stock management on check there is sufficient stock for this product
-    if(config.trackStock && product.productStock){
-        if(productQuantity > product.productStock){
-            res.status(400).json({ message: 'There is insufficient stock of this product.', totalCartItems: Object.keys(req.session.cart).length });
-            return;
-        }
-    }
-
-    const productPrice = parseFloat(product.productPrice).toFixed(2);
+    // Check for a cart
     if(!req.session.cart[cartItem.cartId]){
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
         return;
+    }
+
+    const cartProduct = req.session.cart[cartItem.cartId];
+
+    // Set default stock
+    let productStock = product.productStock;
+    let productPrice = parseFloat(product.productPrice).toFixed(2);
+
+    // Check if a variant is supplied and override values
+    if(cartProduct.variantId){
+        const variant = await db.variants.findOne({
+            _id: getId(cartProduct.variantId),
+            product: getId(product._id)
+        });
+        if(!variant){
+            res.status(400).json({ message: 'Error updating cart. Please try again.' });
+            return;
+        }
+        productPrice = parseFloat(variant.price).toFixed(2);
+        productStock = variant.stock;
+    }
+
+    // If stock management on check there is sufficient stock for this product
+    if(config.trackStock){
+        // Only if not disabled
+        if(product.productStockDisable !== true){
+            // If there is more stock than total (ignoring held)
+            if(productQuantity > productStock){
+                res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                return;
+            }
+
+            // Aggregate our current stock held from all users carts
+            const stockHeld = await db.cart.aggregate([
+                { $match: { sessionId: { $ne: req.session.id } } },
+                { $project: { _id: 0 } },
+                { $project: { o: { $objectToArray: '$cart' } } },
+                { $unwind: '$o' },
+                { $group: {
+                    _id: {
+                        $ifNull: ['$o.v.variantId', '$o.v.productId']
+                    },
+                    sumHeld: { $sum: '$o.v.quantity' }
+                } }
+            ]).toArray();
+
+            // If there is stock
+            if(stockHeld.length > 0){
+                const totalHeld = _.find(stockHeld, ['_id', getId(cartItem.cartId)]).sumHeld;
+                const netStock = productStock - totalHeld;
+
+                // Check there is sufficient stock
+                if(productQuantity > netStock){
+                    res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                    return;
+                }
+            }
+        }
     }
 
     // Update the cart
@@ -530,6 +614,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     // Get the product from the DB
     const product = await db.products.findOne({ _id: getId(req.body.productId) });
+
     // No product found
     if(!product){
         return res.status(400).json({ message: 'Error updating cart. Please try again.' });
@@ -547,73 +632,72 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
     }
 
+    // Variant checks
+    let productCartId = product._id.toString();
+    let productPrice = parseFloat(product.productPrice).toFixed(2);
+    let productVariantId;
+    let productVariantTitle;
+    let productStock = product.productStock;
+
+    // Check if a variant is supplied and override values
+    if(req.body.productVariant){
+        const variant = await db.variants.findOne({
+            _id: getId(req.body.productVariant),
+            product: getId(req.body.productId)
+        });
+        if(!variant){
+            return res.status(400).json({ message: 'Error updating cart. Variant not found.' });
+        }
+        productVariantId = getId(req.body.productVariant);
+        productVariantTitle = variant.title;
+        productCartId = req.body.productVariant;
+        productPrice = parseFloat(variant.price).toFixed(2);
+        productStock = variant.stock;
+    }
+
     // If stock management on check there is sufficient stock for this product
     if(config.trackStock){
         // Only if not disabled
         if(product.productStockDisable !== true){
             // If there is more stock than total (ignoring held)
-            if(productQuantity > product.productStock){
+            if(productQuantity > productStock){
                 return res.status(400).json({ message: 'There is insufficient stock of this product.' });
             }
 
-            const stockHeld = await db.cart.aggregate(
-                {
-                    $match: {
-                        cart: { $elemMatch: { productId: product._id.toString() } }
-                    }
-                },
-                { $unwind: '$cart' },
-                {
-                    $group: {
-                        _id: '$cart.productId',
-                        sumHeld: { $sum: '$cart.quantity' }
-                    }
-                },
-                {
-                    $project: {
-                        sumHeld: 1
-                    }
-                }
-            ).toArray();
+            // Aggregate our current stock held from all users carts
+            const stockHeld = await db.cart.aggregate([
+                { $project: { _id: 0 } },
+                { $project: { o: { $objectToArray: '$cart' } } },
+                { $unwind: '$o' },
+                { $group: {
+                    _id: {
+                        $ifNull: ['$o.v.variantId', '$o.v.productId']
+                    },
+                    sumHeld: { $sum: '$o.v.quantity' }
+                } }
+            ]).toArray();
 
             // If there is stock
             if(stockHeld.length > 0){
-                const totalHeld = _.find(stockHeld, { _id: product._id.toString() }).sumHeld;
-                const netStock = product.productStock - totalHeld;
+                const heldProduct = _.find(stockHeld, ['_id', getId(productCartId)]);
+                if(heldProduct){
+                    const netStock = productStock - heldProduct.sumHeld;
 
-                // Check there is sufficient stock
-                if(productQuantity > netStock){
-                    return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                    // Check there is sufficient stock
+                    if(productQuantity > netStock){
+                        return res.status(400).json({ message: 'There is insufficient stock of this product.' });
+                    }
                 }
             }
         }
     }
 
-    const productPrice = parseFloat(product.productPrice).toFixed(2);
-
-    let options = {};
-    if(req.body.productOptions){
-        try{
-            if(typeof req.body.productOptions === 'object'){
-                options = req.body.productOptions;
-            }else{
-                options = JSON.parse(req.body.productOptions);
-            }
-        }catch(ex){}
-    }
-
-    // Product with options hash
-    const productHash = hash({
-        productId: product._id.toString(),
-        options
-    });
-
     // if exists we add to the existing value
     let cartQuantity = 0;
-    if(req.session.cart[productHash]){
-        cartQuantity = parseInt(req.session.cart[productHash].quantity) + productQuantity;
-        req.session.cart[productHash].quantity = cartQuantity;
-        req.session.cart[productHash].totalItemPrice = productPrice * parseInt(req.session.cart[productHash].quantity);
+    if(req.session.cart[productCartId]){
+        cartQuantity = parseInt(req.session.cart[productCartId].quantity) + productQuantity;
+        req.session.cart[productCartId].quantity = cartQuantity;
+        req.session.cart[productCartId].totalItemPrice = productPrice * parseInt(req.session.cart[productCartId].quantity);
     }else{
         // Set the card quantity
         cartQuantity = productQuantity;
@@ -624,10 +708,11 @@ router.post('/product/addtocart', async (req, res, next) => {
         productObj.title = product.productTitle;
         productObj.quantity = productQuantity;
         productObj.totalItemPrice = productPrice * productQuantity;
-        productObj.options = options;
         productObj.productImage = product.productImage;
         productObj.productComment = productComment;
         productObj.productSubscription = product.productSubscription;
+        productObj.variantId = productVariantId;
+        productObj.variantTitle = productVariantTitle;
         if(product.productPermalink){
             productObj.link = product.productPermalink;
         }else{
@@ -635,7 +720,7 @@ router.post('/product/addtocart', async (req, res, next) => {
         }
 
         // merge into the current cart
-        req.session.cart[productHash] = productObj;
+        req.session.cart[productCartId] = productObj;
     }
 
     // Update cart to the DB
@@ -655,7 +740,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
     return res.status(200).json({
         message: 'Cart successfully updated',
-        cartId: productHash,
+        cartId: productCartId,
         totalCartItems: req.session.totalCartItems
     });
 });
@@ -679,7 +764,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }),
+        paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
         getMenu(db)
     ])
     .then(([results, menu]) => {
@@ -732,7 +817,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
     }
 
     Promise.all([
-        paginateData(true, req, pageNum, 'products', { _id: { $in: lunrIdArray } }, getSort()),
+        paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -814,7 +899,7 @@ router.get('/page/:pageNum', (req, res, next) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     Promise.all([
-        paginateData(true, req, req.params.pageNum, 'products', {}, getSort()),
+        paginateProducts(true, db, req.params.pageNum, {}, getSort()),
         getMenu(db)
     ])
         .then(([results, menu]) => {
@@ -855,10 +940,10 @@ router.get('/:page?', async (req, res, next) => {
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
-            paginateData(true, req, 1, 'products', {}, getSort()),
+            paginateProducts(true, db, 1, {}, getSort()),
             getMenu(db)
         ])
-            .then(([results, menu]) => {
+            .then(async([results, menu]) => {
                 // If JSON query param return json instead
                 if(req.query.json === 'true'){
                     res.status(200).json(results.data);

@@ -1,4 +1,6 @@
-import{ serial as test }from'ava';
+const {
+    serial: test
+} = require('ava');
 const {
     runBefore,
     g
@@ -13,8 +15,7 @@ test('[Success] Add subscripton product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[7]._id,
-            productQuantity: 1,
-            productOptions: {}
+            productQuantity: 1
         })
         .expect(200);
     const sessions = await g.db.cart.find({}).toArray();
@@ -29,8 +30,7 @@ test('[Fail] Add product to cart when subscription already added', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[1]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[1].productOptions)
+            productQuantity: 1
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Subscription already existing in cart. You cannot add more.');
@@ -41,8 +41,7 @@ test('[Fail] Add quantity which exceeds the maxQuantity', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[4]._id,
-            productQuantity: 75,
-            productOptions: {}
+            productQuantity: 75
         })
         .expect(400);
     t.deepEqual(res.body.message, 'The quantity exceeds the max amount. Please contact us for larger orders.');
@@ -60,8 +59,7 @@ test('[Success] Add product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 1
         })
         .expect(200);
     const sessions = await g.db.cart.find({}).toArray();
@@ -104,8 +102,7 @@ test('[Fail] Cannot add subscripton when other product in cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[7]._id,
-            productQuantity: 1,
-            productOptions: {}
+            productQuantity: 1
         })
         .expect(400);
     t.deepEqual(res.body.message, 'You cannot combine subscription products with existing in your cart. Empty your cart and try again.');
@@ -116,8 +113,7 @@ test('[Fail] Add product to cart with not enough stock', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[0]._id,
-            productQuantity: 20,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 20
         })
         .expect(400);
     t.deepEqual(res.body.message, 'There is insufficient stock of this product.');
@@ -128,8 +124,7 @@ test('[Fail] Add incorrect product to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: 'fake_product_id',
-            productQuantity: 20,
-            productOptions: JSON.stringify(g.products[0].productOptions)
+            productQuantity: 20
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Error updating cart. Please try again.');
@@ -141,8 +136,7 @@ test('[Success] Remove item previously added to cart', async t => {
         .post('/product/addtocart')
         .send({
             productId: g.products[1]._id,
-            productQuantity: 1,
-            productOptions: JSON.stringify(g.products[1].productOptions)
+            productQuantity: 1
         })
         .expect(200);
 
@@ -163,4 +157,135 @@ test('[Fail] Try remove an item which is not in the cart', async t => {
         })
         .expect(400);
     t.deepEqual(res.body.message, 'Product not found in cart');
+});
+
+test('[Fail] Try add more than the variant stock', async t => {
+    const variant = {
+        title: 'test-jacket-variant',
+        price: '200.00',
+        stock: 10,
+        product: g.products[0]._id
+    };
+
+    // Add a new variant
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Stock the variant ID
+    const newVariantId = res.body.product.variants[0]._id;
+
+    // Empty our cart
+    const emptyCart = await g.request
+        .post('/product/emptycart')
+        .expect(200);
+    t.deepEqual(emptyCart.body.message, 'Cart successfully emptied');
+
+    // Add more than we have in stock
+    const addToCart = await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[0]._id,
+            productVariant: newVariantId,
+            productQuantity: 15
+        })
+        .expect(400);
+
+    t.deepEqual(addToCart.body.message, 'There is insufficient stock of this product.');
+});
+
+test('[Fail] Try hold stock then add more stock than available', async t => {
+    const variant = {
+        title: 'test-jacket-variant',
+        price: '200.00',
+        stock: 10,
+        product: g.products[0]._id
+    };
+
+    // Add a new variant
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Stock the variant ID
+    const newVariantId = res.body.product.variants[0]._id;
+
+    // Empty our cart
+    const emptyCart = await g.request
+        .post('/product/emptycart')
+        .expect(200);
+    t.deepEqual(emptyCart.body.message, 'Cart successfully emptied');
+
+    // Add lesser amount than stock on hand
+    await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[0]._id,
+            productVariant: newVariantId,
+            productQuantity: 5
+        })
+        .expect(200);
+
+    // Add more stock than is available considering held stock
+    const addToCart2 = await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[0]._id,
+            productVariant: newVariantId,
+            productQuantity: 8
+        })
+        .expect(400);
+
+    t.deepEqual(addToCart2.body.message, 'There is insufficient stock of this product.');
+});
+
+test('[Success] Hold some stock add more stock which is less than total', async t => {
+    const variant = {
+        title: 'test-jacket-variant',
+        price: '200.00',
+        stock: 10,
+        product: g.products[0]._id
+    };
+
+    // Add a new variant
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Stock the variant ID
+    const newVariantId = res.body.product.variants[0]._id;
+
+    // Empty our cart
+    const emptyCart = await g.request
+        .post('/product/emptycart')
+        .expect(200);
+    t.deepEqual(emptyCart.body.message, 'Cart successfully emptied');
+
+    // Add lesser amount than stock on hand
+    await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[0]._id,
+            productVariant: newVariantId,
+            productQuantity: 5
+        })
+        .expect(200);
+
+    // Add more stock than is available considering held stock
+    const addToCart2 = await g.request
+        .post('/product/addtocart')
+        .send({
+            productId: g.products[0]._id,
+            productVariant: newVariantId,
+            productQuantity: 5
+        })
+        .expect(200);
+
+    t.deepEqual(addToCart2.body.message, 'Cart successfully updated');
 });
