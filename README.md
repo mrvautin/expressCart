@@ -17,7 +17,7 @@ Payment providers included:
 
 [![Actions Status](https://github.com/mrvautin/expressCart/workflows/expressCart-tests/badge.svg)](https://github.com/mrvautin/expressCart/actions)
 
-[**View the demo**](https://demo.expresscart.markmoffat.com/)
+[**View the demo**](https://demo.expresscart.markmoffat.com/) [**Admin demo**](https://demo.expresscart.markmoffat.com/admin/)
 
 ```
 Demo credentials
