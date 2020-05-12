@@ -74,50 +74,50 @@
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <input type="hidden" id="productOptions" value="{{stringify result.productOptions}}" />
-                    <label class="control-label">{{ @root.__ "Product options" }}</label>
+                    <label class="control-label">{{ @root.__ "Product variants" }}</label>
                     <ul class="list-group" id="product_opt_wrapper">
+                        <li class="list-group-item bg-secondary">
+                            <div class="row">
+                                <div class='col-sm-3'>Title</div>
+                                <div class='col-sm-3'>Price</div>
+                                <div class='col-sm-3'>Stock</div>
+                                <div class='col-sm-3 text-right'>
+                                    <a href="#" data-toggle="modal" data-target="#variantModal" class="btn btn-outline-success">{{ @root.__ "Add" }}</a>
+                                </div>
+                            </div>
+                        </li>
+                        {{#if result.variants}}
+                        {{#each result.variants}}
                         <li class="list-group-item">
                             <div class="row">
-                            <div class="col-sm-2">
-                                <strong>{{ @root.__ "Name" }}:</strong>
-                                <input type="text" id="product_optName" class="form-control" placeholder="size" />
-                            </div>
-                            <div class="col-sm-2">
-                                <strong>{{ @root.__ "Label" }}:</strong>
-                                <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
-                            </div>
-                            <div class="col-sm-2">
-                                <strong>{{ @root.__ "Type" }}:</strong>
-                                <select id="product_optType" class="form-control">
-                                    <option value="select">Select</option>
-                                    <option value="radio">Radio</option>
-                                    <option value="checkbox">Checkbox</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <strong>{{ @root.__ "Options" }}:</strong>
-                                <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
-                            </div>
-                            <div class="col-sm-2 text-right"></br>
-                                <button id="product_opt_add" class="btn btn-outline-success">{{ @root.__ "Add" }}</button>
-                            </div></div>
-                        </li>
-                        {{#each options}}
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class='col-sm-2 opt-name'>{{this.optName}}</div>
-                                    <div class='col-sm-2'>{{this.optLabel}}</div>
-                                    <div class='col-sm-2'>{{this.optType}}</div>
-                                    <div class='col-sm-4'>{{{this.optOptions}}}</div>
-                                    <div class='col-sm-2 text-right'>
-                                        <button class='product_opt_remove btn btn-outline-danger'>{{ @root.__ "Remove" }}</button>
-                                    </div>
+                                <div class='col-sm-3'>{{this.title}}</div>
+                                <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
+                                {{#if this.stock}}
+                                <div class='col-sm-3'>{{this.stock}}</div>
+                                {{else}}
+                                <div class='col-sm-3'>N/A</div>
+                                {{/if}}
+                                <div class='col-sm-3 text-right'>
+                                    <button class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
+                                        data-id="{{this._id}}"
+                                        data-title="{{this.title}}"
+                                        data-price="{{this.price}}"
+                                        data-stock="{{this.stock}}"
+                                    >{{ @root.__ "Edit" }}</button>
+                                    <button class='btn btn-outline-danger removeVariant' data-id="{{this._id}}">{{ @root.__ "Remove" }}</button>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
                         {{/each}}
+                        {{else}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class='col-sm-12 text-center'>No current variants</div>
+                            </div>
+                        </li>
+                        {{/if}}
                     </ul>
-                    <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
+                    <p class="help-block">{{ @root.__ "Here you can set variants for your product. Eg: Size, color, style" }}</p>
                 </div>
             </div>
             {{#ifCond config.paymentGateway '==' 'stripe'}}

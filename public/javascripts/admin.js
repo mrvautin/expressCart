@@ -22,14 +22,13 @@ $(document).ready(function (){
         });
     });
 
-    $(document).on('click', '.product_opt_remove', function(e){
+    $(document).on('click', '.removeVariant', function(e){
         e.preventDefault();
-        var name = $(this).closest('li').find('.opt-name').html();
 
         $.ajax({
             method: 'POST',
-            url: '/admin/product/removeoption',
-            data: { productId: $('#productId').val(), optName: name }
+            url: '/admin/product/removevariant',
+            data: { variant: $(this).attr('data-id') }
         })
         .done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -39,47 +38,58 @@ $(document).ready(function (){
         });
     });
 
-    $(document).on('click', '#product_opt_add', function(e){
+    $(document).on('click', '.editVariant', function(e){
+        e.preventDefault();
+    });
+
+    $(document).on('click', '#saveVariant', function(e){
         e.preventDefault();
 
-        var optName = $('#product_optName').val();
-        var optLabel = $('#product_optLabel').val();
-        var optType = $('#product_optType').val();
-        var optOptions = $('#product_optOptions').val();
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/editvariant',
+            data: {
+                product: $('#variant-edit-product').val(),
+                variant: $('#variant-edit-id').val(),
+                title: $('#variant-edit-title').val(),
+                price: $('#variant-edit-price').val(),
+                stock: $('#variant-edit-stock').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
 
-        var optJson = {};
-        if($('#productOptions').val() !== '' && $('#productOptions').val() !== '"{}"'){
-            optJson = JSON.parse($('#productOptions').val());
-        }
+    // Variant modal
+    $('#variantEditModal').on('shown.bs.modal', function (e){
+        $('#variant-edit-title').focus();
+        $('#variant-edit-id').val($(e.relatedTarget).data('id'));
+        $('#variant-edit-title').val($(e.relatedTarget).data('title'));
+        $('#variant-edit-price').val($(e.relatedTarget).data('price'));
+        $('#variant-edit-stock').val($(e.relatedTarget).data('stock'));
+    });
 
-        var html = '<li class="list-group-item">';
-        html += '<div class="row">';
-        html += '<div class="col-sm-2 opt-name">' + optName + '</div>';
-        html += '<div class="col-sm-2">' + optLabel + '</div>';
-        html += '<div class="col-sm-2">' + optType + '</div>';
-        html += '<div class="col-sm-4">' + optOptions + '</div>';
-        html += '<div class="col-sm-2 text-right">';
-        html += '<button class="product_opt_remove btn btn-outline-danger">Remove</button>';
-        html += '</div></div></li>';
-
-        // append data
-        $('#product_opt_wrapper').append(html);
-
-        // add to the stored json string
-        optJson[optName] = {
-            optName: optName,
-            optLabel: optLabel,
-            optType: optType,
-            optOptions: $.grep(optOptions.split(','), function(n){ return n === 0 || n; })
-        };
-
-        // write new json back to field
-        $('#productOptions').val(JSON.stringify(optJson));
-
-        // clear inputs
-        $('#product_optName').val('');
-        $('#product_optLabel').val('');
-        $('#product_optOptions').val('');
+    $(document).on('click', '#addVariant', function(e){
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/addvariant',
+            data: {
+                product: $('#variant-product').val(),
+                title: $('#variant-title').val(),
+                price: $('#variant-price').val(),
+                stock: $('#variant-stock').val()
+            }
+        })
+		.done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
     });
 
     $(document).on('click', '#btnSettingsUpdate', function(e){
@@ -208,7 +218,6 @@ $(document).ready(function (){
                     productStock: $('#productStock').val(),
                     productDescription: $('#productDescription').val(),
                     productPermalink: $('#productPermalink').val(),
-                    productOptions: $('#productOptions').val(),
                     productSubscription: $('#productSubscription').val(),
                     productComment: $('#productComment').is(':checked'),
                     productTags: $('#productTags').val()
@@ -247,7 +256,6 @@ $(document).ready(function (){
                     productStockDisable: $('#productStockDisable').is(':checked'),
                     productDescription: $('#productDescription').val(),
                     productPermalink: $('#productPermalink').val(),
-                    productOptions: $('#productOptions').val(),
                     productSubscription: $('#productSubscription').val(),
                     productComment: $('#productComment').is(':checked'),
                     productTags: $('#productTags').val()

@@ -4,154 +4,63 @@
             "productPermalink": "duckworth-jacket",
             "productTitle": "Duckworth Woolfill Jacket",
             "productPrice": "188.00",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility;\">Inspired by the timeless, functional style of your grandfather's work coat, the Foraker features brass buttons and 4 patch pockets. Crafted in Bristol, Tennessee, our 10oz organic duck canvas is light enough for an early summer morning, but rugged enough to handle your days work.<\/p><ul class=\"tabs-content\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility;\"><li style=\"margin-bottom: 0px;\">100% Organic Duck Canvas.<\/li><\/ul>",
+            "productDescription": "Inspired by the timeless, functionality of your grandfather's work coat, the Foraker features brass buttons and 4 patch pockets. Crafted in Bristol, Tennessee, our 10oz organic duck canvas is light enough for an early summer morning, but rugged enough to handle your days work.<ul><li>100% Organic Duck Canvas.</li></ul>",
             "productPublished": true,
             "productTags": "organic, jacket",
-            "productOptions": {
-                "Size": {
-                    "optName": "Size",
-                    "optLabel": "Select size",
-                    "optType": "select",
-                    "optOptions": [
-                        "S",
-                        "M",
-                        "L",
-                        "XL"
-                    ]
-                },
-                "Colour": {
-                    "optName": "Colour",
-                    "optLabel": "Select colour",
-                    "optType": "select",
-                    "optOptions": [
-                        "Harvest",
-                        "Navy"
-                    ]
-                }
-            },
             "productStock": 10
         },
         {
             "productPermalink": "5-panel-camp-cap",
             "productTitle": "5 Panel Camp Cap",
             "productPrice": "48.00",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility;\">A classic 5 panel hat with our United By Blue logo on the front and an adjustable strap to keep fit and secure. Made with recycled polyester and organic cotton mix.<\/p><ul style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility;\"><li style=\"margin-bottom: 0px;\">Made in&nbsp;New Jersey<\/li><li style=\"margin-bottom: 0px;\">7oz Eco-Twill fabric:&nbsp;35% organic cotton, 65% recycled PET&nbsp;(plastic water and soda bottles)&nbsp;<\/li><li style=\"margin-bottom: 0px;\">Embossed leather patch<\/li><\/ul><ul class=\"tabs\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility; color: rgb(28, 29, 29); font-family: Arapey, serif; line-height: 25.008px;\"><\/ul>",
+            "productDescription": "A classic 5 panel hat with our United By Blue logo on the front and an adjustable strap to keep fit and secure. Made with recycled polyester and organic cotton mix. <ul><li>Made in New Jersey</li><li>7oz Eco-Twill fabric: 35% organic cotton, 65% recycled PET (plastic water and soda bottles)</li><li>Embossed leather patch/li></ul>",
             "productPublished": true,
             "productTags": "panel, cap",
-            "productOptions": {
-                "colour": {
-                    "optName": "colour",
-                    "optLabel": "Select colour",
-                    "optType": "select",
-                    "optOptions": [
-                        "Heather green",
-                        "Burnt orange",
-                        "Slate grey",
-                        "Navy blue"
-                    ]
-                }
-            },
             "productStock": 10
         },
         {
             "productPermalink": "ranger-boot",
             "productTitle": "Red Wing Iron Ranger Boot",
             "productPrice": "310.00",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility;\">The Mesabi Iron Range lies in northern Minnesota, a rugged and remote area known for its iron mines. The local residents who work these mines are proudly known as Iron Rangers, individuals with a sense of adventure and a determined personality. Originally designed to be worn in the iron mines, Iron Ranger work boots had to be as tough as the people who wore them in demanding conditions. Iron Ranger boots are built with a double layer of leaver over the toe to provide an extra measure of safety.<\/p><ul class=\"tabs-content\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility;\"><li style=\"margin-bottom: 0px;\">6 inch, Amber Harness leather with Nitrile Cork sole.<\/li><\/ul>",
+            "productDescription": "The Mesabi Iron Range lies in northern Minnesota, a rugged and remote area known for its iron mines. The local residents who work these mines are proudly known as Iron Rangers, individuals with a sense of adventure and a determined personality. Originally designed to be worn in the iron mines, Iron Ranger work boots had to be as tough as the people who wore them in demanding conditions. Iron Ranger boots are built with a double layer of leaver over the toe to provide an extra measure of safety.<ul><li>6 inch, Amber Harness leather with Nitrile Cork sole.</li></ul>",
             "productPublished": true,
             "productTags": "ranger, boot, leather",
-            "productOptions": {
-                "size": {
-                    "optName": "size",
-                    "optLabel": "Select size",
-                    "optType": "select",
-                    "optOptions": [
-                        "7.5",
-                        "8",
-                        "8.5",
-                        "9",
-                        "9.5",
-                        "10",
-                        "10.5",
-                        "11"
-                    ]
-                }
-            },
             "productStock": 10
         },
         {
             "productPermalink": "whitney-pullover",
             "productTitle": "Whitney pullover",
             "productPrice": "138.00",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility;\">Buttons are fussy. Sometimes you just want to roll out of bed, put on the pull over and get to the days work.&nbsp;Julie is 5'8\" and wearing a size small.<\/p><ul class=\"tabs-content\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility;\"><li style=\"margin-bottom: 0px;\">100% Wool, Heavy 4 gauge thickness<\/li><li style=\"margin-bottom: 0px;\">Handmade in Nepal.<\/li><\/ul>",
+            "productDescription": "Buttons are fussy. Sometimes you just want to roll out of bed, put on the pull over and get to the days work. <ul><li>100% Wool, Heavy 4 gauge thickness</li><li>Handmade in Nepal.</li></ul>",
             "productPublished": true,
             "productTags": "whitney, pullover",
-            "productOptions": {
-                "size": {
-                    "optName": "size",
-                    "optLabel": "Select size",
-                    "optType": "select",
-                    "optOptions": [
-                        "S",
-                        "M",
-                        "L",
-                        "XL"
-                    ]
-                }
-            },
             "productStock": 10
         },
         {
             "productPermalink": "scout-backpack",
             "productTitle": "Scout Backpack",
             "productPrice": "128.00",
-            "productDescription": "<p><span style=\"line-height: 1.42857;\">This durable backpack is ready for any adventure, large or small. Features adjustable and padded shoulder pads for comfort. Designed with a storm flap and a secured by two snap-button closure. Made with a waxed downpour proof exterior canvas and a soft cotton interior lining. Finished with brass hardware and genuine leather trimmings.<\/span><\/p><ul><li><span style=\"line-height: 1.42857;\">100% organic waxed 18 oz canvas<\/span><\/li><li><span style=\"line-height: 1.42857;\">Full grain genuine leather accents<\/span><\/li><li>Adjustable shoulder straps<\/li><li>Lifetime&amp;nbsp;Guarantee<\/li><\/ul>",
+            "productDescription": "This durable backpack is ready for any adventure, large or small. Features adjustable and padded shoulder pads for comfort. Designed with a storm flap and a secured by two snap-button closure. Made with a waxed downpour proof exterior canvas and a soft cotton interior lining. Finished with brass hardware and genuine leather trimmings.<ul><li>100% organic waxed 18 oz canvas</li><li>Full grain genuine leather accents</li><li>Adjustable shoulder straps</li><li>Lifetime&amp;nbsp;Guarantee</li></ul>",
             "productPublished": true,
             "productTags": "backpack, organic",
-            "productOptions": {
-                "colour": {
-                    "optName": "colour",
-                    "optLabel": "Select colour",
-                    "optType": "select",
-                    "optOptions": [
-                        "Navy",
-                        "Moss",
-                        "Nutmeg",
-                        "Khaki"
-                    ]
-                }
-            },
             "productStock": 100
         },
         {
             "productPermalink": "hudderton-backpack",
             "productTitle": "Hudderton Backpack",
             "productPrice": "49.95",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\">Durable, rugged, and dependable designed with four zipper compartments. Two bellowed front pockets allow for easy access to smaller items, one large, spacious compartment with a padded laptop sleeve, and a tiny convenient pouch on top to keep keys and other small items secure. The Hudderton is built with organic downpour proof canvas, a durable full grain leather bottom to prevent wear and tear, and padded canvas shoulder straps for all-day comfort. From the commute to the trail the Hudderton is perfect for bag for the entire week.</p><ul style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\"><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">100% organic waxed 18 oz canvas</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Full grain genuine leather detail</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Soft interior cotton lining</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Brass hardware and YKK zippers</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Cotton Padded interior laptop sleeve</span></li><li style=\"margin-bottom: 0px;\">Lifetime&nbsp;Guarantee</li></ul>",
+            "productDescription": "Durable, rugged, and dependable designed with four zipper compartments. Two bellowed front pockets allow for easy access to smaller items, one large, spacious compartment with a padded laptop sleeve, and a tiny convenient pouch on top to keep keys and other small items secure. The Hudderton is built with organic downpour proof canvas, a durable full grain leather bottom to prevent wear and tear, and padded canvas shoulder straps for all-day comfort. From the commute to the trail the Hudderton is perfect for bag for the entire week.<ul><li>100% organic waxed 18 oz canvas</li><li>Full grain genuine leather detail</li><li>Soft interior cotton lining</li>li>Brass hardware and YKK zippers</li><li>Cotton Padded interior laptop sleeve</li><li>Lifetime&nbsp;Guarantee</li></ul>",
             "productPublished": true,
             "productTags": "backpack",
-            "productOptions": "",
             "productStock": 10
         },
         {
             "productPermalink": "ayres-chambray",
             "productTitle": "Ayres Chambray",
             "productPrice": "77.99",
-            "productDescription": "<p style=\"margin-bottom: 25px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\">Comfortable and practical, our chambray button down is perfect for travel or days spent on the go. The Ayres Chambray has a rich, washed out indigo color suitable to throw on for any event. Made with sustainable soft chambray featuring two chest pockets with sturdy and scratch resistant corozo buttons.</p><ul class=\"tabs-content\" style=\"margin-right: 0px; margin-bottom: 25px; margin-left: 20px; padding: 0px; text-rendering: optimizeLegibility; color: rgb(34, 35, 35); font-family: Arapey, serif;\"><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">100% Organic Cotton Chambray, 4.9 oz Fabric.</span></li><li style=\"margin-bottom: 0px;\"><span style=\"line-height: 1.4;\">Natural Corozo Buttons.</span></li></ul>",
+            "productDescription": "Comfortable and practical, our chambray button down is perfect for travel or days spent on the go. The Ayres Chambray has a rich, washed out indigo color suitable to throw on for any event. Made with sustainable soft chambray featuring two chest pockets with sturdy and scratch resistant corozo buttons.<ul><li>100% Organic Cotton Chambray, 4.9 oz Fabric.</li><li>Natural Corozo Buttons.</li></ul>",
             "productPublished": true,
             "productTags": "shirt",
-            "productOptions": {
-                "Size": {
-                    "optName": "Size",
-                    "optLabel": "Select size",
-                    "optType": "select",
-                    "optOptions": [
-                        "S",
-                        "M",
-                        "L"
-                    ]
-                }
-            },
             "productStock": 10
         },
         {
@@ -161,10 +70,36 @@
             "productDescription": "This a monthly recurring Gym membership subscription.",
             "productPublished": true,
             "productTags": "subscription",
-            "productOptions": "",
             "productStock": 0,
             "productSubscription": "plan_XXXXXXXXXXXXXX",
             "productStockDisable": true
+        }
+    ],
+    "variants": [
+        {
+            "title" : "Extra Large",
+            "price" : "60.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Large",
+            "price" : "50.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Medium",
+            "price" : "40.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Small",
+            "price" : "30.00",
+            "stock" : 20
+        },
+        {
+            "title" : "Extra Small",
+            "price" : "20.00",
+            "stock" : 20
         }
     ],
     "customers": [

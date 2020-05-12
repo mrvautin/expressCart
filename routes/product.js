@@ -88,16 +88,6 @@ router.get('/admin/product/new', restrict, checkAccess, (req, res) => {
 router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    // Process supplied options
-    let productOptions = req.body.productOptions;
-    if(productOptions && typeof productOptions !== 'object'){
-        try{
-            productOptions = JSON.parse(req.body.productOptions);
-        }catch(ex){
-            console.log('Failure to parse options');
-        }
-    }
-
     const doc = {
         productPermalink: req.body.productPermalink,
         productTitle: common.cleanHtml(req.body.productTitle),
@@ -105,7 +95,6 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productDescription: common.cleanHtml(req.body.productDescription),
         productPublished: common.convertBool(req.body.productPublished),
         productTags: req.body.productTags,
-        productOptions: productOptions || null,
         productComment: common.checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
         productStock: common.safeParseInt(req.body.productStock) || null,
@@ -163,13 +152,9 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         res.redirect('/admin/products');
         return;
     }
-    let options = {};
-    if(product.productOptions){
-        options = product.productOptions;
-        if(typeof product.productOptions !== 'object'){
-            options = JSON.parse(product.productOptions);
-        }
-    }
+
+    // Get variants
+    product.variants = await db.variants.find({ product: common.getId(req.params.id) }).toArray();
 
     // If API request, return json
     if(req.apiAuthenticated){
@@ -181,7 +166,6 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         title: 'Edit product',
         result: product,
         images: images,
-        options: options,
         admin: true,
         session: req.session,
         message: common.clearSessionValue(req.session, 'message'),
@@ -192,28 +176,120 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     });
 });
 
-// Remove option from product
-router.post('/admin/product/removeoption', restrict, checkAccess, async (req, res) => {
+// Add a variant to a product
+router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
-    if(product && product.productOptions){
-        const opts = product.productOptions;
-        delete opts[req.body.optName];
 
-        try{
-            const updateOption = await db.products.findOneAndUpdate({ _id: common.getId(req.body.productId) }, { $set: { productOptions: opts } });
-            if(updateOption.ok === 1){
-                res.status(200).json({ message: 'Option successfully removed' });
-                return;
-            }
-            res.status(400).json({ message: 'Failed to remove option. Please try again.' });
-            return;
-        }catch(ex){
-            res.status(400).json({ message: 'Failed to remove option. Please try again.' });
-            return;
+    const variantDoc = {
+        product: req.body.product,
+        title: req.body.title,
+        price: req.body.price,
+        stock: common.safeParseInt(req.body.stock) || null
+    };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('newVariant', variantDoc);
+    if(!schemaValidate.result){
+        if(process.env.NODE_ENV !== 'test'){
+            console.log('schemaValidate errors', schemaValidate.errors);
         }
+        res.status(400).json(schemaValidate.errors);
+        return;
     }
-    res.status(400).json({ message: 'Product not found. Try saving before removing.' });
+
+    // Check product exists
+    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+
+    if(!product){
+        console.log('here1?');
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    // Fix values
+    variantDoc.product = common.getId(req.body.product);
+    variantDoc.added = new Date();
+
+    try{
+        const variant = await db.variants.insertOne(variantDoc);
+        product.variants = variant.ops;
+        res.status(200).json({ message: 'Successfully added variant', product });
+    }catch(ex){
+        console.log('here?');
+        res.status(400).json({ message: 'Failed to add variant. Please try again' });
+    }
+});
+
+// Update an existing product variant
+router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    const variantDoc = {
+        product: req.body.product,
+        variant: req.body.variant,
+        title: req.body.title,
+        price: req.body.price,
+        stock: common.safeParseInt(req.body.stock) || null
+    };
+
+    // Validate the body again schema
+    const schemaValidate = validateJson('editVariant', variantDoc);
+    if(!schemaValidate.result){
+        if(process.env.NODE_ENV !== 'test'){
+            console.log('schemaValidate errors', schemaValidate.errors);
+        }
+        res.status(400).json(schemaValidate.errors);
+        return;
+    }
+
+    // Validate ID's
+    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+    if(!product){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
+    if(!variant){
+        res.status(400).json({ message: 'Failed to add product variant' });
+        return;
+    }
+
+    // Removed props not needed
+    delete variantDoc.product;
+    delete variantDoc.variant;
+
+    try{
+        const updatedVariant = await db.variants.findOneAndUpdate({
+            _id: common.getId(req.body.variant)
+        }, {
+            $set: variantDoc
+        }, {
+            returnOriginal: false
+        });
+        res.status(200).json({ message: 'Successfully saved variant', variant: updatedVariant.value });
+    }catch(ex){
+        res.status(400).json({ message: 'Failed to save variant. Please try again' });
+    }
+});
+
+// Remove a product variant
+router.post('/admin/product/removevariant', restrict, checkAccess, async (req, res) => {
+    const db = req.app.db;
+
+    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
+    if(!variant){
+        res.status(400).json({ message: 'Failed to remove product variant' });
+        return;
+    }
+
+    try{
+        // Delete the variant
+        await db.variants.deleteOne({ _id: variant._id }, {});
+        res.status(200).json({ message: 'Successfully removed variant' });
+    }catch(ex){
+        res.status(400).json({ message: 'Failed to remove variant. Please try again' });
+    }
 });
 
 // Update an existing product form action
@@ -231,17 +307,8 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
         return;
     }
-    const images = await common.getImages(req.body.productId, req, res);
-    // Process supplied options
-    let productOptions = req.body.productOptions;
-    if(productOptions && typeof productOptions !== 'object'){
-        try{
-            productOptions = JSON.parse(req.body.productOptions);
-        }catch(ex){
-            console.log('Failure to parse options');
-        }
-    }
 
+    const images = await common.getImages(req.body.productId, req, res);
     const productDoc = {
         productId: req.body.productId,
         productPermalink: req.body.productPermalink,
@@ -250,7 +317,6 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productDescription: common.cleanHtml(req.body.productDescription),
         productPublished: common.convertBool(req.body.productPublished),
         productTags: req.body.productTags,
-        productOptions: productOptions || null,
         productComment: common.checkboxBool(req.body.productComment),
         productStock: common.safeParseInt(req.body.productStock) || null,
         productStockDisable: common.convertBool(req.body.productStockDisable)
@@ -295,6 +361,9 @@ router.post('/admin/product/delete', restrict, checkAccess, async (req, res) => 
 
     // remove the product
     await db.products.deleteOne({ _id: common.getId(req.body.productId) }, {});
+
+    // Remove the variants
+    await db.variants.deleteMany({ product: common.getId(req.body.productId) }, {});
 
     // delete any images and folder
     rimraf('public/uploads/' + req.body.productId, (err) => {

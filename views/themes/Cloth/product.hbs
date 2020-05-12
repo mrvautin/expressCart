@@ -26,39 +26,20 @@
         <div class="col-sm-12 col-md-6 ml-auto">
             <div class="row">
                 <h1 class="col-md-10 product-title text-truncate">{{result.productTitle}}</h1>
-                <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
-                {{#if productOptions}}
+                {{#if variants}}
+                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{variants.0.price}}</h4>
+                {{else}}
+
+                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
+                {{/if}}
+                {{#if variants}}
                     <h4 class="col-md-10 product-option">{{ @root.__ "Options" }}</h4>
                     <div class="col-md-10">
-                    {{#each productOptions}}
-                        {{#ifCond this.optType '==' "select"}}
-                            <strong>{{../this.optLabel}}</strong>
-                            <select name="{{../this.optName}}" data-label="{{../this.optLabel}}" class="form-control product-opt">
-                                {{#each ../this.optOptions}}
-                                    <option value="{{this}}">{{this}}</option>
-                                {{/each}}
-                            </select>
-                        {{/ifCond}}
-                        {{#ifCond this.optType '==' "radio"}}
-                            <strong>{{../this.optLabel}}</strong>
-                            {{#each ../this.optOptions}}
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" class="product-opt" data-label="{{../../this.optLabel}}" name="{{../../this.optName}}" value="{{this}}">
-                                        <span class="left-pad-10">{{this}}</span>
-                                    </label>
-                                </div>
-                            {{/each}}
-                        {{/ifCond}}
-                        {{#ifCond this.optType '==' "checkbox"}}
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" class="product-opt" data-label="{{../this.optLabel}}" name="{{../this.optName}}" value="{{../this.optName}}">
-                                    <span class="left-pad-10">{{../this.optLabel}}</span>
-                                </label>
-                            </div>
-                        {{/ifCond}}
-                    {{/each}}
+                        <select id="product_variant" class="form-control">
+                        {{#each variants}}
+                            <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
+                        {{/each}}
+                        </select>
                     </div>
                 {{/if}}
                 {{#if config.trackStock}}
@@ -153,3 +134,4 @@
     {{/if}}
 </div>
 <input type="hidden" id="productId" value="{{result._id}}">
+<input type="hidden" id="currencySymbol" value="{{currencySymbol config.currencySymbol}}">

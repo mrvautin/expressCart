@@ -30,9 +30,6 @@
         "productTags": {
             "type": "string"
         },
-        "productOptions": {
-            "type": ["object", "string", "null"]
-        },
         "productComment": {
             "type": "boolean"
         },

@@ -61,54 +61,6 @@
                 <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
             </div>
         </div>
-        <div class="col-12">
-            <div class="form-group">
-                <label class="control-label">{{ @root.__ "Product options" }}</label>
-                <input type="hidden" id="productOptions" value="{{result.productOptions}}" />
-                <ul class="list-group" id="product_opt_wrapper">
-                    <li class="list-group-item">
-                        <div class="row">
-                        <div class="col-sm-2">
-                            <strong>{{ @root.__ "Name" }}:</strong>
-                            <input type="text" id="product_optName" class="form-control" placeholder="Size" />
-                        </div>
-                        <div class="col-sm-2">
-                            <strong>{{ @root.__ "Label" }}:</strong>
-                            <input type="text" id="product_optLabel" class="form-control" placeholder="Select size"/>
-                        </div>
-                        <div class="col-sm-2">
-                            <strong>{{ @root.__ "Type" }}:</strong>
-                            <select id="product_optType" class="form-control">
-                                <option value="select">Select</option>
-                                <option value="radio">Radio</option>
-                                <option value="checkbox">Checkbox</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-4">
-                            <strong>{{ @root.__ "Options" }}:</strong>
-                            <input type="text" id="product_optOptions" class="form-control" placeholder="comma, seporated, list"/>
-                        </div>
-                        <div class="col-sm-2 text-right"></br>
-                            <button id="product_opt_add" class="btn btn-outline-success">{{ @root.__ "Add" }}</button>
-                        </div></div>
-                    </li>
-                    {{#each options}}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class='col-sm-2 opt-name'>{{this.optName}}</div>
-                                <div class='col-sm-2'>{{this.optLabel}}</div>
-                                <div class='col-sm-2'>{{this.optType}}</div>
-                                <div class='col-sm-4'>{{{this.optOptions}}}</div>
-                                <div class='col-sm-2 text-right'>
-                                    <button class='product_opt_remove btn btn-outline-danger'>{{ @root.__ "Remove" }}</button>
-                                </div>
-                            </div>
-                        </li>
-                    {{/each}}
-                </ul>
-                <p class="help-block">{{ @root.__ "Here you can set options for your product. Eg: Size, color, style" }}</p>
-            </div>
-        </div>
         {{#ifCond config.paymentGateway '==' 'stripe'}}
         <div class="col-12">
             <div class="form-group">

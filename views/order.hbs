@@ -61,18 +61,10 @@
             {{#each result.orderProducts}}
                 <li class="list-group-item">
                     {{this.quantity}} x {{this.title}}
-                    {{#if this.options}}
+                    {{#if this.variantId}}
                         &nbsp; > &nbsp;
                         <span class="text-warning"> {{ @root.__ "Options" }}: </span>
-                        (
-                        {{#each this.options}} 
-                            {{#if @last}}
-                                <strong>{{#upperFirst this.name}}{{/upperFirst}}</strong>: {{this.value}}
-                                {{else}} 
-                                 <strong>{{#upperFirst this.name}}{{/upperFirst}}:</strong> {{this.value}} /
-                            {{/if}} 
-                        {{/each}}
-                        )
+                        {{this.variantTitle}}
                     {{/if}}
                     <div class="float-right">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
                     {{#if productComment}}

@@ -47,11 +47,17 @@
                             </h3>
                         </a>
                     {{/if}}
-                    <h3 class="product-price mp-0 text-center">
-                        {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
-                    </h3>
+                    {{#if variants}}
+                        <h3 class="product-price mp-0 text-center">
+                            {{currencySymbol @root.config.currencySymbol}}{{formatAmount variants.0.price}}
+                        </h3>
+                    {{else}}
+                        <h3 class="product-price mp-0 text-center">
+                            {{currencySymbol @root.config.currencySymbol}}{{formatAmount productPrice}}
+                        </h3>
+                    {{/if}}
                     <p class="text-center">
-                        <a class="btn btn-primary add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">{{ @root.__ "Add to cart" }}</a>
+                        <a class="btn btn-primary add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-variants="{{checkProductVariants this.variants}}" role="button">{{ @root.__ "Add to cart" }}</a>
                     </p>
                 </div>
             </div>

@@ -10,6 +10,9 @@ body {
   width: 16px;
   height: 16px;
 }
+.bg-secondary {
+  background-color: #f5f5f5 !important;
+}
 .btn-outline-primary,
 .btn-outline-success,
 .btn-outline-danger,

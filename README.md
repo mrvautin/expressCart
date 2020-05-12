@@ -19,7 +19,6 @@ Payment providers included:
 
 [**View the demo**](https://demo.expresscart.markmoffat.com/)
 
-
 ```
 Demo credentials
 
@@ -128,18 +127,15 @@ Set this value to a full 2 decimal value with no commas or currency symbols.
 
 A permalink is a nice link to your product which is normally shown in search engine rankings. By default, a no Permalink value is set when adding a product one will be generated using the Product title with spaces replaced by dashes.
 
-##### Options
+##### Variants
 
-You may want to set product options such as `Size`, `Color` etc.
+You may want to set product variants such as `Size`, `Color` etc.
 
-Below is an explanation of the fields and what they do
+Below is an explanation of the fields and what they do:
 
-`Name` = Something easy to recognize to administer
-`Label` = This will be shown to the customer (eg: `Select size`, `Select color` etc)
-`Type` = You can set the option to a `Select` (drop down menu), `Radio` (An optional button) or a `Checkbox` for an on/off or true/false option
-`Options` = Available options are added using a comma separated list. For size options you may set: `Small,Medium,Large` or `S,M,L`
-
-Note: An `Options` value is not required when `Type` is set to `Checkbox`.
+`Title` = Shown in the variants dropdown
+`Price` = This will be shown to the customer when the variant is selected
+`Stock` = An optional field to track stock of the variant. Overrides the default stock value for the product.
 
 ##### Product tag words
 
