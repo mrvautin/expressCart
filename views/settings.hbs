@@ -85,6 +85,22 @@
                 <p class="help-block">{{ @root.__ "The number of products to be displayed on each page." }}</p>
             </div>
             <div class="form-group">
+                <label>{{ @root.__ "Product Order By" }}</label>
+                <select class="form-control" name="productOrderBy">
+                    <option {{selectState 'date' config.productOrderBy}} value="date">{{ @root.__ "Date" }}</option>
+                    <option {{selectState 'title' config.productOrderBy}} value="title">{{ @root.__ "Title" }}</option>
+                </select>
+                <p class="help-block">{{ @root.__ "Select the field by which the product should be sorted when displayed in store." }}</p>
+            </div>
+            <div class="form-group">
+                <label>{{ @root.__ "Product Order" }}</label>
+                <select class="form-control" name="productOrder">
+                    <option {{selectState 'descending' config.productOrder}} value="descending">{{ @root.__ "Descending" }}</option>
+                    <option {{selectState 'ascending' config.productOrder}} value="ascending">{{ @root.__ "Ascending" }}</option>
+                </select>
+                <p class="help-block">{{ @root.__ "Select the order in which the products should be sorted." }}</p>
+            </div>
+            <div class="form-group">
                 <label>{{ @root.__ "Menu Enabled" }}: </label>
                 <div class="checkbox">
                     <label>
