@@ -500,7 +500,7 @@ router.post('/product/updatecart', async (req, res, next) => {
     // If stock management on check there is sufficient stock for this product
     if(config.trackStock){
         // Only if not disabled
-        if(product.productStockDisable !== true){
+        if(product.productStockDisable !== true && productStock){
             // If there is more stock than total (ignoring held)
             if(productQuantity > productStock){
                 res.status(400).json({ message: 'There is insufficient stock of this product.' });
@@ -658,7 +658,7 @@ router.post('/product/addtocart', async (req, res, next) => {
     // If stock management on check there is sufficient stock for this product
     if(config.trackStock){
         // Only if not disabled
-        if(product.productStockDisable !== true){
+        if(product.productStockDisable !== true && productStock){
             // If there is more stock than total (ignoring held)
             if(productQuantity > productStock){
                 return res.status(400).json({ message: 'There is insufficient stock of this product.' });
