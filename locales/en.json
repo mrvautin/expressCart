@@ -210,5 +210,13 @@
 	"Company name": "Company name",
 	"Product variants": "Product variants",
 	"Shown in the variant dropdown": "Shown in the variant dropdown",
-	"Here you can set variants for your product. Eg: Size, color, style": "Here you can set variants for your product. Eg: Size, color, style"
+	"Here you can set variants for your product. Eg: Size, color, style": "Here you can set variants for your product. Eg: Size, color, style",
+	"Product Order By": "Product Order By",
+	"Date": "Date",
+	"Title": "Title",
+	"Select the field by which the product should be sorted when displayed in store.": "Select the field by which the product should be sorted when displayed in store.",
+	"Product Order": "Product Order",
+	"Descending": "Descending",
+	"Ascending": "Ascending",
+	"Select the order in which the products should be sorted.": "Select the order in which the products should be sorted."
 }
