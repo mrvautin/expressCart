@@ -17,7 +17,7 @@ Payment providers included:
 
 [![Actions Status](https://github.com/mrvautin/expressCart/workflows/expressCart-tests/badge.svg)](https://github.com/mrvautin/expressCart/actions)
 
-[**View the demo**](https://demo.expresscart.markmoffat.com/)
+[**View the demo**](https://demo.expresscart.markmoffat.com/) [**Admin demo**](https://demo.expresscart.markmoffat.com/admin/)
 
 ```
 Demo credentials
@@ -62,6 +62,10 @@ The easiest way to get up and running is using Docker. Once the Docker CLI is in
 2. Change `/config/settings.json` - `"databaseConnectionString": "mongodb://mongodb:27017/expresscart"`
 3. Run: `docker-compose up --build`
 4. Visit [http://127.0.0.1:1111](http://127.0.0.1:1111) in your browser
+5. Optional. To install test data run the following 
+- `docker exec -it expresscart bash`
+- `npm run testdata`
+- `exit`
 
 ### Deploy on Heroku
 
@@ -71,7 +75,8 @@ The easiest way to get up and running is using Docker. Once the Docker CLI is in
 
 ### Sample/Test data
 
-Sometimes you might want some default sample/test data. To create this, run `npm run testdata`. Remember to only run this initially or anytime you want to reset the data as this function deletes ALL existing data.
+Sometimes you might want some default sample/test data. To create this, run `npm run testdata`.  
+Warning: Remember to only run this initially or anytime you want to reset the data as this function deletes ALL existing data.
 
 ## API
 
