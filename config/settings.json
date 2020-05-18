@@ -43,5 +43,6 @@
             "discount": {}
         }
     },
-    "showRelatedProducts": true
+    "showRelatedProducts": true,
+    "showHomepageVariants": false
 }

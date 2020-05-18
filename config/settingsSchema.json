@@ -157,6 +157,10 @@
         "showRelatedProducts": {
             "type": "boolean",
             "default": true
+        },
+        "showHomepageVariants": {
+            "type": "boolean",
+            "default": false
         }
     },
     "required": [

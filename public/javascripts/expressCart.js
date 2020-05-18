@@ -370,6 +370,25 @@ $(document).ready(function (){
         $('h4.product-price:first').html(currencySymbol + variantPrice);
     });
 
+    $(document).on('click', '.add-variant-to-cart', function(e){
+        $.ajax({
+            method: 'POST',
+            url: '/product/addtocart',
+            data: {
+                productId: $(this).attr('data-id'),
+                productQuantity: '1',
+                productVariant: $('#productVariant-' + $(this).attr('data-id')).val()
+            }
+        })
+		.done(function(msg){
+            updateCartDiv();
+            showNotification(msg.message, 'success');
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
     $(document).on('click', '.product-add-to-cart', function(e){
         if(parseInt($('#product_quantity').val()) < 1){
             $('#product_quantity').val(1);
