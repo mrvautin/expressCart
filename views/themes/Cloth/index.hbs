@@ -48,18 +48,16 @@
                         </a>
                     {{/if}}
                     {{#if variants}}
-                        {{#if @root.config.showHomepageVariants}}
                         <div class="col-md-12">
-                            <select id="productVariant-{{this._id}}" class="form-control">
+                            {{#if @root.config.showHomepageVariants}}
+                            <select id="productVariant-{{this._id}}" class="productVariant form-control mb-2">
                             {{#each variants}}
-                                <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
+                                <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}} - {{currencySymbol @root.config.currencySymbol}}{{this.price}}</option>
                             {{/each}}
                             </select>
+                        
+                            {{/if}}
                         </div>
-                        {{/if}}
-                        <h4 class="product-price mp-0 text-center">
-                            {{currencySymbol @root.config.currencySymbol}}{{formatAmount variants.0.price}}
-                        </h4>
                     {{else}}
                         <h4 class="product-price mp-0 text-center">
                             {{currencySymbol @root.config.currencySymbol}}{{formatAmount productPrice}}
