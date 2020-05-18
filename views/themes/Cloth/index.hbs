@@ -55,7 +55,10 @@
                                 <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}} - {{currencySymbol @root.config.currencySymbol}}{{this.price}}</option>
                             {{/each}}
                             </select>
-                        
+                            {{else}}
+                            <h4 class="product-price mp-0 text-center">
+                                {{currencySymbol @root.config.currencySymbol}}{{formatAmount variants.0.price}}
+                            </h4>
                             {{/if}}
                         </div>
                     {{else}}
