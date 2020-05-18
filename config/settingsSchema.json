@@ -38,10 +38,6 @@
             "type": "string",
             "format": "email"
         },
-        "menuEnabled": {
-            "type": "boolean",
-            "default": true
-        },
         "productsPerRow": {
             "type": "number",
             "default": 3
@@ -49,10 +45,6 @@
         "productsPerPage": {
             "type": "number",
             "default": 6
-        },
-        "menuTitle": {
-            "type": "string",
-            "default": "Menu"
         },
         "footerHtml": {
             "type": "string",

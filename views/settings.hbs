@@ -101,21 +101,6 @@
                 <p class="help-block">{{ @root.__ "Select the order in which the products should be sorted." }}</p>
             </div>
             <div class="form-group">
-                <label>{{ @root.__ "Menu Enabled" }}: </label>
-                <div class="checkbox">
-                    <label>
-                        <input class="settingsMenuEnabled" type="checkbox" {{checkedState config.menuEnabled}} id="menuEnabled"
-                            name="menuEnabled">
-                    </label>
-                </div>
-                <p class="help-block">{{{ @root.__ "Menu_Enabled_Info" }}}</p>
-            </div>
-            <div class="form-group">
-                <label>{{ @root.__ "Menu header" }}</label>
-                <input type="text" class="form-control" name="menuTitle" value="{{config.menuTitle}}" placeholder="Menu">
-                <p class="help-block">{{ @root.__ "The heading text for your menu." }}</p>
-            </div>
-            <div class="form-group">
                 <label>Footer HTML</label>
                 <textarea class="form-control codemirrorArea" rows="5" id="footerHtml" name="footerHtml">{{footerHtml}}</textarea>
                 <input type="hidden" id="footerHtml_input" name="footerHtml_input">
@@ -144,7 +129,7 @@
                 <label>Email SMTP secure </label>
                 <div class="checkbox">
                     <label>
-                        <input class="settingsMenuEnabled" type="checkbox" {{checkedState config.emailSecure}} name="emailSecure">
+                        <input type="checkbox" {{checkedState config.emailSecure}} name="emailSecure">
                     </label>
                 </div>
             </div>
