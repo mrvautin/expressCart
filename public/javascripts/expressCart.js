@@ -1,4 +1,4 @@
-/* eslint-disable prefer-arrow-callback, no-var, no-tabs */
+/* eslint-disable prefer-arrow-callback, no-var, no-tabs, prefer-template */
 /* globals showNotification, numeral, feather */
 $(document).ready(function (){
     if($(window).width() < 768){

@@ -175,7 +175,7 @@ test('[Success] Filter customers', async t => {
 
 test('[Success] Get single customer', async t => {
     const res = await g.request
-        .get('/admin/customer/view/' + g.customers[0]._id)
+        .get(`/admin/customer/view/${g.customers[0]._id}`)
         .set('apiKey', g.users[0].apiKey)
         .expect(200);
 

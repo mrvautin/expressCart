@@ -1,8 +1,17 @@
 const express = require('express');
-const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
+const {
+    getId,
+    clearSessionValue,
+    cleanHtml,
+    convertBool,
+    checkboxBool,
+    safeParseInt,
+    getImages
+} = require('../lib/common');
 const { indexProducts } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
+const { paginateData } = require('../lib/paginate');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -16,7 +25,7 @@ router.get('/admin/products/:page?', restrict, async (req, res, next) => {
     }
 
     // Get our paginated data
-    const products = await common.paginateData(false, req, pageNum, 'products', {}, { productAddedDate: -1 });
+    const products = await paginateData(false, req, pageNum, 'products', {}, { productAddedDate: -1 });
 
     res.render('products', {
         title: 'Cart',
@@ -28,8 +37,8 @@ router.get('/admin/products/:page?', restrict, async (req, res, next) => {
         session: req.session,
         admin: true,
         config: req.app.config,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers
     });
 });
@@ -41,7 +50,7 @@ router.get('/admin/products/filter/:search', restrict, async (req, res, next) =>
 
     const lunrIdArray = [];
     productsIndex.search(searchTerm).forEach((id) => {
-        lunrIdArray.push(common.getId(id.ref));
+        lunrIdArray.push(getId(id.ref));
     });
 
     // we search on the lunr indexes
@@ -60,8 +69,8 @@ router.get('/admin/products/filter/:search', restrict, async (req, res, next) =>
         config: req.app.config,
         session: req.session,
         searchTerm: searchTerm,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers
     });
 });
@@ -71,12 +80,12 @@ router.get('/admin/product/new', restrict, checkAccess, (req, res) => {
     res.render('product-new', {
         title: 'New product',
         session: req.session,
-        productTitle: common.clearSessionValue(req.session, 'productTitle'),
-        productDescription: common.clearSessionValue(req.session, 'productDescription'),
-        productPrice: common.clearSessionValue(req.session, 'productPrice'),
-        productPermalink: common.clearSessionValue(req.session, 'productPermalink'),
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        productTitle: clearSessionValue(req.session, 'productTitle'),
+        productDescription: clearSessionValue(req.session, 'productDescription'),
+        productPrice: clearSessionValue(req.session, 'productPrice'),
+        productPermalink: clearSessionValue(req.session, 'productPermalink'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         editor: true,
         admin: true,
         helpers: req.handlebars.helpers,
@@ -90,15 +99,15 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
 
     const doc = {
         productPermalink: req.body.productPermalink,
-        productTitle: common.cleanHtml(req.body.productTitle),
+        productTitle: cleanHtml(req.body.productTitle),
         productPrice: req.body.productPrice,
-        productDescription: common.cleanHtml(req.body.productDescription),
-        productPublished: common.convertBool(req.body.productPublished),
+        productDescription: cleanHtml(req.body.productDescription),
+        productPublished: convertBool(req.body.productPublished),
         productTags: req.body.productTags,
-        productComment: common.checkboxBool(req.body.productComment),
+        productComment: checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
-        productStock: common.safeParseInt(req.body.productStock) || null,
-        productStockDisable: common.convertBool(req.body.productStockDisable)
+        productStock: safeParseInt(req.body.productStock) || null,
+        productStockDisable: convertBool(req.body.productStockDisable)
     };
 
     // Validate the body again schema
@@ -130,7 +139,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
             });
         });
     }catch(ex){
-        console.log(colors.red('Error inserting document: ' + ex));
+        console.log(colors.red(`Error inserting document: ${ex}`));
         res.status(400).json({ message: 'Error inserting document' });
     }
 });
@@ -139,8 +148,8 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
 router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const images = await common.getImages(req.params.id, req, res);
-    const product = await db.products.findOne({ _id: common.getId(req.params.id) });
+    const images = await getImages(req.params.id, req, res);
+    const product = await db.products.findOne({ _id: getId(req.params.id) });
     if(!product){
         // If API request, return json
         if(req.apiAuthenticated){
@@ -154,7 +163,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     }
 
     // Get variants
-    product.variants = await db.variants.find({ product: common.getId(req.params.id) }).toArray();
+    product.variants = await db.variants.find({ product: getId(req.params.id) }).toArray();
 
     // If API request, return json
     if(req.apiAuthenticated){
@@ -168,8 +177,8 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         images: images,
         admin: true,
         session: req.session,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config,
         editor: true,
         helpers: req.handlebars.helpers
@@ -184,7 +193,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         product: req.body.product,
         title: req.body.title,
         price: req.body.price,
-        stock: common.safeParseInt(req.body.stock) || null
+        stock: safeParseInt(req.body.stock) || null
     };
 
     // Validate the body again schema
@@ -198,7 +207,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
     }
 
     // Check product exists
-    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+    const product = await db.products.findOne({ _id: getId(req.body.product) });
 
     if(!product){
         console.log('here1?');
@@ -207,7 +216,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
     }
 
     // Fix values
-    variantDoc.product = common.getId(req.body.product);
+    variantDoc.product = getId(req.body.product);
     variantDoc.added = new Date();
 
     try{
@@ -229,7 +238,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
         variant: req.body.variant,
         title: req.body.title,
         price: req.body.price,
-        stock: common.safeParseInt(req.body.stock) || null
+        stock: safeParseInt(req.body.stock) || null
     };
 
     // Validate the body again schema
@@ -243,13 +252,13 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
     }
 
     // Validate ID's
-    const product = await db.products.findOne({ _id: common.getId(req.body.product) });
+    const product = await db.products.findOne({ _id: getId(req.body.product) });
     if(!product){
         res.status(400).json({ message: 'Failed to add product variant' });
         return;
     }
 
-    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
+    const variant = await db.variants.findOne({ _id: getId(req.body.variant) });
     if(!variant){
         res.status(400).json({ message: 'Failed to add product variant' });
         return;
@@ -261,7 +270,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
 
     try{
         const updatedVariant = await db.variants.findOneAndUpdate({
-            _id: common.getId(req.body.variant)
+            _id: getId(req.body.variant)
         }, {
             $set: variantDoc
         }, {
@@ -277,7 +286,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
 router.post('/admin/product/removevariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const variant = await db.variants.findOne({ _id: common.getId(req.body.variant) });
+    const variant = await db.variants.findOne({ _id: getId(req.body.variant) });
     if(!variant){
         res.status(400).json({ message: 'Failed to remove product variant' });
         return;
@@ -296,30 +305,30 @@ router.post('/admin/product/removevariant', restrict, checkAccess, async (req, r
 router.post('/admin/product/update', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
+    const product = await db.products.findOne({ _id: getId(req.body.productId) });
 
     if(!product){
         res.status(400).json({ message: 'Failed to update product' });
         return;
     }
-    const count = await db.products.countDocuments({ productPermalink: req.body.productPermalink, _id: { $ne: common.getId(product._id) } });
+    const count = await db.products.countDocuments({ productPermalink: req.body.productPermalink, _id: { $ne: getId(product._id) } });
     if(count > 0 && req.body.productPermalink !== ''){
         res.status(400).json({ message: 'Permalink already exists. Pick a new one.' });
         return;
     }
 
-    const images = await common.getImages(req.body.productId, req, res);
+    const images = await getImages(req.body.productId, req, res);
     const productDoc = {
         productId: req.body.productId,
         productPermalink: req.body.productPermalink,
-        productTitle: common.cleanHtml(req.body.productTitle),
+        productTitle: cleanHtml(req.body.productTitle),
         productPrice: req.body.productPrice,
-        productDescription: common.cleanHtml(req.body.productDescription),
-        productPublished: common.convertBool(req.body.productPublished),
+        productDescription: cleanHtml(req.body.productDescription),
+        productPublished: convertBool(req.body.productPublished),
         productTags: req.body.productTags,
-        productComment: common.checkboxBool(req.body.productComment),
-        productStock: common.safeParseInt(req.body.productStock) || null,
-        productStockDisable: common.convertBool(req.body.productStockDisable)
+        productComment: checkboxBool(req.body.productComment),
+        productStock: safeParseInt(req.body.productStock) || null,
+        productStockDisable: convertBool(req.body.productStockDisable)
     };
 
     // Validate the body again schema
@@ -344,7 +353,7 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     }
 
     try{
-        await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: productDoc }, {});
+        await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: productDoc }, {});
         // Update the index
         indexProducts(req.app)
         .then(() => {
@@ -360,13 +369,13 @@ router.post('/admin/product/delete', restrict, checkAccess, async (req, res) => 
     const db = req.app.db;
 
     // remove the product
-    await db.products.deleteOne({ _id: common.getId(req.body.productId) }, {});
+    await db.products.deleteOne({ _id: getId(req.body.productId) }, {});
 
     // Remove the variants
-    await db.variants.deleteMany({ product: common.getId(req.body.productId) }, {});
+    await db.variants.deleteMany({ product: getId(req.body.productId) }, {});
 
     // delete any images and folder
-    rimraf('public/uploads/' + req.body.productId, (err) => {
+    rimraf(`public/uploads/${req.body.productId}`, (err) => {
         if(err){
             console.info(err.stack);
             res.status(400).json({ message: 'Failed to delete product' });
@@ -385,10 +394,10 @@ router.post('/admin/product/publishedState', restrict, checkAccess, async (req, 
     const db = req.app.db;
 
     try{
-        await db.products.updateOne({ _id: common.getId(req.body.id) }, { $set: { productPublished: common.convertBool(req.body.state) } }, { multi: false });
+        await db.products.updateOne({ _id: getId(req.body.id) }, { $set: { productPublished: convertBool(req.body.state) } }, { multi: false });
         res.status(200).json({ message: 'Published state updated' });
     }catch(ex){
-        console.error(colors.red('Failed to update the published state: ' + ex));
+        console.error(colors.red(`Failed to update the published state: ${ex}`));
         res.status(400).json({ message: 'Published state not updated' });
     }
 });
@@ -399,7 +408,7 @@ router.post('/admin/product/setasmainimage', restrict, checkAccess, async (req, 
 
     try{
         // update the productImage to the db
-        await db.products.updateOne({ _id: common.getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
+        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
         res.status(200).json({ message: 'Main image successfully set' });
     }catch(ex){
         res.status(400).json({ message: 'Unable to set as main image. Please try again.' });
@@ -411,14 +420,14 @@ router.post('/admin/product/deleteimage', restrict, checkAccess, async (req, res
     const db = req.app.db;
 
     // get the productImage from the db
-    const product = await db.products.findOne({ _id: common.getId(req.body.product_id) });
+    const product = await db.products.findOne({ _id: getId(req.body.product_id) });
     if(!product){
         res.status(400).json({ message: 'Product not found' });
         return;
     }
     if(req.body.productImage === product.productImage){
         // set the productImage to null
-        await db.products.updateOne({ _id: common.getId(req.body.product_id) }, { $set: { productImage: null } }, { multi: false });
+        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: null } }, { multi: false });
 
         // remove the image from disk
         fs.unlink(path.join('public', req.body.productImage), (err) => {

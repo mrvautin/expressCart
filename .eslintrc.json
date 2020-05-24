@@ -42,6 +42,7 @@
                 }
             }
         }],
+        "prefer-template": 1,
         "space-before-function-paren": 0,
         "space-before-blocks": ["error", "never"],
         "camelcase": 0,

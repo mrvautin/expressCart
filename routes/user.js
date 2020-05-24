@@ -1,6 +1,6 @@
 const express = require('express');
-const common = require('../lib/common');
 const { restrict } = require('../lib/auth');
+const { getId, clearSessionValue } = require('../lib/common');
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
 const { validateJson } = require('../lib/schema');
@@ -23,15 +23,15 @@ router.get('/admin/users', restrict, async (req, res) => {
         isAdmin: req.session.isAdmin,
         helpers: req.handlebars.helpers,
         session: req.session,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType')
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType')
     });
 });
 
 // edit user
 router.get('/admin/user/edit/:id', restrict, async (req, res) => {
     const db = req.app.db;
-    const user = await db.users.findOne({ _id: common.getId(req.params.id) });
+    const user = await db.users.findOne({ _id: getId(req.params.id) });
 
     // Check user is found
     if(!user){
@@ -65,8 +65,8 @@ router.get('/admin/user/edit/:id', restrict, async (req, res) => {
         user: user,
         admin: true,
         session: req.session,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config
     });
@@ -79,8 +79,8 @@ router.get('/admin/user/new', restrict, (req, res) => {
         admin: true,
         session: req.session,
         helpers: req.handlebars.helpers,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config
     });
 });
@@ -101,7 +101,7 @@ router.post('/admin/user/delete', restrict, async (req, res) => {
         return;
     }
 
-    const user = await db.users.findOne({ _id: common.getId(req.body.userId) });
+    const user = await db.users.findOne({ _id: getId(req.body.userId) });
 
     // If user is not found
     if(!user){
@@ -116,7 +116,7 @@ router.post('/admin/user/delete', restrict, async (req, res) => {
     }
 
     try{
-        await db.users.deleteOne({ _id: common.getId(req.body.userId) }, {});
+        await db.users.deleteOne({ _id: getId(req.body.userId) }, {});
         res.status(200).json({ message: 'User deleted.' });
         return;
     }catch(ex){
@@ -133,7 +133,7 @@ router.post('/admin/user/update', restrict, async (req, res) => {
     let isAdmin = req.body.userAdmin === 'on';
 
     // get the user we want to update
-    const user = await db.users.findOne({ _id: common.getId(req.body.userId) });
+    const user = await db.users.findOne({ _id: getId(req.body.userId) });
 
     // If user not found
     if(!user){
@@ -178,7 +178,7 @@ router.post('/admin/user/update', restrict, async (req, res) => {
 
     try{
         const updatedUser = await db.users.findOneAndUpdate(
-            { _id: common.getId(req.body.userId) },
+            { _id: getId(req.body.userId) },
             {
                 $set: updateDoc
             }, { multi: false, returnOriginal: false }
@@ -190,7 +190,7 @@ router.post('/admin/user/update', restrict, async (req, res) => {
         res.status(200).json({ message: 'User account updated', user: updatedUser.value });
         return;
     }catch(ex){
-        console.error(colors.red('Failed updating user: ' + ex));
+        console.error(colors.red(`Failed updating user: ${ex}`));
         res.status(400).json({ message: 'Failed to update user' });
     }
 });
@@ -237,7 +237,7 @@ router.post('/admin/user/insert', restrict, async (req, res) => {
             userId: newUser.insertedId
         });
     }catch(ex){
-        console.error(colors.red('Failed to insert user: ' + ex));
+        console.error(colors.red(`Failed to insert user: ${ex}`));
         res.status(400).json({ message: 'New user creation failed' });
     }
 });

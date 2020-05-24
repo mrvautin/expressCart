@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars, prefer-template */
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
 /* globals AdyenCheckout */
 $(document).ready(function (){
