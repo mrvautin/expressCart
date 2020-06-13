@@ -17,7 +17,7 @@ const helmet = require('helmet');
 const colors = require('colors');
 const cron = require('node-cron');
 const crypto = require('crypto');
-const common = require('./lib/common');
+const { getConfig, getPaymentConfig, updateConfigLocal } = require('./lib/config');
 const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
 const { initDb, getDbUri } = require('./lib/db');
@@ -29,7 +29,7 @@ const Ajv = require('ajv');
 const ajv = new Ajv({ useDefaults: true });
 
 // get config
-const config = common.getConfig();
+const config = getConfig();
 
 const baseConfig = ajv.validate(require('./config/settingsSchema'), config);
 if(baseConfig === false){
@@ -248,7 +248,7 @@ handlebars = handlebars.create({
                 return '<h2 class="text-success">Your payment has been successfully processed</h2>';
             }
             if(status === 'Pending'){
-                const paymentConfig = common.getPaymentConfig();
+                const paymentConfig = getPaymentConfig();
                 if(config.paymentGateway === 'instore'){
                     return `<h2 class="text-warning">${paymentConfig.resultMessage}</h2>`;
                 }
@@ -290,7 +290,7 @@ handlebars = handlebars.create({
         },
         snip: (text) => {
             if(text && text.length > 155){
-                return text.substring(0, 155) + '...';
+                return `${text.substring(0, 155)}...`;
             }
             return text;
         },
@@ -327,12 +327,12 @@ const store = new MongoStore({
 if(!config.secretCookie || config.secretCookie === ''){
     const randomString = crypto.randomBytes(20).toString('hex');
     config.secretCookie = randomString;
-    common.updateConfigLocal({ secretCookie: randomString });
+    updateConfigLocal({ secretCookie: randomString });
 }
 if(!config.secretSession || config.secretSession === ''){
     const randomString = crypto.randomBytes(20).toString('hex');
     config.secretSession = randomString;
-    common.updateConfigLocal({ secretSession: randomString });
+    updateConfigLocal({ secretSession: randomString });
 }
 
 app.enable('trust proxy');
@@ -407,6 +407,10 @@ app.use((req, res, next) => {
 if(app.get('env') === 'development'){
     app.use((err, req, res, next) => {
         console.error(colors.red(err.stack));
+        if(err && err.code === 'EACCES'){
+            res.status(400).json({ message: 'File upload error. Please try again.' });
+            return;
+        }
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -420,6 +424,10 @@ if(app.get('env') === 'development'){
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
     console.error(colors.red(err.stack));
+    if(err && err.code === 'EACCES'){
+        res.status(400).json({ message: 'File upload error. Please try again.' });
+        return;
+    }
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
@@ -443,7 +451,7 @@ app.on('uncaughtException', (err) => {
 initDb(config.databaseConnectionString, async (err, db) => {
     // On connection error we display then exit
     if(err){
-        console.log(colors.red('Error connecting to MongoDB: ' + err));
+        console.log(colors.red(`Error connecting to MongoDB: ${err}`));
         process.exit(2);
     }
 
@@ -479,7 +487,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         try{
             await runIndexing(app);
         }catch(ex){
-            console.error(colors.red('Error setting up indexes:' + ex.message));
+            console.error(colors.red(`Error setting up indexes:${ex.message}`));
         }
     }
 
@@ -488,10 +496,10 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await app.listen(app.get('port'));
         app.emit('appStarted');
         if(process.env.NODE_ENV !== 'test'){
-            console.log(colors.green('expressCart running on host: http://localhost:' + app.get('port')));
+            console.log(colors.green(`expressCart running on host: http://localhost:${app.get('port')}`));
         }
     }catch(ex){
-        console.error(colors.red('Error starting expressCart app:' + ex.message));
+        console.error(colors.red(`Error starting expressCart app:${ex.message}`));
         process.exit(2);
     }
 });

@@ -8,18 +8,26 @@ const {
     getId,
     hooker,
     clearSessionValue,
-    sortMenu,
-    getMenu,
-    getPaymentConfig,
     getImages,
-    updateTotalCart,
-    emptyCart,
-    updateSubscriptionCheck,
-    paginateProducts,
-    getSort,
     addSitemapProducts,
     getCountryList
 } = require('../lib/common');
+const {
+    getSort,
+    paginateProducts
+} = require('../lib/paginate');
+const {
+    getPaymentConfig
+} = require('../lib/config');
+const {
+    updateTotalCart,
+    emptyCart,
+    updateSubscriptionCheck
+} = require('../lib/cart');
+const {
+    sortMenu,
+    getMenu
+} = require('../lib/menu');
 const countryList = getCountryList();
 
 // These is the customer facing routes
@@ -413,7 +421,7 @@ router.get('/product/:id', async (req, res) => {
         images: images,
         relatedProducts,
         productDescription: stripHtml(product.productDescription),
-        metaDescription: config.cartTitle + ' - ' + product.productTitle,
+        metaDescription: `${config.cartTitle} - ${product.productTitle}`,
         config: config,
         session: req.session,
         pageUrl: config.baseUrl + req.originalUrl,
@@ -779,7 +787,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
             results: results.data,
             filtered: true,
             session: req.session,
-            metaDescription: req.app.config.cartTitle + ' - Search term: ' + searchTerm,
+            metaDescription: `${req.app.config.cartTitle} - Search term: ${searchTerm}`,
             searchTerm: searchTerm,
             message: clearSessionValue(req.session, 'message'),
             messageType: clearSessionValue(req.session, 'messageType'),
@@ -915,7 +923,7 @@ router.get('/page/:pageNum', (req, res, next) => {
                 session: req.session,
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
-                metaDescription: req.app.config.cartTitle + ' - Products page: ' + req.params.pageNum,
+                metaDescription: `${req.app.config.cartTitle} - Products page: ${req.params.pageNum}`,
                 config: req.app.config,
                 productsPerPage: numberProducts,
                 totalProductCount: results.totalItems,
@@ -987,7 +995,7 @@ router.get('/:page?', async (req, res, next) => {
                 message: clearSessionValue(req.session, 'message'),
                 messageType: clearSessionValue(req.session, 'messageType'),
                 config: req.app.config,
-                metaDescription: req.app.config.cartTitle + ' - ' + page,
+                metaDescription: `${req.app.config.cartTitle} - ${page}`,
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
                 menu: sortMenu(await getMenu(db))

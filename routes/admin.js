@@ -1,5 +1,4 @@
 const express = require('express');
-const common = require('../lib/common');
 const { restrict, checkAccess } = require('../lib/auth');
 const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
@@ -10,7 +9,31 @@ const path = require('path');
 const multer = require('multer');
 const mime = require('mime-type/with-db');
 const csrf = require('csurf');
+const util = require('util');
+const stream = require('stream');
 const { validateJson } = require('../lib/schema');
+const {
+    clearSessionValue,
+    mongoSanitize,
+    getThemes,
+    getId,
+    allowedMimeType,
+    fileSizeLimit,
+    checkDirectorySync,
+    sendEmail
+} = require('../lib/common');
+const {
+    getConfig,
+    updateConfig
+} = require('../lib/config');
+const {
+    sortMenu,
+    getMenu,
+    newMenu,
+    updateMenu,
+    deleteMenu,
+    orderMenu
+} = require('../lib/menu');
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 const csrfProtection = csrf({ cookie: true });
@@ -54,8 +77,8 @@ router.get('/admin/login', async (req, res) => {
             title: 'Login',
             referringUrl: req.header('Referer'),
             config: req.app.config,
-            message: common.clearSessionValue(req.session, 'message'),
-            messageType: common.clearSessionValue(req.session, 'messageType'),
+            message: clearSessionValue(req.session, 'message'),
+            messageType: clearSessionValue(req.session, 'messageType'),
             helpers: req.handlebars.helpers,
             showFooter: 'showFooter'
         });
@@ -70,7 +93,7 @@ router.get('/admin/login', async (req, res) => {
 router.post('/admin/login_action', async (req, res) => {
     const db = req.app.db;
 
-    const user = await db.users.findOne({ userEmail: common.mongoSanitize(req.body.email) });
+    const user = await db.users.findOne({ userEmail: mongoSanitize(req.body.email) });
     if(!user || user === null){
         res.status(400).json({ message: 'A user with that email does not exist.' });
         return;
@@ -106,8 +129,8 @@ router.get('/admin/setup', async (req, res) => {
             title: 'Setup',
             config: req.app.config,
             helpers: req.handlebars.helpers,
-            message: common.clearSessionValue(req.session, 'message'),
-            messageType: common.clearSessionValue(req.session, 'messageType'),
+            message: clearSessionValue(req.session, 'message'),
+            messageType: clearSessionValue(req.session, 'messageType'),
             showFooter: 'showFooter'
         });
         return;
@@ -136,7 +159,7 @@ router.post('/admin/setup_action', async (req, res) => {
             res.status(200).json({ message: 'User account inserted' });
             return;
         }catch(ex){
-            console.error(colors.red('Failed to insert user: ' + ex));
+            console.error(colors.red(`Failed to insert user: ${ex}`));
             res.status(200).json({ message: 'Setup failed' });
             return;
         }
@@ -189,9 +212,9 @@ router.get('/admin/dashboard', csrfProtection, restrict, async (req, res) => {
         session: req.session,
         admin: true,
         dashboardData,
-        themes: common.getThemes(),
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        themes: getThemes(),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
         csrfToken: req.csrfToken()
@@ -204,9 +227,9 @@ router.get('/admin/settings', csrfProtection, restrict, (req, res) => {
         title: 'Cart settings',
         session: req.session,
         admin: true,
-        themes: common.getThemes(),
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        themes: getThemes(),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
         footerHtml: typeof req.app.config.footerHtml !== 'undefined' ? escape.decode(req.app.config.footerHtml) : null,
@@ -238,9 +261,9 @@ router.post('/admin/createApiKey', restrict, checkAccess, async (req, res) => {
 
 // settings update
 router.post('/admin/settings/update', restrict, checkAccess, (req, res) => {
-    const result = common.updateConfig(req.body);
+    const result = updateConfig(req.body);
     if(result === true){
-        req.app.config = common.getConfig();
+        req.app.config = getConfig();
         res.status(200).json({ message: 'Settings successfully updated' });
         return;
     }
@@ -254,11 +277,11 @@ router.get('/admin/settings/menu', csrfProtection, restrict, async (req, res) =>
         title: 'Cart menu',
         session: req.session,
         admin: true,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db)),
+        menu: sortMenu(await getMenu(db)),
         csrfToken: req.csrfToken()
     });
 });
@@ -273,11 +296,11 @@ router.get('/admin/settings/pages', csrfProtection, restrict, async (req, res) =
         pages: pages,
         session: req.session,
         admin: true,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db)),
+        menu: sortMenu(await getMenu(db)),
         csrfToken: req.csrfToken()
     });
 });
@@ -291,11 +314,11 @@ router.get('/admin/settings/pages/new', csrfProtection, restrict, checkAccess, a
         session: req.session,
         admin: true,
         button_text: 'Create',
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: common.sortMenu(await common.getMenu(db)),
+        menu: sortMenu(await getMenu(db)),
         csrfToken: req.csrfToken()
     });
 });
@@ -303,8 +326,8 @@ router.get('/admin/settings/pages/new', csrfProtection, restrict, checkAccess, a
 // pages editor
 router.get('/admin/settings/pages/edit/:page', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    const page = await db.pages.findOne({ _id: common.getId(req.params.page) });
-    const menu = common.sortMenu(await common.getMenu(db));
+    const page = await db.pages.findOne({ _id: getId(req.params.page) });
+    const menu = sortMenu(await getMenu(db));
     if(!page){
         res.status(404).render('error', {
             title: '404 Error - Page not found',
@@ -323,8 +346,8 @@ router.get('/admin/settings/pages/edit/:page', csrfProtection, restrict, checkAc
         button_text: 'Update',
         session: req.session,
         admin: true,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
         menu,
@@ -345,14 +368,14 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
 
     if(req.body.pageId){
         // existing page
-        const page = await db.pages.findOne({ _id: common.getId(req.body.pageId) });
+        const page = await db.pages.findOne({ _id: getId(req.body.pageId) });
         if(!page){
             res.status(400).json({ message: 'Page not found' });
             return;
         }
 
         try{
-            const updatedPage = await db.pages.findOneAndUpdate({ _id: common.getId(req.body.pageId) }, { $set: doc }, { returnOriginal: false });
+            const updatedPage = await db.pages.findOneAndUpdate({ _id: getId(req.body.pageId) }, { $set: doc }, { returnOriginal: false });
             res.status(200).json({ message: 'Page updated successfully', pageId: req.body.pageId, page: updatedPage.value });
         }catch(ex){
             res.status(400).json({ message: 'Error updating page. Please try again.' });
@@ -373,14 +396,14 @@ router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
 router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const page = await db.pages.findOne({ _id: common.getId(req.body.pageId) });
+    const page = await db.pages.findOne({ _id: getId(req.body.pageId) });
     if(!page){
         res.status(400).json({ message: 'Page not found' });
         return;
     }
 
     try{
-        await db.pages.deleteOne({ _id: common.getId(req.body.pageId) }, {});
+        await db.pages.deleteOne({ _id: getId(req.body.pageId) }, {});
         res.status(200).json({ message: 'Page successfully deleted' });
         return;
     }catch(ex){
@@ -390,7 +413,7 @@ router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, re
 
 // new menu item
 router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
-    const result = common.newMenu(req);
+    const result = newMenu(req);
     if(result === false){
         res.status(400).json({ message: 'Failed creating menu.' });
         return;
@@ -400,7 +423,7 @@ router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
 
 // update existing menu item
 router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = common.updateMenu(req);
+    const result = updateMenu(req);
     if(result === false){
         res.status(400).json({ message: 'Failed updating menu.' });
         return;
@@ -410,7 +433,7 @@ router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => 
 
 // delete menu item
 router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => {
-    const result = common.deleteMenu(req, req.body.menuId);
+    const result = deleteMenu(req, req.body.menuId);
     if(result === false){
         res.status(400).json({ message: 'Failed deleting menu.' });
         return;
@@ -420,7 +443,7 @@ router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => 
 
 // We call this via a Ajax call to save the order from the sortable list
 router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
-    const result = common.orderMenu(req, res);
+    const result = orderMenu(req, res);
     if(result === false){
         res.status(400).json({ message: 'Failed saving menu order' });
         return;
@@ -438,7 +461,7 @@ router.post('/admin/validatePermalink', async (req, res) => {
     if(typeof req.body.docId === 'undefined' || req.body.docId === ''){
         query = { productPermalink: req.body.permalink };
     }else{
-        query = { productPermalink: req.body.permalink, _id: { $ne: common.getId(req.body.docId) } };
+        query = { productPermalink: req.body.permalink, _id: { $ne: getId(req.body.docId) } };
     }
 
     const products = await db.products.countDocuments(query);
@@ -461,8 +484,8 @@ router.get('/admin/settings/discounts', csrfProtection, restrict, checkAccess, a
         session: req.session,
         discounts,
         admin: true,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         csrfToken: req.csrfToken()
     });
@@ -472,15 +495,15 @@ router.get('/admin/settings/discounts', csrfProtection, restrict, checkAccess, a
 router.get('/admin/settings/discount/edit/:id', csrfProtection, restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
 
-    const discount = await db.discounts.findOne({ _id: common.getId(req.params.id) });
+    const discount = await db.discounts.findOne({ _id: getId(req.params.id) });
 
     res.render('settings-discount-edit', {
         title: 'Discount code edit',
         session: req.session,
         admin: true,
         discount,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
         csrfToken: req.csrfToken()
@@ -523,7 +546,7 @@ router.post('/admin/settings/discount/update', restrict, checkAccess, async (req
     // Check if code exists
     const checkCode = await db.discounts.countDocuments({
         code: discountDoc.code,
-        _id: { $ne: common.getId(discountDoc.discountId) }
+        _id: { $ne: getId(discountDoc.discountId) }
     });
     if(checkCode){
         res.status(400).json({ message: 'Discount code already exists' });
@@ -534,7 +557,7 @@ router.post('/admin/settings/discount/update', restrict, checkAccess, async (req
     delete discountDoc.discountId;
 
     try{
-        await db.discounts.updateOne({ _id: common.getId(req.body.discountId) }, { $set: discountDoc }, {});
+        await db.discounts.updateOne({ _id: getId(req.body.discountId) }, { $set: discountDoc }, {});
         res.status(200).json({ message: 'Successfully saved', discount: discountDoc });
     }catch(ex){
         res.status(400).json({ message: 'Failed to save. Please try again' });
@@ -547,8 +570,8 @@ router.get('/admin/settings/discount/new', csrfProtection, restrict, checkAccess
         title: 'Discount code create',
         session: req.session,
         admin: true,
-        message: common.clearSessionValue(req.session, 'message'),
-        messageType: common.clearSessionValue(req.session, 'messageType'),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
         csrfToken: req.csrfToken()
@@ -606,7 +629,7 @@ router.delete('/admin/settings/discount/delete', restrict, checkAccess, async (r
     const db = req.app.db;
 
     try{
-        await db.discounts.deleteOne({ _id: common.getId(req.body.discountId) }, {});
+        await db.discounts.deleteOne({ _id: getId(req.body.discountId) }, {});
         res.status(200).json({ message: 'Discount code successfully deleted' });
         return;
     }catch(ex){
@@ -626,7 +649,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         const mimeType = mime.lookup(file.originalname);
 
         // Check for allowed mime type and file size
-        if(!common.allowedMimeType.includes(mimeType) || file.size > common.fileSizeLimit){
+        if(!allowedMimeType.includes(mimeType) || file.size > fileSizeLimit){
             // Remove temp file
             fs.unlinkSync(file.path);
 
@@ -636,7 +659,7 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         }
 
         // get the product form the DB
-        const product = await db.products.findOne({ _id: common.getId(req.body.productId) });
+        const product = await db.products.findOne({ _id: getId(req.body.productId) });
         if(!product){
             // delete the temp file.
             fs.unlinkSync(file.path);
@@ -650,37 +673,45 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         const uploadDir = path.join('public/uploads', productPath);
 
         // Check directory and create (if needed)
-        common.checkDirectorySync(uploadDir);
+        checkDirectorySync(uploadDir);
 
-        const source = fs.createReadStream(file.path);
-        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
-
-        // save the new file
-        source.pipe(dest);
-        source.on('end', () => { });
-
-        // delete the temp file.
-        fs.unlinkSync(file.path);
-
+        // Setup the new path
         const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
 
-        // if there isn't a product featured image, set this one
-        if(!product.productImage){
-            await db.products.updateOne({ _id: common.getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+        // save the new file
+        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+        const pipeline = util.promisify(stream.pipeline);
+
+        try{
+            await pipeline(
+                fs.createReadStream(file.path),
+                dest
+            );
+
+            // delete the temp file.
+            fs.unlinkSync(file.path);
+
+            // if there isn't a product featured image, set this one
+            if(!product.productImage){
+                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+            }
+            res.status(200).json({ message: 'File uploaded successfully' });
+        }catch(ex){
+            console.log('Failed to upload the file', ex);
+            res.status(400).json({ message: 'File upload error. Please try again.' });
         }
-        // Return success message
-        res.status(200).json({ message: 'File uploaded successfully' });
-        return;
+    }else{
+        // Return error
+        console.log('fail', req.file);
+        res.status(400).json({ message: 'File upload error. Please try again.' });
     }
-    // Return error
-    res.status(400).json({ message: 'File upload error. Please try again.' });
 });
 
 // delete a file via ajax request
 router.post('/admin/testEmail', restrict, (req, res) => {
     const config = req.app.config;
     // TODO: Should fix this to properly handle result
-    common.sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
+    sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
     res.status(200).json({ message: 'Test email sent' });
 });
 
