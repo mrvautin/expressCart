@@ -407,6 +407,10 @@ app.use((req, res, next) => {
 if(app.get('env') === 'development'){
     app.use((err, req, res, next) => {
         console.error(colors.red(err.stack));
+        if(err && err.code === 'EACCES'){
+            res.status(400).json({ message: 'File upload error. Please try again.' });
+            return;
+        }
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -420,6 +424,10 @@ if(app.get('env') === 'development'){
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
     console.error(colors.red(err.stack));
+    if(err && err.code === 'EACCES'){
+        res.status(400).json({ message: 'File upload error. Please try again.' });
+        return;
+    }
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

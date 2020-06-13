@@ -9,6 +9,8 @@ const path = require('path');
 const multer = require('multer');
 const mime = require('mime-type/with-db');
 const csrf = require('csurf');
+const util = require('util');
+const stream = require('stream');
 const { validateJson } = require('../lib/schema');
 const {
     clearSessionValue,
@@ -673,28 +675,36 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         // Check directory and create (if needed)
         checkDirectorySync(uploadDir);
 
-        const source = fs.createReadStream(file.path);
-        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
-
-        // save the new file
-        source.pipe(dest);
-        source.on('end', () => { });
-
-        // delete the temp file.
-        fs.unlinkSync(file.path);
-
+        // Setup the new path
         const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
 
-        // if there isn't a product featured image, set this one
-        if(!product.productImage){
-            await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+        // save the new file
+        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+        const pipeline = util.promisify(stream.pipeline);
+
+        try{
+            await pipeline(
+                fs.createReadStream(file.path),
+                dest
+            );
+
+            // delete the temp file.
+            fs.unlinkSync(file.path);
+
+            // if there isn't a product featured image, set this one
+            if(!product.productImage){
+                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+            }
+            res.status(200).json({ message: 'File uploaded successfully' });
+        }catch(ex){
+            console.log('Failed to upload the file', ex);
+            res.status(400).json({ message: 'File upload error. Please try again.' });
         }
-        // Return success message
-        res.status(200).json({ message: 'File uploaded successfully' });
-        return;
+    }else{
+        // Return error
+        console.log('fail', req.file);
+        res.status(400).json({ message: 'File upload error. Please try again.' });
     }
-    // Return error
-    res.status(400).json({ message: 'File upload error. Please try again.' });
 });
 
 // delete a file via ajax request
