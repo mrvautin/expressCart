@@ -3,6 +3,37 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const csrf = require("csurf");
+const escape = require("html-entities").AllHtmlEntities;
+const colors = require("colors");
+const bcrypt = require("bcryptjs");
+const moment = require("moment");
+const fs = require("fs");
+const path = require("path");
+const mime = require("mime-type/with-db");
+const csrf = require("csurf");
+const util = require("util");
+const stream = require("stream");
+const { validateJson } = require("../lib/schema");
+const {
+  clearSessionValue,
+  mongoSanitize,
+  getThemes,
+  getId,
+  allowedMimeType,
+  fileSizeLimit,
+  checkDirectorySync,
+  sendEmail,
+} = require("../lib/common");
+const { getConfig, updateConfig } = require("../lib/config");
+const {
+  sortMenu,
+  getMenu,
+  newMenu,
+  updateMenu,
+  deleteMenu,
+  orderMenu,
+} = require("../lib/menu");
+const ObjectId = require("mongodb").ObjectID;
 const csrfProtection = csrf({ cookie: true });
 
 // Controller Imports
