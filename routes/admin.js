@@ -2,6 +2,7 @@ const { restrict, checkAccess } = require("../lib/auth");
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const csrf = require("csurf");
 const csrfProtection = csrf({ cookie: true });
 
 // Controller Imports
