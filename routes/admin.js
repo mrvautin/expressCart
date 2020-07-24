@@ -10,7 +10,6 @@ const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
 const mime = require("mime-type/with-db");
-const csrf = require("csurf");
 const util = require("util");
 const stream = require("stream");
 const { validateJson } = require("../lib/schema");
