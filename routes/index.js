@@ -115,7 +115,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
             }
         }, { multi: false });
     };
-    
+
     let paymentView = `${config.themeViews}payment-complete`;
     if(order.orderPaymentGateway === 'Blockonomics') paymentView = `${config.themeViews}payment-complete-blockonomics`;
     res.render(paymentView, {
@@ -413,13 +413,13 @@ router.get('/product/:id', async (req, res) => {
         const productTitleWords = product.productTitle.split(' ');
         const searchWords = productTags.concat(productTitleWords);
         searchWords.forEach((word) => {
-            try {
-                results = productsIndex.search(word)
+            try{
+                const results = productsIndex.search(word);
                 results.forEach((id) => {
                     lunrIdArray.push(getId(id.ref));
                 });
-            } catch (e) {
-                console.log('lunr search query error')
+            }catch(e){
+                console.log('lunr search query error');
             }
         });
         relatedProducts = await db.products.find({
