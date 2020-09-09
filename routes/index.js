@@ -104,10 +104,18 @@ router.get('/payment/:orderId', async (req, res, next) => {
         }
     }
 
-    // If hooks are configured, send hook
-    if(config.orderHook){
+    // If hooks are configured and the hook has not already been sent, send hook
+    if(config.orderHook && !order.hookSent){
         await hooker(order);
+        await db.orders.updateOne({
+            _id: getId(order._id)
+        }, {
+            $set: {
+                hookSent: true
+            }
+        }, { multi: false });
     };
+    
     let paymentView = `${config.themeViews}payment-complete`;
     if(order.orderPaymentGateway === 'Blockonomics') paymentView = `${config.themeViews}payment-complete-blockonomics`;
     res.render(paymentView, {
