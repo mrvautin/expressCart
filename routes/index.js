@@ -405,9 +405,14 @@ router.get('/product/:id', async (req, res) => {
         const productTitleWords = product.productTitle.split(' ');
         const searchWords = productTags.concat(productTitleWords);
         searchWords.forEach((word) => {
-            productsIndex.search(word).forEach((id) => {
-                lunrIdArray.push(getId(id.ref));
-            });
+            try {
+                results = productsIndex.search(word)
+                results.forEach((id) => {
+                    lunrIdArray.push(getId(id.ref));
+                });
+            } catch (e) {
+                console.log('lunr search query error')
+            }
         });
         relatedProducts = await db.products.find({
             _id: { $in: lunrIdArray, $ne: product._id }
