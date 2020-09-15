@@ -219,7 +219,9 @@ This email is used for any email receipts which are sent by your website.
 
 ##### Payment Gateway
 
-This determines which payment gateway to use. You will also need to configure your payment gateway configuration file here: `/config/payment/config/<gateway_name>.json` or use the `env.yaml` file.
+An array of payment gateways to use. You will also need to configure your payment gateway configuration file(s) here: `/config/payment/config/<gateway_name>.json` or use the `env.yaml` file.
+
+> Multiple payment gateways can be provided to combine checkout. Eg: Card and Instore pickup
 
 ##### Currency symbol
 
