@@ -257,6 +257,7 @@ The Paypal config file is located: `/config/payment/config/paypal.json`. A examp
 
 ```
 {
+    "description": "Paypal payment",
     "mode": "live", // sandbox or live
     "client_id": "this_is_not_real",
     "client_secret": "this_is_not_real",
@@ -272,6 +273,7 @@ The Stripe config file is located: `/config/payment/config/stripe.json`. A examp
 
 ```
 {
+    "description": "Card payment",
     "secretKey": "sk_test_this_is_not_real",
     "publicKey": "pk_test_this_is_not_real",
     "stripeCurrency": "usd", The Stripe currency to charge in
@@ -292,6 +294,7 @@ The Blockonomics config file is located: `/config/payment/config/blockonomics.js
 
 ```
 {
+    "description": "Blockonomics payment",
     "apiKey": "this_is_not_real",
     "hostUrl": "https://www.blockonomics.co", // You usually don't need to change this
     "newAddressApi": "/api/new_address", // You usually don't need to change this
@@ -306,6 +309,7 @@ The Authorize.net config file is located: `/config/payment/config/authorizenet.j
 
 ```
 {
+    "description": "Card payment",
     "loginId": "loginId",
     "transactionKey": "transactionKey",
     "clientKey": "clientKey",
@@ -321,9 +325,10 @@ The Adyen config file is located: `/config/payment/config/adyen.json`. A example
 
 ```
 {
+    "description": "Card payment",
     "environment": "TEST",
     "apiKey": "this_is_not_real",
-    "publicKey": "this_is_not_real",
+    "originKey": "this_is_not_real",
     "merchantAccount": "this_is_not_real",
     "statementDescriptor": "a_statement_descriptor",
     "currency": "AUD"
@@ -338,6 +343,7 @@ The PayWay config file is located: `/config/payment/config/payway.json`. A examp
 
 ```
 {
+    "description": "Card payment",
     "apiKey": "TXXXXX_SEC_btbqXxXxqgtzXk2p27hapvxXXXXxw28gh3febtuaf2etnkXxXxehdqu98u",
     "publishableApiKey": "T11266_PUB_btbq8r6sqgtz5k2p27hapvx8nurxw28gh3fepbtua2f2etnkp4bmehdqu98u",
     "merchantId": "TEST"
@@ -352,6 +358,7 @@ The Instore config file is located: `/config/payment/config/instore.json`. A exa
 
 ```
 {
+    "description": "Instore payment",
     "orderStatus": "Pending",
     "buttonText": "Place order, pay instore",
     "resultMessage": "The order is place. Please pay for your order instore on pickup."
