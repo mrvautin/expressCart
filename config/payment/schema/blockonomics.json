@@ -17,7 +17,7 @@
         }
     },
     "required": [
-        "description", "api_key", "hostUrl", "newAddressApi", "priceApi"
+        "description", "apiKey", "hostUrl", "newAddressApi", "priceApi"
     ],
     "additionalProperties": false
 }
