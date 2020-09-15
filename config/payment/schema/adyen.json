@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "environment": {
             "type": "string",
             "enum": ["TEST", "LIVE"]
@@ -7,7 +10,7 @@
         "apiKey": {
             "type": "string"
         },
-        "publicKey": {
+        "originKey": {
             "type": "string"
         },
         "merchantAccount": {
@@ -21,9 +24,10 @@
         }
     },
     "required": [
+        "description",
         "environment",
         "apiKey",
-        "publicKey",
+        "originKey",
         "merchantAccount",
         "statementDescriptor",
         "currency"

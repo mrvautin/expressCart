@@ -1,4 +1,5 @@
 {
+    "description": "Blockonomics payment",
     "apiKey": "this_is_not_real",
     "hostUrl": "https://www.blockonomics.co",
     "newAddressApi": "/api/new_address",

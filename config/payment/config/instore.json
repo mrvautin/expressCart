@@ -1,4 +1,5 @@
 {
+    "description": "Instore pickup",
     "orderStatus": "Pending",
     "buttonText": "Place order, pay instore",
     "resultMessage": "The order is place. Please pay for your order instore on pickup."
