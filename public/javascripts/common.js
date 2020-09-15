@@ -1,36 +1,66 @@
 /* eslint-disable no-unused-vars, prefer-template */
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals AdyenCheckout */
+/* globals Stripe, AdyenCheckout */
 $(document).ready(function (){
     // validate form and show stripe payment
-    $('#stripeButton').validator().on('click', function(e){
-        e.preventDefault();
-        if($('#shipping-form').validator('validate').has('.has-error').length === 0){
-            // if no form validation errors
-            var handler = window.StripeCheckout.configure({
-                key: $('#stripeButton').data('key'),
-                image: $('#stripeButton').data('image'),
-                locale: 'auto',
-                token: function(token){
-                    if($('#stripeButton').data('subscription')){
-                        $('#shipping-form').append('<input type="hidden" name="stripePlan" value="' + $('#stripeButton').data('subscription') + '" />');
-                    }
-                    $('#shipping-form').append('<input type="hidden" name="stripeToken" value="' + token.id + '" />');
-                    $('#shipping-form').submit();
+    if($('#stripe-form').length > 0){
+        var stripe = Stripe($('#stripePublicKey').val());
+        var elements = stripe.elements();
+        var style = {
+            hidePostalCode: true,
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                    '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        // Create an instance of the card Element.
+        var card = elements.create('card', { style: style });
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        $(document).on('submit', '#stripe-payment-form', function(e){
+            e.preventDefault();
+
+            stripe.createToken(card).then(function(response){
+                if(response.error){
+                    showNotification('Failed to complete transaction', 'danger', true);
+                }else{
+                    $.ajax({
+                        type: 'POST',
+                        url: '/stripe/checkout_action',
+                        data: {
+                            token: response.token.id
+                        }
+                    }).done((response) => {
+                        window.location = '/payment/' + response.paymentId;
+                    }).fail((response) => {
+                        window.location = '/payment/' + response.paymentId;
+                    });
                 }
             });
+        });
+    }
 
-            // open the stripe payment form
-            handler.open({
-                email: $('#stripeButton').data('email'),
-                name: $('#stripeButton').data('name'),
-                description: $('#stripeButton').data('description'),
-                zipCode: $('#stripeButton').data('zipCode'),
-                amount: $('#stripeButton').data('amount'),
-                currency: $('#stripeButton').data('currency'),
-                subscription: $('#stripeButton').data('subscription')
-            });
-        }
+    $('#checkoutInstore').validator().on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/instore/checkout_action'
+        }).done((response) => {
+            window.location = '/payment/' + response.paymentId;
+        }).fail((response) => {
+            window.location = '/payment/' + response.paymentId;
+        });
     });
 
     if($('#adyen-dropin').length > 0){
@@ -42,7 +72,7 @@ $(document).ready(function (){
             const configuration = {
                 locale: 'en-AU',
                 environment: response.environment.toLowerCase(),
-                originKey: response.publicKey,
+                originKey: response.originKey,
                 paymentMethodsResponse: response.paymentsResponse
             };
             const checkout = new AdyenCheckout(configuration);

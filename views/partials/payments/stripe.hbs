@@ -1,4 +1,5 @@
 <div id="stripe-form">
+    <input type="hidden" id="stripePublicKey" value="{{@root.paymentConfig.stripe.publicKey}}">
     <div class="mb-2">{{@root.paymentConfig.stripe.description}}</div>
     <form id="stripe-payment-form">
       <div id="card-element"></div>
