@@ -50,11 +50,21 @@
                         </div>
                     </div>
                     {{/if}}
-                    <form id="shipping-form" class="shipping-form" action="/{{config.paymentGateway}}/checkout_action{{@root.paymentType}}" method="post" role="form" data-toggle="validator" novalidate="false">
+                    <div id="payment-form" class="payment-form">
                     {{#if session.customerPresent}}
-                    {{> (partial config.paymentGateway) }}
+                        <ul class="list-group bottom-pad-15">
+                            {{#each config.paymentGateway}}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{> (partial this) }}
+                                    </div>
+                                </div>
+                            </li>
+                            {{/each}}
+                        </ul>
                     {{/if}}
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

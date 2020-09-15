@@ -1,3 +1,4 @@
+<div class="mb-2">{{@root.paymentConfig.payway.description}}</div>
 <form action="/payway/checkout_action" method="post">
     <div id="payway-credit-card"></div>
     <input id="payway-cc-submit" class="btn btn-outline-success" type="submit" disabled="true" />
@@ -18,7 +19,7 @@
     };
     var submit = document.getElementById('payway-cc-submit');
     payway.createCreditCardFrame({
-        publishableApiKey: '{{@root.paymentConfig.publishableApiKey}}',
+        publishableApiKey: '{{@root.paymentConfig.payway.publishableApiKey}}',
         style,
         layout:'wide',
         onValid: function () { submit.disabled = false; },
