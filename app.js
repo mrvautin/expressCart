@@ -293,6 +293,12 @@ handlebars = handlebars.create({
             }
             return text;
         },
+        contains: (values, value, options) => {
+            if(values.includes(value)){
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        },
         fixTags: (html) => {
             html = html.replace(/&gt;/g, '>');
             html = html.replace(/&lt;/g, '<');

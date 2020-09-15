@@ -120,7 +120,7 @@
                     <p class="help-block">{{ @root.__ "Here you can set variants for your product. Eg: Size, color, style" }}</p>
                 </div>
             </div>
-            {{#ifCond config.paymentGateway '==' 'stripe'}}
+            {{#contains config.paymentGateway 'stripe'}}
             <div class="col-12">
                 <div class="form-group">
                     <label class="control-label">Subscription plan</label>
@@ -128,7 +128,7 @@
                     <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
                 </div>
             </div>
-            {{/ifCond}}
+            {{/contains}}
             <div class="col-12">
                 <div class="form-group">
                     <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
