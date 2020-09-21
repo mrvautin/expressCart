@@ -1,0 +1,28 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "publicKey": {
+            "type": "string",
+            "default": "sandbox"
+        },
+        "privateKey": {
+            "type": "string"
+        },
+        "supportedCountries":{
+            "type": "array"
+        }
+    },
+    "required": [
+        "description",
+        "apiKey",
+        "publicKey",
+        "privateKey",
+        "supportedCountries"
+    ],
+    "additionalProperties": false
+}

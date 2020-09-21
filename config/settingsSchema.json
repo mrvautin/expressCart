@@ -99,6 +99,10 @@
                     {
                         "type": "string",
                         "enum": [ "instore"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "zip"]
                     }
                 ]
             }

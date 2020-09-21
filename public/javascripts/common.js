@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, prefer-template */
 /* eslint-disable prefer-arrow-callback, no-var, no-tabs */
-/* globals Stripe, AdyenCheckout */
+/* globals Stripe, AdyenCheckout, Zip */
 $(document).ready(function (){
     // validate form and show stripe payment
     if($('#stripe-form').length > 0){
@@ -117,6 +117,17 @@ $(document).ready(function (){
         })
         .fail(function(msg){
             showNotification(msg.responseJSON.message, 'danger');
+        });
+    };
+
+    if($('#zip-checkout').length > 0){
+        Zip.Checkout.attachButton('#zip-checkout', {
+            checkoutUri: '/zip/setup',
+            redirectUri: '/zip/response',
+            onError: function(args){
+                console.log('fail', args);
+                showNotification('Failed to complete transaction', 'danger', false);
+            }
         });
     };
 });
