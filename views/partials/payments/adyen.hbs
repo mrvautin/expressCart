@@ -1,7 +1,8 @@
-<div class="col-sm-12 text-center">
+<div>
+    <div class="mb-2">{{@root.paymentConfig.adyen.description}}</div>
     <div id="adyen-dropin"></div>
     <link rel="stylesheet" href="https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/3.2.0/adyen.css"/>
     <script src="https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/3.2.0/adyen.js"></script>
-    <input type="hidden" id="environment" value="{{@root.paymentConfig.environment}}">
-    <input type="hidden" id="publicKey" value="{{@root.paymentConfig.publicKey}}">
+    <input type="hidden" id="environment" value="{{@root.paymentConfig.adyen.environment}}">
+    <input type="hidden" id="originKey" value="{{@root.paymentConfig.adyen.originKey}}">
 </div>

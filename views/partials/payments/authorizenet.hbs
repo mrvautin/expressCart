@@ -1,5 +1,5 @@
 <script type="text/javascript"
-{{#ifCond @root.paymentConfig.mode '==' 'test'}}
+{{#ifCond @root.paymentConfig.authorizenet.mode '==' 'test'}}
     src="https://jstest.authorize.net/v3/AcceptUI.js"
 {{else}}
     src="https://js.authorize.net/v3/AcceptUI.js"
@@ -42,15 +42,16 @@
         });
     }
 </script>
-<div class="col-sm-12 text-center">
+<div>
+    <div class="mb-2">{{@root.paymentConfig.authorizenet.description}}</div>
     <form id="paymentForm" method="POST">
         <input type="hidden" name="dataValue" id="dataValue" />
         <input type="hidden" name="dataDescriptor" id="dataDescriptor" />
         <button type="button"
             class="AcceptUI btn btn-outline-success waves-effect waves-light blue darken-3"
             data-billingAddressOptions='{"show":false, "required":false}'
-            data-apiLoginID="{{@root.paymentConfig.loginId}}"
-            data-clientKey="{{@root.paymentConfig.clientKey}}"
+            data-apiLoginID="{{@root.paymentConfig.authorizenet.loginId}}"
+            data-clientKey="{{@root.paymentConfig.authorizenet.clientKey}}"
             data-acceptUIFormBtnTxt="Submit"
             data-acceptUIFormHeaderTxt="Card Information"
             data-responseHandler="responseHandler">Pay Now

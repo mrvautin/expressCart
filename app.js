@@ -38,13 +38,15 @@ if(baseConfig === false){
 }
 
 // Validate the payment gateway config
-if(ajv.validate(
-        require(`./config/payment/schema/${config.paymentGateway}`),
-        require(`./config/payment/config/${config.paymentGateway}`)) === false
-    ){
-    console.log(colors.red(`${config.paymentGateway} config is incorrect: ${ajv.errorsText()}`));
-    process.exit(2);
-}
+_.forEach(config.paymentGateway, (gateway) => {
+    if(ajv.validate(
+            require(`./config/payment/schema/${gateway}`),
+            require(`./config/payment/config/${gateway}`)) === false
+        ){
+        console.log(colors.red(`${gateway} config is incorrect: ${ajv.errorsText()}`));
+        process.exit(2);
+    }
+});
 
 // require the routes
 const index = require('./routes/index');
@@ -53,9 +55,6 @@ const product = require('./routes/product');
 const customer = require('./routes/customer');
 const order = require('./routes/order');
 const user = require('./routes/user');
-
-// Add the payment route
-const paymentRoute = require(`./lib/payments/${config.paymentGateway}`);
 
 const app = express();
 
@@ -294,6 +293,12 @@ handlebars = handlebars.create({
             }
             return text;
         },
+        contains: (values, value, options) => {
+            if(values.includes(value)){
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        },
         fixTags: (html) => {
             html = html.replace(/&gt;/g, '>');
             html = html.replace(/&lt;/g, '<');
@@ -390,8 +395,10 @@ app.use('/', order);
 app.use('/', user);
 app.use('/', admin);
 
-// Payment route
-app.use(`/${config.paymentGateway}`, paymentRoute);
+// Payment route(s)
+_.forEach(config.paymentGateway, (gateway) => {
+    app.use(`/${gateway}`, require(`./lib/payments/${gateway}`));
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

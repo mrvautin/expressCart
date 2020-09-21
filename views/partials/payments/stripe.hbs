@@ -1,25 +1,8 @@
-<div class="col-sm-12 text-center">
-    <form method="POST" id="payment-form">
-        <button
-            type="submit"
-            id="stripeButton"
-            value="Process payment"
-            class="btn btn-outline-success waves-effect waves-light blue darken-3"
-            type="submit"
-            data-key="{{@root.paymentConfig.publicKey}}"
-            data-amount="{{amountNoDecimal @root.session.totalCartAmount}}"
-            data-name="{{@root.config.cartTitle}}"
-            data-description="{{@root.config.cartTitle}} Payment"
-            data-image="{{@root.paymentConfig.stripeLogoURL}}"
-            data-email="{{@root.session.customerEmail}}"
-            {{#if @root.session.cartSubscription}}
-            data-subscription="{{@root.session.cartSubscription}}"
-            {{/if}}
-            data-locale="auto"
-            data-zip-code="false"
-            data-currency="{{@root.paymentConfig.stripeCurrency}}">
-            Pay Now
-        </button>
-        <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+<div id="stripe-form">
+    <input type="hidden" id="stripePublicKey" value="{{@root.paymentConfig.stripe.publicKey}}">
+    <div class="mb-2">{{@root.paymentConfig.stripe.description}}</div>
+    <form id="stripe-payment-form">
+      <div id="card-element"></div>
+      <button class="btn btn-outline-success mt-2">Process Payment</button>
     </form>
 </div>

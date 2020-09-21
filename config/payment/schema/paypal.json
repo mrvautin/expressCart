@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "mode": {
             "type": "string",
             "enum": ["sandbox", "live"]
@@ -18,6 +21,7 @@
         }
     },
     "required": [
+        "description",
         "mode",
         "client_id",
         "client_secret",
