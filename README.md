@@ -354,6 +354,25 @@ The PayWay config file is located: `/config/payment/config/payway.json`. A examp
 
 Note: The `apiKey`, `publishableApiKey` and `merchantId` is obtained from your PayWay account dashboard.
 
+##### Zip (Payments)
+
+The Zip config file is located: `/config/payment/config/zip.json`. A example Zip settings file is provided:
+
+```
+{
+    "description": "Pay with Zip",
+    "privateKey": "KqtU4WtVeXAAbksD1dPpufYXgtfFe0hL9OhBF7hLXzQ=",
+    "mode": "test",
+    "currency": "AUD",
+    "supportedCountries": [
+        "Australia",
+        "New Zealand"
+    ]
+}
+```
+
+Note: The `privateKey` is obtained from your account dashboard.
+
 ##### Instore (Payments)
 
 The Instore config file is located: `/config/payment/config/instore.json`. A example Instore settings file is provided:

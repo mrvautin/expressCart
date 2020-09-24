@@ -1,8 +1,6 @@
 {
     "description": "Pay with Zip",
-    "apiKey": "this_is_a_test_api_key",
-    "publicKey": "sk_test_this_is_not_real",
-    "privateKey": "KqtURWtVQXAA9ksD1CPpufYXgtxFe0hL9O2BF7hLXWQ=",
+    "privateKey": "KqtU4WtVeXAAbksD1dPpufYXgtfFe0hL9OhBF7hLXzQ=",
     "mode": "test",
     "currency": "AUD",
     "supportedCountries": [

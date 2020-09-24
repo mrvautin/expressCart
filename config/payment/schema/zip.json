@@ -3,13 +3,6 @@
         "description": {
             "type": "string"
         },
-        "apiKey": {
-            "type": "string"
-        },
-        "publicKey": {
-            "type": "string",
-            "default": "sandbox"
-        },
         "privateKey": {
             "type": "string"
         },
@@ -29,8 +22,6 @@
     },
     "required": [
         "description",
-        "apiKey",
-        "publicKey",
         "privateKey",
         "mode",
         "currency",
