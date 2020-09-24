@@ -1,0 +1,40 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "publicKey": {
+            "type": "string",
+            "default": "sandbox"
+        },
+        "privateKey": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string",
+            "default": "test",
+            "enum": ["test", "live"]
+        },
+        "currency": {
+            "type": "string",
+            "default": "AUD",
+            "enum": ["AUD", "NZD"]
+        },
+        "supportedCountries":{
+            "type": "array"
+        }
+    },
+    "required": [
+        "description",
+        "apiKey",
+        "publicKey",
+        "privateKey",
+        "mode",
+        "currency",
+        "supportedCountries"
+    ],
+    "additionalProperties": false
+}

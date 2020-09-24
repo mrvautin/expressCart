@@ -1,2 +1,3 @@
 **/*.min.js
 pm2.config.js
+jsconfig.json
