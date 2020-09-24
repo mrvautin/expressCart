@@ -11,6 +11,7 @@ Payment providers included:
 - [Authorize.net](https://www.authorize.net/)
 - [Adyen](https://www.adyen.com/)
 - [PayWay](https://www.payway.com.au/)
+- [Zip](https://zip.co/)
 - Instore
 
 [![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)
