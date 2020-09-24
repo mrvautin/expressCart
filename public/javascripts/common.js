@@ -124,7 +124,6 @@ $(document).ready(function (){
         Zip.Checkout.attachButton('#zip-checkout', {
             checkoutUri: '/zip/setup',
             onComplete: function(args){
-                console.log('args', args); // args.state = “approved”/”referred”/”declined”…; args.checkoutId=”ch_123…”
                 if(args.state !== 'approved'){
                     window.location = '/zip/return?result=' + args.state;
                     return;
