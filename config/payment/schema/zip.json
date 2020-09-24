@@ -18,6 +18,11 @@
             "default": "test",
             "enum": ["test", "live"]
         },
+        "currency": {
+            "type": "string",
+            "default": "AUD",
+            "enum": ["AUD", "NZD"]
+        },
         "supportedCountries":{
             "type": "array"
         }
@@ -28,6 +33,7 @@
         "publicKey",
         "privateKey",
         "mode",
+        "currency",
         "supportedCountries"
     ],
     "additionalProperties": false
