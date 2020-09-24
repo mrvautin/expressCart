@@ -13,6 +13,11 @@
         "privateKey": {
             "type": "string"
         },
+        "mode": {
+            "type": "string",
+            "default": "test",
+            "enum": ["test", "live"]
+        },
         "supportedCountries":{
             "type": "array"
         }
@@ -22,6 +27,7 @@
         "apiKey",
         "publicKey",
         "privateKey",
+        "mode",
         "supportedCountries"
     ],
     "additionalProperties": false

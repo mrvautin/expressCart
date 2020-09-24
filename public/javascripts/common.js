@@ -123,10 +123,26 @@ $(document).ready(function (){
     if($('#zip-checkout').length > 0){
         Zip.Checkout.attachButton('#zip-checkout', {
             checkoutUri: '/zip/setup',
-            redirectUri: '/zip/response',
+            onComplete: function(args){
+                console.log('args', args); // args.state = “approved”/”referred”/”declined”…; args.checkoutId=”ch_123…”
+                if(args.state !== 'approved'){
+                    window.location = '/zip/return?result=' + args.state;
+                    return;
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '/zip/charge',
+                    data: {
+                        checkoutId: args.checkoutId
+                    }
+                }).done((response) => {
+                    window.location = '/payment/' + response.paymentId;
+                }).fail((response) => {
+                    showNotification('Failed to complete transaction', 'danger', true);
+                });
+            },
             onError: function(args){
-                console.log('fail', args);
-                showNotification('Failed to complete transaction', 'danger', false);
+                window.location = '/zip/return?result=cancelled';
             }
         });
     };
