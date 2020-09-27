@@ -482,8 +482,6 @@ initDb(config.databaseConnectionString, async (err, db) => {
         });
     });
 
-    await writeGoogleData(db);
-
     // Fire up the cron job to create google product feed
     cron.schedule('0 * * * *', async () => {
         await writeGoogleData(db);
