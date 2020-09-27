@@ -21,6 +21,7 @@ const { getConfig, getPaymentConfig, updateConfigLocal } = require('./lib/config
 const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
 const { initDb, getDbUri } = require('./lib/db');
+const { writeGoogleData } = require('./lib/googledata');
 let handlebars = require('express-handlebars');
 const i18n = require('i18n');
 
@@ -479,6 +480,13 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await db.cart.deleteMany({
             sessionId: { $nin: validSessionIds }
         });
+    });
+
+    await writeGoogleData(db);
+
+    // Fire up the cron job to create google product feed
+    cron.schedule('0 * * * *', async () => {
+        await writeGoogleData(db);
     });
 
     // Set trackStock for testing

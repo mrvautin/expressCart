@@ -74,6 +74,7 @@
     "strip-bom": "^3.0.0",
     "stripe": "^7.12.0",
     "uglifycss": "0.0.27",
+    "xml-js": "^1.6.11",
     "yenv": "^2.1.1"
   },
   "devDependencies": {

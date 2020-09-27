@@ -443,6 +443,18 @@ You may want to create a static page to show contact details, about us, shipping
 
 New static pages are setup via `/admin/settings/pages`.
 
+## Google data
+
+By default the product data is updated into a Google feed format here: `/googleproducts.xml`. 
+
+You can setup Google to read this data [here](https://merchants.google.com/)
+
+1. Products > Feeds > (+)
+2. Set the Country and language
+3. Set A name and `Scheduled fetch`
+4. Set the url to `https://mydomain.com/googleproducts.xml` 
+5. Complete
+
 ## TODO
 
 - Modernize the frontend of the admin

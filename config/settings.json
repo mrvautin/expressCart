@@ -16,6 +16,7 @@
     "injectJs": "",
     "customCss": "",
     "currencySymbol": "£",
+    "currencyISO": "USD",
     "paymentGateway": [
         "stripe" 
     ],

@@ -3,6 +3,8 @@ const router = express.Router();
 const colors = require('colors');
 const stripHtml = require('string-strip-html');
 const moment = require('moment');
+const fs = require('fs');
+const path = require('path');
 const _ = require('lodash');
 const {
     getId,
@@ -29,6 +31,18 @@ const {
     getMenu
 } = require('../lib/menu');
 const countryList = getCountryList();
+
+// Google products
+router.get('/googleproducts.xml', async (req, res, next) => {
+    let productsFile = '';
+    try{
+        productsFile = fs.readFileSync(path.join('bin', 'googleproducts.xml'));
+    }catch(ex){
+        console.log('Google products file not found');
+    }
+    res.type('text/plain');
+    res.send(productsFile);
+});
 
 // These is the customer facing routes
 router.get('/payment/:orderId', async (req, res, next) => {

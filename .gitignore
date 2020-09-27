@@ -6,3 +6,4 @@ public/uploads
 **.DS_Store
 env.yaml
 ecosystem.config.js
+bin/googleproducts.xml
