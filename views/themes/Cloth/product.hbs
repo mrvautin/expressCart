@@ -78,7 +78,9 @@
                 <div class="col-md-10 mb-3">
                     <button class="btn btn-warning" id="add-review">Add review</button>
                     <div class="d-inline-block align-middle">{{{@root.reviewRatingHtml}}}</div>
+                    {{#if reviews}}
                     <a href="#collapseReviews" data-toggle="collapse" class="d-inline-block align-middle ml-3">Recent reviews</a>
+                    {{/if}}
                 </div>
                 <div class="col-md-10">
                     <ul class="list-group collapse" id="collapseReviews">
