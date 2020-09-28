@@ -863,9 +863,9 @@ router.post('/product/addreview', async (req, res, next) => {
 
         // Checks passed, create the review
         const response = await createReview(req);
-        if(!response){
+        if(response.error){
             return res.status(400).json({
-                message: 'Review already submitted'
+                message: response.error
             });
         }
         return res.json({
