@@ -37,11 +37,13 @@
     "modules": {
         "enabled": {
             "shipping": "shipping-basic",
-            "discount": "discount-voucher"
+            "discount": "discount-voucher",
+            "reviews": "reviews-basic"
         },
         "loaded": {
             "shipping": {},
-            "discount": {}
+            "discount": {},
+            "reviews": {}
         }
     },
     "showRelatedProducts": true,

@@ -6,6 +6,7 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectID;
 const {
     getId,
     hooker,
@@ -26,6 +27,10 @@ const {
     emptyCart,
     updateSubscriptionCheck
 } = require('../lib/cart');
+const {
+    createReview,
+    getRatingHtml
+} = require('../lib/modules/reviews-basic');
 const {
     sortMenu,
     getMenu
@@ -410,6 +415,32 @@ router.get('/product/:id', async (req, res) => {
     // Get variants for this product
     const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
 
+    // Grab review data
+    let reviews = [];
+    let reviewRating = 0;
+    if(config.modules.enabled.reviews){
+        reviews = await db.reviews.find({ product: product._id }).sort({ date: 1 }).limit(6).toArray();
+        reviewRating = await db.reviews.aggregate([
+            {
+                $match: {
+                    product: ObjectId(product._id)
+                }
+            },
+            {
+                $group: {
+                    _id: '$item',
+                    avgRating: { $avg: '$rating' }
+                }
+            }
+        ]).toArray();
+        // Assign if returned
+        if(reviewRating.length > 0 && reviewRating[0].avgRating){
+            reviewRating = reviewRating[0].avgRating;
+        }else{
+            reviewRating = 0;
+        }
+    }
+
     // If JSON query param return json instead
     if(req.query.json === 'true'){
         res.status(200).json(product);
@@ -445,6 +476,9 @@ router.get('/product/:id', async (req, res) => {
         title: product.productTitle,
         result: product,
         variants,
+        reviews,
+        reviewRating: reviewRating,
+        reviewRatingHtml: getRatingHtml(Math.round(reviewRating)),
         images: images,
         relatedProducts,
         productDescription: stripHtml(product.productDescription),
@@ -777,6 +811,69 @@ router.post('/product/addtocart', async (req, res, next) => {
         message: 'Cart successfully updated',
         cartId: productCartId,
         totalCartItems: req.session.totalCartItems
+    });
+});
+
+// Totally empty the cart
+router.post('/product/addreview', async (req, res, next) => {
+    const config = req.app.config;
+
+    // Check if module enabled
+    if(config.modules.enabled.reviews){
+        // Check if a customer is logged in
+        if(!req.session.customerPresent){
+            return res.status(400).json({
+                message: 'You need to be logged in to create a review'
+            });
+        }
+
+        // Validate inputs
+        if(!req.body.title){
+            return res.status(400).json({
+                message: 'Please supply a review title'
+            });
+        }
+        if(!req.body.description){
+            return res.status(400).json({
+                message: 'Please supply a review description'
+            });
+        }
+        if(!req.body.rating){
+            return res.status(400).json({
+                message: 'Please supply a review rating'
+            });
+        }
+
+        // Check rating is within range
+        try{
+            const rating = parseInt(req.body.rating);
+            if(rating < 0 || rating > 5){
+                return res.status(400).json({
+                    message: 'Please supply a review rating'
+                });
+            }
+
+            // Set rating to be numeric
+            req.body.rating = rating;
+        }catch(ex){
+            return res.status(400).json({
+                message: 'Please supply a review rating'
+            });
+        }
+
+        // Checks passed, create the review
+        const response = await createReview(req);
+        if(!response){
+            return res.status(400).json({
+                message: 'Review already submitted'
+            });
+        }
+        return res.json({
+            message: 'Review successfully submitted'
+        });
+    }
+    return res.json({
+        message: 'Unable to submit review'
     });
 });
 

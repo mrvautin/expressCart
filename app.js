@@ -305,6 +305,9 @@ handlebars = handlebars.create({
             html = html.replace(/&lt;/g, '<');
             return html;
         },
+        timeAgo: (date) => {
+            return moment(date).fromNow();
+        },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg
