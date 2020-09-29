@@ -18,7 +18,7 @@
             <li class="list-group-item">
                 <span class="float-right"><strong>{{ @root.__ "Published" }}</strong></span>
                 {{#ifCond resultType '==' 'filtered'}}
-                <strong>{{ @root.__ "Products" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{searchTerm}} </span></strong>
+                <strong>{{ @root.__ "Products" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{@root.searchTerm}} </span></strong>
                 {{else}}
                 <strong>{{ @root.__ "Recent products" }}</strong>
                 {{/ifCond}}

@@ -323,6 +323,22 @@ $(document).ready(function (){
         }
     });
 
+    $('.btn-delete-review').on('click', function(){
+        if(confirm('Are you sure you want to delete this review?')){
+            $.ajax({
+                method: 'POST',
+                url: '/admin/review/delete',
+                data: { reviewId: $(this).attr('data-id') }
+            })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+        }
+    });
+
 	// Call to API to check if a permalink is available
     $(document).on('click', '#validatePermalink', function(e){
         if($('#productPermalink').val() !== ''){
@@ -360,10 +376,19 @@ $(document).ready(function (){
         }
     });
 
-    // applies an product filter
+    // applies an customer filter
     $(document).on('click', '#btn_customer_filter', function(e){
         if($('#customer_filter').val() !== ''){
             window.location.href = '/admin/customers/filter/' + $('#customer_filter').val();
+        }else{
+            showNotification('Please enter a keyword to filter', 'danger');
+        }
+    });
+
+    // applies an review filter
+    $(document).on('click', '#btn_review_filter', function(e){
+        if($('#review_filter').val() !== ''){
+            window.location.href = '/admin/reviews/filter/' + $('#review_filter').val();
         }else{
             showNotification('Please enter a keyword to filter', 'danger');
         }
