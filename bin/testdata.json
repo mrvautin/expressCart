@@ -182,6 +182,18 @@
             "orderProducts": []
         }
     ],
+    "reviews": [
+        {
+            "title": "This is a great product!",
+            "description": "Great product. Works exactly how it's described.",
+            "rating": 5
+        },
+        {
+            "title": "Horrible!!!",
+            "description": "Terrible! Don't recommend this product to anyone.",
+            "rating": 1
+        }
+    ],
     "discounts": [
         {
             "code": "valid_10_amount_code",

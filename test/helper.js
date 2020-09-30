@@ -19,6 +19,7 @@ const g = {
     discounts: {},
     customers: {},
     users: {},
+    reviews: {},
     request: null,
     jsonData
 };
@@ -32,7 +33,8 @@ const setup = (db) => {
         db.variants.deleteMany({}, {}),
         db.discounts.deleteMany({}, {}),
         db.orders.deleteMany({}, {}),
-        db.sessions.deleteMany({}, {})
+        db.sessions.deleteMany({}, {}),
+        db.reviews.deleteMany({}, {})
     ])
     .then(() => {
         return Promise.all([
@@ -57,20 +59,19 @@ const runBefore = async () => {
 
             // Get some data from DB to use in compares
             g.products = await g.db.products.find({}).toArray();
-            g.variants = await g.db.variants.find({}).toArray();
             g.customers = await g.db.customers.find({}).toArray();
             g.discounts = await g.db.discounts.find({}).toArray();
             g.users = await g.db.users.find({}).toArray();
 
             // Insert variants using product ID's
-            _(jsonData.variants).each(async (variant) => {
+            for(const variant of jsonData.variants){
                 variant.product = g.products[getRandom(g.products.length)]._id;
                 await g.db.variants.insertOne(variant);
-            });
+            };
             g.variants = await g.db.variants.find({}).toArray();
 
             // Insert orders using product ID's
-            _(jsonData.orders).each(async (order) => {
+            for(const order of jsonData.orders){
                 order.orderProducts.push({
                     productId: g.products[0]._id,
                     title: g.products[0].productTitle,
@@ -82,8 +83,17 @@ const runBefore = async () => {
                 });
                 order.orderDate = new Date();
                 await g.db.orders.insertOne(order);
-            });
+            };
             g.orders = await g.db.orders.find({}).toArray();
+
+            // Fix reviews
+            for(const review of jsonData.reviews){
+                review.date = new Date();
+                review.product = g.products[0]._id;
+                review.customer = g.customers[0]._id;
+                await g.db.reviews.insertOne(review);
+            };
+            g.reviews = await g.db.reviews.find({}).toArray();
 
             // Get csrf token
             const csrf = await g.request
