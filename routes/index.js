@@ -844,12 +844,31 @@ router.post('/product/addreview', async (req, res, next) => {
             });
         }
 
+        // Validate length
+        if(req.body.title.length > 50){
+            return res.status(400).json({
+                message: 'Review title is too long'
+            });
+        }
+        if(req.body.description.length > 200){
+            return res.status(400).json({
+                message: 'Review description is too long'
+            });
+        }
+
         // Check rating is within range
         try{
             const rating = parseInt(req.body.rating);
             if(rating < 0 || rating > 5){
                 return res.status(400).json({
-                    message: 'Please supply a review rating'
+                    message: 'Please supply a valid rating'
+                });
+            }
+
+            // Check for failed Int conversion
+            if(isNaN(rating)){
+                return res.status(400).json({
+                    message: 'Please supply a valid rating'
                 });
             }
 
@@ -857,7 +876,7 @@ router.post('/product/addreview', async (req, res, next) => {
             req.body.rating = rating;
         }catch(ex){
             return res.status(400).json({
-                message: 'Please supply a review rating'
+                message: 'Please supply a valid rating'
             });
         }
 
