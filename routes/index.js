@@ -827,10 +827,6 @@ router.post('/product/addreview', async (req, res, next) => {
             });
         }
 
-        // Sanitize inputs
-        req.body.title = stripHtml(req.body.title);
-        req.body.description = stripHtml(req.body.description);
-
         // Validate inputs
         if(!req.body.title){
             return res.status(400).json({
@@ -847,6 +843,10 @@ router.post('/product/addreview', async (req, res, next) => {
                 message: 'Please supply a review rating'
             });
         }
+
+        // Sanitize inputs
+        req.body.title = stripHtml(req.body.title);
+        req.body.description = stripHtml(req.body.description);
 
         // Validate length
         if(req.body.title.length > 50){
@@ -895,7 +895,7 @@ router.post('/product/addreview', async (req, res, next) => {
             message: 'Review successfully submitted'
         });
     }
-    return res.json({
+    return res.status(400).json({
         message: 'Unable to submit review'
     });
 });
