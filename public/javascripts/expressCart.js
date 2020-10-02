@@ -455,7 +455,17 @@ $(document).ready(function (){
 
     // On create review
     $(document).on('click', '#add-review', function(e){
-        $('#reviewModal').modal('show');
+        $.ajax({
+            method: 'POST',
+            url: '/customer/check',
+            data: {}
+        })
+		.done(function(msg){
+            $('#reviewModal').modal('show');
+        })
+        .fail(function(){
+            showNotification('You need to be logged in to create a review', 'danger', false, '/customer/account');
+        });
     });
 
     // Create review
