@@ -827,6 +827,10 @@ router.post('/product/addreview', async (req, res, next) => {
             });
         }
 
+        // Sanitize inputs
+        req.body.title = stripHtml(req.body.title);
+        req.body.description = stripHtml(req.body.description);
+
         // Validate inputs
         if(!req.body.title){
             return res.status(400).json({
