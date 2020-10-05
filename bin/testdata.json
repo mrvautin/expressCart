@@ -13,7 +13,7 @@
             "productPermalink": "5-panel-camp-cap",
             "productTitle": "5 Panel Camp Cap",
             "productPrice": "48.00",
-            "productDescription": "A classic 5 panel hat with our United By Blue logo on the front and an adjustable strap to keep fit and secure. Made with recycled polyester and organic cotton mix. <ul><li>Made in New Jersey</li><li>7oz Eco-Twill fabric: 35% organic cotton, 65% recycled PET (plastic water and soda bottles)</li><li>Embossed leather patch/li></ul>",
+            "productDescription": "A classic 5 panel hat with our United By Blue logo on the front and an adjustable strap to keep fit and secure. Made with recycled polyester and organic cotton mix. <ul><li>Made in New Jersey</li><li>7oz Eco-Twill fabric: 35% organic cotton, 65% recycled PET (plastic water and soda bottles)</li><li>Embossed leather patch</li></ul>",
             "productPublished": true,
             "productTags": "panel, cap",
             "productStock": 10
@@ -49,7 +49,7 @@
             "productPermalink": "hudderton-backpack",
             "productTitle": "Hudderton Backpack",
             "productPrice": "49.95",
-            "productDescription": "Durable, rugged, and dependable designed with four zipper compartments. Two bellowed front pockets allow for easy access to smaller items, one large, spacious compartment with a padded laptop sleeve, and a tiny convenient pouch on top to keep keys and other small items secure. The Hudderton is built with organic downpour proof canvas, a durable full grain leather bottom to prevent wear and tear, and padded canvas shoulder straps for all-day comfort. From the commute to the trail the Hudderton is perfect for bag for the entire week.<ul><li>100% organic waxed 18 oz canvas</li><li>Full grain genuine leather detail</li><li>Soft interior cotton lining</li>li>Brass hardware and YKK zippers</li><li>Cotton Padded interior laptop sleeve</li><li>Lifetime&nbsp;Guarantee</li></ul>",
+            "productDescription": "Durable, rugged, and dependable designed with four zipper compartments. Two bellowed front pockets allow for easy access to smaller items, one large, spacious compartment with a padded laptop sleeve, and a tiny convenient pouch on top to keep keys and other small items secure. The Hudderton is built with organic downpour proof canvas, a durable full grain leather bottom to prevent wear and tear, and padded canvas shoulder straps for all-day comfort. From the commute to the trail the Hudderton is perfect for bag for the entire week.<ul><li>100% organic waxed 18 oz canvas</li><li>Full grain genuine leather detail</li><li>Soft interior cotton lining</li><li>Brass hardware and YKK zippers</li><li>Cotton Padded interior laptop sleeve</li><li>Lifetime Guarantee</li></ul>",
             "productPublished": true,
             "productTags": "backpack",
             "productStock": 10
@@ -180,6 +180,18 @@
             "orderComment": "",
             "orderStatus": "Declined",
             "orderProducts": []
+        }
+    ],
+    "reviews": [
+        {
+            "title": "This is a great product!",
+            "description": "Great product. Works exactly how it's described.",
+            "rating": 5
+        },
+        {
+            "title": "Horrible!!!",
+            "description": "Terrible! Don't recommend this product to anyone.",
+            "rating": 1
         }
     ],
     "discounts": [

@@ -603,6 +603,18 @@ router.post('/customer/reset/:token', async (req, res) => {
 });
 
 // logout the customer
+router.post('/customer/check', (req, res) => {
+    if(!req.session.customerPresent){
+        return res.status(400).json({
+            message: 'Not logged in'
+        });
+    }
+    return res.status(200).json({
+        message: 'Customer logged in'
+    });
+});
+
+// logout the customer
 router.post('/customer/logout', (req, res) => {
     // Clear our session
     clearCustomer(req);

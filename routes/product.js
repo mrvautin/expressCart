@@ -28,7 +28,7 @@ router.get('/admin/products/:page?', restrict, async (req, res, next) => {
     const products = await paginateData(false, req, pageNum, 'products', {}, { productAddedDate: -1 });
 
     res.render('products', {
-        title: 'Cart',
+        title: 'Cart - Products',
         results: products.data,
         totalItemCount: products.totalItems,
         pageNum,

@@ -56,6 +56,7 @@ const product = require('./routes/product');
 const customer = require('./routes/customer');
 const order = require('./routes/order');
 const user = require('./routes/user');
+const reviews = require('./routes/reviews');
 
 const app = express();
 
@@ -305,6 +306,9 @@ handlebars = handlebars.create({
             html = html.replace(/&lt;/g, '<');
             return html;
         },
+        timeAgo: (date) => {
+            return moment(date).fromNow();
+        },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg
@@ -395,6 +399,7 @@ app.use('/', product);
 app.use('/', order);
 app.use('/', user);
 app.use('/', admin);
+app.use('/', reviews);
 
 // Payment route(s)
 _.forEach(config.paymentGateway, (gateway) => {
@@ -487,22 +492,33 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await writeGoogleData(db);
     });
 
-    // Set trackStock for testing
-    if(process.env.NODE_ENV === 'test'){
-        config.trackStock = true;
-    }
-
-    // Process schemas
-    await addSchemas();
-
-    // We index when not in test env
+    // Create indexes on startup
     if(process.env.NODE_ENV !== 'test'){
         try{
             await runIndexing(app);
         }catch(ex){
-            console.error(colors.red(`Error setting up indexes:${ex.message}`));
+            console.error(colors.red(`Error setting up indexes: ${ex.message}`));
         }
-    }
+    };
+
+    // Start cron job to index
+    if(process.env.NODE_ENV !== 'test'){
+        cron.schedule('*/30 * * * *', async () => {
+            try{
+                await runIndexing(app);
+            }catch(ex){
+                console.error(colors.red(`Error setting up indexes: ${ex.message}`));
+            }
+        });
+    };
+
+    // Set trackStock for testing
+    if(process.env.NODE_ENV === 'test'){
+        config.trackStock = true;
+    };
+
+    // Process schemas
+    await addSchemas();
 
     // Start the app
     try{

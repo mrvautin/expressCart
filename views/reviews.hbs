@@ -1,0 +1,56 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <h2>Reviews</h2>
+    </div>
+    <div class="col-sm-12 search_bar">
+        <div class="input-group">
+            <input type="text" name="review_filter" id="review_filter" class="form-control" placeholder="Filter reviews">
+            <div class="input-group-append">
+                <button class="btn btn-outline-success" id="btn_review_filter">Filter</button>
+                <a href="/admin/reviews" class="hidden-xs btn btn-outline-warning">{{{feather 'x-octagon'}}}</a>
+            </div>
+        </div>
+        <p class="text-warning top-pad-10">{{ @root.__ "Reviews can be filtered by: review title or review description keywords" }}</p>
+    </div>
+    <div class="col-sm-12">
+        <ul class="list-group">
+            <li class="list-group-item">
+                {{#ifCond resultType '==' 'filtered'}}
+                <strong>{{ @root.__ "Reviews" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{@root.searchTerm}} </span></strong>
+                {{else}}
+                <strong>{{ @root.__ "Recent reviews" }}</strong>
+                {{/ifCond}}
+            </li>
+            {{#each results}}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="top-pad-8 text-truncate">{{this.title}}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="top-pad-8 text-truncate">{{this.description}}</div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="top-pad-8 text-truncate">{{this.rating}}/5</div>
+                        </div>
+                        <div class="col-md-1 text-right">
+                            <a class="btn text-danger btn-delete-review" data-id="{{this._id}}"> {{{feather 'trash-2'}}}</a>
+                        </div>
+                    </div>
+                </li>
+            {{else}}
+                <li class="list-group-item text-center">There are no reviews</li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="col-md-12 mt-5">
+        <div id="pager" class="d-flex justify-content-center"></div>
+    </div>
+</div>
+{{!-- Pager settings --}}
+<input type="hidden" id="itemsPerPage" value="10" >
+<input type="hidden" id="pageNum" value="{{pageNum}}">
+<input type="hidden" id="totalItemCount" value="{{totalItemCount}}">
+<input type="hidden" id="paginateUrl" value="{{paginateUrl}}">
+<input type="hidden" id="searchTerm" value="{{searchTerm}}">

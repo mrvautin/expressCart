@@ -266,6 +266,9 @@
         {{> partials/variantEditModal}}
         {{/if}}
         {{> partials/confirmModal}}
+        {{#if @root.config.modules.enabled.reviews}}
+        {{> partials/reviewModal}}
+        {{/if}}
         <script>
             feather.replace();
         </script>
