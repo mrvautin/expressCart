@@ -55,7 +55,7 @@
     "lunr": "^2.3.8",
     "mime-db": "^1.43.0",
     "mime-type": "^3.0.7",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^0.5.5",
     "moment": "^2.24.0",
     "mongodb": "^3.3.3",
     "mongodb-uri": "^0.9.7",
@@ -78,7 +78,8 @@
     "yenv": "^2.1.1"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.13.0",
+    "clean-css": "^4.2.3",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-extra-rules": "0.0.0-development",
@@ -86,13 +87,11 @@
     "eslint-plugin-node": "^9.2.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^3.10.0",
-    "gulp-minify": "^3.1.0",
-    "gulp-nodemon": "^2.5.0",
-    "gulp-rename": "^1.4.0",
-    "less": "^3.10.3",
-    "supertest": "^4.0.2"
+    "globby": "^11.0.1",
+    "less": "^3.12.2",
+    "pm2": "^4.5.0",
+    "supertest": "^4.0.2",
+    "uglify-es": "^3.3.9"
   },
   "main": "app.js",
   "keywords": [
