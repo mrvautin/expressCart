@@ -418,6 +418,7 @@ router.get('/product/:id', async (req, res) => {
     // Grab review data
     let reviews = [];
     let reviewRating = 0;
+    let reviewCount = 0;
     if(config.modules.enabled.reviews){
         reviews = await db.reviews.find({ product: product._id }).sort({ date: 1 }).limit(6).toArray();
         reviewRating = await db.reviews.aggregate([
@@ -433,6 +434,7 @@ router.get('/product/:id', async (req, res) => {
                 }
             }
         ]).toArray();
+        reviewCount = await db.reviews.countDocuments({ product: product._id });
         // Assign if returned
         if(reviewRating.length > 0 && reviewRating[0].avgRating){
             reviewRating = reviewRating[0].avgRating;
@@ -477,7 +479,8 @@ router.get('/product/:id', async (req, res) => {
         result: product,
         variants,
         reviews,
-        reviewRating: reviewRating,
+        reviewRating,
+        reviewCount,
         reviewRatingHtml: getRatingHtml(Math.round(reviewRating)),
         images: images,
         relatedProducts,

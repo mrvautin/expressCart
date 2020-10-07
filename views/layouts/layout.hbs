@@ -117,12 +117,23 @@
                 "offers": {
                     "price": "{{result.productPrice}}",
                     "priceCurrency": "{{config.currencyISO}}",
+                    {{#ifCond result.productStock '>' 0}}
+                    "availability": "https://schema.org/InStock",
+                    {{else}}
+                    "availability": "https://schema.org/SoldOut",
+                    {{/ifCond}}
                     "url": "{{pageUrl}}"
                 },
                 "sku": "{{result._id}}",
-                "publisher": "{{config.cartTitle}}",
                 {{#if result.productImage}}
                 "image": "{{config.baseUrl}}{{result.productImage}}",
+                {{/if}}
+                {{#if @root.reviewRating}}
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{@root.reviewRating}}",
+                    "reviewCount": "{{@root.reviewCount}}"
+                },
                 {{/if}}
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",
