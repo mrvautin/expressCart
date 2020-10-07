@@ -108,32 +108,24 @@
         {{else}}
         <meta property="twitter:url" content="{{config.baseUrl}}" />
         {{/if}}
-        {{#unless result.productTitle}}
+        {{#if result.productTitle}}
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org/",
-                {{#if result.productTitle}}
                 "@type": "Product",
                 "name": "{{result.productTitle}}",
                 "offers": {
                     "price": "{{result.productPrice}}",
                     "priceCurrency": "{{config.currencyISO}}",
-                    "description": "{{snip productDescription}}",
-                    "sku": "{{result._id}}",
                     "url": "{{pageUrl}}"
                 },
-                {{else}}
+                "sku": "{{result._id}}",
                 "publisher": "{{config.cartTitle}}",
-                "@type": "WebSite",
-                {{/if}}
                 {{#if result.productImage}}
                 "image": "{{config.baseUrl}}{{result.productImage}}",
                 {{/if}}
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",
-                {{/if}}
-                {{#if result.productTitle}}
-                "sku": "{{result._id}}",
                 {{/if}}
                 {{#if pageUrl}}
                 "url": "{{pageUrl}}"
@@ -142,7 +134,7 @@
                 {{/if}}
             }
         </script>
-        {{/unless}}
+        {{/if}}
         <!-- SEO data -->
         {{~#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
         {{~#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}
