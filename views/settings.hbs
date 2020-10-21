@@ -32,23 +32,11 @@
                 <p class="help-block">{{ @root.__ "This is used as the \"from\" email when sending receipts to your customers." }}</p>
             </div>
             <div class="form-group">
-                <label>{{ @root.__ "Payment gateway" }}</label>
-                <select class="form-control" name="paymentGateway">
-                    <option {{selectState 'paypal' config.paymentGateway}} value="paypal">Paypal</option>
-                    <option {{selectState 'stripe' config.paymentGateway}} value="stripe">Stripe</option>
-                    <option {{selectState 'adyen' config.paymentGateway}} value="adyen">Adyen</option>
-                    <option {{selectState 'authorizenet' config.paymentGateway}} value="authorizenet">Authorize.Net</option>
-                    <option {{selectState 'instore' config.paymentGateway}} value="instore">Instore</option>
-                    <option {{selectState 'blockonomics' config.paymentGateway}} value="blockonomics">Blockonomics</option>
-                </select>
-                <p class="help-block">{{ @root.__ "Payment_Gateway_Info" }}</p>
-            </div>
-            <div class="form-group">
                 <label>{{ @root.__ "Currency symbol" }}</label>
                 <input type="text" class="form-control" name="currencySymbol" value="{{currencySymbol config.currencySymbol}}">
                 <p class="help-block">{{ @root.__ "Set this to your currency symbol. Eg: $, £, €" }}</p>
             </div>
-            {{#ifCond config.paymentGateway '==' 'blockonomics'}}
+            {{#contains config.paymentGateway 'blockonomics'}}
             <div class="form-group">
                 <label>{{ @root.__ "Currency ISO" }}</label>
                 <select class="form-control" name="currencyISO">
@@ -58,7 +46,7 @@
                 </select>
                 <p class="help-block">{{ @root.__ "Currency used for Blockonomics conversion" }}</p>
             </div>
-            {{/ifCond}}          
+            {{/contains}}          
             <div class="form-group">
                 <label>{{ @root.__ "Theme" }}</label>
                 <select class="form-control" name="theme">

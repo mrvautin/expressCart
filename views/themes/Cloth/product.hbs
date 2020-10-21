@@ -29,7 +29,6 @@
                 {{#if variants}}
                     <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{variants.0.price}}</h4>
                 {{else}}
-
                     <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
                 {{/if}}
                 {{#if variants}}
@@ -75,6 +74,27 @@
                 <div class="col-md-10 body_text">
                     {{{fixTags result.productDescription}}}
                 </div>
+                {{#if @root.config.modules.enabled.reviews}}
+                <div class="col-md-10 mb-3">
+                    <button class="btn btn-warning" id="add-review">Add review</button>
+                    <div class="d-inline-block align-middle">{{{@root.reviewRatingHtml}}}</div>
+                    {{#if reviews}}
+                    <a href="#collapseReviews" data-toggle="collapse" class="d-inline-block align-middle ml-3">Recent reviews</a>
+                    {{/if}}
+                </div>
+                <div class="col-md-10">
+                    <ul class="list-group collapse" id="collapseReviews">
+                    {{#each reviews}}
+                        <li class="list-group-item">
+                            <p class="text-muted small text-right">{{timeAgo this.date}}</p>
+                            <p><b>Rating:</b> {{this.rating}}</p>
+                            <p><b>Title:</b> {{this.title}}</p>
+                            <p><b>Description:</b> {{this.description}}</p>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
             </div>
         </div>
     </div>

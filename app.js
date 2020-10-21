@@ -21,6 +21,7 @@ const { getConfig, getPaymentConfig, updateConfigLocal } = require('./lib/config
 const { runIndexing } = require('./lib/indexing');
 const { addSchemas } = require('./lib/schema');
 const { initDb, getDbUri } = require('./lib/db');
+const { writeGoogleData } = require('./lib/googledata');
 let handlebars = require('express-handlebars');
 const i18n = require('i18n');
 
@@ -38,13 +39,15 @@ if(baseConfig === false){
 }
 
 // Validate the payment gateway config
-if(ajv.validate(
-        require(`./config/payment/schema/${config.paymentGateway}`),
-        require(`./config/payment/config/${config.paymentGateway}`)) === false
-    ){
-    console.log(colors.red(`${config.paymentGateway} config is incorrect: ${ajv.errorsText()}`));
-    process.exit(2);
-}
+_.forEach(config.paymentGateway, (gateway) => {
+    if(ajv.validate(
+            require(`./config/payment/schema/${gateway}`),
+            require(`./config/payment/config/${gateway}`)) === false
+        ){
+        console.log(colors.red(`${gateway} config is incorrect: ${ajv.errorsText()}`));
+        process.exit(2);
+    }
+});
 
 // require the routes
 const index = require('./routes/index');
@@ -53,9 +56,7 @@ const product = require('./routes/product');
 const customer = require('./routes/customer');
 const order = require('./routes/order');
 const user = require('./routes/user');
-
-// Add the payment route
-const paymentRoute = require(`./lib/payments/${config.paymentGateway}`);
+const reviews = require('./routes/reviews');
 
 const app = express();
 
@@ -294,10 +295,19 @@ handlebars = handlebars.create({
             }
             return text;
         },
+        contains: (values, value, options) => {
+            if(values.includes(value)){
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        },
         fixTags: (html) => {
             html = html.replace(/&gt;/g, '>');
             html = html.replace(/&lt;/g, '<');
             return html;
+        },
+        timeAgo: (date) => {
+            return moment(date).fromNow();
         },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
@@ -389,9 +399,12 @@ app.use('/', product);
 app.use('/', order);
 app.use('/', user);
 app.use('/', admin);
+app.use('/', reviews);
 
-// Payment route
-app.use(`/${config.paymentGateway}`, paymentRoute);
+// Payment route(s)
+_.forEach(config.paymentGateway, (gateway) => {
+    app.use(`/${gateway}`, require(`./lib/payments/${gateway}`));
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -474,22 +487,38 @@ initDb(config.databaseConnectionString, async (err, db) => {
         });
     });
 
-    // Set trackStock for testing
-    if(process.env.NODE_ENV === 'test'){
-        config.trackStock = true;
-    }
+    // Fire up the cron job to create google product feed
+    cron.schedule('0 * * * *', async () => {
+        await writeGoogleData(db);
+    });
 
-    // Process schemas
-    await addSchemas();
-
-    // We index when not in test env
+    // Create indexes on startup
     if(process.env.NODE_ENV !== 'test'){
         try{
             await runIndexing(app);
         }catch(ex){
-            console.error(colors.red(`Error setting up indexes:${ex.message}`));
+            console.error(colors.red(`Error setting up indexes: ${ex.message}`));
         }
-    }
+    };
+
+    // Start cron job to index
+    if(process.env.NODE_ENV !== 'test'){
+        cron.schedule('*/30 * * * *', async () => {
+            try{
+                await runIndexing(app);
+            }catch(ex){
+                console.error(colors.red(`Error setting up indexes: ${ex.message}`));
+            }
+        });
+    };
+
+    // Set trackStock for testing
+    if(process.env.NODE_ENV === 'test'){
+        config.trackStock = true;
+    };
+
+    // Process schemas
+    await addSchemas();
 
     // Start the app
     try{

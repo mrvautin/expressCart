@@ -83,12 +83,37 @@ test('[Success] Add a product', async t => {
     t.deepEqual(res.body.message, 'New product successfully created');
 });
 
+test('[Success] Add a product with incorrect GTIN', async t => {
+    const product = {
+        productPermalink: 'test-jacket-invalid-gtin',
+        productTitle: 'Test Jacket',
+        productPrice: '100.00',
+        productDescription: 'Test product description used to describe the product',
+        productBrand: 'Test brand',
+        productGtin: 'should be alpha',
+        productPublished: true,
+        productTags: 'organic, jacket',
+        productComment: false,
+        productStock: 50
+    };
+
+    const res = await g.request
+        .post('/admin/product/insert')
+        .send(product)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(400);
+
+    // Check the returned message
+    t.deepEqual(res.body[0].message, 'should match format "alphanumeric"');
+});
+
 test('[Fail] Add a product - Duplicate permalink', async t => {
     const product = {
         productPermalink: 'test-jacket',
         productTitle: 'Test Jacket - blue',
         productPrice: '100.00',
         productDescription: 'Test product description used to describe the product',
+        productBrand: 'Test brand',
         productPublished: true,
         productTags: 'organic, jacket, blue',
         productComment: false,
@@ -111,6 +136,7 @@ test('[Success] Update a product', async t => {
         productTitle: 'Test Jacket',
         productPrice: '200.00',
         productDescription: 'Test product description used to describe the product',
+        productBrand: 'Test brand',
         productPublished: true,
         productTags: 'organic, jacket',
         productComment: true,

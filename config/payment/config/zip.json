@@ -1,0 +1,10 @@
+{
+    "description": "Pay with Zip",
+    "privateKey": "KqtU4WtVeXAAbksD1dPpufYXgtfFe0hL9OhBF7hLXzQ=",
+    "mode": "test",
+    "currency": "AUD",
+    "supportedCountries": [
+        "Australia",
+        "New Zealand"
+    ]
+}

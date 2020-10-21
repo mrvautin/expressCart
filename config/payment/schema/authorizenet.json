@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "loginId": {
             "type": "string"
         },
@@ -15,6 +18,7 @@
         }
     },
     "required": [
+        "description",
         "loginId",
         "transactionKey",
         "clientKey",

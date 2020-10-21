@@ -16,7 +16,10 @@
     "injectJs": "",
     "customCss": "",
     "currencySymbol": "£",
-    "paymentGateway": "stripe",
+    "currencyISO": "USD",
+    "paymentGateway": [
+        "stripe" 
+    ],
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
     "trackStock": false,
@@ -34,11 +37,13 @@
     "modules": {
         "enabled": {
             "shipping": "shipping-basic",
-            "discount": "discount-voucher"
+            "discount": "discount-voucher",
+            "reviews": "reviews-basic"
         },
         "loaded": {
             "shipping": {},
-            "discount": {}
+            "discount": {},
+            "reviews": {}
         }
     },
     "showRelatedProducts": true,

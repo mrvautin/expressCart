@@ -1,0 +1,31 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "privateKey": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string",
+            "default": "test",
+            "enum": ["test", "live"]
+        },
+        "currency": {
+            "type": "string",
+            "default": "AUD",
+            "enum": ["AUD", "NZD"]
+        },
+        "supportedCountries":{
+            "type": "array"
+        }
+    },
+    "required": [
+        "description",
+        "privateKey",
+        "mode",
+        "currency",
+        "supportedCountries"
+    ],
+    "additionalProperties": false
+}

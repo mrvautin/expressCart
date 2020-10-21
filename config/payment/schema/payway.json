@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "apiKey": {
             "type": "string"
         },
@@ -11,6 +14,7 @@
         }
     },
     "required": [
+        "description",
         "apiKey",
         "publishableApiKey",
         "merchantId"

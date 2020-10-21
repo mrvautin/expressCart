@@ -69,8 +69,43 @@
             "default": "USD"
         },
         "paymentGateway": {
-            "type": "string",
-            "enum": ["paypal", "blockonomics", "stripe", "authorizenet", "adyen", "payway", "instore"]
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "string",
+                        "enum": [ "paypal"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "blockonomics"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "stripe"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "authorizenet"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "adyen"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "payway"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "instore"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "zip"]
+                    }
+                ]
+            }
         },
         "databaseConnectionString": {
             "type": "string"

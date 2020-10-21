@@ -1,5 +1,6 @@
 {
+    "description": "Card payment",
     "apiKey": "TXXXXX_SEC_btbqXxXxqgtzXk2p27hapvxXXXXxw28gh3febtuaf2etnkXxXxehdqu98u",
-    "publishableApiKey": "T11266_PUB_btbq8r6sqgtz5k2p27hapvx8nurxw28gh3fepbtua2f2etnkp4bmehdqu98u",
+    "publishableApiKey": "TXXXXX_PUB_btbq8rXXXXtz5kXXXXhapvx8nurxw2XXXXfepbtXXXX2etnkp4bmehdqu98u",
     "merchantId": "TEST"
 }

@@ -37,6 +37,7 @@
         {{#if admin}}
         <link rel="stylesheet" href="/stylesheets/admin{{config.env}}.css">
         {{/if}}
+        <script src="https://js.stripe.com/v3/"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha256-x3YZWtRjM8bJqf48dFAv/qmgL68SI4jqNWeSLMZaMGA=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
@@ -107,32 +108,44 @@
         {{else}}
         <meta property="twitter:url" content="{{config.baseUrl}}" />
         {{/if}}
-        {{#unless result.productTitle}}
+        {{#if result.productTitle}}
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org/",
-                {{#if result.productTitle}}
                 "@type": "Product",
                 "name": "{{result.productTitle}}",
                 "offers": {
                     "price": "{{result.productPrice}}",
                     "priceCurrency": "{{config.currencyISO}}",
-                    "description": "{{snip productDescription}}",
-                    "sku": "{{result._id}}",
+                    {{#ifCond result.productStock '>' 0}}
+                    "availability": "https://schema.org/InStock",
+                    {{else}}
+                    "availability": "https://schema.org/SoldOut",
+                    {{/ifCond}}
                     "url": "{{pageUrl}}"
                 },
-                {{else}}
-                "publisher": "{{config.cartTitle}}",
-                "@type": "WebSite",
+                "sku": "{{result._id}}",
+                {{#if result.productGtin}}
+                "gtin": "{{result.productGtin}}",
                 {{/if}}
                 {{#if result.productImage}}
                 "image": "{{config.baseUrl}}{{result.productImage}}",
+                {{else}}
+                "image": "{{config.baseUrl}}uploads/placeholder.png",
                 {{/if}}
+                {{#if result.productBrand}}
+                "brand": {
+                    "@type": "Organization",
+                    "name": "{{result.productBrand}}"
+                },
+                {{/if}}
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "{{@root.reviewRating}}",
+                    "reviewCount": "{{@root.reviewCount}}"
+                },
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",
-                {{/if}}
-                {{#if result.productTitle}}
-                "sku": "{{result._id}}",
                 {{/if}}
                 {{#if pageUrl}}
                 "url": "{{pageUrl}}"
@@ -141,7 +154,7 @@
                 {{/if}}
             }
         </script>
-        {{/unless}}
+        {{/if}}
         <!-- SEO data -->
         {{~#if config.googleAnalytics}}{{{config.googleAnalytics}}}{{/if}}
         {{~#if config.customCss}}<style>{{{config.customCss}}}</style>{{/if}}
@@ -265,6 +278,9 @@
         {{> partials/variantEditModal}}
         {{/if}}
         {{> partials/confirmModal}}
+        {{#if @root.config.modules.enabled.reviews}}
+        {{> partials/reviewModal}}
+        {{/if}}
         <script>
             feather.replace();
         </script>

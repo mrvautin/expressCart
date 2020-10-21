@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "apiKey": {
             "type": "string"
         },
@@ -14,7 +17,7 @@
         }
     },
     "required": [
-        "api_key", "hostUrl", "newAddressApi", "priceApi"
+        "description", "apiKey", "hostUrl", "newAddressApi", "priceApi"
     ],
     "additionalProperties": false
 }

@@ -12,6 +12,12 @@ body {
 svg {
   pointer-events: none;
 }
+.rating-fill {
+  fill: #ffc107;
+}
+.ratingWrapper {
+  padding-left: 15px;
+}
 .content-body {
   margin-bottom: 40px;
 }

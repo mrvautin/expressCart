@@ -1,5 +1,8 @@
 {
     "properties": {
+        "description": {
+            "type": "string"
+        },
         "secretKey": {
             "type": "string",
             "default": "sandbox"
@@ -22,6 +25,7 @@
         }
     },
     "required": [
+        "description",
         "secretKey",
         "publicKey",
         "stripeCurrency",

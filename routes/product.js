@@ -28,7 +28,7 @@ router.get('/admin/products/:page?', restrict, async (req, res, next) => {
     const products = await paginateData(false, req, pageNum, 'products', {}, { productAddedDate: -1 });
 
     res.render('products', {
-        title: 'Cart',
+        title: 'Cart - Products',
         results: products.data,
         totalItemCount: products.totalItems,
         pageNum,
@@ -102,6 +102,8 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productTitle: cleanHtml(req.body.productTitle),
         productPrice: req.body.productPrice,
         productDescription: cleanHtml(req.body.productDescription),
+        productGtin: cleanHtml(req.body.productGtin),
+        productBrand: cleanHtml(req.body.productBrand),
         productPublished: convertBool(req.body.productPublished),
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
@@ -113,7 +115,9 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
     // Validate the body again schema
     const schemaValidate = validateJson('newProduct', doc);
     if(!schemaValidate.result){
-        console.log('schemaValidate errors', schemaValidate.errors);
+        if(process.env.NODE_ENV !== 'test'){
+            console.log('schemaValidate errors', schemaValidate.errors);
+        }
         res.status(400).json(schemaValidate.errors);
         return;
     }
@@ -324,6 +328,8 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTitle: cleanHtml(req.body.productTitle),
         productPrice: req.body.productPrice,
         productDescription: cleanHtml(req.body.productDescription),
+        productGtin: cleanHtml(req.body.productGtin),
+        productBrand: cleanHtml(req.body.productBrand),
         productPublished: convertBool(req.body.productPublished),
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
