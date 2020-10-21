@@ -133,6 +133,12 @@
                 {{else}}
                 "image": "{{config.baseUrl}}uploads/placeholder.png",
                 {{/if}}
+                {{#if result.productBrand}}
+                "brand": {
+                    "@type": "Organization",
+                    "name": "{{result.productBrand}}"
+                },
+                {{/if}}
                 "aggregateRating": {
                     "@type": "AggregateRating",
                     "ratingValue": "{{@root.reviewRating}}",

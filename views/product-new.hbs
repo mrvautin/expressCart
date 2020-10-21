@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="row ml-0 mr-0">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
                     <div class="input-group">
@@ -27,13 +27,22 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label for="productGtin" class="control-label">{{ @root.__ "Product GTIN" }}</label>
                     <div class="input-group">
                         <input type="number" id="productGtin" class="form-control" step="any" value="{{productGtin}}" />
                     </div>
                     <p class="help-block">{{ @root.__ "The Serial number, GTIN or Barcode" }}</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="productBrand" class="control-label">{{ @root.__ "Product Brand" }}</label>
+                    <div class="input-group">
+                        <input type="text" id="productBrand" class="form-control" value="{{productBrand}}" />
+                    </div>
+                    <p class="help-block">{{ @root.__ "The brand of the product" }}</p>
                 </div>
             </div>
         </div>
