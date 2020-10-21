@@ -15,31 +15,44 @@
                 <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{productTitle}}" required/>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+        <div class="row ml-0 mr-0">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+                        </div>
+                        <input type="number" id="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
                     </div>
-                    <input type="number" id="productPrice" class="form-control" step="any" value="{{productPrice}}" required/>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productGtin" class="control-label">{{ @root.__ "Product GTIN" }}</label>
+                    <div class="input-group">
+                        <input type="number" id="productGtin" class="form-control" step="any" value="{{productGtin}}" />
+                    </div>
+                    <p class="help-block">{{ @root.__ "The Serial number, GTIN or Barcode" }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
-                <select class="form-control" id="productPublished">
-                    <option value="true" selected>{{ @root.__ "Published" }}</option>
-                    <option value="false">{{ @root.__ "Draft" }}</option>
-                </select>
+        <div class="row ml-0 mr-0">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
+                    <select class="form-control" id="productPublished">
+                        <option value="true" selected>{{ @root.__ "Published" }}</option>
+                        <option value="false">{{ @root.__ "Draft" }}</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        {{#if config.trackStock}}
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
-                <input type="number" id="productStock" class="form-control" value="{{productStock}}" step="any" />
+            {{#if config.trackStock}}
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
+                    <input type="number" id="productStock" class="form-control" value="{{productStock}}" step="any" />
+                </div>
             </div>
         </div>
         {{/if}}

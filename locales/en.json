@@ -221,5 +221,7 @@
 	"Select the order in which the products should be sorted.": "Select the order in which the products should be sorted.",
 	"Recent reviews": "Recent reviews",
 	"Reviews can be filtered by: review title or review description keywords": "Reviews can be filtered by: review title or review description keywords",
-	"Reviews": "Reviews"
+	"Reviews": "Reviews",
+	"Product GTIN": "Product GTIN",
+	"The Serial number, GTIN or Barcode": "The Serial number, GTIN or Barcode"
 }

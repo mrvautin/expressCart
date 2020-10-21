@@ -125,16 +125,17 @@
                     "url": "{{pageUrl}}"
                 },
                 "sku": "{{result._id}}",
+                {{#if result.productGtin}}
+                "gtin": "{{result.productGtin}}",
+                {{/if}}
                 {{#if result.productImage}}
                 "image": "{{config.baseUrl}}{{result.productImage}}",
                 {{/if}}
-                {{#if @root.reviewRating}}
                 "aggregateRating": {
                     "@type": "AggregateRating",
                     "ratingValue": "{{@root.reviewRating}}",
                     "reviewCount": "{{@root.reviewCount}}"
                 },
-                {{/if}}
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",
                 {{/if}}

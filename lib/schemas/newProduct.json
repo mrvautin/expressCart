@@ -21,6 +21,11 @@
             "isNotEmpty": true,
             "minLength": 25
         },
+        "productGtin": {
+            "type": ["string", "null"],
+            "format": "alphanumeric",
+            "maxLength": 16
+        },
         "productPublished": {
             "type": "boolean"
         },

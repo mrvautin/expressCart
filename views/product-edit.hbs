@@ -16,24 +16,33 @@
                     <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+            <div class="row ml-0 mr-0">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+                            </div>
+                            <input type="number" id="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
                         </div>
-                        <input type="number" id="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
-                    <select class="form-control" id="productPublished">
-                        <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
-                        <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
-                    </select>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
+                        <select class="form-control" id="productPublished">
+                            <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
+                            <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="productGtin" class="control-label">{{ @root.__ "Product GTIN" }}</label>
+                        {{!-- <input type="number" id="productGtin" class="form-control" value="{{result.productGtin}}" step="any" /> --}}
+                        <input type="string" id="productGtin" class="form-control" value="{{result.productGtin}}"/>
+                    </div>
                 </div>
             </div>
             {{#if config.trackStock}}
