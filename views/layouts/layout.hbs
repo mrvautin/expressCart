@@ -130,6 +130,8 @@
                 {{/if}}
                 {{#if result.productImage}}
                 "image": "{{config.baseUrl}}{{result.productImage}}",
+                {{else}}
+                "image": "{{config.baseUrl}}uploads/placeholder.png",
                 {{/if}}
                 "aggregateRating": {
                     "@type": "AggregateRating",
