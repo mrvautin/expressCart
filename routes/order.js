@@ -4,14 +4,14 @@ const {
     getCountryList,
     getId,
     sendEmail,
-    getEmailTemplate
+    getEmailTemplate,
+    clearCustomer
 } = require('../lib/common');
 const {
-    paginateData
+    paginateData,
 } = require('../lib/paginate');
 const {
-    emptyCart,
-    clearCustomer
+    emptyCart
 } = require('../lib/cart');
 const { restrict, checkAccess } = require('../lib/auth');
 const { indexOrders } = require('../lib/indexing');
