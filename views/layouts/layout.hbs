@@ -139,10 +139,24 @@
                     "name": "{{result.productBrand}}"
                 },
                 {{/if}}
+                {{#ifCond reviews.count '>' 0}}
+                "review": {
+                    "@type": "Review",
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "ratingValue": "{{@root.reviews.featured.review.rating}}",
+                        "bestRating": "{{@root.reviews.highestRating}}"
+                    },
+                    "author": {
+                        "@type": "Person",
+                        "name": "{{@root.reviews.featured.customer.firstName}} {{@root.reviews.featured.customer.lastName}}"
+                    }
+                },
+                {{/ifCond}}
                 "aggregateRating": {
                     "@type": "AggregateRating",
-                    "ratingValue": "{{@root.reviewRating}}",
-                    "reviewCount": "{{@root.reviewCount}}"
+                    "ratingValue": "{{@root.reviews.average}}",
+                    "reviewCount": "{{@root.reviews.count}}"
                 },
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",

@@ -77,14 +77,14 @@
                 {{#if @root.config.modules.enabled.reviews}}
                 <div class="col-md-10 mb-3">
                     <button class="btn btn-warning" id="add-review">Add review</button>
-                    <div class="d-inline-block align-middle">{{{@root.reviewRatingHtml}}}</div>
-                    {{#if reviews}}
+                    <div class="d-inline-block align-middle">{{{@root.reviews.ratingHtml}}}</div>
+                    {{#if @root.reviews.reviews}}
                     <a href="#collapseReviews" data-toggle="collapse" class="d-inline-block align-middle ml-3">Recent reviews</a>
                     {{/if}}
                 </div>
                 <div class="col-md-10">
                     <ul class="list-group collapse" id="collapseReviews">
-                    {{#each reviews}}
+                    {{#each @root.reviews.reviews}}
                         <li class="list-group-item">
                             <p class="text-muted small text-right">{{timeAgo this.date}}</p>
                             <p><b>Rating:</b> {{this.rating}}</p>

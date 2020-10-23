@@ -416,31 +416,48 @@ router.get('/product/:id', async (req, res) => {
     const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
 
     // Grab review data
-    let reviews = [];
-    let reviewRating = 0;
-    let reviewCount = 0;
+    const reviews = {
+        reviews: [],
+        average: 0,
+        count: 0,
+        featured: {},
+        ratingHtml: '',
+        highestRating: 0
+    };
     if(config.modules.enabled.reviews){
-        reviews = await db.reviews.find({ product: product._id }).sort({ date: 1 }).limit(6).toArray();
-        reviewRating = await db.reviews.aggregate([
-            {
-                $match: {
-                    product: ObjectId(product._id)
-                }
-            },
-            {
-                $group: {
-                    _id: '$item',
-                    avgRating: { $avg: '$rating' }
-                }
+        reviews.reviews = await db.reviews.find({ product: product._id }).sort({ date: 1 }).limit(5).toArray();
+        // only aggregate if reviews are found
+        if(reviews.reviews.length > 0){
+            reviews.highestRating = await db.reviews.find({ product: product._id }).sort({ rating: -1 }).limit(1).toArray();
+            if(reviews.highestRating.length > 0){
+                reviews.highestRating = reviews.highestRating[0].rating;
             }
-        ]).toArray();
-        reviewCount = await db.reviews.countDocuments({ product: product._id });
-        // Assign if returned
-        if(reviewRating.length > 0 && reviewRating[0].avgRating){
-            reviewRating = reviewRating[0].avgRating;
-        }else{
-            reviewRating = 0;
+            const featuredReview = await db.reviews.find({ product: product._id }).sort({ date: -1 }).limit(1).toArray();
+            if(featuredReview.length > 0){
+                reviews.featured.review = featuredReview[0];
+                reviews.featured.customer = await db.customers.findOne({ _id: reviews.featured.review.customer });
+            }
+            const reviewRating = await db.reviews.aggregate([
+                {
+                    $match: {
+                        product: ObjectId(product._id)
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$item',
+                        avgRating: { $avg: '$rating' }
+                    }
+                }
+            ]).toArray();
+            reviews.count = await db.reviews.countDocuments({ product: product._id });
+            // Assign if returned
+            if(reviewRating.length > 0 && reviewRating[0].avgRating){
+                reviews.average = reviewRating[0].avgRating;
+            }
         }
+        // Set review html
+        reviews.ratingHtml = getRatingHtml(Math.round(reviews.average));
     }
 
     // If JSON query param return json instead
@@ -479,9 +496,6 @@ router.get('/product/:id', async (req, res) => {
         result: product,
         variants,
         reviews,
-        reviewRating,
-        reviewCount,
-        reviewRatingHtml: getRatingHtml(Math.round(reviewRating)),
         images: images,
         relatedProducts,
         productDescription: stripHtml(product.productDescription),
