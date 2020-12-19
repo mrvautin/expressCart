@@ -199,37 +199,45 @@
                 {{{feather 'menu'}}}
             </button>
             <div id="navbarText">
-                <ul class="navbar-nav ml-auto">
-                    {{#ifCond @root.config.enableLanguages "!=" false}}
-                    <div class="dropdown d-none d-sm-block">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        {{#ifCond @root.config.enableLanguages "!=" false}}
+                    <div class="dropdown d-sm-block">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{{feather 'globe'}}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             {{#availableLanguages}}
-                                <li><a class="dropdown-item" href="/lang/{{this}}">{{@root.__ this}}</a></li>
+                                <a class="dropdown-item" href="/lang/{{this}}">{{@root.__ this}}</a>
                             {{/availableLanguages}}
                         </div>
                     </div>
                     {{/ifCond}}
-                    {{#if @root.session.customerPresent}}
-                    <div class="dropdown d-none d-sm-block">
-                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </li>
+                    <li class="nav-item">
+                        {{#if @root.session.customerPresent}}
+                    <div class="dropdown d-sm-block">
+                        <button class="btn dropdown-toggle ml-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{{feather 'user'}}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="/customer/account">Account</a></li>
-                            <li><a class="dropdown-item" href="/customer/logout">Logout</a></li>
+                            <a class="dropdown-item" href="/customer/account">Account</a>
+                            <a class="dropdown-item" href="/customer/logout">Logout</a>
                         </div>
                     </div>
                     {{else}}
-                        <li class="nav-item ml-3"><a href="/customer/account" class="btn">{{{feather 'user'}}}</a></li>
+                        <a href="/customer/account" class="btn ml-3">{{{feather 'user'}}}</a>
                     {{/if}}
-                    {{#if @root.session.cart}}
-                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}} {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a></li>
+                    </li>
+
+                    <li class="nav-item">
+                        {{#if @root.session.cart}}
+                        <a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}} {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">{{@root.session.totalCartItems}}</span></a>
                         {{else}}
-                        <li class="nav-item"><a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}}</i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a></li>
+                        <a href="/checkout/cart" class="btn menu-btn">{{{feather 'shopping-cart'}}}</i> {{ @root.__ "Cart" }} <span class="badge badge-danger" id="cart-count">0</span></a>
                     {{/if}}
+                    </li>
+                    
                 </ul>
             </div>
         </nav>
