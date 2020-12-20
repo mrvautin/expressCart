@@ -3,9 +3,27 @@
 
 `expressCart`  is a fully functional shopping cart built in Node.js (Express, MongoDB) with Stripe, PayPal and Authorize.net payments.
 
-[![Github stars](https://img.shields.io/github/stars/mrvautin/expressCart.svg?style=social&label=Star)](https://github.com/mrvautin/expressCart)  [![Build Status](https://travis-ci.org/mrvautin/expressCart.svg?branch=master)](https://travis-ci.org/mrvautin/expressCart)
-
 [**View the demo**](https://demo.expresscart.markmoffat.com/)
+
+[**Admin demo**](https://demo.expresscart.markmoffat.com/admin/)
+
+```
+Demo credentials
+
+Admin User:
+- User: `demo@test.com`
+- Password: `test`
+
+Customer:
+- User: `test@test.com`
+- Password: `test`
+
+Discount code:
+- 10 amount: `DEMO_AMT10`
+- 10 percent: `DEMO_PCT10`
+
+```
+
 
 ## Installation
 
@@ -34,6 +52,10 @@ The easiest way to get up and running is using Docker. Once the Docker CLI is in
 2.  Change  `/config/settings.json`  -  `"databaseConnectionString": "mongodb://mongodb:27017/expresscart"`
 3.  Run:  `docker-compose up --build`
 4.  Visit  [http://127.0.0.1:1111](http://127.0.0.1:1111/)  in your browser
+5. Optional. To install test data run the following 
+- `docker exec -it expresscart bash`
+- `npm run testdata`
+- `exit`
 
 ### Deploy on Heroku
 
@@ -114,115 +136,214 @@ Note: The  `databaseConnectionString`  property requires a full connection strin
 
 ## Configuration
 
-All settings are managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)) except the Payment gateway and database settings.
+All settings can be made in the config file and some settings can also be managed from the admin panel ([http://127.0.0.1:1111/admin](http://127.0.0.1:1111/admin)).
 
-##### Cart name and Cart description
+Settings are stored in JSON files in the `/config` directory. The main application-level settings are stored in `/config/settings.json` while payment gateway settings are stored in files in the `/config` directory named after the payment gateway. For example, configuration for the Stripe payment gateway is stored in `/config/payment/config/stripe.json`.
 
-These values are used for search engine optimization (SEO) purposes. They will be used as the title and description when your website is listed in Google and other search engines.
+Configs are validated against the schema files. For the `settings.json` this will be validated against the `settingsSchema.json` file. The Payment gateway config is validated against the `/config/payment/schema/<gateway>.json` file.
 
-The  `Cart name`  is also used if there is no logo set.
+##### Environment configuration
 
-##### Cart image/logo
+Environment configuration can be achieved using an `env.yaml` file (in the root of the app) to override any settings. You may want to do something like:
 
-Generally you would place your logo into the  `/uploads`  folder. You would then add the value  `/uploads/mylogo.png`  to the  `Cart image/logo`  setting value.
+``` yaml
+development:
+  port: 1111
+  databaseConnectionString: mongodb://127.0.0.1:27017/expresscart
+production:
+  port: 2222
+  databaseConnectionString: mongodb://prod_db_url:27017/expresscart
+```
 
-##### Cart URL
+The app will read in the `NODE_ENV` and switch and override any valid settings. Eg: `databaseConnectionString` set in the `env.yaml` file will override anything in `settings.json` file.
 
-This value is vital for your cart to work. Set this value to your domain name/URL which customers will access your website. This value is used in returning from Paypal payments and the sitemap for search engine indexing.
+This can also be used for payment modules too. Any settings in the `env.yaml` file will override the `/config/payment/config/<gateway>.json` file.
 
-##### Cart Email
+### Configuration
+Property | Description
+--- | ---
+cartTitle | This element is critical for search engine optimisation. Cart title is also displayed if your logo is hidden.
+cartDescription | This description shows when your website is listed in search engine results.
+cartLogo | URL to the logo for your cart
+baseUrl | This URL is used in sitemaps and when your customer returns from completing their payment etc.
+emailHost | The host address of your email provider
+emailPort | The post of your email provider
+emailSecure | The secure true/false indicator
+emailUser | The email user. Normally the email address.
+emailPassword | The password of your email provider
+emailAddress | This is used as the `from` email when sending receipts to your customers.
+productsPerRow | The number of products to be displayed across the page.
+productsPerPage | The number of products to be displayed on each page.
+footerHtml | Any HTML you want to be displayed in the footer of each page
+googleAnalytics | Your Google Analytics code. Also include the `<script>` tags - [More info](https://support.google.com/analytics/answer/1032385?hl=en)
+injectJs | Javascript code you want to inject onto pages. You may use this for Chatbots etc.
+customCss | Custom CSS which will override the base CSS
+currencySymbol | Set this to your currency symbol. Eg: $, £, €
+currencyISO | Set this to your currency ISO code. Eg: USD, AUD, EUR, GBP etc
+paymentGateway | An array of Payment Gateways or providers to be used. 
+databaseConnectionString | The MongoDB database connection string
+theme | The name of the Theme to be used
+trackStock | Whether your cart will track stock levels
+orderHook | On the completion of a order, expressCart will POST the data to the configured URL
+availableLanguages | Language to use. Eg: `en` or `it`
+defaultLocale | The default language/locale to fall back to for translations
+maxQuantity | The maximum quantity of any product which can be added to the cart.
+twitterHandle | The Twitter @ handle used in SEO
+facebookAppId | The Facebook App ID used in SEO
+productOrderBy | The field in which the products are ordered by. Eg: Product title etc
+productOrder | The sort order of products. Eg: `ascending` or `descending`
+modules | The modules configured and enabled. Check `settings.json` for example.
+showRelatedProducts | Shows related products when viewing a product for cross selling
+showHomepageVariants | Whether to show the product variants (eg: size etc) in a dropdown on the homepage when displaying products.
 
-This email is used for any email receipts which are sent by your website.
 
-##### Free shipping threshold
 
-expressCart allows for the addition of a free shipping threshold. The cart will remove the shipping costs once the order has exceeded the  `Free shipping threshold`  value. If the value of the cart is beneath the  `Free shipping threshold`, the cart will add the  `Flat shipping rate`  to the total amount.
+## Payments
+`expressCart` has the ability to combine multiple payment methods at checkout. For instance, you may want to provide credit card payments using [Stripe](https://stripe.com/) but also add Bitcoin with [Blockonomics](https://www.blockonomics.co/), [PayPal](http://paypal.com/) and Buy Now Pay later with [Zip](https://zip.co/).
 
-##### Payment Gateway
+Payment providers included:
+- [Stripe](https://stripe.com/)
+- [PayPal](http://paypal.com/)
+- [Blockonomics](https://www.blockonomics.co/)
+- [Authorize.net](https://www.authorize.net/)
+- [Adyen](https://www.adyen.com/)
+- [PayWay](https://www.payway.com.au/)
+- [Zip](https://zip.co/)
+- Instore
 
-This determines which payment gateway to use. You will also need to configure your payment gateway configuration file here:  `/config/<gateway_name>.json`
+#### Paypal (Payments)
 
-##### Currency symbol
-
-Set this value to your chosen currency symbol. Eg: $, £, €.
-
-##### Themes
-
-Themes are a set of handlebars views and a stylesheet file. See  `Cloth`  theme as example.
-
-Themes are loaded from  `/views/themes/`.
-
-It would be great to have some themes contributed back for others to use.
-
-##### Number of Products per page
-
-You can set the number of products per page by changing the  `Products per page`  value to a whole number of your choice. You may want to ensure the number of products per page matches up with the  `Products per row`  value. Eg: if you have the  `Products per row`  value set to 3, you may want to ensure the  `Products per page`  is a multiple of 3 for the best look.
-
-##### Number of Products per row
-
-This is the number of products displayed per row on your website. You can select anywhere up to 4  `Products per row`.
-
-##### Menu enabled
-
-Enables/disable the menu setup in  `/admin/settings/menu`.
-
-##### Menu header
-
-This is the text which will be displayed at the top of your menu.
-
-##### Menu position
-
-You can set position where your menu will be displayed. Setting the value to  `side`  will position the menu to the left of your products, setting the value to  `top`  will create a 'breadcrumb' menu at the top of the page
-
-##### Paypal (Payments)
-
-The Paypal config file is located:  `/config/paypal.json`. A example Paypal settings file is provided:
+The Paypal config file is located: `/config/payment/config/paypal.json`. A example Paypal settings file is provided:
 
 ```
 {
+    "description": "Paypal payment",
     "mode": "live", // sandbox or live
     "client_id": "this_is_not_real",
     "client_secret": "this_is_not_real",
     "paypalCartDescription": "expressCart", // Shows as the Paypal description
     "paypalCurrency": "USD" // The Paypal currency to charge in
 }
-
 ```
+Note: The `client_id` and `client_secret` is obtained from your Paypal account.
 
-Note: The  `client_id`  and  `client_secret`  is obtained from your Paypal account.
+#### Stripe (Payments)
 
-##### Stripe (Payments)
-
-The Stripe config file is located:  `/config/stripe.json`. A example Stripe settings file is provided:
+The Stripe config file is located: `/config/payment/config/stripe.json`. A example Stripe settings file is provided:
 
 ```
 {
+    "description": "Card payment",
     "secretKey": "sk_test_this_is_not_real",
     "publicKey": "pk_test_this_is_not_real",
     "stripeCurrency": "usd", The Stripe currency to charge in
     "stripeDescription": "expressCart payment", // Shows as the Stripe description
     "stripeLogoURL": "http://localhost:1111/images/stripelogo.png" // URL to the logo to display on Stripe form
+    "stripeWebhookSecret": "whsec_this_is_not_real"
 }
-
 ```
 
-Note: The  `secretKey`  and  `publicKey`  is obtained from your Stripe account dashboard.
+Note: The `secretKey`, `publicKey` and `stripeWebhookSecret` is obtained from your Stripe account dashboard.
 
-##### Authorize.net (Payments)
+#### Blockonomics (Bitcoin Payments)
 
-The Authorize.net config file is located:  `/config/authorizenet.json`. A example Authorize.net settings file is provided:
+You have to configure the `HTTP Callback URL` parameter into Blockonomics -> Merchants -> Settings:
+http://CartURL/blockonomics/checkout_return where [**CartURL**](#cart-url) is the address of your server
+
+The Blockonomics config file is located: `/config/payment/config/blockonomics.json`. A example Blockonomics settings file is provided:
 
 ```
 {
+    "description": "Blockonomics payment",
+    "apiKey": "this_is_not_real",
+    "hostUrl": "https://www.blockonomics.co", // You usually don't need to change this
+    "newAddressApi": "/api/new_address", // You usually don't need to change this
+    "priceApi": "/api/price?currency=" // You usually don't need to change this
+}
+```
+Note: The `apiKey` is obtained from your Blockonomics account.
+
+#### Authorize.net (Payments)
+
+The Authorize.net config file is located: `/config/payment/config/authorizenet.json`. A example Authorize.net settings file is provided:
+
+```
+{
+    "description": "Card payment",
     "loginId": "loginId",
     "transactionKey": "transactionKey",
     "clientKey": "clientKey",
     "mode": "test"
 }
-
 ```
 
 Note: The credentials are obtained from your Authorize.net account dashboard.
+
+#### Adyen (Payments)
+
+The Adyen config file is located: `/config/payment/config/adyen.json`. A example Adyen settings file is provided:
+
+```
+{
+    "description": "Card payment",
+    "environment": "TEST",
+    "apiKey": "this_is_not_real",
+    "originKey": "this_is_not_real",
+    "merchantAccount": "this_is_not_real",
+    "statementDescriptor": "a_statement_descriptor",
+    "currency": "AUD"
+}
+```
+
+Note: The `publicKey`, `apiKey` and `merchantAccount` is obtained from your Adyen account dashboard.
+
+#### Westpac PayWay (Payments)
+
+The PayWay config file is located: `/config/payment/config/payway.json`. A example PayWay settings file is provided:
+
+```
+{
+    "description": "Card payment",
+    "apiKey": "TXXXXX_SEC_btbqXxXxqgtzXk2p27hapvxXXXXxw28gh3febtuaf2etnkXxXxehdqu98u",
+    "publishableApiKey": "T11266_PUB_btbq8r6sqgtz5k2p27hapvx8nurxw28gh3fepbtua2f2etnkp4bmehdqu98u",
+    "merchantId": "TEST"
+}
+```
+
+Note: The `apiKey`, `publishableApiKey` and `merchantId` is obtained from your PayWay account dashboard.
+
+#### Zip (Payments)
+
+The Zip config file is located: `/config/payment/config/zip.json`. A example Zip settings file is provided:
+
+```
+{
+    "description": "Pay with Zip",
+    "privateKey": "KqtU4WtVeXAAbksD1dPpufYXgtfFe0hL9OhBF7hLXzQ=",
+    "mode": "test",
+    "currency": "AUD",
+    "supportedCountries": [
+        "Australia",
+        "New Zealand"
+    ]
+}
+```
+
+Note: The `privateKey` is obtained from your account dashboard.
+
+#### Instore (Payments)
+
+The Instore config file is located: `/config/payment/config/instore.json`. A example Instore settings file is provided:
+
+```
+{
+    "description": "Instore payment",
+    "orderStatus": "Pending",
+    "buttonText": "Place order, pay instore",
+    "resultMessage": "The order is place. Please pay for your order instore on pickup."
+}
+```
+Note: No payment is actually processed. The order will move to the `orderStatus` set and the payment is completed instore.
 
 ## Email settings
 
@@ -273,6 +394,44 @@ You can re-order menu items by clicking and dragging the arrows icon and placing
 You may want to create a static page to show contact details, about us, shipping information etc.
 
 New static pages are setup via  `/admin/settings/pages`.
+
+## Discount codes
+
+You may want to create discount codes to be given to customers for promotions etc. 
+
+New discount codes are setup via `/admin/settings/discounts`.
+
+***
+
+## Google data
+
+By default the product data is updated into a Google feed format here: `/googleproducts.xml`. 
+
+You can setup Google to read this data [here](https://merchants.google.com/)
+
+1. Products > Feeds > (+)
+2. Set the Country and language
+3. Set A name and `Scheduled fetch`
+4. Set the url to `https://mydomain.com/googleproducts.xml` 
+5. Complete
+
+## Modules
+It's possible to extend the basic functionality of `expressCart` using modules. All modules are loaded from `/lib/modules` folder at startup and added to the `config` for use throughout the app. There is an example module `shipping-basic` to calculate the flat shipping rate. One way to extend this basic module is to call a Postage service like [easypost](https://www.easypost.com/) to get an accurate rate for your location, package size etc.
+
+``` json
+"modules": {
+    "enabled": {
+        "shipping": "shipping-basic",
+            "discount": "discount-voucher",
+            "reviews": "reviews-basic"
+         },
+    "loaded": {
+        "shipping": {},
+        "discount": {},
+        "reviews": {}
+    }
+}
+```
 
 ## TODO
 
