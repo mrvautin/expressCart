@@ -7,6 +7,15 @@
 
 [**Admin demo**](https://demo.expresscart.markmoffat.com/admin/)
 
+## Requirements
+* [**Node.js 7.0+**](https://nodejs.org/en/download/)
+* [**MongoDB 2.6+**](https://www.mongodb.com/1)
+
+## Start mongodb server
+
+```shell
+$ mongod --dbpath "/path/to/my/database/"
+```
 ```
 Demo credentials
 
@@ -27,6 +36,8 @@ Discount code:
 
 ## Installation
 
+> Make sure all the requirements are installed already.
+
 1.  Create a folder to hold your installation:  `mkdir expressCart`
 2.  FTP/Copy the contents of the zip to your newly created folder
 3.  Enter folder:  `cd expressCart`
@@ -43,6 +54,7 @@ Keeping expressCart running after closing the terminal can be done in a few ways
 5.  To start/stop:  `pm2 start expressCart`  /  `pm2 stop expressCart`
 
 > Note: Node.js version 7.x or greater is needed.
+> Make Sure MongoDB is runnning.
 
 ### Docker
 
