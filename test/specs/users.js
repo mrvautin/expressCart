@@ -73,7 +73,7 @@ test('[Success] Create new user', async t => {
     const user = {
         usersName: 'Jim Smith',
         userEmail: 'jim.smith@gmail.com',
-        userPassword: 'test',
+        userPassword: 'test1234',
         isAdmin: false
     };
     const res = await g.request
@@ -88,7 +88,7 @@ test('[Fail] Create new user with invalid email', async t => {
     const user = {
         usersName: 'Jim Smith',
         userEmail: 'jim.smith@gmail',
-        userPassword: 'test',
+        userPassword: 'test1234',
         isAdmin: false
     };
     const res = await g.request
