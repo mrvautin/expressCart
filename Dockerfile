@@ -15,7 +15,7 @@ COPY views/ /var/expressCart/views/
 
 COPY app.js /var/expressCart/
 COPY package.json /var/expressCart/
-COPY gulpfile.js /var/expressCart/
+COPY deploy.js /var/expressCart/
 
 RUN npm install
 
