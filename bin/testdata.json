@@ -163,7 +163,7 @@
         {
             "orderPaymentId": "ch_1ElPw5L7TBqK1az83hbmOFuJ",
             "orderPaymentGateway": "Stripe",
-            "orderPaymentMessage": "Payment complete.",
+            "orderPaymentMessage": "Payment complete",
             "orderTotal": 310,
             "orderEmail": "test@test.com",
             "orderFirstname": "Testy",
@@ -181,7 +181,7 @@
         {
             "orderPaymentId": "ch_1ElPw5L7TBqK1az83hbmOFuJ",
             "orderPaymentGateway": "Stripe",
-            "orderPaymentMessage": "Payment complete.",
+            "orderPaymentMessage": "Payment complete",
             "orderTotal": 310,
             "orderEmail": "test@test.com",
             "orderFirstname": "Testy",
