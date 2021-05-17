@@ -63,7 +63,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "node-cron": "^2.0.3",
-    "nodemailer": "^4.7.0",
+    "nodemailer": "^6.4.16",
     "numeral": "^2.0.6",
     "object-hash": "^2.0.1",
     "paypal-rest-sdk": "^1.6.9",
