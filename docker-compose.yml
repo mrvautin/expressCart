@@ -1,7 +1,7 @@
 version: '3'
 services:
   expresscart:
-    image: "node:8"
+    image: "node:14.17.3"
     build: .
     container_name: "expresscart"
     environment:
