@@ -113,7 +113,7 @@
 	"Currency symbol": "Currency symbol",
 	"Set this to your currency symbol. Eg: $, £, €": "Set this to your currency symbol. Eg: $, £, €",
 	"Theme": "Theme",
-	"Theme_Info": "Themes are loaded from `/public/themes/`",
+	"Theme_Info": "Themes are loaded from `/views/themes/`",
 	"Products per row": "Products per row",
 	"The number of products to be displayed across the page.": "The number of products to be displayed across the page.",
 	"Products per page": "Products per page",
