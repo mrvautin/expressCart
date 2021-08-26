@@ -346,6 +346,25 @@ if(!config.secretSession || config.secretSession === ''){
 }
 
 app.enable('trust proxy');
+
+app.use(function (req, res, next) {
+    if (req.get('X-Requested-With') == 'expressCartMobile') {
+        res.render = function (view, locals) {
+            let data = typeof(locals) == 'object' ? locals : {};
+            data.config = config;
+            data.session = req.session;
+            delete data.helpers;
+            //delete data.menu;
+            if (data.paymentConfig) {
+                if (data.paymentConfig.stripe) delete data.paymentConfig.stripe.secretKey;
+                //** TODO: delete all secret keys for the other payment gateways */
+            }
+            this.type('json').json(data);
+        };
+    }
+    next();
+});
+
 app.use(helmet());
 app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
