@@ -926,7 +926,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     const lunrIdArray = [];
-    productsIndex.search(searchTerm).forEach((id) => {
+    productsIndex.search(`${searchTerm}~1`).forEach((id) => {
         lunrIdArray.push(getId(id.ref));
     });
 
