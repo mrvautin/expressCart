@@ -65,7 +65,7 @@
         },
         "currencyISO": {
             "type": "string",
-            "enum": ["USD", "EUR", "GBP"],
+            "enum": ["USD", "EUR", "GBP", "RON"],
             "default": "USD"
         },
         "paymentGateway": {
