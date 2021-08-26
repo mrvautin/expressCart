@@ -250,7 +250,7 @@ handlebars = handlebars.create({
             }
             if(status === 'Pending'){
                 const paymentConfig = getPaymentConfig();
-                if(config.paymentGateway === 'instore'){
+                if(['instore', 'wiretransfer' , 'ondelivery'].includes(config.paymentGateway) ){
                     return `<h2 class="text-warning">${paymentConfig.resultMessage}</h2>`;
                 }
                 return '<h2 class="text-warning">The payment for this order is pending. We will be in contact shortly.</h2>';
