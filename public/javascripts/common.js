@@ -62,6 +62,28 @@ $(document).ready(function (){
             window.location = '/payment/' + response.paymentId;
         });
     });
+    $('#checkoutWiretransfer').validator().on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/wiretransfer/checkout_action'
+        }).done((response) => {
+            window.location = '/payment/' + response.paymentId;
+        }).fail((response) => {
+            window.location = '/payment/' + response.paymentId;
+        });
+    });
+    $('#checkoutOnDelivery').validator().on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/ondelivery/checkout_action'
+        }).done((response) => {
+            window.location = '/payment/' + response.paymentId;
+        }).fail((response) => {
+            window.location = '/payment/' + response.paymentId;
+        });
+    });
 
     if($('#adyen-dropin').length > 0){
         $.ajax({
