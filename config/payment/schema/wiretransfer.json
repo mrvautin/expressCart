@@ -12,13 +12,17 @@
         },
         "resultMessage": {
             "type": "string"
+        },
+        "accountNumber": {
+            "type": "string"
         }
     },
     "required": [
         "description",
         "orderStatus",
         "buttonText",
-        "resultMessage"
+        "resultMessage",
+        "accountNumber"
     ],
     "additionalProperties": false
 }
