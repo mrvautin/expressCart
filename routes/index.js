@@ -1108,12 +1108,11 @@ router.get('/:page?', async (req, res, next) => {
     const db = req.app.db;
     const config = req.app.config;
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
-
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
             paginateProducts(true, db, 1, {}, getSort()),
-            getMenu(db)
+            getMenu(db,req.cookies.locale)
         ])
             .then(async([results, menu]) => {
                 // If JSON query param return json instead

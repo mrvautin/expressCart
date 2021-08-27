@@ -12,13 +12,13 @@
                 </a>
             </li>
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Manage</span>
+                <span>{{ @root.__ "Manage" }}</span>
             </h6>
             {{#ifCond session.isAdmin '===' true}}
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/products">
                     {{{feather 'tag'}}} &nbsp;
-                    Products
+                    {{ @root.__ "Products"}}
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/product/new">
                     {{{feather 'plus'}}}
@@ -28,14 +28,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/admin/products">
                     {{{feather 'tag'}}} &nbsp;
-                    Products
+                    {{ @root.__ "Products"}}
                 </a>
             </li>
             {{/ifCond}}
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/orders">
                     {{{feather 'package'}}} &nbsp;
-                    Orders
+                    {{ @root.__ "Orders"}}
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/order/create">
                     {{{feather 'plus'}}}
@@ -44,13 +44,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="/admin/customers">
                     {{{feather 'users'}}} &nbsp;
-                    Customers
+                    {{ @root.__ "Customers"}}
                 </a>
             </li>
             <li class="nav-item sidebar-addon">
                 <a class="nav-link sidebar-link" href="/admin/users">
                     {{{feather 'user'}}} &nbsp;
-                    Users
+                    {{ @root.__ "Users"}}
                 </a>
                 <a class="sidebar-link-addon text-muted" href="/admin/user/new">
                     {{{feather 'plus'}}}
@@ -60,14 +60,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/admin/reviews">
                     {{{feather 'star'}}} &nbsp;
-                    Reviews
+                     {{ @root.__ "Reviews"}}
                 </a>
             </li>
             {{/if}}
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>Settings</span>
+            <span> {{ @root.__ "Settings"}}</span>
         </h6>
         <ul class="nav flex-column mb-2">
             <li class="nav-item">
