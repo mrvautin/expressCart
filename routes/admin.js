@@ -29,6 +29,7 @@ const {
 const {
     sortMenu,
     getMenu,
+    getMenus,
     newMenu,
     updateMenu,
     deleteMenu,
@@ -281,7 +282,7 @@ router.get('/admin/settings/menu', csrfProtection, restrict, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: sortMenu(await getMenu(db)),
+        menus: (await getMenus(db)).map(sortMenu),
         csrfToken: req.csrfToken()
     });
 });

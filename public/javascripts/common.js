@@ -206,3 +206,48 @@ function slugify(str){
     .replace(/å/gi, 'a');
     return $slug.toLowerCase();
 }
+
+
+const switchLanguage = (defaultLang,translatableFields,allLanguages) => {
+    const e = document.getElementById("languageSelector");
+    const language = e.value;
+    const nonDefaultLanguages = allLanguages.filter((x) => x != defaultLang);
+    if (language === defaultLang) {
+        nonDefaultLanguages.forEach((language) => {
+            translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId.concat("_").concat(language))
+            if(item) item.hidden = true
+            })
+            if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote('destroy');
+        })
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId)
+            if(item) item.hidden = false
+        })
+        if (translatableFields.includes("productDescription")) $('#productDescription').summernote({height: 300, minHeight: null});
+
+    } else {
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId)
+            if (item) item.hidden = true
+        })
+
+        if (translatableFields.includes("productDescription")) $('#productDescription').summernote('destroy');
+
+        nonDefaultLanguages.forEach((language) => {
+            translatableFields.forEach((fieldId) => {
+                const item = document.getElementById(fieldId.concat("_").concat(language))
+                if (item) item.hidden = true
+            })
+            if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote('destroy');
+        })
+
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId.concat("_").concat(language))
+            if (item) item.hidden = false
+        })
+
+        if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote({height: 300, minHeight: null});
+    }
+
+}

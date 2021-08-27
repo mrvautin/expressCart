@@ -728,15 +728,20 @@ $(document).ready(function (){
 
     $(document).on('click', '#settings-menu-update', function(e){
         e.preventDefault();
+        const language = document.getElementById("languageSelector").value;
+        console.log(language);
         var id = $(this).attr('data-id');
-        var parentEl = $('#menuId-' + id);
+        var parentEl = $('#menuId-' + id + '_' + language);
+
+
         $.ajax({
             method: 'POST',
             url: '/admin/settings/menu/update',
             data: {
                 navId: parentEl.find('.navId').val(),
                 navMenu: parentEl.find('.navMenu').val(),
-                navLink: parentEl.find('.navLink').val()
+                navLink: parentEl.find('.navLink').val(),
+                language: language
             }
         })
         .done(function(msg){

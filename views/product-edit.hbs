@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="col-12">
-                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}")>
+                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages)>
                     {{#availableLanguages}}
                         <option value={{this}}>{{@root.__ this}}</option>
                     {{/availableLanguages}}
@@ -247,47 +247,6 @@ const allLanguages = getAllLanguages();
 const translatableFields = ["productDescription","productTitle","variantTitle", "variantButton"];
 
 
-const switchLanguage = (defaultLang) => {
-    const e = document.getElementById("languageSelector");
-        const language = e.value;
-        const nonDefaultLanguages = allLanguages.filter((x) => x!= defaultLang);
-        if(language === defaultLang){
-        console.log("show default")
-        nonDefaultLanguages.forEach((language) => {
-             translatableFields.forEach((fieldId) => {
-                 document.getElementById(fieldId.concat("_").concat(language)).hidden = true
-             })
-             $("productDescription_".concat(language)).summernote('destroy');
-        })
-        translatableFields.forEach((fieldId) => {
-                       document.getElementById(fieldId).hidden = false
-        })
-                   $('#productDescription').summernote({
-                           height: 300,
-                           minHeight: null
-                       });
-
-        }else{
-              console.log("show other")
-                  translatableFields.forEach((fieldId) => document.getElementById(fieldId).hidden = true)
-                  $('#productDescription').summernote('destroy');
-
-                nonDefaultLanguages.forEach((language) => {
-                 translatableFields.forEach((fieldId) => document.getElementById(fieldId.concat("_").concat(language)).hidden = true)
-                  $("productDescription_".concat(language)).summernote('destroy');
-                 })
-
-                translatableFields.forEach((fieldId) => {
-                  document.getElementById(fieldId.concat("_").concat(language)).hidden = false
-                })
-
-                      $("productDescription_".concat(language)).summernote({
-                                           height: 300,
-                                           minHeight: null
-                                       });
-                                       }
-
-        }
 
 
     $(document).ready(function() {

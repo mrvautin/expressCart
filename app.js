@@ -332,6 +332,10 @@ handlebars = handlebars.create({
         getIdForLanguages : (idName, language, defaultLanguage) => {
             return defaultLanguage === language ?idName : `${idName}_${language}`;
         },
+        isMatchingLanguageOrDefault : (menu, lang2 , deflocale, options) => {
+            const result = (lang2 === menu.language) || (typeof menu.language === "undefined" && deflocale === lang2);
+            return  result ? options.fn(this) : options.inverse(this);
+},
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg
