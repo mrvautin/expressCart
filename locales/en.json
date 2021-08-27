@@ -226,5 +226,19 @@
 	"Product GTIN": "Product GTIN",
 	"The Serial number, GTIN or Barcode": "The Serial number, GTIN or Barcode",
 	"Product Brand": "Product Brand",
-	"The brand of the product": "The brand of the product"
+	"The brand of the product": "The brand of the product",
+	"Cart Empty": "Cart Empty",
+	"Estimated shipping": "Estimated shipping",
+	"Please enter a valid email address": "Please enter a valid email address",
+	"Address 2 (optional)": "Address 2 (optional)",
+	"Select Country": "Select Country",
+	"Post code": "Post code",
+	"Cancel": "Cancel",
+	"Add review": "Add review",
+	"Product review": "Product review",
+	"Love it": "Love it",
+	"Description": "Description",
+	"Product is great. Does everything it said it can do.": "Product is great. Does everything it said it can do.",
+	"Rating": "Rating"
+
 }

@@ -18,7 +18,7 @@
     "currencySymbol": "£",
     "currencyISO": "USD",
     "paymentGateway": [
-        "stripe" 
+        "stripe"
     ],
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
     "theme": "Cloth",
@@ -26,9 +26,10 @@
     "orderHook": "",
     "availableLanguages": [
         "en",
-        "it"
+        "it",
+        "ro"
     ],
-    "defaultLocale": "en",
+    "defaultLocale": "ro",
     "maxQuantity": 25,
     "twitterHandle": "",
     "facebookAppId": "",
