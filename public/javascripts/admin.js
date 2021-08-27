@@ -241,11 +241,16 @@ $(document).ready(function (){
     });
 
     $('#productEditForm').validator().on('submit', function(e){
+
         if(!e.isDefaultPrevented()){
             e.preventDefault();
             if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
                 $('#productPermalink').val(slugify($('#productTitle').val()));
             }
+            const varfields = allLanguages.reduce((acc,x) => {
+                acc[`productDescription_${x}`] = $(`#productDescription_${x}`).val();
+                return acc;
+            },{});
             $.ajax({
                 method: 'POST',
                 url: '/admin/product/update',
@@ -262,7 +267,8 @@ $(document).ready(function (){
                     productPermalink: $('#productPermalink').val(),
                     productSubscription: $('#productSubscription').val(),
                     productComment: $('#productComment').is(':checked'),
-                    productTags: $('#productTags').val()
+                    productTags: $('#productTags').val(),
+                    ...varfields
                 }
             })
             .done(function(msg){

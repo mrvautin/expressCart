@@ -309,6 +309,12 @@ handlebars = handlebars.create({
         timeAgo: (date) => {
             return moment(date).fromNow();
         },
+        setVar: (varName, varValue, options) => {
+            options.data.root[varName] = varValue;
+        },
+        getDescriptionLanguage: (result, language) => {
+            return result[`productDescription_${language}`] ? result[`productDescription_${language}`] : ""
+        },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg
@@ -324,6 +330,7 @@ handlebars = handlebars.create({
                 <use xlink:href="/dist/feather-sprite.svg#${icon}"/>
             </svg>`;
         }
+
     }
 });
 

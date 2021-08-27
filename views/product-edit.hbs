@@ -11,6 +11,11 @@
                 </div>
             </div>
             <div class="col-12">
+                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}")>
+                    {{#availableLanguages}}
+                        <option value={{this}}>{{@root.__ this}}</option>
+                    {{/availableLanguages}}
+                 </select>
                 <div class="form-group">
                     <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
                     <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
@@ -71,7 +76,11 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
-                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
+                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{lookup result 'productDescription'}}</textarea>
+                     {{#availableLanguages}}
+                    <textarea minlength="5" rows="10" hidden = false id="productDescription_{{this}}" class="form-control">{{getDescriptionLanguage ../result this}}</textarea>
+                     {{/availableLanguages}}
+
                 </div>
             </div>
             <div class="col-12">
@@ -215,6 +224,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.min.js" integrity="sha256-Q4K0T9IUORjpebn9dIu9szj2Rgn7GmLF+S3RjgM8aXw=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" integrity="sha256-f/v2ew/bb0v4el1ALE7bOoXGUDWGk2k+dkPLo3JPhLw=" crossorigin="anonymous" />
 <script>
+const getAllLanguages = () => {
+        const languages = [];
+     {{#availableLanguages}}
+     languages.push("{{this}}")
+     {{/availableLanguages}}
+     return languages;
+     }
+const allLanguages = getAllLanguages();
+
+
+const switchLanguage = (defaultLang) => {
+    console.log(defaultLang)
+    const e = document.getElementById("languageSelector");
+        const language = e.value;
+        if(language === defaultLang){
+        console.log("show default")
+        allLanguages.forEach((language) => {
+            document.getElementById("productDescription_".concat(language)).hidden = true
+            $("productDescription_".concat(language)).summernote('destroy');
+        })
+               document.getElementById("productDescription").hidden = false
+                   $('#productDescription').summernote({
+                           height: 300,
+                           minHeight: null
+                       });
+
+        }else{
+              console.log("show other")
+                document.getElementById("productDescription").hidden = true
+                  $('#productDescription').summernote('destroy');
+
+                allLanguages.forEach((language) => {
+                            document.getElementById("productDescription_".concat(language)).hidden = true
+                            $("productDescription_".concat(language)).summernote('destroy');
+                        })
+
+                document.getElementById("productDescription_".concat(language)).hidden = false
+                      $("productDescription_".concat(language)).summernote({
+                                           height: 300,
+                                           minHeight: null
+                                       });
+                                       }
+
+        }
+
+
     $(document).ready(function() {
         $('#productDescription').summernote({
             height: 300,

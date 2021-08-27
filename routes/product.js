@@ -185,7 +185,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config,
         editor: true,
-        helpers: req.handlebars.helpers
+        helpers: req.handlebars.helpers,
     });
 });
 
@@ -336,6 +336,10 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productStock: safeParseInt(req.body.productStock) || null,
         productStockDisable: convertBool(req.body.productStockDisable)
     };
+
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productDescription_${lang}`] = cleanHtml(req.body[`productDescription_${lang}`]);
+    })
 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);
