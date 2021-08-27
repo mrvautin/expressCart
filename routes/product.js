@@ -340,6 +340,9 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
     req.app.config.availableLanguages.map((lang) => {
        productDoc[`productDescription_${lang}`] = cleanHtml(req.body[`productDescription_${lang}`]);
     })
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productTitle_${lang}`] = cleanHtml(req.body[`productTitle_${lang}`]);
+    })
 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);

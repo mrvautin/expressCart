@@ -214,6 +214,13 @@ handlebars = handlebars.create({
         discountExpiry: (start, end) => {
             return moment().isBetween(moment(start), moment(end));
         },
+        IsHidden: (v1, operator, v2) => {
+            switch(operator){
+                case '==':
+                    return (v1 === v2) ? "" : "hidden"
+
+            }
+        },
         ifCond: (v1, operator, v2, options) => {
             switch(operator){
                 case '==':
@@ -314,6 +321,16 @@ handlebars = handlebars.create({
         },
         getDescriptionLanguage: (result, language) => {
             return result[`productDescription_${language}`] ? result[`productDescription_${language}`] : ""
+        },
+        getExtraLanguageFromKey: (result, key,  language, defaultLanguage) => {
+            if (defaultLanguage !== language) {
+                return result[`${key}_${language}`] ? result[`${key}_${language}`] : ""
+            } else {
+                return result[key];
+            }
+        },
+        getIdForLanguages : (idName, language, defaultLanguage) => {
+            return defaultLanguage === language ?idName : `${idName}_${language}`;
         },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing

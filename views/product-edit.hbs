@@ -18,7 +18,9 @@
                  </select>
                 <div class="form-group">
                     <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
-                    <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
+                         {{#availableLanguages}}
+                    <input type="text" id="{{getIdForLanguages "productTitle" this @root.config.defaultLocale}}" {{IsHidden this '==' @root.config.defaultLocale}} class="form-control" minlength="5" maxlength="200" value="{{getExtraLanguageFromKey ../result 'productTitle' this @root.config.defaultLocale}}" required/>
+                         {{/availableLanguages}}
                 </div>
             </div>
             <div class="row ml-0 mr-0">
@@ -101,9 +103,9 @@
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item bg-secondary">
                             <div class="row">
-                                <div class='col-sm-3'>Title</div>
-                                <div class='col-sm-3'>Price</div>
-                                <div class='col-sm-3'>Stock</div>
+                                <div class='col-sm-3'>{{ @root.__ "Title" }}</div>
+                                <div class='col-sm-3'>{{ @root.__ "Price" }}</div>
+                                <div class='col-sm-3'>{{ @root.__ "Stock" }}</div>
                                 <div class='col-sm-3 text-right'>
                                     <a href="#" data-toggle="modal" data-target="#variantModal" class="btn btn-outline-success">{{ @root.__ "Add" }}</a>
                                 </div>
@@ -235,16 +237,18 @@ const allLanguages = getAllLanguages();
 
 
 const switchLanguage = (defaultLang) => {
-    console.log(defaultLang)
     const e = document.getElementById("languageSelector");
         const language = e.value;
+        const nonDefaultLanguages = allLanguages.filter((x) => x!= defaultLang);
         if(language === defaultLang){
         console.log("show default")
-        allLanguages.forEach((language) => {
+        nonDefaultLanguages.forEach((language) => {
             document.getElementById("productDescription_".concat(language)).hidden = true
+            document.getElementById("productTitle_".concat(language)).hidden = true
             $("productDescription_".concat(language)).summernote('destroy');
         })
                document.getElementById("productDescription").hidden = false
+               document.getElementById("productTitle").hidden = false
                    $('#productDescription').summernote({
                            height: 300,
                            minHeight: null
@@ -253,14 +257,19 @@ const switchLanguage = (defaultLang) => {
         }else{
               console.log("show other")
                 document.getElementById("productDescription").hidden = true
+                document.getElementById("productTitle").hidden = true
+
                   $('#productDescription').summernote('destroy');
 
-                allLanguages.forEach((language) => {
+                nonDefaultLanguages.forEach((language) => {
                             document.getElementById("productDescription_".concat(language)).hidden = true
+                            document.getElementById("productTitle_".concat(language)).hidden = true
                             $("productDescription_".concat(language)).summernote('destroy');
                         })
 
                 document.getElementById("productDescription_".concat(language)).hidden = false
+                document.getElementById("productTitle_".concat(language)).hidden = false
+
                       $("productDescription_".concat(language)).summernote({
                                            height: 300,
                                            minHeight: null

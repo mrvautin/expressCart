@@ -249,6 +249,7 @@ $(document).ready(function (){
             }
             const varfields = allLanguages.reduce((acc,x) => {
                 acc[`productDescription_${x}`] = $(`#productDescription_${x}`).val();
+                acc[`productTitle_${x}`] = $(`#productTitle_${x}`).val();
                 return acc;
             },{});
             $.ajax({
