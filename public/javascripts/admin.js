@@ -45,6 +45,7 @@ $(document).ready(function (){
     $(document).on('click', '#saveVariant', function(e){
         e.preventDefault();
 
+
         $.ajax({
             method: 'POST',
             url: '/admin/product/editvariant',
@@ -53,7 +54,8 @@ $(document).ready(function (){
                 variant: $('#variant-edit-id').val(),
                 title: $('#variant-edit-title').val(),
                 price: $('#variant-edit-price').val(),
-                stock: $('#variant-edit-stock').val()
+                stock: $('#variant-edit-stock').val(),
+                language: $('#variant-edit-language').val(),
             }
         })
         .done(function(msg){
@@ -69,11 +71,16 @@ $(document).ready(function (){
         $('#variant-edit-title').focus();
         $('#variant-edit-id').val($(e.relatedTarget).data('id'));
         $('#variant-edit-title').val($(e.relatedTarget).data('title'));
+        $('#variant-edit-language').val($(e.relatedTarget).data('language'));
         $('#variant-edit-price').val($(e.relatedTarget).data('price'));
         $('#variant-edit-stock').val($(e.relatedTarget).data('stock'));
     });
 
     $(document).on('click', '#addVariant', function(e){
+        const varfields = allLanguages.reduce((acc,x) => {
+            acc[`variantTitle_${x}`] = $(`#variant-title_${x}`).val();
+            return acc;
+        },{});
         $.ajax({
             method: 'POST',
             url: '/admin/product/addvariant',
@@ -81,7 +88,8 @@ $(document).ready(function (){
                 product: $('#variant-product').val(),
                 title: $('#variant-title').val(),
                 price: $('#variant-price').val(),
-                stock: $('#variant-stock').val()
+                stock: $('#variant-stock').val(),
+                ...varfields
             }
         })
 		.done(function(msg){

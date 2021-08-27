@@ -115,7 +115,13 @@
                         {{#each result.variants}}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class='col-sm-3'>{{this.title}}</div>
+                              {{#availableLanguages}}
+                                <div id="{{getIdForLanguages "variantTitle" this @root.config.defaultLocale}}"
+                                {{IsHidden this '==' @root.config.defaultLocale}}
+                                class='col-sm-3'>{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}
+                                </div>
+                             {{/availableLanguages}}
+
                                 <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
                                 {{#if this.stock}}
                                 <div class='col-sm-3'>{{this.stock}}</div>
@@ -123,12 +129,16 @@
                                 <div class='col-sm-3'>N/A</div>
                                 {{/if}}
                                 <div class='col-sm-3 text-right'>
-                                    <button class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
-                                        data-id="{{this._id}}"
-                                        data-title="{{this.title}}"
-                                        data-price="{{this.price}}"
-                                        data-stock="{{this.stock}}"
+                                  {{#availableLanguages}}
+                                    <button id="{{getIdForLanguages "variantButton" this @root.config.defaultLocale}}" class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
+                                     {{IsHidden this '==' @root.config.defaultLocale}}
+                                        data-id="{{../this._id}}"
+                                        data-title="{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}"
+                                        data-language="{{this}}"
+                                        data-price="{{../this.price}}"
+                                        data-stock="{{../this.stock}}"
                                     >{{ @root.__ "Edit" }}</button>
+                                  {{/availableLanguages}}
                                     <button class='btn btn-outline-danger removeVariant' data-id="{{this._id}}">{{ @root.__ "Remove" }}</button>
                                 </div>
                             </div>
@@ -234,6 +244,7 @@ const getAllLanguages = () => {
      return languages;
      }
 const allLanguages = getAllLanguages();
+const translatableFields = ["productDescription","productTitle","variantTitle", "variantButton"];
 
 
 const switchLanguage = (defaultLang) => {
@@ -243,12 +254,14 @@ const switchLanguage = (defaultLang) => {
         if(language === defaultLang){
         console.log("show default")
         nonDefaultLanguages.forEach((language) => {
-            document.getElementById("productDescription_".concat(language)).hidden = true
-            document.getElementById("productTitle_".concat(language)).hidden = true
-            $("productDescription_".concat(language)).summernote('destroy');
+             translatableFields.forEach((fieldId) => {
+                 document.getElementById(fieldId.concat("_").concat(language)).hidden = true
+             })
+             $("productDescription_".concat(language)).summernote('destroy');
         })
-               document.getElementById("productDescription").hidden = false
-               document.getElementById("productTitle").hidden = false
+        translatableFields.forEach((fieldId) => {
+                       document.getElementById(fieldId).hidden = false
+        })
                    $('#productDescription').summernote({
                            height: 300,
                            minHeight: null
@@ -256,19 +269,17 @@ const switchLanguage = (defaultLang) => {
 
         }else{
               console.log("show other")
-                document.getElementById("productDescription").hidden = true
-                document.getElementById("productTitle").hidden = true
-
+                  translatableFields.forEach((fieldId) => document.getElementById(fieldId).hidden = true)
                   $('#productDescription').summernote('destroy');
 
                 nonDefaultLanguages.forEach((language) => {
-                            document.getElementById("productDescription_".concat(language)).hidden = true
-                            document.getElementById("productTitle_".concat(language)).hidden = true
-                            $("productDescription_".concat(language)).summernote('destroy');
-                        })
+                 translatableFields.forEach((fieldId) => document.getElementById(fieldId.concat("_").concat(language)).hidden = true)
+                  $("productDescription_".concat(language)).summernote('destroy');
+                 })
 
-                document.getElementById("productDescription_".concat(language)).hidden = false
-                document.getElementById("productTitle_".concat(language)).hidden = false
+                translatableFields.forEach((fieldId) => {
+                  document.getElementById(fieldId.concat("_").concat(language)).hidden = false
+                })
 
                       $("productDescription_".concat(language)).summernote({
                                            height: 300,
