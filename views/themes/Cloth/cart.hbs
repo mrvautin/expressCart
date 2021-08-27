@@ -10,7 +10,7 @@
                             {{#if productImage}}
                             <img class="img-fluid" src="{{this.productImage}}" alt="{{this.title}} product image">
                             {{else}}
-                            <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image"> 
+                            <img class="img-fluid" src="/uploads/placeholder.png" alt="{{this.title}} product image">
                             {{/if}}
                         </div>
                         <div class="col-8 col-md-9">
@@ -27,11 +27,11 @@
                                         <div class="input-group-prepend">
                                             <button class="btn btn-primary btn-qty-minus" type="button">-</button>
                                         </div>
-                                        <input type="number" 
-                                            class="form-control cart-product-quantity text-center" 
-                                            data-cartid="{{@key}}" 
+                                        <input type="number"
+                                            class="form-control cart-product-quantity text-center"
+                                            data-cartid="{{@key}}"
                                             data-id="{{../this.productId}}"
-                                            maxlength="2" 
+                                            maxlength="2"
                                             value="{{../this.quantity}}"
                                         >
                                         <div class="input-group-append">
@@ -82,7 +82,7 @@
             {{else}}
             <div id="cart-empty" class="d-flex flex-row">
                 <div class="cart-contents-shipping col-md-12 no-pad-left">
-                    Cart empty
+                    	<h2>{{ @root.__ "Cart Empty" }}</h2>
                 </div>
             </div>
             {{/if}}
