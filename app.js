@@ -332,6 +332,14 @@ handlebars = handlebars.create({
         getIdForLanguages : (idName, language, defaultLanguage) => {
             return defaultLanguage === language ?idName : `${idName}_${language}`;
         },
+        getIdForLanguagesForMenuId : (idName, language, defaultLanguage,menu) => {
+            if(menu.language === language || (!menu.language && language === defaultLanguage)){
+                return defaultLanguage === language ?idName : `${idName}_${language}`;
+            }else{
+                return "dont_use";
+            }
+
+        },
         getIdForLanguagesWithId : (idName,id, language, defaultLanguage) => {
             return defaultLanguage === language ? `${idName}-${id}` : `${idName}-${id}_${language}`;
         },

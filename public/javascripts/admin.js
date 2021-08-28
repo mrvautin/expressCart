@@ -784,11 +784,22 @@ $(document).ready(function (){
         $('#draggable_list').sortable({
             update: function (){
                 var menuOrder = [];
-                $('.navId').each(function(val){
-                    menuOrder.push($($('.navId')[val]).val());
+                const language1 = document.getElementById("languageSelector").value;
+                const defaultLocale = document.getElementById("defaultLocale").value;
+                console.log(language1);
+                console.log(defaultLocale);
+
+                let elementId = 'menuMongoId'
+                if(defaultLocale !== language1){
+                    elementId = 'menuMongoId_'+ language1
+                }
+                const menuId = document.getElementById(elementId).value;
+
+                $(`.navId.${language1}` ).each(function(val){
+                    menuOrder.push($($(`.navId.${language1}` )[val]).val());
                 });
                 $.ajax({
-                    data: { order: menuOrder },
+                    data: { order: menuOrder,menuId },
                     type: 'POST',
                     url: '/admin/settings/menu/saveOrder'
                 })

@@ -443,10 +443,10 @@ router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => 
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
-    const result = orderMenu(req, res);
-    if(result === false){
-        res.status(400).json({ message: 'Failed saving menu order' });
+router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, async (req, res) => {
+    const result = await orderMenu(req, res);
+    if (result === false) {
+        res.status(400).json({message: 'Failed saving menu order'});
         return;
     }
     res.status(200).json({});

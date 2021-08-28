@@ -15,14 +15,16 @@
         </div>
         <div id="draggable_list">
          {{#each menus}}
+
             {{#availableLanguages}}
+             <input type="hidden" id="{{getIdForLanguagesForMenuId "menuMongoId" this @root.config.defaultLocale ../this}}" value="{{../this._id}}">
             {{#isMatchingLanguageOrDefault ../this this  @root.config.defaultLocale}}
             {{#each ../../this.items}}
 
 
                     <div class="{{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguages "menuRow" ../../this @root.config.defaultLocale}}" {{IsHidden ../../this '==' @root.config.defaultLocale}}>
                      <div class="row drag-row mb-2 {{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguagesWithId "menuId" @key ../../this @root.config.defaultLocale}}" >
-                                                <input type="hidden" class="navId" value="{{this.id}}">
+                                                <input type="hidden" class="navId {{../../this}}" value="{{this.id}}">
                                                 <input type="hidden" class="language" id="language" value="{{../../this}}">
 
                                                 <div class="col-sm-1 dragable_item" >{{{feather 'move'}}}</div>
