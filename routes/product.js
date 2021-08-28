@@ -185,7 +185,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config,
         editor: true,
-        helpers: req.handlebars.helpers
+        helpers: req.handlebars.helpers,
     });
 });
 
@@ -236,7 +236,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
 // Update an existing product variant
 router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-
+    const defaultLang = req.app.config.defaultLocale;
     const variantDoc = {
         product: req.body.product,
         variant: req.body.variant,
@@ -245,8 +245,13 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
         stock: safeParseInt(req.body.stock) || null
     };
 
+
     // Validate the body again schema
     const schemaValidate = validateJson('editVariant', variantDoc);
+    if(req.body.language !== defaultLang){
+        delete variantDoc.title;
+        variantDoc[`title_${req.body.language}`] = req.body.title
+    }
     if(!schemaValidate.result){
         if(process.env.NODE_ENV !== 'test'){
             console.log('schemaValidate errors', schemaValidate.errors);
@@ -336,6 +341,13 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productStock: safeParseInt(req.body.productStock) || null,
         productStockDisable: convertBool(req.body.productStockDisable)
     };
+
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productDescription_${lang}`] = cleanHtml(req.body[`productDescription_${lang}`]);
+    })
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productTitle_${lang}`] = cleanHtml(req.body[`productTitle_${lang}`]);
+    })
 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);

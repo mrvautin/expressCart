@@ -1,7 +1,7 @@
 <nav id="navbarMenu" class="navbar-expand-lg navbar navbar-light bg-light navbarMenuWrapper col-sm-12">
     <div class="col-sm-8 offset-md-2 collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{#unless searchTerm}}active{{/unless}}"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item {{#unless searchTerm}}active{{/unless}}"><a class="nav-link" href="/">{{ @root.__ "Home" }}</a></li>
             {{#each menu.items}}
                 <li class="nav-item"
                     {{#menuMatch this.title @root.searchTerm}}{{/menuMatch}}

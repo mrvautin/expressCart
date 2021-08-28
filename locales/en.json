@@ -239,6 +239,11 @@
 	"Love it": "Love it",
 	"Description": "Description",
 	"Product is great. Does everything it said it can do.": "Product is great. Does everything it said it can do.",
-	"Rating": "Rating"
-
+	"Rating": "Rating",
+	"Price": "Price",
+	"Stock": "Stock",
+	"Product variant": "Product variant",
+	"Save variant": "Save variant",
+	"Home": "Home",
+	"Manage": "Manage"
 }

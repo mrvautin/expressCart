@@ -14,7 +14,7 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    image: mongo:3.4.10
+    image: mongo:5.0
     container_name: "expresscart-mongodb"
     volumes:
       - expresscart-mongo-data:/data/db

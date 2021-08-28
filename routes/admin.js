@@ -29,6 +29,7 @@ const {
 const {
     sortMenu,
     getMenu,
+    getMenus,
     newMenu,
     updateMenu,
     deleteMenu,
@@ -281,7 +282,7 @@ router.get('/admin/settings/menu', csrfProtection, restrict, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: sortMenu(await getMenu(db)),
+        menus: (await getMenus(db)).map(sortMenu),
         csrfToken: req.csrfToken()
     });
 });
@@ -422,13 +423,13 @@ router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
 });
 
 // update existing menu item
-router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = updateMenu(req);
-    if(result === false){
-        res.status(400).json({ message: 'Failed updating menu.' });
+router.post('/admin/settings/menu/update', restrict, checkAccess, async (req, res) => {
+    const result = await updateMenu(req);
+    if (result === false) {
+        res.status(400).json({message: 'Failed updating menu.'});
         return;
     }
-    res.status(200).json({ message: 'Menu updated successfully.' });
+    res.status(200).json({message: 'Menu updated successfully.'});
 });
 
 // delete menu item
@@ -442,10 +443,10 @@ router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => 
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
-    const result = orderMenu(req, res);
-    if(result === false){
-        res.status(400).json({ message: 'Failed saving menu order' });
+router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, async (req, res) => {
+    const result = await orderMenu(req, res);
+    if (result === false) {
+        res.status(400).json({message: 'Failed saving menu order'});
         return;
     }
     res.status(200).json({});
