@@ -3,6 +3,7 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
     <div class="col-sm-12">
         <h2>Menu</h2>
+         <input type="hidden" class="defaultLanguage" id="defaultLocale" value="{{@root.config.defaultLocale}}">
             <select id="languageSelector" onChange = switchLanguageMenu("{{@root.config.defaultLocale}}",translatableFields,allLanguages)>
                                     {{#availableLanguages}}
                                         <option value={{this}}>{{@root.__ this}}</option>
@@ -18,9 +19,10 @@
             {{#isMatchingLanguageOrDefault ../this this  @root.config.defaultLocale}}
             {{#each ../../this.items}}
                     <div id="{{getIdForLanguages "menuRow" ../../this @root.config.defaultLocale}}" {{IsHidden ../../this '==' @root.config.defaultLocale}}>
-                     <div class="row drag-row mb-2" id="menuId-{{@key}}_{{../../this}}" >
-                                                <input type="hidden" class="navId" value="{{this.title}}">
+                     <div class="row drag-row mb-2" id="{{getIdForLanguagesWithId "menuId" @key ../../this @root.config.defaultLocale}}" >
+                                                <input type="hidden" class="navId" value="{{this.id}}">
                                                 <input type="hidden" class="language" id="language" value="{{../../this}}">
+
                                                 <div class="col-sm-1 dragable_item" >{{{feather 'move'}}}</div>
                                                 <div class="col-sm-2 dragable_item" >
 

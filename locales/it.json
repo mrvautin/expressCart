@@ -195,5 +195,13 @@
 	"Product is great. Does everything it said it can do.": "Product is great. Does everything it said it can do.",
 	"Rating": "Rating",
 	"Cancel": "Cancel",
-	"Add review": "Add review"
+	"Add review": "Add review",
+	"Manage": "Manage",
+	"Reviews": "Reviews",
+	"Logout": "Logout",
+	"Shown in the variant dropdown": "Shown in the variant dropdown",
+	"Product variant": "Product variant",
+	"Price": "Price",
+	"Stock": "Stock",
+	"Save variant": "Save variant"
 }

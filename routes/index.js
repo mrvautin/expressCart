@@ -146,7 +146,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         showFooter: 'showFooter',
-        menu: sortMenu(await getMenu(db))
+        menu: sortMenu(await getMenu(db,req.cookies.locale))
     });
 });
 
@@ -507,7 +507,7 @@ router.get('/product/:id', async (req, res) => {
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         showFooter: 'showFooter',
-        menu: sortMenu(await getMenu(db))
+        menu: sortMenu(await getMenu(db,req.cookies.locale))
     });
 });
 
@@ -937,7 +937,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
 
     Promise.all([
         paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
     .then(([results, menu]) => {
         // If JSON query param return json instead
@@ -990,7 +990,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
     Promise.all([
         paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
         .then(([results, menu]) => {
             const sortedMenu = sortMenu(menu);
@@ -1161,7 +1161,7 @@ router.get('/:page?', async (req, res, next) => {
                 metaDescription: `${req.app.config.cartTitle} - ${page}`,
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: sortMenu(await getMenu(db))
+                menu: sortMenu(await getMenu(db,req.cookies.locale))
             });
         }else{
             res.status(404).render('error', {
@@ -1170,7 +1170,7 @@ router.get('/:page?', async (req, res, next) => {
                 message: '404 Error - Page not found',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: sortMenu(await getMenu(db))
+                menu: sortMenu(await getMenu(db,req.cookies.locale))
             });
         }
     }

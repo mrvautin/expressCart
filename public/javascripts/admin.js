@@ -731,9 +731,14 @@ $(document).ready(function (){
     $(document).on('click', '#settings-menu-update', function(e){
         e.preventDefault();
         const language = document.getElementById("languageSelector").value;
+        const defaultLocale = document.getElementById("defaultLocale").value;
         console.log(language);
         var id = $(this).attr('data-id');
-        var parentEl = $('#menuId-' + id + '_' + language);
+        let parentEl = $('#menuId-' + id);
+        if(defaultLocale === language){
+            parentEl = $('#menuId-' + id + '_' + language);
+        }
+        console.log(parentEl)
 
 
         $.ajax({
