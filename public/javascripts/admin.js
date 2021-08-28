@@ -710,12 +710,14 @@ $(document).ready(function (){
 
     $(document).on('click', '#settings-menu-new', function(e){
         e.preventDefault();
+        const language = document.getElementById("languageSelector").value;
         $.ajax({
             method: 'POST',
             url: '/admin/settings/menu/new',
             data: {
                 navMenu: $('#newNavMenu').val(),
-                navLink: $('#newNavLink').val()
+                navLink: $('#newNavLink').val(),
+                language: language
             }
         })
         .done(function(msg){
