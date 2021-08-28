@@ -208,12 +208,16 @@ function slugify(str){
 }
 
 
-const switchLanguage = (defaultLang,translatableFields,allLanguages) => {
+const switchLanguage = (defaultLang,translatableFields,allLanguages,translatableClass) => {
     const e = document.getElementById("languageSelector");
+
     const language = e.value;
     const nonDefaultLanguages = allLanguages.filter((x) => x != defaultLang);
     if (language === defaultLang) {
+        for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = false;
+
         nonDefaultLanguages.forEach((language) => {
+            for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = true;
             translatableFields.forEach((fieldId) => {
             const item = document.getElementById(fieldId.concat("_").concat(language))
             if(item) item.hidden = true
@@ -233,8 +237,10 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages) => {
         })
 
         if (translatableFields.includes("productDescription")) $('#productDescription').summernote('destroy');
+        for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = true;
 
         nonDefaultLanguages.forEach((language) => {
+            for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = true;
             translatableFields.forEach((fieldId) => {
                 const item = document.getElementById(fieldId.concat("_").concat(language))
                 if (item) item.hidden = true
@@ -246,7 +252,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages) => {
             const item = document.getElementById(fieldId.concat("_").concat(language))
             if (item) item.hidden = false
         })
-
+        for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = false;
         if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote({height: 300, minHeight: null});
     }
 

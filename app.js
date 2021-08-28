@@ -567,8 +567,8 @@ initDb(config.databaseConnectionString, async (err, db) => {
     }
 });
 const versionUpdate = async (db) => {
-    const systeminfo = await db.systeminfo.findOne({});
-    if(!systeminfo){
+    const version = await db.systeminfo.findOne({_id : "version"});
+    if(!version){
         console.warn('will upgrade data to latest version');
         try{
             const menus = await (db.menu.find({})).toArray();
@@ -584,6 +584,8 @@ const versionUpdate = async (db) => {
             console.error("upgrade failed",e);
         }
 
+    }else{
+        console.log(`expressCart is running V${version.value}`);
     }
 
 }

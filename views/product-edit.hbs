@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="col-12">
-                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages)>
+                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages,translatableClass)>
                     {{#availableLanguages}}
                         <option value={{this}}>{{@root.__ this}}</option>
                     {{/availableLanguages}}
@@ -116,10 +116,11 @@
                         <li class="list-group-item">
                             <div class="row">
                               {{#availableLanguages}}
-                                <div id="{{getIdForLanguages "variantTitle" this @root.config.defaultLocale}}"
+                                <div id="{{getIdForLanguagesWithId "variantTitle" @key this @root.config.defaultLocale}}"
                                 {{IsHidden this '==' @root.config.defaultLocale}}
-                                class='col-sm-3'>{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}
+                                class='col-sm-3 {{getIdForLanguages "language" this @root.config.defaultLocale}}'>{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}
                                 </div>
+
                              {{/availableLanguages}}
 
                                 <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
@@ -245,6 +246,7 @@ const getAllLanguages = () => {
      }
 const allLanguages = getAllLanguages();
 const translatableFields = ["productDescription","productTitle","variantTitle", "variantButton"];
+const translatableClass = "language";
 
 
 

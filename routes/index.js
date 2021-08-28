@@ -413,7 +413,13 @@ router.get('/product/:id', async (req, res) => {
     }
 
     // Get variants for this product
-    const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
+
+     let variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
+
+    variants = variants.map(x => {
+        x.title = req.cookies.locale !== req.app.config.defaultLocale ? x[`title_${req.cookies.locale}`] : x.title;
+        return x;
+    });
 
     // Grab review data
     const reviews = {
