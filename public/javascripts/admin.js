@@ -732,8 +732,7 @@ $(document).ready(function (){
         e.preventDefault();
         const language = document.getElementById("languageSelector").value;
         const defaultLocale = document.getElementById("defaultLocale").value;
-        console.log(language);
-        console.log(defaultLocale);
+
         var id = $(this).attr('data-id');
         let parentEl = $('#menuId-' + id);
         if(defaultLocale !== language){

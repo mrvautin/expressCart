@@ -401,6 +401,8 @@ router.get('/product/:id', async (req, res) => {
     const db = req.app.db;
     const config = req.app.config;
     const productsIndex = req.app.productsIndex;
+    const language = req.cookies.locale;
+    const defaultLanguage = req.app.config.defaultLocale;
 
     const product = await db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] });
     if(!product){
@@ -411,6 +413,12 @@ router.get('/product/:id', async (req, res) => {
         res.render('error', { title: 'Not found', message: 'Product not found', helpers: req.handlebars.helpers, config });
         return;
     }
+
+    if(language !== defaultLanguage){
+        product.productTitle = product[`productTitle_${language}`] ? product[`productTitle_${language}`] : product.productTitle;
+        product.productDescription = product[`productDescription_${language}`] ? product[`productDescription_${language}`]  : product.productDescription;
+    }
+
 
     // Get variants for this product
 
