@@ -242,15 +242,20 @@
     "menu": {
         "items": [
             {
+                "id" : "9999999999",
                 "title": "Backpacks",
                 "link": "/category/backpack",
                 "order": 0
             },
             {
+                "id" : "1111111111",
                 "title": "Boots",
                 "link": "/category/boots",
                 "order": 1
             }
         ]
+    },
+    "systeminfo" : {
+        "version": "1.2.0"
     }
 }
