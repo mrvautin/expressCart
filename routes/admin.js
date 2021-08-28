@@ -423,13 +423,13 @@ router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
 });
 
 // update existing menu item
-router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = updateMenu(req);
-    if(result === false){
-        res.status(400).json({ message: 'Failed updating menu.' });
+router.post('/admin/settings/menu/update', restrict, checkAccess, async (req, res) => {
+    const result = await updateMenu(req);
+    if (result === false) {
+        res.status(400).json({message: 'Failed updating menu.'});
         return;
     }
-    res.status(200).json({ message: 'Menu updated successfully.' });
+    res.status(200).json({message: 'Menu updated successfully.'});
 });
 
 // delete menu item

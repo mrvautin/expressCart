@@ -212,7 +212,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages,translatable
     const e = document.getElementById("languageSelector");
 
     const language = e.value;
-    const nonDefaultLanguages = allLanguages.filter((x) => x != defaultLang);
+    const nonDefaultLanguages = allLanguages.filter((x) => x !== defaultLang);
     if (language === defaultLang) {
         for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = false;
 

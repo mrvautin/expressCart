@@ -4,7 +4,7 @@
     <div class="col-sm-12">
         <h2>Menu</h2>
          <input type="hidden" class="defaultLocale" id="defaultLocale" value="{{@root.config.defaultLocale}}">
-            <select id="languageSelector" onChange = switchLanguageMenu("{{@root.config.defaultLocale}}",translatableFields,allLanguages)>
+            <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages,translatableClass)>
                                     {{#availableLanguages}}
                                         <option value={{this}}>{{@root.__ this}}</option>
                                     {{/availableLanguages}}
@@ -19,8 +19,9 @@
             {{#isMatchingLanguageOrDefault ../this this  @root.config.defaultLocale}}
             {{#each ../../this.items}}
 
-                    <div id="{{getIdForLanguages "menuRow" ../../this @root.config.defaultLocale}}" {{IsHidden ../../this '==' @root.config.defaultLocale}}>
-                     <div class="row drag-row mb-2" id="{{getIdForLanguagesWithId "menuId" @key ../../this @root.config.defaultLocale}}" >
+
+                    <div class="{{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguages "menuRow" ../../this @root.config.defaultLocale}}" {{IsHidden ../../this '==' @root.config.defaultLocale}}>
+                     <div class="row drag-row mb-2 {{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguagesWithId "menuId" @key ../../this @root.config.defaultLocale}}" >
                                                 <input type="hidden" class="navId" value="{{this.id}}">
                                                 <input type="hidden" class="language" id="language" value="{{../../this}}">
 
@@ -77,9 +78,7 @@ const getAllLanguages = () => {
      return languages;
      }
 const allLanguages = getAllLanguages();
-const translatableFields = ["navMenuTitle","menuRow","menuRow"];
-const  switchLanguageMenu = (defaultLocale,translatableFields,allLanguages) => {
-switchLanguage(defaultLocale,translatableFields,allLanguages);
+const translatableFields = ["navMenuTitle","menuRow"];
+const translatableClass = "translatable";
 
-}
-</script
+</script>

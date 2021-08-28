@@ -517,7 +517,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await db.cart.deleteMany({
             sessionId: { $nin: validSessionIds }
         });
-        await versionUpdate(db);
+
     });
 
     // Fire up the cron job to create google product feed
@@ -556,6 +556,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
 
     // Start the app
     try{
+        await versionUpdate(db);
         await app.listen(app.get('port'));
         app.emit('appStarted');
         if(process.env.NODE_ENV !== 'test'){
@@ -578,8 +579,9 @@ const versionUpdate = async (db) => {
                     return x;
                 });
                 db.menu.updateOne({_id : menu._id},{$set : {items : items}});
-                db.systeminfo.insertOne({_id : "version", value :"1.2.0"});
+
             }
+            db.systeminfo.insertOne({_id : "version", value :"1.2.0"});
         }catch(e){
             console.error("upgrade failed",e);
         }
