@@ -343,6 +343,12 @@ handlebars = handlebars.create({
         getIdForLanguagesWithId : (idName,id, language, defaultLanguage) => {
             return defaultLanguage === language ? `${idName}-${id}` : `${idName}-${id}_${language}`;
         },
+        getMinLength : (language, defaultLanguage, minLengthIfDefaultLang ) => {
+            return language === defaultLanguage ? minLengthIfDefaultLang : 0
+        },
+        getRequired : (language, defaultLanguage ) => {
+            return language === defaultLanguage ? "required" : ""
+        },
         isMatchingLanguageOrDefault : (menu, lang2 , deflocale, options) => {
             const result = (lang2 === menu.language) || (typeof menu.language === "undefined" && deflocale === lang2);
             return  result ? options.fn(this) : options.inverse(this);
