@@ -517,6 +517,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await db.cart.deleteMany({
             sessionId: { $nin: validSessionIds }
         });
+        await versionUpdate(db);
     });
 
     // Fire up the cron job to create google product feed
@@ -544,6 +545,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         });
     };
 
+
     // Set trackStock for testing
     if(process.env.NODE_ENV === 'test'){
         config.trackStock = true;
@@ -564,5 +566,25 @@ initDb(config.databaseConnectionString, async (err, db) => {
         process.exit(2);
     }
 });
+const versionUpdate = async (db) => {
+    const systeminfo = await db.systeminfo.findOne({});
+    if(!systeminfo){
+        console.warn('will upgrade data to latest version');
+        try{
+            const menus = await (db.menu.find({})).toArray();
+            for(const menu of menus){
+                const items = menu.items.map(x => {
+                    x.id = `${Math.floor(Math.random()*10000000000)}`
+                    return x;
+                });
+                db.menu.updateOne({_id : menu._id},{$set : {items : items}});
+                db.systeminfo.insertOne({_id : "version", value :"1.2.0"});
+            }
+        }catch(e){
+            console.error("upgrade failed",e);
+        }
 
+    }
+
+}
 module.exports = app;
