@@ -500,6 +500,7 @@ router.get('/product/:id', async (req, res) => {
             _id: { $in: lunrIdArray, $ne: product._id }
         }).limit(4).toArray();
     }
+    const translated = relatedProducts.map(x => translateProduct(req.cookies.locale,req.app.config.defaultLocale,x));
 
     res.render(`${config.themeViews}product`, {
         title: product.productTitle,
@@ -507,7 +508,7 @@ router.get('/product/:id', async (req, res) => {
         variants,
         reviews,
         images: images,
-        relatedProducts,
+        relatedProducts : translated ,
         productDescription: stripHtml(product.productDescription),
         metaDescription: `${config.cartTitle} - ${product.productTitle}`,
         config: config,
