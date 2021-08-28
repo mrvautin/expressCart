@@ -414,11 +414,7 @@ router.get('/product/:id', async (req, res) => {
         return;
     }
 
-    if(language !== defaultLanguage){
-        product.productTitle = product[`productTitle_${language}`] ? product[`productTitle_${language}`] : product.productTitle;
-        product.productDescription = product[`productDescription_${language}`] ? product[`productDescription_${language}`]  : product.productDescription;
-    }
-
+   translateProduct(language,defaultLanguage,product)
 
     // Get variants for this product
 
@@ -1086,7 +1082,7 @@ router.get('/page/:pageNum', (req, res, next) => {
 
     Promise.all([
         paginateProducts(true, db, req.params.pageNum, {}, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
         .then(([results, menu]) => {
             // If JSON query param return json instead
@@ -1134,11 +1130,10 @@ router.get('/:page?', async (req, res, next) => {
                     res.status(200).json(results.data);
                     return;
                 }
-
                 res.render(`${config.themeViews}index`, {
                     title: `${config.cartTitle} - Shop`,
                     theme: config.theme,
-                    results: results.data,
+                    results: results.data.map(x => translateProduct(req.cookies.locale,req.app.config.defaultLocale,x)),
                     session: req.session,
                     message: clearSessionValue(req.session, 'message'),
                     messageType: clearSessionValue(req.session, 'messageType'),
@@ -1189,5 +1184,14 @@ router.get('/:page?', async (req, res, next) => {
         }
     }
 });
+
+const translateProduct = (language,defaultLanguage,product) =>
+{
+    if (language !== defaultLanguage) {
+        product.productTitle = product[`productTitle_${language}`] ? product[`productTitle_${language}`] : product.productTitle;
+        product.productDescription = product[`productDescription_${language}`] ? product[`productDescription_${language}`] : product.productDescription;
+    }
+    return product;
+}
 
 module.exports = router;
