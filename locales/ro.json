@@ -240,11 +240,11 @@
 	"Description": "Descriere",
 	"Product is great. Does everything it said it can do.": "Produsul este grozav. Face tot ce a spus că poate face.",
 	"Rating": "Rating",
-	"Product variant": "Product variant",
-	"Price": "Price",
-	"Stock": "Stock",
-	"Save variant": "Save variant",
-	"Home": "Home",
-	"Manage": "Manage",
-	"FREE shipping": "FREE shipping"
+	"Price": "Preț",
+	"Stock": "Stoc",
+	"Product variant": "Varianta produsului",
+	"Save variant": "Salvează varianta",
+	"Home": "Acasă",
+	"Manage": "Gestionați",
+	"FREE shipping": "Livrare GRATUITĂ"
 }
