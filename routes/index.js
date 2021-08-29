@@ -38,7 +38,7 @@ const {
 const countryList = getCountryList();
 
 // Google products
-router.get('/googleproducts.xml', async (req, res, next) => {
+router.get(["/googleproducts.xml", "/googleproducts_*.xml"], async (req, res, next) => {
     let productsFile = '';
     try{
         productsFile = fs.readFileSync(path.join('bin', 'googleproducts.xml'));
