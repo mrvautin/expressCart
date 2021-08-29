@@ -6,10 +6,10 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const hooker = require('../lib/hooks');
 const ObjectId = require('mongodb').ObjectID;
 const {
     getId,
-    hooker,
     clearSessionValue,
     getImages,
     addSitemapProducts,
@@ -125,7 +125,8 @@ router.get('/payment/:orderId', async (req, res, next) => {
 
     // If hooks are configured and the hook has not already been sent, send hook
     if(config.orderHook && !order.hookSent){
-        await hooker(order);
+        hooker.emit('order_onCreate',order);
+
         await db.orders.updateOne({
             _id: getId(order._id)
         }, {
