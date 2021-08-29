@@ -17,6 +17,7 @@ const rimraf = require('rimraf');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
+const hooker = require('../lib/hooks');
 
 router.get('/admin/products/:page?', restrict, async (req, res, next) => {
     let pageNum = 1;
@@ -142,6 +143,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
                 productId: newId
             });
         });
+        hooker.emit("product_onCreate",product);
     }catch(ex){
         console.log(colors.red(`Error inserting document: ${ex}`));
         res.status(400).json({ message: 'Error inserting document' });

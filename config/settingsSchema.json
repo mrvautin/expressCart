@@ -126,6 +126,27 @@
         "orderHook": {
             "format": "uri-template"
         },
+        "hooks" : {
+            "type": "object",
+            "properties": {
+                "product" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                },
+                "order" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                }
+            }
+        },
         "secretCookie": {
             "type": "string"
         },

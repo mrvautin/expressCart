@@ -24,6 +24,15 @@
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
+    "hooks" : {
+        "product" : {
+            "onCreate" : "http://localhost"
+        },
+        "order" : {
+            "onCreate" : "http://localhost"
+        }
+
+    },
     "availableLanguages": [
         "en",
         "it",
