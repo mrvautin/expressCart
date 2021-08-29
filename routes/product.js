@@ -248,7 +248,7 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
 
     // Validate the body again schema
     const schemaValidate = validateJson('editVariant', variantDoc);
-    if(req.body.language !== defaultLang){
+    if(req.body.language && (req.body.language !== defaultLang)){
         delete variantDoc.title;
         variantDoc[`title_${req.body.language}`] = req.body.title
     }
