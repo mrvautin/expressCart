@@ -15,8 +15,8 @@
     "googleAnalytics": "",
     "injectJs": "",
     "customCss": "",
-    "currencySymbol": "£",
-    "currencyISO": "USD",
+    "currencySymbol": "lei",
+    "currencyISO": "RON",
     "paymentGateway": [
         "stripe"
     ],
@@ -26,6 +26,9 @@
     "orderHook": "",
     "hooks" : {
         "product" : {
+            "onCreate" : "http://localhost"
+        },
+        "variant" : {
             "onCreate" : "http://localhost"
         },
         "order" : {

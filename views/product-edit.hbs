@@ -123,7 +123,7 @@
 
                              {{/availableLanguages}}
 
-                                <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
+                                <div class='col-sm-3'>{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.price}}</div>
                                 {{#if this.stock}}
                                 <div class='col-sm-3'>{{this.stock}}</div>
                                 {{else}}
