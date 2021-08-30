@@ -35,6 +35,7 @@ const {
     deleteMenu,
     orderMenu
 } = require('../lib/menu');
+const sharp = require("sharp");
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 const csrfProtection = csrf({ cookie: true });
@@ -672,15 +673,22 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
 
         const productPath = product._id.toString();
         const uploadDir = path.join('public/uploads', productPath);
+        const thumbnailDir = path.join('public/uploads', productPath,"thumbnails");
+
 
         // Check directory and create (if needed)
         checkDirectorySync(uploadDir);
+        checkDirectorySync(thumbnailDir);
+
+        const imagePath = path.join('/uploads', productPath, file.originalname);
+        const thumbnailPath = path.join('/uploads', productPath,"thumbnails");
+
 
         // Setup the new path
-        const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
+        const sanitizedFileName = file.originalname.replace(/ /g, '_');
 
         // save the new file
-        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+        const dest = fs.createWriteStream(path.join(uploadDir, sanitizedFileName));
         const pipeline = util.promisify(stream.pipeline);
 
         try{
@@ -688,13 +696,19 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
                 fs.createReadStream(file.path),
                 dest
             );
+            //resize image for thumbnails
+            await sharp(file.path)
+                .resize(500,375)
+                .jpeg({ mozjpeg: true })
+                .toFile(path.join(thumbnailDir,sanitizedFileName));
+
 
             // delete the temp file.
             fs.unlinkSync(file.path);
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
-                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath, productThumbnail : thumbnailPath } }, { multi: false });
             }
             res.status(200).json({ message: 'File uploaded successfully' });
         }catch(ex){
