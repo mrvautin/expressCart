@@ -137,6 +137,14 @@
                         }
                     }
                 },
+                "variant" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                },
                 "order" : {
                     "type": "object",
                     "properties": {

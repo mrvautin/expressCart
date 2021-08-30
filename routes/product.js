@@ -228,6 +228,10 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
     try{
         const variant = await db.variants.insertOne(variantDoc);
         product.variants = variant.ops;
+        const productWithNewVariant = {...product, productVariants : [variant]};
+
+        hooker.emit("variant_onCreate",productWithNewVariant);
+
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
         console.log('here?');
