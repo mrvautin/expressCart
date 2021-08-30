@@ -236,7 +236,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages,translatable
             if (item) item.hidden = true
         })
 
-        if (translatableFields.includes("productDescription")) $('#productDescription').summernote('destroy');
+        if (translatableFields.includes(`productDescription`)) $('#productDescription').summernote('destroy');
         for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = true;
 
         nonDefaultLanguages.forEach((language) => {
@@ -245,7 +245,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages,translatable
                 const item = document.getElementById(fieldId.concat("_").concat(language))
                 if (item) item.hidden = true
             })
-            if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote('destroy');
+            if (translatableFields.includes(`productDescription`)) $("#productDescription_".concat(language)).summernote('destroy');
         })
 
         translatableFields.forEach((fieldId) => {
@@ -253,7 +253,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages,translatable
             if (item) item.hidden = false
         })
         for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = false;
-        if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote({height: 300, minHeight: null});
+        if (translatableFields.includes("productDescription")) $("#productDescription_".concat(language)).summernote({height: 300, minHeight: null});
     }
 
 }
