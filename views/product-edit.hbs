@@ -80,7 +80,7 @@
                     <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
                     <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{lookup result 'productDescription'}}</textarea>
                      {{#availableLanguages}}
-                    <textarea minlength="5" rows="10" hidden = false id="{{getIdForLanguages "productDescription" this @root.config.defaultLocale}}"" class="form-control">{{getDescriptionLanguage ../result this}}</textarea>
+                    <textarea minlength="5" rows="10" hidden = false id="{{getIdForLanguages "productDescription" this @root.config.defaultLocale}}" class="form-control">{{getDescriptionLanguage ../result this}}</textarea>
                      {{/availableLanguages}}
 
                 </div>
