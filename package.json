@@ -23,7 +23,7 @@
     }
   },
   "engines": {
-    "node": "10.16.0"
+    "node": ">=10.16.0 <0.15"
   },
   "dependencies": {
     "@adyen/api-library": "^2.1.7",
@@ -70,6 +70,7 @@
     "rand-token": "^0.4.0",
     "rimraf": "^2.7.1",
     "sanitize-html": "^2.3.2",
+    "sharp": "^0.29.0",
     "sitemap": "^1.6.0",
     "string-strip-html": "^4.3.14",
     "strip-bom": "^3.0.0",
