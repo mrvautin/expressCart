@@ -12,12 +12,12 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">Order Status</label>
                             <select class="form-control" id="orderStatus">
-                                <option>{{ @root.__ "Completed" }}</option>
-                                <option>{{ @root.__ "Paid" }}</option>
-                                <option selected>{{ @root.__ "Pending" }}</option>
-                                <option>{{ @root.__ "Cancelled" }}</option>
-                                <option>{{ @root.__ "Declined" }}</option>
-                                <option>{{ @root.__ "Shipped" }}</option>
+                                <option value="Completed">{{ @root.__ "Completed" }}</option>
+                                <option value="Paid">{{ @root.__ "Paid" }}</option>
+                                <option selected value="Pending">{{ @root.__ "Pending" }}</option>
+                                <option value="Cancelled">{{ @root.__ "Cancelled" }}</option>
+                                <option value="Declined">{{ @root.__ "Declined" }}</option>
+                                <option value="Shipped">{{ @root.__ "Shipped" }}</option>
                             </select>
                         </div>
                     </div>
