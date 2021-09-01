@@ -422,7 +422,7 @@ router.get('/product/:id', async (req, res) => {
      let variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
 
     variants = variants.map(x => {
-        x.title = req.cookies.locale !== req.app.config.defaultLocale ? x[`title_${req.cookies.locale}`] : x.title;
+        x.title = (req.cookies.locale && req.cookies.locale !== req.app.config.defaultLocale) ? x[`title_${req.cookies.locale}`] ? x[`title_${req.cookies.locale}`] : x.title : x.title
         return x;
     });
 

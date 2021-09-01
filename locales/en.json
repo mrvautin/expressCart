@@ -250,5 +250,10 @@
 	"Payment": "Payment",
 	"Create an account": "Create an account",
 	"Return to cart": "Return to cart",
-	"Continue to shipping": "Continue to shipping"
+	"Continue to shipping": "Continue to shipping",
+	"Add Color": "Add Color",
+	"black": "black",
+	"white": "white",
+	"red": "red",
+	"Add variant": "Add variant"
 }

@@ -60,5 +60,8 @@
         }
     },
     "showRelatedProducts": true,
-    "showHomepageVariants": false
+    "showHomepageVariants": false,
+    "variantTemplates" : [{
+        "color" : ["black","white","red"]
+    }]
 }

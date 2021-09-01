@@ -36,6 +36,7 @@
                     <div class="col-md-10">
                         <select id="product_variant" class="form-control">
                         {{#each variants}}
+                        {{stringify this}}
                             <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
                         {{/each}}
                         </select>

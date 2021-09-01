@@ -12,6 +12,7 @@ const {
 const { indexProducts } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
 const { paginateData } = require('../lib/paginate');
+const {getNonDefaultLanguages} = require('../lib/config');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -194,13 +195,20 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
 // Add a variant to a product
 router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
+    const languages = getNonDefaultLanguages().reduce((acc,x) => {
+        acc[`title_${x}`] = req.__({phrase :req.body.title,locale : x});
+        return acc
+    },{})
 
     const variantDoc = {
         product: req.body.product,
         title: req.body.title,
         price: req.body.price,
-        stock: safeParseInt(req.body.stock) || null
+        stock: safeParseInt(req.body.stock) || null,
+        type: req.body.type,
+        ...languages
     };
+
 
     // Validate the body again schema
     const schemaValidate = validateJson('newVariant', variantDoc);
