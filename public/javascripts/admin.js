@@ -76,6 +76,26 @@ $(document).ready(function (){
         $('#variant-edit-stock').val($(e.relatedTarget).data('stock'));
     });
 
+    $(document).on('click', '#addVariantFromTemplate', function(e){
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/addvariant',
+            data: {
+                product: $('#variant-product').val(),
+                title: $('#chooseVariant-template').val(),
+                price: $('#variant-price-template').val(),
+                stock: $('#variant-stock-template').val(),
+                type: $ ('#variant-title-template').val(),
+            }
+        })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+    });
+
     $(document).on('click', '#addVariant', function(e){
         const varfields = allLanguages.reduce((acc,x) => {
             acc[`variantTitle_${x}`] = $(`#variant-title_${x}`).val();

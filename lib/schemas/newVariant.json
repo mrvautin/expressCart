@@ -17,6 +17,9 @@
         },
         "stock": {
             "type": ["number", "null"]
+        },
+        "type" : {
+            "type": "string"
         }
     },
     "errorMessage": {

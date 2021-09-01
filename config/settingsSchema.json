@@ -217,6 +217,20 @@
         "showHomepageVariants": {
             "type": "boolean",
             "default": false
+        },
+        "variantTemplates" : {
+            "type": "array",
+            "items" : {
+                "type" : "object",
+                "patternProperties" : {
+                    ".*" : {
+                        "type" : "array",
+                        "items" : {
+                            "type" : "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "required": [
