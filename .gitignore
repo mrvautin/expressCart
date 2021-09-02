@@ -3,6 +3,7 @@ data/
 public/uploads
 /config/*-local.json
 .vscode
+.idea
 **.DS_Store
 env.yaml
 ecosystem.config.js
