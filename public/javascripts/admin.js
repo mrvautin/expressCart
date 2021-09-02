@@ -49,7 +49,7 @@ $(document).ready(function (){
         $.ajax({
             method: 'POST',
             url: '/admin/product/editvariant',
-            data: {
+            data:{
                 product: $('#variant-edit-product').val(),
                 variant: $('#variant-edit-id').val(),
                 title: $('#variant-edit-title').val(),
@@ -236,22 +236,32 @@ $(document).ready(function (){
             if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
                 $('#productPermalink').val(slugify($('#productTitle').val()));
             }
+            const data = JSON.stringify({
+                productTitle: $('#productTitle').val(),
+                productPrice: $('#productPrice').val(),
+                productPublished: $('#productPublished').val(),
+                productStock: $('#productStock').val(),
+                productDescription: $('#productDescription').val(),
+                productGtin: $('#productGtin').val(),
+                productBrand: $('#productBrand').val(),
+                productPermalink: $('#productPermalink').val(),
+                productSubscription: $('#productSubscription').val(),
+                productComment: $('#productComment').is(':checked'),
+                productTags: $('#productTags').val(),
+                productDimensions: {
+                    length: $('#productDimensionsLength').val(),
+                    width: $('#productDimensionsWidth').val(),
+                    height: $('#productDimensionsHeight').val(),
+                }
+            })
+            console.log(data);
             $.ajax({
                 method: 'POST',
                 url: '/admin/product/insert',
-                data: {
-                    productTitle: $('#productTitle').val(),
-                    productPrice: $('#productPrice').val(),
-                    productPublished: $('#productPublished').val(),
-                    productStock: $('#productStock').val(),
-                    productDescription: $('#productDescription').val(),
-                    productGtin: $('#productGtin').val(),
-                    productBrand: $('#productBrand').val(),
-                    productPermalink: $('#productPermalink').val(),
-                    productSubscription: $('#productSubscription').val(),
-                    productComment: $('#productComment').is(':checked'),
-                    productTags: $('#productTags').val()
-                }
+                'dataType': 'json',
+                'contentType': 'application/json',
+                processData: false,
+                data: data
             })
             .done(function(msg){
                 showNotification(msg.message, 'success', false, '/admin/product/edit/' + msg.productId);
@@ -283,7 +293,10 @@ $(document).ready(function (){
             $.ajax({
                 method: 'POST',
                 url: '/admin/product/update',
-                data: {
+                'dataType': 'json',
+                'contentType': 'application/json',
+                processData: false,
+                data: JSON.stringify({
                     productId: $('#productId').val(),
                     productTitle: $('#productTitle').val(),
                     productPrice: $('#productPrice').val(),
@@ -297,8 +310,13 @@ $(document).ready(function (){
                     productSubscription: $('#productSubscription').val(),
                     productComment: $('#productComment').is(':checked'),
                     productTags: $('#productTags').val(),
+                    productDimensions: {
+                        length: $('#productDimensionsLength').val(),
+                        width: $('#productDimensionsWidth').val(),
+                        height: $('#productDimensionsHeight').val(),
+                    },
                     ...varfields
-                }
+                })
             })
             .done(function(msg){
                 showNotification(msg.message, 'success', true);
