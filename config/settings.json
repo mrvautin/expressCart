@@ -26,13 +26,13 @@
     "orderHook": "",
     "hooks" : {
         "product" : {
-            "onCreate" : "http://localhost"
+            "onCreate" : ""
         },
         "variant" : {
-            "onCreate" : "http://localhost"
+            "onCreate" : ""
         },
         "order" : {
-            "onCreate" : "http://localhost"
+            "onCreate" : ""
         }
 
     },

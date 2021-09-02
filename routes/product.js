@@ -12,7 +12,7 @@ const {
 const { indexProducts } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
 const { paginateData } = require('../lib/paginate');
-const {getNonDefaultLanguages} = require('../lib/config');
+const {getNonDefaultLanguages, getConfig} = require('../lib/config');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
@@ -197,25 +197,73 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     });
 });
 
+const titleGenerator = (__,title,color,dimensions,product) => {
+    let titles ={}
+    if(!title){
+        titles = getNonDefaultLanguages().reduce((acc,x) => {
+            acc[`title_${x}`] = defaultTitleLogic(__,title,color,dimensions,x,product);
+            return acc
+        },{})  ;
+        titles[`title`] = defaultTitleLogic(__,title,color,dimensions,getConfig().defaultLocale,product);
+    }else{
+        titles = getNonDefaultLanguages().reduce((acc,x) => {
+            acc[`title_${x}`] = title;
+            return acc
+        },{});
+        titles[`title`] = title;
+    }
+    return titles;
+}
+const defaultTitleLogic = (__, title,untranslatedColor,dimensions, language,product) => {
+    const color = __({phrase :untranslatedColor,locale : language})
+    const sameDimension = (
+        product?.productDimensions.length === dimensions.length
+        && product?.productDimensions.width === dimensions.width
+        && product?.productDimensions.height === dimensions.height )
+
+    return title ?
+        title : color ?
+            dimensions && !sameDimension  ?
+                `${color} - ${dimensions.height}x${dimensions.width}x${dimensions.length}` :
+                color :
+            dimensions && !sameDimension ?
+                `${dimensions.height}x${dimensions.width}x${dimensions.length}` :
+                undefined
+}
+
 // Add a variant to a product
 router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-    const languages = getNonDefaultLanguages().reduce((acc,x) => {
-        acc[`title_${x}`] = req.__({phrase :req.body.title,locale : x});
-        return acc
-    },{})
+    // Check product exists
+    try{
+        const product = await db.products.findOne({ _id: getId(req.body.product) });
+
+        if(!product){
+            console.log("no product found");
+            res.status(400).json({ message: 'Failed to add product variant' });
+            return;
+        }
 
     const variantDoc = {
         product: req.body.product,
-        title: req.body.title,
+        ...titleGenerator(req.__,req.body.title,req.body.color,req.body.productDimensions, product),
         price: req.body.price,
         stock: safeParseInt(req.body.stock) || null,
-        type: req.body.type,
-        ...languages
+        type: req.body.type
     };
+    if(req.body.productDimensions) {
+        variantDoc.productDimensions = {
+            width: req.body.productDimensions.width,
+            length: req.body.productDimensions.length,
+            height: req.body.productDimensions.height
+        }
+    }
+    if(req.body.color){
+        variantDoc.color = req.body.color
+    }
 
 
-    // Validate the body again schema
+    // Validate the body against schema
     const schemaValidate = validateJson('newVariant', variantDoc);
     if(!schemaValidate.result){
         if(process.env.NODE_ENV !== 'test'){
@@ -225,29 +273,19 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         return;
     }
 
-    // Check product exists
-    const product = await db.products.findOne({ _id: getId(req.body.product) });
 
-    if(!product){
-        console.log('here1?');
-        res.status(400).json({ message: 'Failed to add product variant' });
-        return;
-    }
 
     // Fix values
     variantDoc.product = getId(req.body.product);
     variantDoc.added = new Date();
 
-    try{
         const variant = await db.variants.insertOne(variantDoc);
         product.variants = variant.ops;
-        const productWithNewVariant = {...product, productVariants : variant.ops};
 
-        hooker.emit("variant_onCreate",productWithNewVariant);
+        hooker.emit("variant_onCreate",product);
 
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
-        console.log('here?');
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
     }
 });

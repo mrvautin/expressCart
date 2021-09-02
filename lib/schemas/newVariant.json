@@ -20,7 +20,16 @@
         },
         "type" : {
             "type": "string"
-        }
+        },
+        "productDimensions" :{
+            "type" : "object",
+            "properties" : {
+                "length": {"type" : "string"},
+                "width": {"type" : "string"},
+                "height": {"type" : "string"}
+            }
+        },
+        "color" : {"type": "string"}
     },
     "errorMessage": {
         "isNotEmpty": "This is my custom error message",
@@ -30,7 +39,6 @@
     },
     "required": [
         "product",
-        "title",
         "price",
         "stock"
     ]

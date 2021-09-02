@@ -97,20 +97,33 @@ $(document).ready(function (){
     });
 
     $(document).on('click', '#addVariant', function(e){
+
         const varfields = allLanguages.reduce((acc,x) => {
-            acc[`variantTitle_${x}`] = $(`#variant-title_${x}`).val();
+            if($(`#variant-title_${x}`).val()) {
+                acc[`variantTitle_${x}`] = $(`#variant-title_${x}`).val();
+            }
             return acc;
         },{});
+
         $.ajax({
             method: 'POST',
             url: '/admin/product/addvariant',
-            data: {
+            'dataType': 'json',
+            'contentType': 'application/json',
+            processData: false,
+            data: JSON.stringify({
                 product: $('#variant-product').val(),
                 title: $('#variant-title').val(),
                 price: $('#variant-price').val(),
                 stock: $('#variant-stock').val(),
+                productDimensions: {
+                    length: $('#variant-dimension-length').val(),
+                    width: $('#variant-dimension-width').val(),
+                    height: $('#variant-dimension-height').val(),
+                },
+                color: $('#chooseVariant-color').val(),
                 ...varfields
-            }
+            })
         })
 		.done(function(msg){
             showNotification(msg.message, 'success', true);

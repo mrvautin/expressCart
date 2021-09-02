@@ -261,5 +261,8 @@
 	"No current variants": "No current variants",
 	"Permalink": "Permalink",
 	"Dimensions": "Dimensions",
-	"Add Dimension": "Add Dimension"
+	"Add Dimension": "Add Dimension",
+	"Shown in the variant dropdown, will be color - dimensions if let empty": "Shown in the variant dropdown, will be color - dimensions if let empty",
+	"Color": "Color",
+	"color": "color"
 }
