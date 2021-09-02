@@ -255,5 +255,11 @@
 	"black": "black",
 	"white": "white",
 	"red": "red",
-	"Add variant": "Add variant"
+	"Add variant": "Add variant",
+	"height*length*width": "height*length*width",
+	"height*width*length": "height*width*length",
+	"No current variants": "No current variants",
+	"Permalink": "Permalink",
+	"Dimensions": "Dimensions",
+	"Add Dimension": "Add Dimension"
 }

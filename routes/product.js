@@ -111,7 +111,12 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productComment: checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
         productStock: safeParseInt(req.body.productStock) || null,
-        productStockDisable: convertBool(req.body.productStockDisable)
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productDimensions: {
+            length : req.body.productDimensions.length,
+            width : req.body.productDimensions.width,
+            height: req.body.productDimensions.height
+        }
     };
 
     // Validate the body again schema
@@ -353,7 +358,12 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
         productStock: safeParseInt(req.body.productStock) || null,
-        productStockDisable: convertBool(req.body.productStockDisable)
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productDimensions: {
+            length : req.body.productDimensions.length,
+            width : req.body.productDimensions.width,
+            height: req.body.productDimensions.height
+        }
     };
 
     req.app.config.availableLanguages.map((lang) => {

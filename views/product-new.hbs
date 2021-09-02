@@ -50,7 +50,10 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="productPublished" class="control-label">{{ @root.__ "Status" }}</label>
-
+                    <select class="form-control" id="productPublished">
+                        <option value="true" selected>{{ @root.__ "Published" }}</option>
+                        <option value="false">{{ @root.__ "Draft" }}</option>
+                    </select>
                 </div>
             </div>
             {{#if config.trackStock}}
@@ -70,14 +73,25 @@
         </div>
         <div class="col-12">
             <div class="form-group">
-                <label class="control-label">Permalink</label>
+                <label class="control-label">{{@root.__ "Permalink"}}</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{productPermalink}}>
+                    <input type="text" class="form-control" id="productPermalink" placeholder="{{@root.__ Permalink for the article}}" value={{productPermalink}}>
                     <div class="input-group-append">
-                        <button class="btn btn-outline-success" id="validatePermalink" type="button">Validate</button>
+                        <button class="btn btn-outline-success" id="validatePermalink" type="button">{{@root.__ "Validate"}}</button>
                     </div>
                 </div>
                 <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label">{{@root.__ "Dimensions"}}</label>
+                <div class="input-group">
+                    <input type="number" id="productDimensionsHeight" class="form-control" value="" step="any" /> X
+                    <input type="number" id="productDimensionsWidth" class="form-control" value="" step="any" /> X
+                    <input type="number" id="productDimensionsLength" class="form-control" value="" step="any" />
+                </div>
+                <p class="help-block">{{ @root.__ "height*width*length" }}</p>
             </div>
         </div>
         {{#contains config.paymentGateway 'stripe'}}

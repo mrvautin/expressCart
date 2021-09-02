@@ -87,7 +87,7 @@
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <label class="control-label">Permalink</label>
+                    <label class="control-label">{{@root.__ "Permalink"}}</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
                         <div class="input-group-append">
@@ -98,6 +98,17 @@
                 </div>
             </div>
             <div class="col-12">
+        <div class="form-group">
+            <label class="control-label">{{@root.__ "Dimensions"}}</label>
+            <div class="input-group">
+                <input type="number" id="productDimensionsHeight" class="form-control" value="{{result.productDimensions.height}}" step="any" /> X
+                <input type="number" id="productDimensionsWidth" class="form-control" value="{{result.productDimensions.width}}" step="any" /> X
+                <input type="number" id="productDimensionsLength" class="form-control" value="{{result.productDimensions.length}}" step="any" />
+            </div>
+            <p class="help-block">{{ @root.__ "height*width*length" }}</p>
+        </div>
+    </div>
+            <div class="col-12">
                 <div class="form-group">
                     <label class="control-label">{{ @root.__ "Product variants" }}</label>
                     <ul class="list-group" id="product_opt_wrapper">
@@ -107,6 +118,7 @@
                                 <div class='col-sm-3'>{{ @root.__ "Price" }}</div>
                                 <div class='col-sm-3'>{{ @root.__ "Stock" }}</div>
                                 <div class='col-sm-3 text-right'>
+                                    <a href="#" data-toggle="modal" data-target="#variantDimensionsModal" class="btn btn-outline-success">{{ @root.__ "Add Dimension" }}</a>
                                     <a href="#" data-toggle="modal" data-target="#variantPredefinedModal" class="btn btn-outline-success">{{ @root.__ "Add Color" }}</a>
                                     <a href="#" data-toggle="modal" data-target="#variantModal" class="btn btn-outline-success">{{ @root.__ "Add" }}</a>
                                 </div>
@@ -149,7 +161,7 @@
                         {{else}}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class='col-sm-12 text-center'>No current variants</div>
+                                <div class='col-sm-12 text-center'>{{ @root.__ "No current variants"}}</div>
                             </div>
                         </li>
                         {{/if}}

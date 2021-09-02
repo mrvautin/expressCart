@@ -36,7 +36,6 @@
                     <div class="col-md-10">
                         <select id="product_variant" class="form-control">
                         {{#each variants}}
-                        {{stringify this}}
                             <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
                         {{/each}}
                         </select>
@@ -75,6 +74,15 @@
                 <div class="col-md-10 body_text">
                     {{{fixTags result.productDescription}}}
                 </div>
+                {{#if result.productDimensions}}
+                           <div class="col-md-10">
+                                     <div>{{ @root.__ "Dimensions" }}:</div>
+                                    <div>{{{result.productDimensions.height}}} X
+                                    {{{result.productDimensions.width}}} X
+                                    {{{result.productDimensions.length}}}</div>
+                                </div>
+                {{/if}}
+
                 {{#if @root.config.modules.enabled.reviews}}
                 <div class="col-md-10 mb-3">
                     <button class="btn btn-warning" id="add-review">Add review</button>
