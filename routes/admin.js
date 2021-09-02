@@ -680,12 +680,13 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
         checkDirectorySync(uploadDir);
         checkDirectorySync(thumbnailDir);
 
-        const imagePath = path.join('/uploads', productPath, file.originalname);
-        const thumbnailPath = path.join('/uploads', productPath,"thumbnails");
 
 
         // Setup the new path
         const sanitizedFileName = file.originalname.replace(/ /g, '_');
+        const imagePath = path.join('/uploads', productPath, sanitizedFileName);
+        const thumbnailPath = path.join('/uploads', productPath,"thumbnails",sanitizedFileName);
+
 
         // save the new file
         const dest = fs.createWriteStream(path.join(uploadDir, sanitizedFileName));

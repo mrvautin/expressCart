@@ -113,9 +113,9 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productStock: safeParseInt(req.body.productStock) || null,
         productStockDisable: convertBool(req.body.productStockDisable),
         productDimensions: {
-            length : req.body.productDimensions.length,
-            width : req.body.productDimensions.width,
-            height: req.body.productDimensions.height
+            length : req.body.productDimensions?.length,
+            width : req.body.productDimensions?.width,
+            height: req.body.productDimensions?.height
         }
     };
 
