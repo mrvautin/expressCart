@@ -45,15 +45,17 @@ $(document).ready(function (){
     $(document).on('click', '#saveVariant', function(e){
         e.preventDefault();
 
+
         $.ajax({
             method: 'POST',
             url: '/admin/product/editvariant',
-            data: {
+            data:{
                 product: $('#variant-edit-product').val(),
                 variant: $('#variant-edit-id').val(),
                 title: $('#variant-edit-title').val(),
                 price: $('#variant-edit-price').val(),
-                stock: $('#variant-edit-stock').val()
+                stock: $('#variant-edit-stock').val(),
+                language: $('#variant-edit-language').val(),
             }
         })
         .done(function(msg){
@@ -69,20 +71,59 @@ $(document).ready(function (){
         $('#variant-edit-title').focus();
         $('#variant-edit-id').val($(e.relatedTarget).data('id'));
         $('#variant-edit-title').val($(e.relatedTarget).data('title'));
+        $('#variant-edit-language').val($(e.relatedTarget).data('language'));
         $('#variant-edit-price').val($(e.relatedTarget).data('price'));
         $('#variant-edit-stock').val($(e.relatedTarget).data('stock'));
     });
 
-    $(document).on('click', '#addVariant', function(e){
+    $(document).on('click', '#addVariantFromTemplate', function(e){
         $.ajax({
             method: 'POST',
             url: '/admin/product/addvariant',
             data: {
                 product: $('#variant-product').val(),
+                title: $('#chooseVariant-template').val(),
+                price: $('#variant-price-template').val(),
+                stock: $('#variant-stock-template').val(),
+                type: $ ('#variant-title-template').val(),
+            }
+        })
+            .done(function(msg){
+                showNotification(msg.message, 'success', true);
+            })
+            .fail(function(msg){
+                showNotification(msg.responseJSON.message, 'danger');
+            });
+    });
+
+    $(document).on('click', '#addVariant', function(e){
+
+        const varfields = allLanguages.reduce((acc,x) => {
+            if($(`#variant-title_${x}`).val()) {
+                acc[`variantTitle_${x}`] = $(`#variant-title_${x}`).val();
+            }
+            return acc;
+        },{});
+
+        $.ajax({
+            method: 'POST',
+            url: '/admin/product/addvariant',
+            'dataType': 'json',
+            'contentType': 'application/json',
+            processData: false,
+            data: JSON.stringify({
+                product: $('#variant-product').val(),
                 title: $('#variant-title').val(),
                 price: $('#variant-price').val(),
-                stock: $('#variant-stock').val()
-            }
+                stock: $('#variant-stock').val(),
+                productDimensions: {
+                    length: $('#variant-dimension-length').val(),
+                    width: $('#variant-dimension-width').val(),
+                    height: $('#variant-dimension-height').val(),
+                },
+                color: $('#chooseVariant-color').val(),
+                ...varfields
+            })
         })
 		.done(function(msg){
             showNotification(msg.message, 'success', true);
@@ -208,22 +249,32 @@ $(document).ready(function (){
             if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
                 $('#productPermalink').val(slugify($('#productTitle').val()));
             }
+            const data = JSON.stringify({
+                productTitle: $('#productTitle').val(),
+                productPrice: $('#productPrice').val(),
+                productPublished: $('#productPublished').val(),
+                productStock: $('#productStock').val(),
+                productDescription: $('#productDescription').val(),
+                productGtin: $('#productGtin').val(),
+                productBrand: $('#productBrand').val(),
+                productPermalink: $('#productPermalink').val(),
+                productSubscription: $('#productSubscription').val(),
+                productComment: $('#productComment').is(':checked'),
+                productTags: $('#productTags').val(),
+                productDimensions: {
+                    length: $('#productDimensionsLength').val(),
+                    width: $('#productDimensionsWidth').val(),
+                    height: $('#productDimensionsHeight').val(),
+                }
+            })
+            console.log(data);
             $.ajax({
                 method: 'POST',
                 url: '/admin/product/insert',
-                data: {
-                    productTitle: $('#productTitle').val(),
-                    productPrice: $('#productPrice').val(),
-                    productPublished: $('#productPublished').val(),
-                    productStock: $('#productStock').val(),
-                    productDescription: $('#productDescription').val(),
-                    productGtin: $('#productGtin').val(),
-                    productBrand: $('#productBrand').val(),
-                    productPermalink: $('#productPermalink').val(),
-                    productSubscription: $('#productSubscription').val(),
-                    productComment: $('#productComment').is(':checked'),
-                    productTags: $('#productTags').val()
-                }
+                'dataType': 'json',
+                'contentType': 'application/json',
+                processData: false,
+                data: data
             })
             .done(function(msg){
                 showNotification(msg.message, 'success', false, '/admin/product/edit/' + msg.productId);
@@ -241,15 +292,24 @@ $(document).ready(function (){
     });
 
     $('#productEditForm').validator().on('submit', function(e){
+
         if(!e.isDefaultPrevented()){
             e.preventDefault();
             if($('#productPermalink').val() === '' && $('#productTitle').val() !== ''){
                 $('#productPermalink').val(slugify($('#productTitle').val()));
             }
+            const varfields = allLanguages.reduce((acc,x) => {
+                acc[`productDescription_${x}`] = $(`#productDescription_${x}`).val();
+                acc[`productTitle_${x}`] = $(`#productTitle_${x}`).val();
+                return acc;
+            },{});
             $.ajax({
                 method: 'POST',
                 url: '/admin/product/update',
-                data: {
+                'dataType': 'json',
+                'contentType': 'application/json',
+                processData: false,
+                data: JSON.stringify({
                     productId: $('#productId').val(),
                     productTitle: $('#productTitle').val(),
                     productPrice: $('#productPrice').val(),
@@ -262,8 +322,14 @@ $(document).ready(function (){
                     productPermalink: $('#productPermalink').val(),
                     productSubscription: $('#productSubscription').val(),
                     productComment: $('#productComment').is(':checked'),
-                    productTags: $('#productTags').val()
-                }
+                    productTags: $('#productTags').val(),
+                    productDimensions: {
+                        length: $('#productDimensionsLength').val(),
+                        width: $('#productDimensionsWidth').val(),
+                        height: $('#productDimensionsHeight').val(),
+                    },
+                    ...varfields
+                })
             })
             .done(function(msg){
                 showNotification(msg.message, 'success', true);
@@ -695,12 +761,14 @@ $(document).ready(function (){
 
     $(document).on('click', '#settings-menu-new', function(e){
         e.preventDefault();
+        const language = document.getElementById("languageSelector").value;
         $.ajax({
             method: 'POST',
             url: '/admin/settings/menu/new',
             data: {
                 navMenu: $('#newNavMenu').val(),
-                navLink: $('#newNavLink').val()
+                navLink: $('#newNavLink').val(),
+                language: language
             }
         })
         .done(function(msg){
@@ -713,15 +781,25 @@ $(document).ready(function (){
 
     $(document).on('click', '#settings-menu-update', function(e){
         e.preventDefault();
+        const language = document.getElementById("languageSelector").value;
+        const defaultLocale = document.getElementById("defaultLocale").value;
+
         var id = $(this).attr('data-id');
-        var parentEl = $('#menuId-' + id);
+        let parentEl = $('#menuId-' + id);
+        if(defaultLocale !== language){
+            parentEl = $('#menuId-' + id + '_' + language);
+        }
+        console.log(parentEl)
+
+
         $.ajax({
             method: 'POST',
             url: '/admin/settings/menu/update',
             data: {
                 navId: parentEl.find('.navId').val(),
                 navMenu: parentEl.find('.navMenu').val(),
-                navLink: parentEl.find('.navLink').val()
+                navLink: parentEl.find('.navLink').val(),
+                language: language
             }
         })
         .done(function(msg){
@@ -756,11 +834,22 @@ $(document).ready(function (){
         $('#draggable_list').sortable({
             update: function (){
                 var menuOrder = [];
-                $('.navId').each(function(val){
-                    menuOrder.push($($('.navId')[val]).val());
+                const language1 = document.getElementById("languageSelector").value;
+                const defaultLocale = document.getElementById("defaultLocale").value;
+                console.log(language1);
+                console.log(defaultLocale);
+
+                let elementId = 'menuMongoId'
+                if(defaultLocale !== language1){
+                    elementId = 'menuMongoId_'+ language1
+                }
+                const menuId = document.getElementById(elementId).value;
+
+                $(`.navId.${language1}` ).each(function(val){
+                    menuOrder.push($($(`.navId.${language1}` )[val]).val());
                 });
                 $.ajax({
-                    data: { order: menuOrder },
+                    data: { order: menuOrder,menuId },
                     type: 'POST',
                     url: '/admin/settings/menu/saveOrder'
                 })

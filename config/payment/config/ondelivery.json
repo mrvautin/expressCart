@@ -1,0 +1,6 @@
+{
+    "description": "Pay on Delivery",
+    "orderStatus": "Pending",
+    "buttonText": "You will pay on delivery",
+    "resultMessage": "The order is place. Please pay for your order on delivery."
+}

@@ -45,7 +45,7 @@
                     {{#ifCond result.productStock '==' 0}}
                     <div class="col-md-10">
                         <h4 class="text-danger text-center">
-                            Out of stock
+                            {{ @root.__ "Out of stock"}}
                         </h4>
                     </div>
                     {{/ifCond}}
@@ -74,6 +74,15 @@
                 <div class="col-md-10 body_text">
                     {{{fixTags result.productDescription}}}
                 </div>
+                {{#if result.productDimensions}}
+                           <div class="col-md-10">
+                                     <div>{{ @root.__ "Dimensions" }}:</div>
+                                    <div>{{{result.productDimensions.height}}} X
+                                    {{{result.productDimensions.width}}} X
+                                    {{{result.productDimensions.length}}}</div>
+                                </div>
+                {{/if}}
+
                 {{#if @root.config.modules.enabled.reviews}}
                 <div class="col-md-10 mb-3">
                     <button class="btn btn-warning" id="add-review">Add review</button>

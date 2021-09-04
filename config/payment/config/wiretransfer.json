@@ -1,0 +1,7 @@
+{
+    "description": "Pay with wire transfer",
+    "orderStatus": "Pending",
+    "buttonText": "You will pay with wire transfer",
+    "resultMessage": "The order is place. Please pay for your order with wiretransfer.",
+    "accountNumber" : "XXXXXXXXX-XXXXXX-X"
+}

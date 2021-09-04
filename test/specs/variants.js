@@ -32,6 +32,34 @@ test('[Success] Add a variant to a product', async t => {
     t.deepEqual(res.body.product.variants[0].product, g.products[0]._id.toString());
 });
 
+test('[Success] Add a variant overrulling color and dimensions to a product', async t => {
+    const variant = {
+        title: 'test-jacket-variant-black-xs',
+        price: '200.00',
+        stock: 10,
+        product: g.products[0]._id,
+        productDimensions : {
+            width : "50",
+            length : "50",
+            height : "50"
+        },
+        color : "black"
+    };
+
+    const res = await g.request
+        .post('/admin/product/addvariant')
+        .send(variant)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'Successfully added variant');
+    t.deepEqual(res.body.product.variants[0].title, variant.title);
+    t.deepEqual(res.body.product.variants[0].price, variant.price);
+    t.deepEqual(res.body.product.variants[0].stock, variant.stock);
+    t.deepEqual(res.body.product.variants[0].product, g.products[0]._id.toString());
+});
+
 test('[Success] Add a variant with null stock', async t => {
     const variant = {
         title: 'test-jacket-variant',
@@ -87,7 +115,7 @@ test('[Fail] Add a variant to an invalid product', async t => {
         .expect(400);
 
     // Check the returned message
-    t.deepEqual(res.body[0].message, 'should match format "objectid"');
+    t.deepEqual(res.body.message, 'Failed to add product variant');
 });
 
 test('[Success] Update existing variant', async t => {

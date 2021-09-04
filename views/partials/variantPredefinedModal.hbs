@@ -1,0 +1,41 @@
+<div class="modal fade" id="variantPredefinedModal" tabindex="-1" role="dialog" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="confirmModalLabel">Product variant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+             <input type="hidden" id="variant-product" value="{{result._id}}">
+                <div class="form-group">
+                             {{#each @root.config.variantTemplates}}
+                              {{#each this}}
+                                 <input type="hidden" id="variant-title-template" value="{{@key}}">
+                                       <select class="form-control" id="chooseVariant-template">
+                                       {{#each this}}
+                                          <option value={{this}}>{{ @root.__ this}}</option>
+                                       {{/each}}
+                                       </select>
+                              {{/each}}
+                             {{/each}}
+                    <p class="help-block">{{ @root.__ "Shown in the variant dropdown" }}</p>
+                </div>
+                <div class="form-group">
+                    <label for="variant-price" class="col-form-label">{{@root.__ "Price"}}:</label>
+                    <input type="number" class="form-control" id="variant-price-template" placeholder="29.99">
+                </div>
+                <div class="form-group">
+                    <label for="variant-stock" class="col-form-label">{{@root.__ "Stock"}}:</label>
+                    <input type="number" class="form-control" id="variant-stock-template" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger mr-auto" data-dismiss="modal">{{@root.__ "Cancel"}}</button>
+                <button type="button" id="addVariantFromTemplate" class="btn btn-outline-success">{{@root.__ "Add variant"}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

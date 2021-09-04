@@ -1,6 +1,6 @@
-FROM mhart/alpine-node:8
+FROM mhart/alpine-node:14.17.3
 
-ENV NODE_VERSION 8.9.4
+ENV NODE_VERSION 14.17.3
 
 RUN apk add --no-cache make gcc g++ python bash
 
@@ -12,6 +12,7 @@ COPY config/ /var/expressCart/config/
 COPY public/ /var/expressCart/public/
 COPY routes/ /var/expressCart/routes/
 COPY views/ /var/expressCart/views/
+COPY locales/ /var/expressCart/locales/
 
 COPY app.js /var/expressCart/
 COPY package.json /var/expressCart/

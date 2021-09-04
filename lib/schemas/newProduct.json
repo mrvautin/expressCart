@@ -42,6 +42,11 @@
         "productStock": {
             "type": ["number", "null"]
         },
+        "productDimensions" : {
+            "width" : {"type": "number"  },
+            "length" : {"type": "number"  },
+            "height" : {"type": "number"  }
+        },
         "productStockDisable": {
             "type": "boolean"
         }

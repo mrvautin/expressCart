@@ -6,10 +6,10 @@ const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const hooker = require('../lib/hooks');
 const ObjectId = require('mongodb').ObjectID;
 const {
     getId,
-    hooker,
     clearSessionValue,
     getImages,
     addSitemapProducts,
@@ -38,7 +38,7 @@ const {
 const countryList = getCountryList();
 
 // Google products
-router.get('/googleproducts.xml', async (req, res, next) => {
+router.get(["/googleproducts.xml", "/googleproducts_*.xml"], async (req, res, next) => {
     let productsFile = '';
     try{
         productsFile = fs.readFileSync(path.join('bin', 'googleproducts.xml'));
@@ -125,7 +125,8 @@ router.get('/payment/:orderId', async (req, res, next) => {
 
     // If hooks are configured and the hook has not already been sent, send hook
     if(config.orderHook && !order.hookSent){
-        await hooker(order);
+        hooker.emit('order_onCreate',order);
+
         await db.orders.updateOne({
             _id: getId(order._id)
         }, {
@@ -146,7 +147,7 @@ router.get('/payment/:orderId', async (req, res, next) => {
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         showFooter: 'showFooter',
-        menu: sortMenu(await getMenu(db))
+        menu: sortMenu(await getMenu(db,req.cookies.locale))
     });
 });
 
@@ -401,6 +402,8 @@ router.get('/product/:id', async (req, res) => {
     const db = req.app.db;
     const config = req.app.config;
     const productsIndex = req.app.productsIndex;
+    const language = req.cookies.locale;
+    const defaultLanguage = req.app.config.defaultLocale;
 
     const product = await db.products.findOne({ $or: [{ _id: getId(req.params.id) }, { productPermalink: req.params.id }] });
     if(!product){
@@ -412,8 +415,16 @@ router.get('/product/:id', async (req, res) => {
         return;
     }
 
+   translateProduct(language,defaultLanguage,product)
+
     // Get variants for this product
-    const variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
+
+     let variants = await db.variants.find({ product: product._id }).sort({ added: 1 }).toArray();
+
+    variants = variants.map(x => {
+        x.title = (req.cookies.locale && req.cookies.locale !== req.app.config.defaultLocale) ? x[`title_${req.cookies.locale}`] ? x[`title_${req.cookies.locale}`] : x.title : x.title
+        return x;
+    });
 
     // Grab review data
     const reviews = {
@@ -490,6 +501,7 @@ router.get('/product/:id', async (req, res) => {
             _id: { $in: lunrIdArray, $ne: product._id }
         }).limit(4).toArray();
     }
+    const translated = relatedProducts.map(x => translateProduct(req.cookies.locale,req.app.config.defaultLocale,x));
 
     res.render(`${config.themeViews}product`, {
         title: product.productTitle,
@@ -497,7 +509,7 @@ router.get('/product/:id', async (req, res) => {
         variants,
         reviews,
         images: images,
-        relatedProducts,
+        relatedProducts : translated ,
         productDescription: stripHtml(product.productDescription),
         metaDescription: `${config.cartTitle} - ${product.productTitle}`,
         config: config,
@@ -507,7 +519,7 @@ router.get('/product/:id', async (req, res) => {
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         showFooter: 'showFooter',
-        menu: sortMenu(await getMenu(db))
+        menu: sortMenu(await getMenu(db,req.cookies.locale))
     });
 });
 
@@ -926,7 +938,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
 
     const lunrIdArray = [];
-    productsIndex.search(searchTerm).forEach((id) => {
+    productsIndex.search(`${searchTerm}~1`).forEach((id) => {
         lunrIdArray.push(getId(id.ref));
     });
 
@@ -937,7 +949,7 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
 
     Promise.all([
         paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
     .then(([results, menu]) => {
         // If JSON query param return json instead
@@ -990,7 +1002,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
 
     Promise.all([
         paginateProducts(true, db, pageNum, { _id: { $in: lunrIdArray } }, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
         .then(([results, menu]) => {
             const sortedMenu = sortMenu(menu);
@@ -1072,7 +1084,7 @@ router.get('/page/:pageNum', (req, res, next) => {
 
     Promise.all([
         paginateProducts(true, db, req.params.pageNum, {}, getSort()),
-        getMenu(db)
+        getMenu(db,req.cookies.locale)
     ])
         .then(([results, menu]) => {
             // If JSON query param return json instead
@@ -1108,12 +1120,11 @@ router.get('/:page?', async (req, res, next) => {
     const db = req.app.db;
     const config = req.app.config;
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
-
     // if no page is specified, just render page 1 of the cart
     if(!req.params.page){
         Promise.all([
             paginateProducts(true, db, 1, {}, getSort()),
-            getMenu(db)
+            getMenu(db,req.cookies.locale)
         ])
             .then(async([results, menu]) => {
                 // If JSON query param return json instead
@@ -1121,11 +1132,10 @@ router.get('/:page?', async (req, res, next) => {
                     res.status(200).json(results.data);
                     return;
                 }
-
                 res.render(`${config.themeViews}index`, {
                     title: `${config.cartTitle} - Shop`,
                     theme: config.theme,
-                    results: results.data,
+                    results: results.data.map(x => translateProduct(req.cookies.locale,req.app.config.defaultLocale,x)),
                     session: req.session,
                     message: clearSessionValue(req.session, 'message'),
                     messageType: clearSessionValue(req.session, 'messageType'),
@@ -1162,7 +1172,7 @@ router.get('/:page?', async (req, res, next) => {
                 metaDescription: `${req.app.config.cartTitle} - ${page}`,
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: sortMenu(await getMenu(db))
+                menu: sortMenu(await getMenu(db,req.cookies.locale))
             });
         }else{
             res.status(404).render('error', {
@@ -1171,10 +1181,19 @@ router.get('/:page?', async (req, res, next) => {
                 message: '404 Error - Page not found',
                 helpers: req.handlebars.helpers,
                 showFooter: 'showFooter',
-                menu: sortMenu(await getMenu(db))
+                menu: sortMenu(await getMenu(db,req.cookies.locale))
             });
         }
     }
 });
+
+const translateProduct = (language,defaultLanguage,product) =>
+{
+    if (language !== defaultLanguage) {
+        product.productTitle = product[`productTitle_${language}`] ? product[`productTitle_${language}`] : product.productTitle;
+        product.productDescription = product[`productDescription_${language}`] ? product[`productDescription_${language}`] : product.productDescription;
+    }
+    return product;
+}
 
 module.exports = router;
