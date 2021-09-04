@@ -254,5 +254,9 @@
 	"Add Color": "Add Color",
 	"test-jacket-variant": "test-jacket-variant",
 	"test-jacket-variant-black-xs": "test-jacket-variant-black-xs",
-	"": ""
+	"": "",
+	"Shown in the variant dropdown, will be color - dimensions if let empty": "Shown in the variant dropdown, will be color - dimensions if let empty",
+	"color": "color",
+	"Dimensions": "Dimensions",
+	"height*width*length": "height*width*length"
 }
