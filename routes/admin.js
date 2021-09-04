@@ -434,8 +434,8 @@ router.post('/admin/settings/menu/update', restrict, checkAccess, async (req, re
 });
 
 // delete menu item
-router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => {
-    const result = deleteMenu(req, req.body.menuId);
+router.post('/admin/settings/menu/delete', restrict, checkAccess, async (req, res) => {
+    const result = await deleteMenu(req, req.body.menuId);
     if(result === false){
         res.status(400).json({ message: 'Failed deleting menu.' });
         return;
