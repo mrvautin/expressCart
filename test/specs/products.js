@@ -85,7 +85,7 @@ test('[Success] Add a product', async t => {
 
 test('[Success] Add a product with dimensions', async t => {
     const product = {
-        productPermalink: 'test-jacket',
+        productPermalink: 'test-jacket-with-size',
         productTitle: 'Test Jacket',
         productPrice: '100.00',
         productDescription: 'Test product description used to describe the product',
@@ -94,9 +94,9 @@ test('[Success] Add a product with dimensions', async t => {
         productComment: false,
         productStock: 50,
         productDimensions : {
-            length : 180,
-            height : 105,
-            width : 47
+            length : "180",
+            height : "105",
+            width : "47"
         }
     };
 
