@@ -814,11 +814,21 @@ $(document).ready(function (){
         e.preventDefault();
 
         if(confirm('Are you sure?')){
+            const language1 = document.getElementById("languageSelector").value;
+            const defaultLocale = document.getElementById("defaultLocale").value;
+
+            let elementId = 'menuMongoId'
+            if(defaultLocale !== language1){
+                elementId = 'menuMongoId_'+ language1
+            }
+            const mongoId = document.getElementById(elementId).value;
+
             $.ajax({
                 method: 'POST',
                 url: '/admin/settings/menu/delete',
                 data: {
-                    menuId: $(this).attr('data-id')
+                    menuId: $(this).attr('data-id'),
+                    mongoId
                 }
             })
             .done(function(msg){
@@ -836,8 +846,6 @@ $(document).ready(function (){
                 var menuOrder = [];
                 const language1 = document.getElementById("languageSelector").value;
                 const defaultLocale = document.getElementById("defaultLocale").value;
-                console.log(language1);
-                console.log(defaultLocale);
 
                 let elementId = 'menuMongoId'
                 if(defaultLocale !== language1){
