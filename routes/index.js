@@ -13,7 +13,8 @@ const {
     clearSessionValue,
     getImages,
     addSitemapProducts,
-    getCountryList
+    getCountryList,
+    mongoSanitize
 } = require('../lib/common');
 const {
     getSort,
@@ -347,8 +348,8 @@ router.post('/checkout/adddiscountcode', async (req, res) => {
         return;
     }
 
-    // Validate discount code
-    const discount = await db.discounts.findOne({ code: req.body.discountCode });
+    // Validate and sanitize discount code
+    const discount = await db.discounts.findOne({ code: mongoSanitize(req.body.discountCode) });
     if(!discount){
         res.status(400).json({
             message: 'Discount code is invalid or expired'
