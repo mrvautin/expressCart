@@ -15,12 +15,12 @@
                 <strong> Order status: </strong><span class="text-{{getStatusColor result.orderStatus}} float-right">{{result.orderStatus}}</span>
                 <div class="float-right col-md-2">
                     <select class="form-control" id="orderStatus">
-                        <option>{{ @root.__ "Completed" }}</option>
-                        <option>{{ @root.__ "Paid" }}</option>
-                        <option>{{ @root.__ "Pending" }}</option>
-                        <option>{{ @root.__ "Cancelled" }}</option>
-                        <option>{{ @root.__ "Declined" }}</option>
-                        <option>{{ @root.__ "Shipped" }}</option>
+                        <option value="Completed">{{ @root.__ "Completed" }}</option>
+                        <option value="Paid">{{ @root.__ "Paid" }}</option>
+                        <option value="Pending">{{ @root.__ "Pending" }}</option>
+                        <option value="Cancelled">{{ @root.__ "Cancelled" }}</option>
+                        <option value="Declined">{{ @root.__ "Declined" }}</option>
+                        <option value="Shipped">{{ @root.__ "Shipped" }}</option>
                     </select>
                 </div>
             </li>
