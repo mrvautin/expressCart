@@ -115,7 +115,7 @@
 	"Currency symbol": "Simbolo valuta",
 	"Set this to your currency symbol. Eg: $, £, €": "Configura il simbolo della tua valuta. Es: $, £, €",
 	"Theme": "Tema",
-	"Theme_Info": "I temi sono caricati da `/public/themes/`",
+	"Theme_Info": "I temi sono caricati da `/views/themes/`",
 	"Products per row": "Prodotti per riga",
 	"The number of products to be displayed across the page.": "Il numero di prodotti visualizzati per riga nella pagina",
 	"Products per page": "Prodotti per pagina",
