@@ -557,6 +557,12 @@ router.post('/product/updatecart', async (req, res, next) => {
         return;
     }
 
+    // Don't allow negative quantity
+    if(productQuantity < 1){
+        res.status(400).json({ message: 'There was an error updating the cart. Cannot update a negative quantity.', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
+
     // Check for a cart
     if(!req.session.cart[cartItem.cartId]){
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
