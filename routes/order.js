@@ -8,7 +8,7 @@ const {
     clearCustomer
 } = require('../lib/common');
 const {
-    paginateData,
+    paginateData
 } = require('../lib/paginate');
 const {
     emptyCart
@@ -279,18 +279,22 @@ router.get('/admin/order/delete/:id', restrict, async(req, res) => {
     }
 });
 
-// update order status
-router.post('/admin/order/statusupdate', restrict, checkAccess, async (req, res) => {
+// update order
+router.post('/admin/order/updateorder', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     try{
+        const updateobj = { orderStatus: req.body.status };
+        if(req.body.trackingNumber){
+            // add tracking number
+            updateobj.trackingNumber = req.body.trackingNumber;
+        }
         await db.orders.updateOne({
             _id: getId(req.body.order_id) },
-            { $set: { orderStatus: req.body.status }
-        }, { multi: false });
-        return res.status(200).json({ message: 'Status successfully updated' });
+            { $set: updateobj }, { multi: false });
+        return res.status(200).json({ message: 'Order successfully updated' });
     }catch(ex){
-        console.info('Error updating status', ex);
-        return res.status(400).json({ message: 'Failed to update the order status' });
+        console.info('Error updating order', ex);
+        return res.status(400).json({ message: 'Failed to update the order' });
     }
 });
 

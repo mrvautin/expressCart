@@ -6,7 +6,7 @@
     <div class="order-layout col-md-12">
         <div class="row">
             <div class="col-md-12 bottom-pad-20">
-                <button id="orderStatusUpdate" class="btn btn-outline-success float-left">{{ @root.__ "Update status" }}</button>
+                <button id="orderUpdate" class="btn btn-outline-success float-left">{{ @root.__ "Update order" }}</button>
                 <a href="/admin/orders" class="btn btn-outline-info float-right">{{ @root.__ "Go Back" }}</a>
             </div>
         </div>
@@ -14,7 +14,7 @@
             <li class="list-group-item list-group-input-pad">
                 <strong> Order status: </strong><span class="text-{{getStatusColor result.orderStatus}} float-right">{{result.orderStatus}}</span>
                 <div class="float-right col-md-2">
-                    <select class="form-control" id="orderStatus">
+                    <select class="form-control form-control-sm" id="orderStatus">
                         <option value="Completed">{{ @root.__ "Completed" }}</option>
                         <option value="Paid">{{ @root.__ "Paid" }}</option>
                         <option value="Pending">{{ @root.__ "Pending" }}</option>
@@ -54,8 +54,8 @@
             <li class="list-group-item"><strong> {{ @root.__ "Postcode" }}: </strong><span class="float-right">{{result.orderPostcode}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Phone number" }}: </strong><span class="float-right">{{result.orderPhoneNumber}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order type" }}: </strong><span class="float-right">{{result.orderType}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Tracking number" }}: </strong><div class="float-right"><input class="form-control form-control-sm" id="trackingNumber" value="{{result.trackingNumber}}" /></div></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order comment" }}: </strong><span class="float-right">{{result.orderComment}}</span></li>
-
             <li class="list-group-item">&nbsp;</li>
             <li class="list-group-item"><strong class="text-info">{{ @root.__ "Products ordered" }}</strong></li>
             {{#each result.orderProducts}}
