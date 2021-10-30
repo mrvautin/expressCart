@@ -103,6 +103,10 @@
                     {
                         "type": "string",
                         "enum": [ "zip"]
+                    },
+                    {
+                        "type": "string",
+                        "enum": [ "verifone"]
                     }
                 ]
             }
