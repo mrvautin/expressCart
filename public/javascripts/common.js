@@ -77,8 +77,6 @@ $(document).ready(function (){
                     sessionData: response.paymentsResponse.sessionData
                 },
                 onPaymentCompleted: (result, component) => {
-                    console.log('result', result);
-                    console.log('component', component);
                     if($('#shipping-form').validator('validate').has('.has-error').length === 0){
                         $.ajax({
                             type: 'POST',
