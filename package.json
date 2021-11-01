@@ -23,7 +23,7 @@
     }
   },
   "engines": {
-    "node": "10.16.0"
+    "node": ">=10.16.0"
   },
   "dependencies": {
     "ajv": "^6.10.2",
