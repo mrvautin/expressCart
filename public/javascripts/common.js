@@ -33,6 +33,7 @@ $(document).ready(function (){
 
             stripe.createToken(card).then(function(response){
                 if(response.error){
+                    console.log('Stripe err', response.error);
                     showNotification('Failed to complete transaction', 'danger', true);
                 }else{
                     $.ajax({
@@ -44,6 +45,7 @@ $(document).ready(function (){
                     }).done((response) => {
                         window.location = '/payment/' + response.paymentId;
                     }).fail((response) => {
+                        console.log('Stripe err', response.error);
                         window.location = '/payment/' + response.paymentId;
                     });
                 }
