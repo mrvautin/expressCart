@@ -778,6 +778,23 @@ $(document).ready(function (){
         });
     }
 
+    $(document).on('click', '#addImageUrl', function(e){
+        $.ajax({
+            type: 'POST',
+            url: '/admin/file/url',
+            data: {
+                productId: $('#productId').val(),
+                imageUrl: $('#productImageUrl').val()
+            }
+        })
+        .done(function(msg){
+            showNotification(msg.message, 'success', true);
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    });
+
     $(document).on('click', '#uploadButton', function(e){
         e.preventDefault();
         var formData = new FormData($('#uploadForm')[0]);

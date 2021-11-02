@@ -4,7 +4,7 @@
             <div class="col-12">
                 <div class="page-header">
                     <div class="float-right">
-                        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#myModal">{{ @root.__ "Upload image" }}</button>
+                        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#uploadModal">{{ @root.__ "Upload image file" }}</button>
                         <button id="productUpdate" class="btn btn-outline-success">{{ @root.__ "Save product" }}</button>
                     </div>
                     <h2>{{ @root.__ "Edit product" }}</h2>
@@ -163,7 +163,10 @@
             </div>
             <div class="col-sm-12">
                 <div id="product-images">
-                    <h2>{{ @root.__ "Product images" }}</h2>
+                    <div class="col-md-12 mb-2 p-0 d-flex">
+                        <h2>{{ @root.__ "Product images" }}</h2>
+                        <button type="button" class="btn btn-outline-info ml-auto" data-toggle="modal" data-target="#urlImageModal">{{ @root.__ "Add image URL" }}</button>
+                    </div>
                     {{#if images}}
                     <div class="row">
                         {{#each images}}
@@ -191,19 +194,35 @@
 </main>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="urlImageModal" tabindex="-1" role="dialog" aria-labelledby="urlImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="urlImageModalLabel">{{ @root.__ "Product image URL" }}</h4>
+                <button type="button" class="close m-0 p-0" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="productImageUrl" class="form-control" placeholder="Full Image URL" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="addImageUrl" class="btn btn-outline-primary">{{ @root.__ "Add image URL" }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" id="uploadForm" enctype="multipart/form-data"></form>
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">{{ @root.__ "Product image upload" }}</h4>
+                <h4 class="modal-title" id="uploadModalLabel">{{ @root.__ "Product image upload" }}</h4>
+                <button type="button" class="close m-0 p-0" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             </div>
             <div class="modal-body">
                 <span class="btn btn-outline-info btn-file">
                     {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
                 </span>
-                <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
