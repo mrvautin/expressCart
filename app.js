@@ -309,6 +309,12 @@ handlebars = handlebars.create({
         timeAgo: (date) => {
             return moment(date).fromNow();
         },
+        imagePath: (value) => {
+            if(value && value.substring(0, 4) === 'http'){
+                return value;
+            }
+            return `${config.baseUrl}${value}`;
+        },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg

@@ -82,7 +82,7 @@
         <meta property="og:url" content="{{config.baseUrl}}" />
         {{/if}}
         {{#if result.productImage}}
-        <meta property="og:image" content="{{config.baseUrl}}{{result.productImage}}" />
+        <meta property="og:image" content="{{imagePath result.productImage}}" />
         {{/if}}
         {{#if productDescription}}
         <meta property="og:description" content="{{snip productDescription}}">
@@ -128,7 +128,7 @@
                 "gtin": "{{result.productGtin}}",
                 {{/if}}
                 {{#if result.productImage}}
-                "image": "{{config.baseUrl}}{{result.productImage}}",
+                "image": "{{imagePath result.productImage}}",
                 {{else}}
                 "image": "{{config.baseUrl}}uploads/placeholder.png",
                 {{/if}}

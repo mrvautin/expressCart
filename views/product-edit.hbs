@@ -1,6 +1,7 @@
 {{> partials/menu}}
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
     <form class="form-horizontal" id="productEditForm" data-toggle="validator">
+        <div class="row">
             <div class="col-12">
                 <div class="page-header">
                     <div class="float-right">
@@ -170,7 +171,7 @@
                     {{#if images}}
                     <div class="row">
                         {{#each images}}
-                        <div class="col-sm-3">
+                        <div class="col-sm-3 mt-3">
                             <p>
                                 <a data-id="{{this.path}}" class="btn-delete-image btn btn-outline-danger">{{ @root.__ "Delete" }}</a>
                                 {{#ifCond this.productImage '==' true}}
