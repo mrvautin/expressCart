@@ -4,6 +4,78 @@
 $(document).ready(function (){
     // validate form and show stripe payment
     if($('#stripe-form').length > 0){
+        $.ajax({
+            method: 'POST',
+            url: '/stripe/setup'
+        })
+        .done(async function(response){
+            var stripe = Stripe($('#stripePublicKey').val());
+
+            document
+                .querySelector('#payment-form')
+                .addEventListener('submit', handleSubmit);
+
+            const appearance = {
+                theme: 'stripe'
+            };
+            const elements = stripe.elements({ appearance, clientSecret: response.clientSecret });
+
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+
+            async function handleSubmit(e){
+                e.preventDefault();
+                setLoading(true);
+
+                const { error } = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: $('#baseUrl').val() + '/stripe/checkout_action'
+                    }
+                });
+
+                if(error.type === 'card_error' || error.type === 'validation_error'){
+                    showMessage(error.message);
+                }else{
+                    showMessage('An unexpected error occured.');
+                }
+
+                setLoading(false);
+            }
+
+            // ------- UI helpers -------
+            function showMessage(messageText){
+                const messageContainer = document.querySelector('#payment-message');
+
+                messageContainer.classList.remove('hidden');
+                messageContainer.textContent = messageText;
+
+                setTimeout(function (){
+                    messageContainer.classList.add('hidden');
+                    messageText.textContent = '';
+                }, 4000);
+            }
+
+            // Show a spinner on payment submission
+            function setLoading(isLoading){
+                if(isLoading){
+                    // Disable the button and show a spinner
+                    document.querySelector('#submit').disabled = true;
+                    document.querySelector('#spinner').classList.remove('d-none');
+                    document.querySelector('#button-text').classList.add('d-none');
+                }else{
+                    document.querySelector('#submit').disabled = false;
+                    document.querySelector('#spinner').classList.add('d-none');
+                    document.querySelector('#button-text').classList.remove('d-none');
+                }
+            }
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    };
+
+    if($('#stripe-form2121').length > 0){
         var stripe = Stripe($('#stripePublicKey').val());
         var elements = stripe.elements();
         var style = {

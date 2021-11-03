@@ -22,6 +22,12 @@
         },
         "stripeWebhookSecret": {
             "type": "string"
+        },
+        "paymentMethods": {
+            "type": "array",
+            "default": [
+                "card"
+            ]
         }
     },
     "required": [
@@ -30,7 +36,8 @@
         "publicKey",
         "stripeCurrency",
         "stripeDescription",
-        "stripeLogoURL"
+        "stripeLogoURL",
+        "paymentMethods"
     ],
     "additionalProperties": false
 }
