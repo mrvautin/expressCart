@@ -2,7 +2,6 @@ version: '3'
 services:
   expresscart:
     image: "node:16.13.0"
-    build: .
     container_name: "expresscart"
     environment:
       NODE_ENV: development
