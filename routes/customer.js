@@ -9,7 +9,8 @@ const {
     getCountryList,
     mongoSanitize,
     sendEmail,
-    clearCustomer
+    clearCustomer,
+    sanitize
 } = require('../lib/common');
 const rateLimit = require('express-rate-limit');
 const { indexCustomers } = require('../lib/indexing');
@@ -26,16 +27,16 @@ router.post('/customer/create', async (req, res) => {
     const db = req.app.db;
 
     const customerObj = {
-        email: req.body.email,
-        company: req.body.company,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        country: req.body.country,
-        state: req.body.state,
-        postcode: req.body.postcode,
-        phone: req.body.phone,
+        email: sanitize(req.body.email),
+        company: sanitize(req.body.company),
+        firstName: sanitize(req.body.firstName),
+        lastName: sanitize(req.body.lastName),
+        address1: sanitize(req.body.address1),
+        address2: sanitize(req.body.address2),
+        country: sanitize(req.body.country),
+        state: sanitize(req.body.state),
+        postcode: sanitize(req.body.postcode),
+        phone: sanitize(req.body.phone),
         password: bcrypt.hashSync(req.body.password, 10),
         created: new Date()
     };
