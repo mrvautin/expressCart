@@ -1,8 +1,20 @@
 version: '3'
 services:
   expresscart:
-    image: "node:16.13.0"
+    build: .
     container_name: "expresscart"
+    environment:
+      NODE_ENV: production
+      NODE_PATH: /
+    ports:
+      - "1111:1111"
+    volumes:
+      - uploads:/var/expressCart/public/uploads
+
+  expresscart-dev:
+    image: "node:16.13.0"
+    container_name: "expresscart-dev"
+    profiles: ["development"]
     environment:
       NODE_ENV: development
       NODE_PATH: /
@@ -34,6 +46,7 @@ services:
 
   mongodb:
     image: mongo:5.0
+    profiles: ["development"]
     container_name: "expresscart-mongodb"
     volumes:
       - expresscart-mongo-data:/data/db
