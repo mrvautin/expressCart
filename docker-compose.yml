@@ -7,6 +7,7 @@ services:
     environment:
       NODE_ENV: development
       NODE_PATH: /
+      databaseConnectionString : mongodb://expresscart-mongodb:27017/expresscart
     ports:
       - "1111:1111"
     volumes:
@@ -15,6 +16,23 @@ services:
       - mongodb
     depends_on:
       - mongodb
+
+  testdata:
+    image: "node:16"
+    profiles: ["testdata"]
+    volumes:
+      - .:/usr/src/service/
+    working_dir: /usr/src/service/
+    environment:
+      NODE_ENV: development
+      NODE_PATH: /
+      databaseConnectionString: mongodb://expresscart-mongodb:27017/expresscart
+    command: npm run testdata
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
   mongodb:
     image: mongo:5.0
     container_name: "expresscart-mongodb"
