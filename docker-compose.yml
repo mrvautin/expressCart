@@ -1,7 +1,7 @@
 version: '3'
 services:
   expresscart:
-    image: "node:14.17.3"
+    image: "node:16.13.0"
     build: .
     container_name: "expresscart"
     environment:
@@ -20,10 +20,9 @@ services:
     container_name: "expresscart-mongodb"
     volumes:
       - expresscart-mongo-data:/data/db
-      - uploads
-
     ports:
       - 27017:27017
-    command: mongod --smallfiles --logpath=/dev/null
+    command: mongod --logpath=/dev/null
 volumes:
   expresscart-mongo-data:
+  uploads:
