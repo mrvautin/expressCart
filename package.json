@@ -23,7 +23,7 @@
     }
   },
   "engines": {
-    "node": ">=12.13.0 <0.15"
+    "node": ">=12.13.0 <=16.13.0"
   },
   "dependencies": {
     "@adyen/api-library": "^2.1.7",
