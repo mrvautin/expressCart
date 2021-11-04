@@ -36,6 +36,9 @@ const {
     sortMenu,
     getMenu
 } = require('../lib/menu');
+const {
+    setupVerifone
+} = require('../lib/payment-common.js');
 const countryList = getCountryList();
 
 // Google products
@@ -276,10 +279,18 @@ router.get('/checkout/payment', async (req, res) => {
     // update total cart amount one last time before payment
     await updateTotalCart(req, res);
 
+    // Setup verifone if configured
+    let verifone = {};
+    if(config.paymentGateway.includes('verifone')){
+        verifone = await setupVerifone(req);
+        req.session.verifoneCheckout = verifone.id;
+    }
+
     res.render(`${config.themeViews}checkout-payment`, {
         title: 'Checkout - Payment',
         config: req.app.config,
         paymentConfig: getPaymentConfig(),
+        verifone,
         session: req.session,
         paymentPage: true,
         paymentType,
@@ -567,6 +578,12 @@ router.post('/product/updatecart', async (req, res, next) => {
         // quantity equals zero so we remove the item
         delete req.session.cart[cartItem.cartId];
         res.status(400).json({ message: 'There was an error updating the cart', totalCartItems: Object.keys(req.session.cart).length });
+        return;
+    }
+
+    // Don't allow negative quantity
+    if(productQuantity < 1){
+        res.status(400).json({ message: 'There was an error updating the cart. Cannot update a negative quantity.', totalCartItems: Object.keys(req.session.cart).length });
         return;
     }
 

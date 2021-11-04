@@ -4,10 +4,81 @@
 $(document).ready(function (){
     // validate form and show stripe payment
     if($('#stripe-form').length > 0){
+        $.ajax({
+            method: 'POST',
+            url: '/stripe/setup'
+        })
+        .done(async function(response){
+            var stripe = Stripe($('#stripePublicKey').val());
+
+            document
+                .querySelector('#payment-form')
+                .addEventListener('submit', handleSubmit);
+
+            const appearance = {
+                theme: 'stripe'
+            };
+            const elements = stripe.elements({ appearance, clientSecret: response.clientSecret });
+
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+
+            async function handleSubmit(e){
+                e.preventDefault();
+                setLoading(true);
+
+                const { error } = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: $('#baseUrl').val() + '/stripe/checkout_action'
+                    }
+                });
+
+                if(error.type === 'card_error' || error.type === 'validation_error'){
+                    showMessage(error.message);
+                }else{
+                    showMessage('An unexpected error occured.');
+                }
+
+                setLoading(false);
+            }
+
+            // ------- UI helpers -------
+            function showMessage(messageText){
+                const messageContainer = document.querySelector('#payment-message');
+
+                messageContainer.classList.remove('hidden');
+                messageContainer.textContent = messageText;
+
+                setTimeout(function (){
+                    messageContainer.classList.add('hidden');
+                    messageText.textContent = '';
+                }, 4000);
+            }
+
+            // Show a spinner on payment submission
+            function setLoading(isLoading){
+                if(isLoading){
+                    // Disable the button and show a spinner
+                    document.querySelector('#submit').disabled = true;
+                    document.querySelector('#spinner').classList.remove('d-none');
+                    document.querySelector('#button-text').classList.add('d-none');
+                }else{
+                    document.querySelector('#submit').disabled = false;
+                    document.querySelector('#spinner').classList.add('d-none');
+                    document.querySelector('#button-text').classList.remove('d-none');
+                }
+            }
+        })
+        .fail(function(msg){
+            showNotification(msg.responseJSON.message, 'danger');
+        });
+    };
+
+    if($('#stripe-form2121').length > 0){
         var stripe = Stripe($('#stripePublicKey').val());
         var elements = stripe.elements();
         var style = {
-            hidePostalCode: true,
             base: {
                 color: '#32325d',
                 fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
@@ -33,6 +104,7 @@ $(document).ready(function (){
 
             stripe.createToken(card).then(function(response){
                 if(response.error){
+                    console.log('Stripe err', response.error);
                     showNotification('Failed to complete transaction', 'danger', true);
                 }else{
                     $.ajax({
@@ -44,6 +116,7 @@ $(document).ready(function (){
                     }).done((response) => {
                         window.location = '/payment/' + response.paymentId;
                     }).fail((response) => {
+                        console.log('Stripe err', response.error);
                         window.location = '/payment/' + response.paymentId;
                     });
                 }
@@ -85,47 +158,27 @@ $(document).ready(function (){
         });
     });
 
-    if($('#adyen-dropin').length > 0){
+    if($('#dropin-container').length > 0){
         $.ajax({
             method: 'POST',
             url: '/adyen/setup'
         })
-        .done(function(response){
+        .done(async function(response){
             const configuration = {
-                locale: 'en-AU',
-                environment: response.environment.toLowerCase(),
-                originKey: response.originKey,
-                paymentMethodsResponse: response.paymentsResponse
-            };
-            const checkout = new AdyenCheckout(configuration);
-            checkout
-            .create('dropin', {
-                paymentMethodsConfiguration: {
-                    card: {
-                        hasHolderName: false,
-                        holderNameRequired: false,
-                        enableStoreDetails: false,
-                        groupTypes: ['mc', 'visa'],
-                        name: 'Credit or debit card'
-                    }
+                environment: response.environment,
+                clientKey: response.clientKey,
+                session: {
+                    id: response.paymentsResponse.id,
+                    sessionData: response.paymentsResponse.sessionData
                 },
-                onSubmit: (state, dropin) => {
+                onPaymentCompleted: (result, component) => {
                     if($('#shipping-form').validator('validate').has('.has-error').length === 0){
                         $.ajax({
                             type: 'POST',
                             url: '/adyen/checkout_action',
                             data: {
-                                shipEmail: $('#shipEmail').val(),
-                                shipCompany: $('#shipCompany').val(),
-                                shipFirstname: $('#shipFirstname').val(),
-                                shipLastname: $('#shipLastname').val(),
-                                shipAddr1: $('#shipAddr1').val(),
-                                shipAddr2: $('#shipAddr2').val(),
-                                shipCountry: $('#shipCountry').val(),
-                                shipState: $('#shipState').val(),
-                                shipPostcode: $('#shipPostcode').val(),
-                                shipPhoneNumber: $('#shipPhoneNumber').val(),
-                                payment: JSON.stringify(state.data.paymentMethod)
+                                paymentCode: result.resultCode,
+                                paymentId: component._id
                             }
                         }).done((response) => {
                             window.location = '/payment/' + response.paymentId;
@@ -133,9 +186,18 @@ $(document).ready(function (){
                             showNotification('Failed to complete transaction', 'danger', true);
                         });
                     }
+                },
+                onError: (error, component) => {
+                    console.log(error.name, error.message, error.stack, component);
+                },
+                paymentMethodsConfiguration: {
+                    hasHolderName: false,
+                    holderNameRequired: false,
+                    billingAddressRequired: false
                 }
-            })
-            .mount('#adyen-dropin');
+            };
+            const checkout = await AdyenCheckout(configuration);
+            checkout.create('dropin').mount('#dropin-container');
         })
         .fail(function(msg){
             showNotification(msg.responseJSON.message, 'danger');

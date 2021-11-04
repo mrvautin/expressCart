@@ -264,5 +264,11 @@
 	"Add Dimension": "Add Dimension",
 	"Shown in the variant dropdown, will be color - dimensions if let empty": "Shown in the variant dropdown, will be color - dimensions if let empty",
 	"Color": "Color",
-	"color": "color"
+	"color": "color",
+	"The brand of the product": "The brand of the product",
+	"Tracking number": "Tracking number",
+	"Update order": "Update order",
+	"Add image URL": "Add image URL",
+	"Product image URL": "Product image URL",
+	"Upload image file": "Upload image file"
 }

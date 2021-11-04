@@ -1,0 +1,9 @@
+{
+    "description": "Card payment",
+    "currency": "USD",
+    "userId": "test_this_is_not_real",
+    "apiKey": "test_this_is_not_real",
+    "baseUrl": "https://test-gsc.verifone.cloud",
+    "entityId": "test_this_is_not_real",
+    "paymentContract": "test_this_is_not_real"
+}

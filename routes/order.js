@@ -5,10 +5,11 @@ const {
     getId,
     sendEmail,
     getEmailTemplate,
-    clearCustomer
+    clearCustomer,
+    sanitize
 } = require('../lib/common');
 const {
-    paginateData,
+    paginateData
 } = require('../lib/paginate');
 const {
     emptyCart
@@ -139,18 +140,18 @@ router.post('/admin/order/create', async (req, res, next) => {
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,
         orderCustomer: getId(req.session.customerId),
-        orderEmail: req.body.email || req.session.customerEmail,
-        orderCompany: req.body.company || req.session.customerCompany,
-        orderFirstname: req.body.firstName || req.session.customerFirstname,
-        orderLastname: req.body.lastName || req.session.customerLastname,
-        orderAddr1: req.body.address1 || req.session.customerAddress1,
-        orderAddr2: req.body.address2 || req.session.customerAddress2,
-        orderCountry: req.body.country || req.session.customerCountry,
-        orderState: req.body.state || req.session.customerState,
-        orderPostcode: req.body.postcode || req.session.customerPostcode,
-        orderPhoneNumber: req.body.phone || req.session.customerPhone,
-        orderComment: req.body.orderComment || req.session.orderComment,
-        orderStatus: req.body.orderStatus,
+        orderEmail: sanitize(req.body.email || req.session.customerEmail),
+        orderCompany: sanitize(req.body.company || req.session.customerCompany),
+        orderFirstname: sanitize(req.body.firstName || req.session.customerFirstname),
+        orderLastname: sanitize(req.body.lastName || req.session.customerLastname),
+        orderAddr1: sanitize(req.body.address1 || req.session.customerAddress1),
+        orderAddr2: sanitize(req.body.address2 || req.session.customerAddress2),
+        orderCountry: sanitize(req.body.country || req.session.customerCountry),
+        orderState: sanitize(req.body.state || req.session.customerState),
+        orderPostcode: sanitize(req.body.postcode || req.session.customerPostcode),
+        orderPhoneNumber: sanitize(req.body.phone || req.session.customerPhone),
+        orderComment: sanitize(req.body.orderComment || req.session.orderComment),
+        orderStatus: sanitize(req.body.orderStatus),
         orderDate: new Date(),
         orderProducts: req.session.cart,
         orderType: 'Single'
@@ -280,18 +281,22 @@ router.get('/admin/order/delete/:id', restrict, async(req, res) => {
     }
 });
 
-// update order status
-router.post('/admin/order/statusupdate', restrict, checkAccess, async (req, res) => {
+// update order
+router.post('/admin/order/updateorder', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
     try{
+        const updateobj = { orderStatus: req.body.status };
+        if(req.body.trackingNumber){
+            // add tracking number
+            updateobj.trackingNumber = req.body.trackingNumber;
+        }
         await db.orders.updateOne({
             _id: getId(req.body.order_id) },
-            { $set: { orderStatus: req.body.status }
-        }, { multi: false });
-        return res.status(200).json({ message: 'Status successfully updated' });
+            { $set: updateobj }, { multi: false });
+        return res.status(200).json({ message: 'Order successfully updated' });
     }catch(ex){
-        console.info('Error updating status', ex);
-        return res.status(400).json({ message: 'Failed to update the order status' });
+        console.info('Error updating order', ex);
+        return res.status(400).json({ message: 'Failed to update the order' });
     }
 });
 

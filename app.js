@@ -353,6 +353,12 @@ handlebars = handlebars.create({
             const result = (lang2 === menu.language) || (typeof menu.language === "undefined" && deflocale === lang2);
             return  result ? options.fn(this) : options.inverse(this);
 },
+        imagePath: (value) => {
+            if(value && value.substring(0, 4) === 'http'){
+                return value;
+            }
+            return `${config.baseUrl}${value}`;
+        },
         feather: (icon) => {
             // eslint-disable-next-line keyword-spacing
             return `<svg

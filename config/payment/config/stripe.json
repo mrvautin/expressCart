@@ -5,5 +5,8 @@
     "stripeCurrency": "usd",
     "stripeDescription": "expressCart payment",
     "stripeLogoURL": "http://localhost:1111/images/stripelogo.png",
-    "stripeWebhookSecret": ""
+    "stripeWebhookSecret": "",
+    "paymentMethods": [
+        "card"
+    ]
 }

@@ -1,8 +1,12 @@
 <div id="stripe-form">
+    <script src="https://js.stripe.com/v3/"></script>
     <input type="hidden" id="stripePublicKey" value="{{@root.paymentConfig.stripe.publicKey}}">
     <div class="mb-2">{{@root.paymentConfig.stripe.description}}</div>
     <form id="stripe-payment-form">
-      <div id="card-element"></div>
-      <button class="btn btn-outline-success mt-2">Process Payment</button>
+      <div id="payment-element"></div>
+      <button id="submit" class="btn btn-outline-success mt-2">
+          <div class="spinner-border d-none" id="spinner"></div>
+          <span id="button-text">Process Payment</span>
+      </button>
     </form>
 </div>
