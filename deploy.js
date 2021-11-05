@@ -13,11 +13,11 @@ const compressJS = async () => {
     ], { nosort: true });
 
     // Public JS
-    publicFiles.forEach(async(file) => {
+    for (const file of publicFiles) {
         const minified = await minify(fs.readFileSync(file, 'utf-8'));
         const parseFilePath = path.parse(file);
         fs.writeFileSync(`${parseFilePath.dir}/${parseFilePath.name}.min.js`, minified.code);
-    });
+    }
 
     const themeFiles = globby.sync([
         'views/themes/**/*.js',
@@ -25,11 +25,11 @@ const compressJS = async () => {
     ], { nosort: true });
 
     // Theme JS
-    themeFiles.forEach(async(file) => {
+    for (const file of themeFiles) {
         const minified = await minify(fs.readFileSync(file, 'utf-8'));
         const parseFilePath = path.parse(file);
         fs.writeFileSync(`${parseFilePath.dir}/${parseFilePath.name}.min.js`, minified.code);
-    });
+    }
 };
 
 const compressCss = async () => {
@@ -39,7 +39,7 @@ const compressCss = async () => {
         'public/stylesheets/less/*.less'
     ], { nosort: true });
 
-    publicFiles.forEach(async(file) => {
+    for (const file of publicFiles) {
         const parseFilePath = path.parse(file);
         // Process the less
         const less = await render(fs.readFileSync(file, 'utf-8'), {});
@@ -52,12 +52,12 @@ const compressCss = async () => {
 
         // Write minified css
         fs.writeFileSync(`${publicOutputPath}/${parseFilePath.name}.min.css`, minified);
-    });
+    }
 
     const themeFiles = globby.sync([
         'views/themes/*.less'
     ], { nosort: true });
-    themeFiles.forEach(async(file) => {
+    for (const file of themeFiles) {
         const parseFilePath = path.parse(file);
         // Process the less
         const less = await render(fs.readFileSync(file, 'utf-8'), {});
@@ -70,14 +70,21 @@ const compressCss = async () => {
 
         // Write minified css
         fs.writeFileSync(`${themeOutputPath}/${parseFilePath.name}.min.css`, minified);
-    });
+    }
 };
 
 const run = async () => {
     await compressJS();
+    console.log("JS compressed");
     await compressCss();
-    console.log(colors.green('Complete!'));
+    console.log("CSS compressed")
 };
 
 // Run the deploy tasks
-run();
+run()
+    .then(() => {
+    console.log(colors.green('Complete!'));
+})
+    .catch(e => {
+    console.error(e);
+});
