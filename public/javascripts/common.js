@@ -270,7 +270,7 @@ function slugify(str){
 }
 
 
-const switchLanguage = (defaultLang,translatableFields,allLanguages,translatableClass) => {
+function switchLanguage (defaultLang,translatableFields,allLanguages,translatableClass){
     const e = document.getElementById("languageSelector");
 
     const language = e.value;
