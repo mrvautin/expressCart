@@ -18,6 +18,8 @@ COPY deploy.js /var/expressCart/
 
 RUN npm install
 
+RUN npm run deploy
+
 VOLUME /var/expressCart/data
 
 EXPOSE 1111
