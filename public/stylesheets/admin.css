@@ -230,6 +230,7 @@ body .popover {
   text-transform: uppercase;
 }
 .sidebar-brand {
+  height: 80%;
   width: 80%;
 }
 .sidebar-search {
