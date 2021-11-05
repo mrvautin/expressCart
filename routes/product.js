@@ -119,6 +119,11 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         }
     };
 
+    //to save the dimensions we need them all 3;
+    if(!doc.productDimensions.length || !doc.productDimensions.width || !doc.productDimensions.height){
+        delete doc.productDimensions;
+    }
+
     // Validate the body again schema
     const schemaValidate = validateJson('newProduct', doc);
     if(!schemaValidate.result){
@@ -403,7 +408,10 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
             height: req.body.productDimensions?.height
         }
     };
-
+    //to save the dimensions we need them all 3;
+    if(!productDoc.productDimensions.length || !productDoc.productDimensions.width || !productDoc.productDimensions.height){
+        productDoc.productDimensions = undefined;
+    }
     req.app.config.availableLanguages.map((lang) => {
        productDoc[`productDescription_${lang}`] = cleanHtml(req.body[`productDescription_${lang}`]);
     })
