@@ -257,6 +257,7 @@
                 <span class="btn btn-outline-info btn-file">
                     {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
                 </span>
+                <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

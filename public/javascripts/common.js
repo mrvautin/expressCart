@@ -284,7 +284,7 @@ const switchLanguage = (defaultLang,translatableFields,allLanguages,translatable
             const item = document.getElementById(fieldId.concat("_").concat(language))
             if(item) item.hidden = true
             })
-            if (translatableFields.includes("productDescription")) $("productDescription_".concat(language)).summernote('destroy');
+            if (translatableFields.includes("productDescription")) $("#productDescription_".concat(language)).summernote('destroy');
         })
         translatableFields.forEach((fieldId) => {
             const item = document.getElementById(fieldId)
