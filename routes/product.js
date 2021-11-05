@@ -488,7 +488,16 @@ router.post('/admin/product/setasmainimage', restrict, checkAccess, async (req, 
 
     try{
         // update the productImage to the db
-        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
+        const path = req.body.productImage.split("/");
+        const filename = path[path.length - 1];
+
+        const thumbnailLocalPath = `/uploads/${req.body.product_id}/thumbnails/${filename}`;
+        const hasThumbnail =  await fs.promises.access(`public${thumbnailLocalPath}`, fs.constants.F_OK) .then(() => true)
+            .catch(() => false);
+        //if there is a thumbnail in the system we use that one, otherwise we'll use the main image because we are not going to generate thumbnails of URL provided images
+        const thumbnailLocation = hasThumbnail ? thumbnailLocalPath : req.body.productImage
+
+        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: req.body.productImage, productThumbnail : thumbnailLocation } }, { multi: false });
         res.status(200).json({ message: 'Main image successfully set' });
     }catch(ex){
         res.status(400).json({ message: 'Unable to set as main image. Please try again.' });
