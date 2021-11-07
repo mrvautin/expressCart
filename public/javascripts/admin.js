@@ -393,6 +393,15 @@ $(document).ready(function (){
         }
     });
 
+    // applies an transaction filter
+    $(document).on('click', '#btn_transaction_filter', function(e){
+        if($('#transaction_filter').val() !== ''){
+            window.location.href = '/admin/transactions/filter/' + $('#transaction_filter').val();
+        }else{
+            showNotification('Please enter a keyword to filter', 'danger');
+        }
+    });
+
     // applies an review filter
     $(document).on('click', '#btn_review_filter', function(e){
         if($('#review_filter').val() !== ''){

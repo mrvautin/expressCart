@@ -230,5 +230,16 @@
 	"Update order": "Update order",
 	"Add image URL": "Add image URL",
 	"Product image URL": "Product image URL",
-	"Upload image file": "Upload image file"
+	"Upload image file": "Upload image file",
+	"Transactions can be filtered by: gateway, amount or currency": "Transactions can be filtered by: gateway, amount or currency",
+	"Recent transactions": "Recent transactions",
+	"Transaction ID": "Transaction ID",
+	"Gateway reference": "Gateway reference",
+	"Gateway": "Gateway",
+	"Customer": "Customer",
+	"Gateway message": "Gateway message",
+	"Currency": "Currency",
+	"Approved": "Approved",
+	"Transactions": "Transactions",
+	"Order": "Order"
 }
