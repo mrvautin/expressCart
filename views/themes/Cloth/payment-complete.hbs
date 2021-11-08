@@ -4,7 +4,7 @@
             {{#paymentMessage result.orderStatus}}{{/paymentMessage}}
             <div>
                 <p><strong>{{ @root.__ "Order ID" }}:</strong> {{result._id}}</p>
-                <p><strong>{{ @root.__ "Payment ID" }}:</strong> {{result.orderPaymentId}}</p>
+                <p><strong>{{ @root.__ "Payment ID" }}:</strong> {{result.transaction}}</p>
             </div>
             {{#paymentOutcome result.orderStatus}}{{/paymentOutcome}}
             <a href="/" class="btn btn-outline-warning">Home</a>

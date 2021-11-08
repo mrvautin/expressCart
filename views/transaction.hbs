@@ -17,8 +17,8 @@
             <li class="list-group-item"><strong> {{ @root.__ "Gateway" }}: </strong><span class="float-right">{{result.gateway}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.amount}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Currency" }}: </strong><span class="float-right">{{toUpper result.currency}}</span></li>
-            <li class="list-group-item"><strong> {{ @root.__ "Customer" }}: </strong><span class="float-right"><a href="/admin/customer/view/{{result.customer}}">{{result.customer}}</a></span></li>
-            <li class="list-group-item"><strong> {{ @root.__ "Order" }}: </strong><span class="float-right"><a href="/admin/order/view/{{result.order}}">{{result.order}}</a></span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Customer" }}: </strong><span class="float-right"><a href="/admin/customer/view/{{result.customer}}">{{result.customer}} {{{feather 'external-link'}}}</a></span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order" }}: </strong><span class="float-right"><a href="/admin/order/view/{{result.order}}">{{result.order}} {{{feather 'external-link'}}}</a></span></li>
         </ul>
         <input type="hidden" id="transaction_id" value="{{result._id}}">
     </div>
