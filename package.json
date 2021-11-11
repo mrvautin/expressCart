@@ -32,7 +32,6 @@
     "axios": "^0.21.1",
     "badwords-list": "^1.0.0",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "cheerio": "^0.22.0",
     "colors": "^1.4.0",
     "connect-mongodb-session": "^2.2.0",

@@ -7,7 +7,6 @@ const path = require('path');
 const express = require('express');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const moment = require('moment');
 const _ = require('lodash');
@@ -362,7 +361,7 @@ app.enable('trust proxy');
 app.use(helmet());
 app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(config.secretCookie));
 app.use(session({
     resave: true,
@@ -376,7 +375,7 @@ app.use(session({
     store: store
 }));
 
-app.use(bodyParser.json({
+app.use(express.json({
     // Only on Stripe URL's which need the rawBody
     verify: (req, res, buf) => {
         if(req.originalUrl === '/stripe/subscription_update'){
