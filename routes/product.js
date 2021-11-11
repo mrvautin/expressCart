@@ -109,7 +109,8 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productComment: checkboxBool(req.body.productComment),
         productAddedDate: new Date(),
         productStock: safeParseInt(req.body.productStock) || null,
-        productStockDisable: convertBool(req.body.productStockDisable)
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productSubscription: cleanHtml(req.body.productSubscription)
     };
 
     // Validate the body again schema
@@ -334,7 +335,8 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
         productStock: safeParseInt(req.body.productStock) || null,
-        productStockDisable: convertBool(req.body.productStockDisable)
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productSubscription: cleanHtml(req.body.productSubscription)
     };
 
     // Validate the body again schema
