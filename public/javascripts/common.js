@@ -4,6 +4,8 @@
 $(document).ready(function (){
     // validate form and show stripe payment
     if($('#stripe-form').length > 0){
+        // Disable the button
+        document.querySelector('#submit').disabled = true;
         $.ajax({
             method: 'POST',
             url: '/stripe/setup'
@@ -22,6 +24,11 @@ $(document).ready(function (){
 
             const paymentElement = elements.create('payment');
             paymentElement.mount('#payment-element');
+
+            // Wait on the element read event to enable the submit button
+            paymentElement.on('ready', function(){
+                document.querySelector('#submit').disabled = false;
+            });
 
             async function handleSubmit(e){
                 e.preventDefault();
@@ -74,55 +81,6 @@ $(document).ready(function (){
             showNotification(msg.responseJSON.message, 'danger');
         });
     };
-
-    if($('#stripe-form2121').length > 0){
-        var stripe = Stripe($('#stripePublicKey').val());
-        var elements = stripe.elements();
-        var style = {
-            base: {
-                color: '#32325d',
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: 'antialiased',
-                fontSize: '16px',
-                    '::placeholder': {
-                    color: '#aab7c4'
-                }
-            },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a'
-            }
-        };
-        // Create an instance of the card Element.
-        var card = elements.create('card', { style: style });
-
-        // Add an instance of the card Element into the `card-element` <div>.
-        card.mount('#card-element');
-
-        $(document).on('submit', '#stripe-payment-form', function(e){
-            e.preventDefault();
-
-            stripe.createToken(card).then(function(response){
-                if(response.error){
-                    console.log('Stripe err', response.error);
-                    showNotification('Failed to complete transaction', 'danger', true);
-                }else{
-                    $.ajax({
-                        type: 'POST',
-                        url: '/stripe/checkout_action',
-                        data: {
-                            token: response.token.id
-                        }
-                    }).done((response) => {
-                        window.location = '/payment/' + response.paymentId;
-                    }).fail((response) => {
-                        console.log('Stripe err', response.error);
-                        window.location = '/payment/' + response.paymentId;
-                    });
-                }
-            });
-        });
-    }
 
     $('#checkoutInstore').validator().on('click', function(e){
         e.preventDefault();
