@@ -15,7 +15,7 @@ router.get('/admin/transactions/:page?', restrict, async (req, res, next) => {
     }
 
     // Get our paginated data
-    const transactions = await paginateData(false, req, pageNum, 'transactions', {}, { date: -1 });
+    const transactions = await paginateData(false, req, pageNum, 'transactions', {}, { created: -1 });
 
     res.render('transactions', {
         title: 'Cart - Rransactions',
@@ -44,7 +44,7 @@ router.get('/admin/transactions/filter/:search', restrict, async (req, res, next
     });
 
     // we search on the lunr indexes
-    const results = await db.transactions.find({ _id: { $in: lunrIdArray } }).toArray();
+    const results = await db.transactions.find({ _id: { $in: lunrIdArray } }).sort({ created: -1 }).toArray();
 
     if(req.apiAuthenticated){
         res.status(200).json(results);

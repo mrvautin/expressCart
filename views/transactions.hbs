@@ -30,10 +30,13 @@
                     <div class="col-md-3">
                         <div class="top-pad-8 text-truncate"><strong>Gateway Reference</strong></div>
                     </div>
-                    <div class="col-md-3 text-center">
+                    <div class="col-md-2 text-center">
+                        <div class="top-pad-8 text-truncate"><strong>Date</strong></div>
+                    </div>
+                    <div class="col-md-2 text-center">
                         <div class="top-pad-8 text-truncate"><strong>Gateway Message</strong></div>
                     </div>
-                    <div class="col-md-3 text-center">
+                    <div class="col-md-2 text-center">
                         <div class="top-pad-8 text-truncate"><strong>Amount</strong></div>
                     </div>
                 </div>
@@ -48,11 +51,17 @@
                             <div class="col-md-3">
                                 <div class="top-pad-8 text-truncate">{{this.gatewayReference}}</div>
                             </div>
-                            <div class="col-md-3 text-center">
+                            <div class="col-md-2 text-center">
+                                <div class="top-pad-8 text-truncate">{{formatDate this.created "DD/MM/YYYY hh:mmA"}}</div>
+                            </div>
+                            <div class="col-md-2 text-center">
                                 <div class="top-pad-8 text-truncate">{{this.gatewayMessage}}</div>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="top-pad-8 text-truncate">{{this.amount}}</div>
+                            <div class="col-md-2 text-center">
+                                <div class="top-pad-8 text-truncate">
+                                    {{@root.config.currencySymbol}}
+                                    {{formatAmount this.amount}}
+                                </div>
                             </div>
                         </div>
                     </a>
