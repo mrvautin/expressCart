@@ -116,7 +116,9 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
             length : req.body.productDimensions?.length,
             width : req.body.productDimensions?.width,
             height: req.body.productDimensions?.height
-        }
+        },
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productSubscription: cleanHtml(req.body.productSubscription)
     };
 
     //to save the dimensions we need them all 3;
@@ -198,7 +200,7 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         config: req.app.config,
         editor: true,
-        helpers: req.handlebars.helpers,
+        helpers: req.handlebars.helpers
     });
 });
 
@@ -286,9 +288,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
 
         const variant = await db.variants.insertOne(variantDoc);
         product.variants = variant.ops;
-
         hooker.emit("variant_onCreate",product);
-
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
@@ -306,7 +306,6 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
         price: req.body.price,
         stock: safeParseInt(req.body.stock) || null
     };
-
 
     // Validate the body again schema
     const schemaValidate = validateJson('editVariant', variantDoc);
@@ -401,12 +400,13 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
         productStock: safeParseInt(req.body.productStock) || null,
-        productStockDisable: convertBool(req.body.productStockDisable),
         productDimensions: {
             length : req.body.productDimensions?.length,
             width : req.body.productDimensions?.width,
             height: req.body.productDimensions?.height
-        }
+        },
+        productStockDisable: convertBool(req.body.productStockDisable),
+        productSubscription: cleanHtml(req.body.productSubscription)
     };
     //to save the dimensions we need them all 3;
     if(!productDoc.productDimensions.length || !productDoc.productDimensions.width || !productDoc.productDimensions.height){

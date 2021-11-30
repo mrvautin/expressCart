@@ -26,8 +26,9 @@
             </li>
             <li class="list-group-item"><strong> {{ @root.__ "Order date" }}: </strong><span class="float-right">{{formatDate result.orderDate "DD/MM/YYYY hh:mmA"}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order ID" }}: </strong><span class="float-right">{{result._id}}</span></li>
-            <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway ref" }}: </strong><span class="float-right">{{result.orderPaymentId}}</span></li>
-            <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway" }}: </strong><span class="float-right">{{result.orderPaymentGateway}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Transaction ID" }}: </strong><span class="float-right"><a href="/admin/transaction/{{transaction._id}}">{{transaction._id}} {{{feather 'external-link'}}}</a></span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Gateway reference" }}: </strong><span class="float-right">{{transaction.gatewayReference}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Payment Gateway" }}: </strong><span class="float-right">{{transaction.gateway}}</span></li>
             {{#if result.orderExpectedBtc }}
             <li class="list-group-item"><strong> {{ @root.__ "Order Expected BTC" }}: </strong><span class="float-right">{{result.orderExpectedBtc}}</span></li>
             {{/if}}
@@ -38,7 +39,7 @@
             <li class="list-group-item"><strong> {{ @root.__ "Order Blockonomics Txid" }}: </strong><span class="float-right">{{result.orderBlockonomicsTxid}}</span></li>
             {{/if}}
             {{#if result.orderPaymentMessage}}
-            <li class="list-group-item"><strong> {{ @root.__ "Payment Message" }}: </strong><span class="float-right">{{result.orderPaymentMessage}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Payment Message" }}: </strong><span class="float-right">{{transaction.gatewayMessage}}</span></li>
             {{/if}}
             <li class="list-group-item"><strong> {{ @root.__ "Order net amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount (math result.orderTotal '-' result.orderShipping)}}</span></li>
             <li class="list-group-item"><strong> {{ @root.__ "Order shipping amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.orderShipping}}</span></li>

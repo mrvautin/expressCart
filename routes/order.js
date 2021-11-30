@@ -90,10 +90,12 @@ router.get('/admin/orders/bystatus/:orderstatus', restrict, async (req, res, nex
 router.get('/admin/order/view/:id', restrict, async (req, res) => {
     const db = req.app.db;
     const order = await db.orders.findOne({ _id: getId(req.params.id) });
+    const transaction = await db.transactions.findOne({ _id: getId(order.transaction) });
 
     res.render('order', {
         title: 'View order',
         result: order,
+        transaction,
         config: req.app.config,
         session: req.session,
         message: clearSessionValue(req.session, 'message'),

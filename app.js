@@ -56,6 +56,7 @@ const product = require('./routes/product');
 const customer = require('./routes/customer');
 const order = require('./routes/order');
 const user = require('./routes/user');
+const transactions = require('./routes/transactions');
 const reviews = require('./routes/reviews');
 
 const app = express();
@@ -270,6 +271,12 @@ handlebars = handlebars.create({
             }
             return '';
         },
+        toUpper: (value) => {
+            if(value){
+                return value.toUpperCase();
+            }
+            return value;
+        },
         upperFirst: (value) => {
             if(value){
                 return value.replace(/^\w/, (chr) => {
@@ -451,6 +458,7 @@ app.use('/', product);
 app.use('/', order);
 app.use('/', user);
 app.use('/', admin);
+app.use('/', transactions);
 app.use('/', reviews);
 
 // Payment route(s)

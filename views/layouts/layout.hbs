@@ -152,11 +152,13 @@
                     }
                 },
                 {{/ifCond}}
+                {{#if @root.reviews.count}}
                 "aggregateRating": {
                     "@type": "AggregateRating",
                     "ratingValue": "{{@root.reviews.average}}",
                     "reviewCount": "{{@root.reviews.count}}"
                 },
+                {{/if}}
                 {{#if productDescription}}
                 "description": "{{snip productDescription}}",
                 {{/if}}

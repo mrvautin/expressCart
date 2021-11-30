@@ -6,6 +6,7 @@ services:
     environment:
       NODE_ENV: production
       NODE_PATH: /
+      databaseConnectionString : mongodb://127.0.0.1:27017/expresscart
     ports:
       - "1111:1111"
     volumes:

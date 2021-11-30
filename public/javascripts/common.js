@@ -4,6 +4,8 @@
 $(document).ready(function (){
     // validate form and show stripe payment
     if($('#stripe-form').length > 0){
+        // Disable the button
+        document.querySelector('#submit').disabled = true;
         $.ajax({
             method: 'POST',
             url: '/stripe/setup'
@@ -22,6 +24,11 @@ $(document).ready(function (){
 
             const paymentElement = elements.create('payment');
             paymentElement.mount('#payment-element');
+
+            // Wait on the element read event to enable the submit button
+            paymentElement.on('ready', function(){
+                document.querySelector('#submit').disabled = false;
+            });
 
             async function handleSubmit(e){
                 e.preventDefault();
