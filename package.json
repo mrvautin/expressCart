@@ -28,7 +28,7 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "ajv-errors": "^1.0.1",
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "axios": "^0.21.1",
     "badwords-list": "^1.0.0",
     "bcryptjs": "^2.4.3",
