@@ -9,18 +9,43 @@
     "emailUser": "hi@markmoffat.com",
     "emailPassword": "this_is_the_smtp_password",
     "emailAddress": "hi@markmoffat.com",
-    "menuEnabled": true,
-    "flatShipping": 10,
-    "freeShippingAmount": 100,
     "productsPerRow": 3,
     "productsPerPage": 6,
-    "menuTitle": "Menu",
-    "menuLocation": "side",
     "footerHtml": "&lt;h4 class=&quot;text-center&quot;&gt;Powered by expressCart&lt;/h4&gt;",
     "googleAnalytics": "",
-    "customCss": ".footer{padding-top: 5px;}",
+    "injectJs": "",
+    "customCss": "",
     "currencySymbol": "£",
-    "paymentGateway": "stripe",
+    "currencyISO": "USD",
+    "paymentGateway": [
+        "stripe"
+    ],
     "databaseConnectionString": "mongodb://127.0.0.1:27017/expresscart",
-    "theme": "Cloth"
+    "theme": "Cloth",
+    "trackStock": false,
+    "orderHook": "",
+    "availableLanguages": [
+        "en",
+        "it"
+    ],
+    "defaultLocale": "en",
+    "maxQuantity": 25,
+    "twitterHandle": "",
+    "facebookAppId": "",
+    "productOrderBy": "date",
+    "productOrder": "descending",
+    "modules": {
+        "enabled": {
+            "shipping": "shipping-basic",
+            "discount": "discount-voucher",
+            "reviews": "reviews-basic"
+        },
+        "loaded": {
+            "shipping": {},
+            "discount": {},
+            "reviews": {}
+        }
+    },
+    "showRelatedProducts": true,
+    "showHomepageVariants": false
 }

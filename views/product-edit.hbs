@@ -1,0 +1,244 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <form class="form-horizontal" id="productEditForm" data-toggle="validator">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-header">
+                    <div class="float-right">
+                        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#uploadModal">{{ @root.__ "Upload image file" }}</button>
+                        <button id="productUpdate" class="btn btn-outline-success">{{ @root.__ "Save product" }}</button>
+                    </div>
+                    <h2>{{ @root.__ "Edit product" }}</h2>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
+                    <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
+                </div>
+            </div>
+            <div class="row ml-0 mr-0">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="productPrice" class="control-label">{{ @root.__ "Product price" }} *</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">{{currencySymbol config.currencySymbol}}</label>
+                            </div>
+                            <input type="number" id="productPrice" class="form-control" value="{{result.productPrice}}" step="any" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="productPublished" class="control-label">{{ @root.__ "Status" }} *</label>
+                        <select class="form-control" id="productPublished">
+                            <option value="true"  {{selectState result.productPublished "true"}}>{{ @root.__ "Published" }}</option>
+                            <option value="false" {{selectState result.productPublished "false"}}>{{ @root.__ "Draft" }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="productGtin" class="control-label">{{ @root.__ "Product GTIN" }}</label>
+                        <input type="number" id="productGtin" class="form-control" value="{{result.productGtin}}" step="any" />
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="productBrand" class="control-label">{{ @root.__ "Product Brand" }}</label>
+                        <input type="text" id="productBrand" class="form-control" value="{{result.productBrand}}" />
+                    </div>
+                </div>
+            </div>
+            {{#if config.trackStock}}
+            <div class="row">
+                <div class="col-sm-5 ml-3">
+                    <div class="form-group">
+                        <label for="productStock" class="control-label">{{ @root.__ "Stock level" }}</label>
+                        <input type="number" id="productStock" class="form-control" value="{{result.productStock}}" step="any" />
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <label for="productStockDisable" class="control-label">{{ @root.__ "Disable stock tracking" }}</label>
+                    <div class="checkbox">
+                        <label>
+                            <input class="productStockDisable" type="checkbox" {{checkedState result.productStockDisable}} id="productStockDisable">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
+                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Permalink</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success" id="validatePermalink" type="button">{{ @root.__ "Validate" }}</button>
+                        </div>
+                    </div>
+                    <p class="help-block">{{ @root.__ "This sets a readable URL for the product" }}</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">{{ @root.__ "Product variants" }}</label>
+                    <ul class="list-group" id="product_opt_wrapper">
+                        <li class="list-group-item bg-secondary">
+                            <div class="row">
+                                <div class='col-sm-3'>Title</div>
+                                <div class='col-sm-3'>Price</div>
+                                <div class='col-sm-3'>Stock</div>
+                                <div class='col-sm-3 text-right'>
+                                    <a href="#" data-toggle="modal" data-target="#variantModal" class="btn btn-outline-success">{{ @root.__ "Add" }}</a>
+                                </div>
+                            </div>
+                        </li>
+                        {{#if result.variants}}
+                        {{#each result.variants}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class='col-sm-3'>{{this.title}}</div>
+                                <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
+                                {{#if this.stock}}
+                                <div class='col-sm-3'>{{this.stock}}</div>
+                                {{else}}
+                                <div class='col-sm-3'>N/A</div>
+                                {{/if}}
+                                <div class='col-sm-3 text-right'>
+                                    <button class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
+                                        data-id="{{this._id}}"
+                                        data-title="{{this.title}}"
+                                        data-price="{{this.price}}"
+                                        data-stock="{{this.stock}}"
+                                    >{{ @root.__ "Edit" }}</button>
+                                    <button class='btn btn-outline-danger removeVariant' data-id="{{this._id}}">{{ @root.__ "Remove" }}</button>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                        {{else}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class='col-sm-12 text-center'>No current variants</div>
+                            </div>
+                        </li>
+                        {{/if}}
+                    </ul>
+                    <p class="help-block">{{ @root.__ "Here you can set variants for your product. Eg: Size, color, style" }}</p>
+                </div>
+            </div>
+            {{#contains config.paymentGateway 'stripe'}}
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Subscription plan</label>
+                    <input type="text" class="form-control" id="productSubscription" placeholder="plan_XXXXXXXXXXXXXX" value={{@root.result.productSubscription}}>
+                    <p class="help-block">First setup the plan in <strong>Stripe</strong> dashboard and enter the Plan ID. Format: plan_XXXXXXXXXXXXXX</p>
+                </div>
+            </div>
+            {{/contains}}
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="productComment" class="control-label">{{ @root.__ "Allow comment" }}</label>
+                    <div class="checkbox">
+                        <label>
+                            <input class="productComment" type="checkbox" {{checkedState result.productComment}} id="productComment">
+                        </label>
+                    </div>
+                    <p class="help-block">{{ @root.__ "Allow free form comments when adding products to cart" }}</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="productTags" class="control-label">{{ @root.__ "Product tag words" }}</label>
+                    <input type="text" class="form-control" id="productTags" value="{{result.productTags}}">
+                    <p class="help-block">{{ @root.__ "Tag words used to indexed products, making them easier to find and filter." }}</p>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div id="product-images">
+                    <div class="col-md-12 mb-2 p-0 d-flex">
+                        <h2>{{ @root.__ "Product images" }}</h2>
+                        <button type="button" class="btn btn-outline-info ml-auto" data-toggle="modal" data-target="#urlImageModal">{{ @root.__ "Add image URL" }}</button>
+                    </div>
+                    {{#if images}}
+                    <div class="row">
+                        {{#each images}}
+                        <div class="col-sm-3 mt-3">
+                            <p>
+                                <a data-id="{{this.path}}" class="btn-delete-image btn btn-outline-danger">{{ @root.__ "Delete" }}</a>
+                                {{#ifCond this.productImage '==' true}}
+                                    <span class="label label-info">{{ @root.__ "main image" }}</span>
+                                {{else}}
+                                    <a data-id="{{../this.path}}" class="set-as-main-image btn btn-outline-success">{{ @root.__ "Set as main image" }}</a>
+                                {{/ifCond}}
+                            </p>
+                            <img src="{{this.path}}" class="product-main-image img-fluid">
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{else}}
+                        <h4 class="text-warning">{{ @root.__ "No images have been uploaded for this product" }}</h4>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="productId" value="{{result._id}}" />
+    </form>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="urlImageModal" tabindex="-1" role="dialog" aria-labelledby="urlImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="urlImageModalLabel">{{ @root.__ "Product image URL" }}</h4>
+                <button type="button" class="close m-0 p-0" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="productImageUrl" class="form-control" placeholder="Full Image URL" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="addImageUrl" class="btn btn-outline-primary">{{ @root.__ "Add image URL" }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="uploadForm" enctype="multipart/form-data"></form>
+            <div class="modal-header">
+                <h4 class="modal-title" id="uploadModalLabel">{{ @root.__ "Product image upload" }}</h4>
+                <button type="button" class="close m-0 p-0" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <span class="btn btn-outline-info btn-file">
+                    {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="uploadButton" class="btn btn-outline-primary">{{ @root.__ "Upload" }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.min.js" integrity="sha256-Q4K0T9IUORjpebn9dIu9szj2Rgn7GmLF+S3RjgM8aXw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" integrity="sha256-f/v2ew/bb0v4el1ALE7bOoXGUDWGk2k+dkPLo3JPhLw=" crossorigin="anonymous" />
+<script>
+    $(document).ready(function() {
+        $('#productDescription').summernote({
+            height: 300,
+            minHeight: null
+        });
+    });
+</script>

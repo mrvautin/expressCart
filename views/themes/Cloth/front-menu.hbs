@@ -1,25 +1,22 @@
-<nav class="navbar navbar-default navbarMenuWrapper">
-    <div class="container-fluid">
-        <div class="col-md-8 col-md-offset-2 navbarMenu">
-            <ul class="nav navbar-nav">
-
-                <li {{#unless searchTerm}}class="navActive"{{/unless}}><a href="/">Home</a></li>
-                {{#each menu.items}}
-                    <li
-                        {{#menuMatch this.title @root.searchTerm}}{{/menuMatch}}
-                        {{#menuMatch this.title @root.title}}{{/menuMatch}}>
-                        <a href="{{this.link}}">{{this.title}}</a>
-                    </li>
-                {{/each}}
-                <li class="pull-right col-md-4 searchBarWrapper">
-                    <div class="search-bar-input input-group searchMenuLocation-{{config.menuLocation}} searchProPerRow-{{config.productsPerRow}}">
-                        <input type="text" name="frm_search" id="frm_search" class="form-control" placeholder="Search the shop">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" id="btn_search" type="submit">Search</button>
-                        </span>
-                    </div>
+<nav id="navbarMenu" class="navbar-expand-lg navbar navbar-light bg-light navbarMenuWrapper col-sm-12">
+    <div class="col-sm-8 offset-md-2 collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {{#unless searchTerm}}active{{/unless}}"><a class="nav-link" href="/">Home</a></li>
+            {{#each menu.items}}
+                <li class="nav-item"
+                    {{#menuMatch this.title @root.searchTerm}}{{/menuMatch}}
+                    {{#menuMatch this.title @root.title}}{{/menuMatch}}>
+                    <a class="nav-link" href="{{this.link}}">{{this.title}}</a>
                 </li>
-            </ul>
-        </div>
+            {{/each}}
+        </ul>
+        <form class="form-inline ml-auto">
+            <div class="input-group">
+                <input class="form-control" name="frm_search" id="frm_search" type="search" placeholder="{{ @root.__ "Search shop" }}" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" id="btn_search" type="submit">{{ @root.__ "Search" }}</button>
+                </div>
+            </div>
+        </form>
     </div>
 </nav>

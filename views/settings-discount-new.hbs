@@ -1,0 +1,46 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <form class="form-horizontal" id="discountNewForm" data-toggle="validator">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="float-right">
+                    <button id="" class="btn btn-outline-success" type="submit">Add discount</button>
+                </div>
+                <h2>{{ @root.__ "New discount" }}</h2>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountCode" class="control-label">{{ @root.__ "Discount code" }} *</label>
+                <input type="text" id="discountCode" class="form-control" minlength="1" maxlength="50" placeholder="CODE20" required/>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountType" class="control-label">{{ @root.__ "Discount type" }} *</label>
+                <select class="form-control" id="discountType">
+                    <option value="amount" selected>{{ @root.__ "Amount" }}</option>
+                    <option value="percent">{{ @root.__ "Percent" }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountValue" class="control-label">{{ @root.__ "Discount value" }} *</label>
+                <input type="number" id="discountValue" class="form-control" minlength="1" maxlength="50" placeholder="20" required/>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountStart" class="control-label">{{ @root.__ "Discount start" }} *</label>
+                <input id="discountStart" />
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountEnd" class="control-label">{{ @root.__ "Discount end" }} *</label>
+                <input id="discountEnd" />
+            </div>
+        </div>
+    </form>
+</main>

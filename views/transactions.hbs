@@ -1,0 +1,83 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <h2>Transactions</h2>
+    </div>
+    <div class="col-sm-12 search_bar">
+        <div class="input-group">
+            <input type="text" name="transaction_filter" id="transaction_filter" class="form-control" placeholder="Filter transactions">
+            <div class="input-group-append">
+                <button class="btn btn-outline-success" id="btn_transaction_filter">Filter</button>
+                <a href="/admin/transactions" class="hidden-xs btn btn-outline-warning">{{{feather 'x-octagon'}}}</a>
+            </div>
+        </div>
+        <p class="text-warning top-pad-10">{{ @root.__ "Transactions can be filtered by: gateway, amount or currency" }}</p>
+    </div>
+    <div class="col-sm-12">
+        <ul class="list-group">
+            <li class="list-group-item">
+                {{#ifCond resultType '==' 'filtered'}}
+                <strong>{{ @root.__ "Transactions" }} - <span class="text-danger">{{ @root.__ "Filtered term" }}: {{@root.searchTerm}} </span></strong>
+                {{else}}
+                <strong>{{ @root.__ "Recent transactions" }}</strong>
+                {{/ifCond}}
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="top-pad-8 text-truncate"><strong>Transaction ID</strong></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="top-pad-8 text-truncate"><strong>Gateway Reference</strong></div>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="top-pad-8 text-truncate"><strong>Date</strong></div>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="top-pad-8 text-truncate"><strong>Gateway Message</strong></div>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="top-pad-8 text-truncate"><strong>Amount</strong></div>
+                    </div>
+                </div>
+            </li>
+            {{#each results}}
+                <li class="list-group-item">
+                    <a href="/admin/transaction/{{this._id}}">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="top-pad-8 text-truncate">{{this._id}}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="top-pad-8 text-truncate">{{this.gatewayReference}}</div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <div class="top-pad-8 text-truncate">{{formatDate this.created "DD/MM/YYYY hh:mmA"}}</div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <div class="top-pad-8 text-truncate">{{this.gatewayMessage}}</div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <div class="top-pad-8 text-truncate">
+                                    {{@root.config.currencySymbol}}
+                                    {{formatAmount this.amount}}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            {{else}}
+                <li class="list-group-item text-center">There are no transactions</li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="col-md-12 mt-5">
+        <div id="pager" class="d-flex justify-content-center"></div>
+    </div>
+</div>
+{{!-- Pager settings --}}
+<input type="hidden" id="itemsPerPage" value="10" >
+<input type="hidden" id="pageNum" value="{{pageNum}}">
+<input type="hidden" id="totalItemCount" value="{{totalItemCount}}">
+<input type="hidden" id="paginateUrl" value="{{paginateUrl}}">
+<input type="hidden" id="searchTerm" value="{{searchTerm}}">

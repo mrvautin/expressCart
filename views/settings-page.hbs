@@ -1,0 +1,40 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <form id="settingsPageEditor">
+            <h2 class="clearfix">{{ @root.__ "Static page" }} <div class="float-right"><button type="submit" id="btnPageUpdate" class="btn btn-outline-success">{{button_text}}</button></div></h2>
+            <input type="hidden" id="pageId" value="{{page._id}}">
+            <div class="form-group">
+                <label>{{ @root.__ "Page name" }} *</label>
+                <input type="text" class="form-control" id="pageName" name="pageName" value="{{page.pageName}}" required>
+                <p class="help-block">{{ @root.__ "A friendly name to manage the static page." }}</p>
+            </div>
+            <div class="form-group">
+                <label>{{ @root.__ "Page slug" }} *</label>
+                <input type="text" class="form-control" id="pageSlug" name="pageSlug" value="{{page.pageSlug}}" required>
+                <p class="help-block">{{ @root.__ "Page_Slug_Description" }}</p>
+            </div>
+            <div class="form-group">
+                <label>{{ @root.__ "Page Enabled" }}: </label>
+                <div class="checkbox">
+                    <label><input class="settingsPageEnabled" type="checkbox" {{checkedState page.pageEnabled}} id="pageEnabled" name="pageEnabled"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{{ @root.__ "Page content" }} *</label>
+                <textarea id="pageContent">{{page.pageContent}}</textarea>
+                <p class="help-block">{{ @root.__ "Here you can enter the content you wish to be displayed on your static page." }}</p>
+            </div>
+        </form>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">
+<script>
+    $(document).ready(function() {
+        $('#pageContent').summernote({
+            height: 300,
+            minHeight: null
+        });
+    });
+</script>

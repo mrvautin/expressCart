@@ -1,0 +1,9 @@
+{
+    "description": "Card payment",
+    "environment": "test",
+    "apiKey": "this_is_not_real",
+    "clientKey": "this_is_not_real",
+    "merchantAccount": "this_is_not_real",
+    "currency": "AUD",
+    "countryCode": "AU"
+}

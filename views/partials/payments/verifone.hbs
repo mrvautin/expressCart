@@ -1,0 +1,9 @@
+<div>
+    <div class="mb-2">{{@root.paymentConfig.verifone.description}}</div>
+    <script defer src="{{@root.verifone.url}}"></script>
+    <div id="payment_form_container"></div>
+
+    {{#unless @root.verifone.url}}
+    <h5 class="text-danger">Error: There was an error setting up the payment.</h3>
+    {{/unless}}
+</div>

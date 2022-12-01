@@ -1,0 +1,13 @@
+<div class="col-md-10 offset-md-1 col-sm-12 top-pad-50">
+    <div class="row">
+        <div class="text-center col-md-10 offset-md-1">
+            {{#paymentMessage result.orderStatus}}{{/paymentMessage}}
+            <div>
+                <p><strong>{{ @root.__ "Order ID" }}:</strong> {{result._id}}</p>
+                <p><strong>{{ @root.__ "Payment ID" }}:</strong> {{result.transaction}}</p>
+            </div>
+            {{#paymentOutcome result.orderStatus}}{{/paymentOutcome}}
+            <a href="/" class="btn btn-outline-warning">Home</a>
+        </div>
+    </div>
+</div>

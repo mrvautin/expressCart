@@ -1,0 +1,32 @@
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="confirmModalLabel">Product review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="product" value="{{result._id}}">
+                <div class="form-group">
+                    <label for="review-title" class="col-form-label">Title:</label>
+                    <input type="text" class="form-control" id="review-title" placeholder="Love it.">
+                </div>
+                <div class="form-group">
+                    <label for="review-description" class="col-form-label">Description:</label>
+                    <textarea class="form-control" rows="3" placeholder="Product is great. Does everything it said it can do." id="review-description" name="review-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="review-rating" class="col-form-label">Rating:</label>
+                    <input type="number" class="form-control" id="review-rating" placeholder="5">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger mr-auto" data-dismiss="modal">Cancel</button>
+                <button type="button" id="addReview" class="btn btn-outline-success">Add review</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

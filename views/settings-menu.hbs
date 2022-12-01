@@ -1,0 +1,49 @@
+{{> partials/menu}}
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <h2>Menu</h2>
+        <div class="row">
+            <div class="col-sm-2 offset-sm-1">Menu</div>
+            <div class="col-sm-9">link</div> 
+        </div> 
+        <div id="draggable_list">
+            {{#each menu.items}}
+                <div class="row drag-row mb-2" id="menuId-{{@key}}">
+                    <input type="hidden" class="navId" value="{{title}}">
+                    <div class="col-sm-1 dragable_item">{{{feather 'move'}}}</div>
+                    <div class="col-sm-2 dragable_item">
+                        <input type="text" class="form-control navMenu navItem" value="{{title}}">
+                    </div>
+                    <div class="col-sm-6 dragable_item">
+                        <input type="text" class="form-control navLink navItem" value="{{link}}">
+                    </div>
+                    <div class="col-sm-3 dragable_item">
+                        <a class="btn btn-outline-danger settings-menu-delete" data-id="{{@key}}">
+                            {{{feather 'trash-2'}}}
+                        </a>
+                        <button type="submit" class="btn btn-outline-success" id="settings-menu-update" data-id="{{@key}}">
+                            {{{feather 'save'}}}
+                        </button>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        <div class="row">
+            <div class="col-sm-2 offset-sm-1">
+                <input type="text" class="form-control" id="newNavMenu" placeholder="Contact Us">
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="newNavLink" placeholder="/contact">
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" id="settings-menu-new" class="btn btn-outline-success">
+                    {{{feather 'plus'}}}
+                </button>
+            </div>
+        </div>
+        <p class="text-muted mt-4">
+            {{ @root.__ "Setting_menu_explain" }}
+        </p>
+    </div>
+</main>

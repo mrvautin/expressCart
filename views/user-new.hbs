@@ -1,0 +1,29 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+	<div class="col-12">
+		<div class="page-header">
+			<div class="float-right">
+				<button type="submit" id="btnUserAdd" class="btn btn-outline-success">{{ @root.__ "Create" }}</button>
+			</div>
+			<h2>{{ @root.__ "New User" }}</h2>
+		</div>
+		<form id="userNewForm" data-toggle="validator" autocomplete="off">
+			<div class="form-group">
+				<label>{{ @root.__ "Users name" }} *</label>
+				<input type="text" class="form-control" id="usersName" value="{{user.usersName}}" required>
+			</div>
+			<div class="form-group">
+				<label>{{ @root.__ "User email" }} *</label>
+				<input type="email" class="form-control" id="userEmail" value="{{user.userEmail}}" required>
+			</div>
+			<div class="form-group">
+				<label>{{ @root.__ "User password" }} *</label>
+				<input type="password" class="form-control" id="userPassword" required>
+			</div>
+			<div class="form-group">
+				<label>{{ @root.__ "Password confirm" }} *</label>
+				<input type="password" data-match="#userPassword"  class="form-control" required>
+			</div>
+		</form>
+	</div>
+</main>

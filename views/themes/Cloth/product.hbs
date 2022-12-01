@@ -1,89 +1,157 @@
 {{> themes/Cloth/front-menu}}
-<div class="product-layout col-md-8 col-md-offset-2">
+<div class="product-layout col-sm-8 offset-sm-2">
     <div class="row">
-        <div class="col-xs-12 col-md-6 pull-right">
+        <div class="col-sm-12 col-md-6 mr-auto">
+            {{#if result.productImage}}
+                <div class="title-image-container">
+                    <div class="image-prev image-button"> {{{feather 'chevron-left'}}}</div>
+                    <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-fluid" alt="...">
+                    <div class="image-next image-button"> {{{feather 'chevron-right'}}}</div>
+                </div>
+            {{else}}
+                <div class="title-image-container">
+                    <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-fluid" alt="...">
+                </div>
+            {{/if}}
+            {{#ifCond @root.images.length '>' 1}}
+                <div class="row">
+                {{#each @root.images}}
+                    <div class="vertical-center top-pad-20 col-6">
+                        <img src="{{this.path}}" class="thumbnail-image img-fluid">
+                    </div>
+                {{/each}}
+                </div>
+            {{/ifCond}}
+        </div>
+        <div class="col-sm-12 col-md-6 ml-auto">
             <div class="row">
-                <h1 class="col-md-10 product-title">{{result.productTitle}}</h1>
-                <h4 class="col-md-10 product-price">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
-                {{#if productOptions}}
-                    <h4 class="col-md-10 product-option">Options</h4>
+                <h1 class="col-md-10 product-title text-truncate">{{result.productTitle}}</h1>
+                {{#if variants}}
+                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{variants.0.price}}</h4>
+                {{else}}
+                    <h4 class="col-md-10 product-price mp-0">{{currencySymbol config.currencySymbol}}{{result.productPrice}}</h4>
+                {{/if}}
+                {{#if variants}}
+                    <h4 class="col-md-10 product-option">{{ @root.__ "Options" }}</h4>
                     <div class="col-md-10">
-                    {{#each productOptions}}
-                        {{#ifCond this.optType '==' "select"}}
-                            <strong>{{this.optName}}</strong>
-                            <select name="opt-{{this.optName}}" class="form-control product-opt">
-                                {{#each this.optOptions}}
-                                    <option value="{{this}}">{{this}}</option>
-                                {{/each}}
-                            </select>
-                        {{/ifCond}}
-                        {{#ifCond this.optType '==' "radio"}}
-                            {{#each this.optOptions}}
-                                <strong>{{this.optName}}</strong>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" class="product-opt" name="opt-{{../this.optName}}" value="{{this}}">
-                                        {{this}}
-                                    </label>
-                                </div>
-                            {{/each}}
-                        {{/ifCond}}
-                        {{#ifCond this.optType '==' "checkbox"}}
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" class="product-opt" name="opt-{{../this.optName}}" value="{{this.optName}}"><strong>{{this.optName}}</strong>
-                                </label>
-                            </div>
-                        {{/ifCond}}
-                    {{/each}}
+                        <select id="product_variant" class="form-control">
+                        {{#each variants}}
+                            <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}}</option>
+                        {{/each}}
+                        </select>
                     </div>
                 {{/if}}
+                {{#if config.trackStock}}
+                    {{#ifCond result.productStock '==' 0}}
+                    <div class="col-md-10">
+                        <h4 class="text-danger text-center">
+                            Out of stock
+                        </h4>
+                    </div>
+                    {{/ifCond}}
+                {{/if}}
                 <div class="col-md-10 productOptions">
-                    <p class="product-option-text">Quantity</p>
+                    <p class="product-option-text">{{ @root.__ "Quantity" }}</p>
                     <div class="input-group">
-                        <span class="input-group-btn">
+                        <div class="input-group-prepend">
                             <button class="btn btn-primary qty-btn-minus" type="button">-</button>
-                        </span>
-                        <input type="text" class="form-control add-color text-center" id="product_quantity" maxlength="3" value="1">
-                        <span class="input-group-btn">
+                        </div>
+                        <input type="number" class="form-control add-color text-center" id="product_quantity" maxlength="3" value="1">
+                        <div class="input-group-append">
                             <button class="btn btn-primary qty-btn-plus" type="button">+</button>
-                        </span>
+                        </div>
                     </div>
                 </div>
                 {{#if result.productComment}}
                 <div class="col-md-10">
-                    Leave a comment?
+                    {{ @root.__ "Leave a comment?" }}
                     <textarea class="form-control" id="product_comment"></textarea>
                 </div>
                 {{/if}}
                 <div class="col-md-10 btnAddToCart">
-                    <button class="btn btn-primary btn-block product-add-to-cart" type="button">Add to cart</button>
+                    <button class="btn btn-primary btn-block product-add-to-cart" type="button">{{ @root.__ "Add to cart" }}</button>
                 </div>
                 <div class="col-md-10 body_text">
-                    {{{productDescription}}}
+                    {{{fixTags result.productDescription}}}
                 </div>
+                {{#if @root.config.modules.enabled.reviews}}
+                <div class="col-md-10 mb-3">
+                    <button class="btn btn-warning" id="add-review">Add review</button>
+                    <div class="d-inline-block align-middle">{{{@root.reviews.ratingHtml}}}</div>
+                    {{#if @root.reviews.reviews}}
+                    <a href="#collapseReviews" data-toggle="collapse" class="d-inline-block align-middle ml-3">Recent reviews</a>
+                    {{/if}}
+                </div>
+                <div class="col-md-10">
+                    <ul class="list-group collapse" id="collapseReviews">
+                    {{#each @root.reviews.reviews}}
+                        <li class="list-group-item">
+                            <p class="text-muted small text-right">{{timeAgo this.date}}</p>
+                            <p><b>Rating:</b> {{this.rating}}</p>
+                            <p><b>Title:</b> {{this.title}}</p>
+                            <p><b>Description:</b> {{this.description}}</p>
+                        </li>
+                    {{/each}}
+                    </ul>
+                </div>
+                {{/if}}
             </div>
         </div>
-        <div class="col-xs-12 col-md-6 pull-left">
-            {{#if result.productImage}}
-                <div class="title-image-container">
-                    <div class="image-prev image-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i></div>
-                    <img src="{{result.productImage}}" id="product-title-image" class="product-title-image img-responsive" alt="...">
-                    <div class="image-next image-button"> <i class="fa fa-chevron-right" aria-hidden="true"></i></div>
-                </div>
-            {{else}}
-                <div class="title-image-container">
-                    <img src="/uploads/placeholder.png" id="product-title-image" class="product-title-image img-responsive" alt="...">
-                </div>
-            {{/if}}
-            {{#ifCond images.length '>' 1}}
-                {{#each images}}
-                    <div class="vertical-center top-pad-20 col-xs-6 col-lg-6 col-xl-6">
-                        <img src="{{this.path}}" class="thumbnail-image img-responsive">
-                    </div>
-                {{/each}}
-            {{/ifCond}}
-        </div>
     </div>
+    {{#if config.showRelatedProducts}}
+        {{#if relatedProducts}}
+        <div class="col-sm-12 mt-5">
+            <h4>Related products</h4>
+            <div class="row">
+                {{#each relatedProducts}}
+                <div class="col-md-3">
+                    <div>
+                        {{#if productPermalink}}
+                            <div class="product-wrapper">
+                                <a href="/product/{{this.productPermalink}}">
+                                    <div class="vertical-center img-thumbnail">
+                                        {{#if productImage}}
+                                            <img class="img-fluid" src="{{this.productImage}}" alt="...">
+                                        {{else}}
+                                            <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                        {{/if}}
+                                    </div>
+                                    <h3 class="product-title product-title-home top-pad-10">
+                                        {{this.productTitle}}
+                                    </h3>
+                                </a>
+                            </div>
+                        {{else}}
+                            <a href="/product/{{this._id}}">
+                                <div class="vertical-center img-thumbnail">
+                                    {{#if productImage}}
+                                        <img class="img-fluid" src="{{this.productImage}}" alt="...">
+                                    {{else}}
+                                        <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                    {{/if}}
+                                </div>
+                                <h3 class="product-title product-title-home top-pad-10">
+                                    {{this.productTitle}}
+                                </h3>
+                            </a>
+                        {{/if}}
+                        <h3 class="product-price mp-0 text-center">
+                            {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
+                        </h3>
+                        <p class="text-center">
+                            {{#if productPermalink}}
+                            <a class="btn btn-primary" href="/product/{{this.productPermalink}}">{{ @root.__ "View" }}</a>
+                            {{else}}
+                            <a class="btn btn-primary" href="/product/{{this._id}}">{{ @root.__ "View" }}</a>
+                            {{/if}}
+                        </p>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    {{/if}}
 </div>
 <input type="hidden" id="productId" value="{{result._id}}">
+<input type="hidden" id="currencySymbol" value="{{currencySymbol config.currencySymbol}}">

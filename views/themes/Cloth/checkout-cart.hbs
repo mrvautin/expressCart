@@ -1,0 +1,13 @@
+<div class="col-md-10 offset-md-1 col-sm-12">
+    <div class="row">
+        <div id="cart" class="col-md-12">
+            {{> (getTheme 'cart')}}
+            <div class="row">
+                <div class="col-sm-12 {{showCartButtons @root.session.cart}} cart-buttons">
+                    <button class="btn btn-danger float-left" id="empty-cart" type="button">{{ @root.__ "Empty cart" }}</button>
+                    <a href="/checkout/information" class="btn btn-primary float-right">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

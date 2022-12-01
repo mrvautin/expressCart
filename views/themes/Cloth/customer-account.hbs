@@ -1,0 +1,131 @@
+<div class="col-md-10 offset-md-1 col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/customer/account">Orders</a></li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-12 col-md-5 bottom-pad-15">
+            <div class="card top-marg-15">
+                <div class="card-body customer-details-login">
+                    <h5 class="card-heading">{{ @root.__ "Customer details" }}</h5>
+                    {{#unless @root.session.customerPresent}}
+                    <div class="row">
+                        <div class="col-sm-12 bottom-marg-15">
+                            <p>{{ @root.__ "Existing customer" }}</p>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="customerLoginEmail" name="loginEmail"
+                                    minlength="5" placeholder="Email address" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="customerLoginPassword"
+                                    name="loginPassword" minlength="5" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <a href="/customer/forgotten"
+                                    class="btn btn-primary float-left">{{ @root.__ "Forgotten" }}</a>
+                            </div>
+                            <div class="form-group">
+                                <button id="customerLogin" class="btn btn-primary float-right"
+                                    type="submit">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                    {{/unless}}
+                    <form id="customer-form" role="form" data-toggle="validator" novalidate="false">
+                        {{> themes/Cloth/shipping-form}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="/checkout/cart" id="customerSave" class="btn btn-primary float-left">Save details</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="col-12 bottom-pad-15 no-pad-right">
+                <div class="card top-marg-15">
+                    <div class="card-body">
+                        <h5 class="card-heading">{{ @root.__ "Orders" }}</h5>
+                        <div id="accordion">
+                            {{#unless orders}}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    There are no orders for this account. <a class="text-success" href="/">Order here</a>
+                                </div>
+                            </div>
+                            {{/unless}}
+                            {{#each orders}}
+                            <div class="card mb-3">
+                                <div class="card-header" id="headingOne">
+                                    <p class="mb-0">
+                                        OrderId: {{this._id}} - 
+                                        Date: {{formatDate this.orderDate "DD/MM/YYYY hh:mmA"}}
+                                        <button class="btn btn-sm btn-outline-success float-right" data-toggle="collapse" data-target="#collapse{{this._id}}" aria-expanded="true" aria-controls="collapse{{this._id}}">
+                                            View
+                                        </button>
+                                    </p>
+                                </div>
+                                <div id="collapse{{this._id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="card-body">
+                                        <ul class="list-group">
+                                            <li class="list-group-item list-group-input-pad">
+                                                <strong> Order status: </strong><span class="text-{{getStatusColor this.orderStatus}} float-right">{{this.orderStatus}}</span>
+                                            </li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order date" }}: </strong><span class="float-right">{{formatDate result.orderDate "DD/MM/YYYY hh:mmA"}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order ID" }}: </strong><span class="float-right">{{this._id}}</span></li>
+                                            {{#if result.orderExpectedBtc }}
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order Expected BTC" }}: </strong><span class="float-right">{{this.orderExpectedBtc}}</span></li>
+                                            {{/if}}
+                                            {{#if this.orderReceivedBtc }}
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order Received BTC" }}: </strong><span class="float-right">{{this.orderReceivedBtc}}</span></li>
+                                            {{/if}}
+                                            {{#if this.orderBlockonomicsTxid }}
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order Blockonomics Txid" }}: </strong><span class="float-right">{{this.orderBlockonomicsTxid}}</span></li>
+                                            {{/if}}
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order net amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount (math this.orderTotal '-' this.orderShipping)}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order shipping amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount this.orderShipping}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Order total amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount this.orderTotal}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Email address" }}: </strong><span class="float-right">{{this.orderEmail}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Company" }}: </strong><span class="float-right">{{this.orderCompany}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "First name" }}: </strong><span class="float-right">{{this.orderFirstname}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Last name" }}: </strong><span class="float-right">{{this.orderLastname}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Address 1" }}: </strong><span class="float-right">{{this.orderAddr1}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Address 2" }}: </strong><span class="float-right">{{this.orderAddr2}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Country" }}: </strong><span class="float-right">{{this.orderCountry}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "State" }}: </strong><span class="float-right">{{this.orderState}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Postcode" }}: </strong><span class="float-right">{{this.orderPostcode}}</span></li>
+                                            <li class="list-group-item"><strong> {{ @root.__ "Phone number" }}: </strong><span class="float-right">{{this.orderPhoneNumber}}</span></li>
+                                            {{#if this.trackingNumber }}
+                                            <li class="list-group-item"><strong> {{ @root.__ "Tracking number" }}: </strong><span class="float-right">{{this.trackingNumber}}</span></li>
+                                            {{/if}}
+                                            <li class="list-group-item">&nbsp;</li>
+                                            <li class="list-group-item"><strong class="text-info">{{ @root.__ "Products ordered" }}</strong></li>
+                                            {{#each this.orderProducts}}
+                                                <li class="list-group-item">
+                                                    {{this.quantity}} x {{this.title}}
+                                                    {{#if this.variantId}}
+                                                        &nbsp; > &nbsp;
+                                                        <span class="text-warning"> {{ @root.__ "Options" }}: </span>
+                                                        {{this.variantTitle}}
+                                                    {{/if}}
+                                                    <div class="float-right">{{currencySymbol @root.config.currencySymbol}}{{formatAmount this.totalItemPrice}}</div>
+                                                    {{#if productComment}}
+                                                    <h4><span class="text-danger">Comment:</span> {{this.productComment}}</h4>
+                                                    {{/if}}
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "hostUrl": {
+            "type": "string"
+        },
+        "newAddressApi": {
+            "type": "string"
+        },        
+        "priceApi": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "description", "apiKey", "hostUrl", "newAddressApi", "priceApi"
+    ],
+    "additionalProperties": false
+}

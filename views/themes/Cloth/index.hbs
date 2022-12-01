@@ -1,31 +1,31 @@
 {{> themes/Cloth/front-menu}}
-<div class="productsWrapper col-md-8 col-md-offset-2">
+<div class="productsWrapper col-sm-12 col-md-8 offset-md-2">
     {{#if filtered}}
-        <div class="product-layout col-md-12">
-            {{#if menuLink}}
-            <h4>Category: <strong>{{menuLink.title}}</strong></h4>
+        <div class="product-layout product-results col-sm-12">
+            {{#ifCond @root.paginateUrl '==' 'category'}}
+            <h1>{{ @root.__ "Category" }}: <strong>{{@root.searchTerm}}</strong></h1>
             {{else}}
-            <h4>Search results: <strong>{{searchTerm}}</strong></h4>
-            {{/if}}
+            <h1>{{ @root.__ "Search results" }}: <strong>{{@root.searchTerm}}</strong></h1>
+            {{/ifCond}}
         </div>
     {{/if}}
     <div class="row product-layout">
         {{#ifCond results.length '==' 0}}
-            <div class="col-md-12">
-                <p class="text-danger">No products found</p>
+            <div class="col-sm-12">
+                <p class="text-danger">{{ @root.__ "No products found" }}</p>
             </div>
         {{/ifCond}}
         {{#each results}}
             <div class="{{perRowClass ../config.productsPerRow}}">
                 <div class="thumbnail">
                     {{#if productPermalink}}
-                        <div class="product_wrapper">
+                        <div class="product-wrapper">
                             <a href="/product/{{this.productPermalink}}">
-                                <div class="vertical-center thumbnail-image-container">
+                                <div class="vertical-center img-thumbnail">
                                     {{#if productImage}}
-                                        <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                        <img class="img-fluid" src="{{this.productImage}}" alt="...">
                                     {{else}}
-                                        <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                        <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
                                     {{/if}}
                                 </div>
                                 <h3 class="product-title product-title-home top-pad-10">
@@ -35,11 +35,11 @@
                         </div>
                     {{else}}
                         <a href="/product/{{this._id}}">
-                            <div class="vertical-center thumbnail-image-container">
+                            <div class="vertical-center img-thumbnail">
                                 {{#if productImage}}
-                                    <img class="img-responsive" src="{{this.productImage}}" alt="...">
+                                    <img class="img-fluid" src="{{this.productImage}}" alt="...">
                                 {{else}}
-                                    <img class="img-responsive" src="/uploads/placeholder.png" alt="...">
+                                    <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
                                 {{/if}}
                             </div>
                             <h3 class="product-title product-title-home top-pad-10">
@@ -47,22 +47,42 @@
                             </h3>
                         </a>
                     {{/if}}
-                    <h3 class="product-price text-center">
-                        {{currencySymbol ../config.currencySymbol}}{{formatAmount productPrice}}
-                    </h3>
+                    {{#if variants}}
+                        <div class="col-md-12">
+                            {{#if @root.config.showHomepageVariants}}
+                            <select id="productVariant-{{this._id}}" class="productVariant form-control mb-2">
+                            {{#each variants}}
+                                <option value="{{this._id}}" data-price="{{this.price}}">{{this.title}} - {{currencySymbol @root.config.currencySymbol}}{{this.price}}</option>
+                            {{/each}}
+                            </select>
+                            {{else}}
+                            <h4 class="product-price mp-0 text-center">
+                                {{currencySymbol @root.config.currencySymbol}}{{formatAmount variants.0.price}}
+                            </h4>
+                            {{/if}}
+                        </div>
+                    {{else}}
+                        <h4 class="product-price mp-0 text-center">
+                            {{currencySymbol @root.config.currencySymbol}}{{formatAmount productPrice}}
+                        </h4>
+                    {{/if}}
                     <p class="text-center">
-                        <a class="btn btn-primary add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-options="{{checkProductOptions this.productOptions}}" role="button">Add to cart</a>
+                        {{#if @root.config.showHomepageVariants}}
+                        <a class="btn btn-primary add-variant-to-cart" data-id="{{this._id}}" role="button">{{ @root.__ "Add to cart" }}</a>
+                        {{else}}
+                        <a class="btn btn-primary add-to-cart" data-id="{{this._id}}" data-link="{{this.productPermalink}}" data-has-variants="{{checkProductVariants this.variants}}" role="button">{{ @root.__ "Add to cart" }}</a>
+                        {{/if}}
                     </p>
                 </div>
             </div>
         {{/each}}
     </div>
 </div>
-<input type="hidden" id="productsPerPage" value="{{productsPerPage}}" >
+<input type="hidden" id="itemsPerPage" value="{{productsPerPage}}" >
 <input type="hidden" id="pageNum" value="{{pageNum}}">
-<input type="hidden" id="totalProductCount" value="{{totalProductCount}}">
+<input type="hidden" id="totalItemCount" value="{{totalProductCount}}">
 <input type="hidden" id="paginateUrl" value="{{paginateUrl}}">
 <input type="hidden" id="searchTerm" value="{{searchTerm}}">
 <div class="col-md-12">
-    <div id="pager" class="text-center"></div>
+    <div id="pager" class="d-flex justify-content-center"></div>
 </div>

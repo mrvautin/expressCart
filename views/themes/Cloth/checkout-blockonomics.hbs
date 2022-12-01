@@ -1,0 +1,83 @@
+<div class="col-md-10 offset-md-1 col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/information">Information</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/shipping">Shipping</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/checkout/payment">Payment</a></li>
+            <li class="breadcrumb-item active" aria-current="page">BTC Address</li>
+        </ol>
+    </nav>
+    <div class="row">
+        {{#if paymentMessage}}
+            <p class="text-danger text-center">{{paymentMessage}}</p>
+        {{/if}}
+        <div class="col-md-5">
+            <div class="card top-marg-15">
+                <div class="card-body" id="blockonomics_div" data-address="{{@root.session.blockonomicsParams.address}}" data-amount="{{@root.session.blockonomicsParams.expectedBtc}}" data-timestamp="{{@root.session.blockonomicsParams.timestamp}}" data-orderid="{{@root.session.blockonomicsParams.pendingOrderId}}">
+                    <h5 class="card-title">{{ @root.__ "Blockonomics payment details" }}</h5>
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            {{@root.session.customerFirstname}} {{@root.session.customerLastname}} - 
+                            {{@root.session.customerEmail}}
+                        </li>
+                    </ul>
+                    {{#ifCond @root.session.totalCartShipping '>' 0}}
+                    <ul class="list-group bottom-pad-15">
+                        
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{@root.session.shippingMessage}}
+                                </div>
+                                <div class="col-md-6">
+                                    <span><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    {{/ifCond}}
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Send BTC amount
+                                </div>
+                                <div class="col-md-6">
+                                    <span><strong>{{@root.session.blockonomicsParams.expectedBtc}}</strong></span>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>                    
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-12" }>
+                                    Address:<br>
+                                    <span style="font-size:14px;"><strong>{{@root.session.blockonomicsParams.address}}</strong></span>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>         
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-12" id="blockonomics_waiting" style="text-align:center;">
+                                    Waiting for payment<br>
+                                    <strong><span id="blockonomics_timeout">10m 0s</span></strong> left<br>
+                                    <img src="/images/spinner.gif">
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>  
+                  </div>
+            </div>
+        </div>
+        <div id="cart" class="col-md-7">
+            {{> (getTheme 'cart')}}
+        </div>
+    </div>
+</div>

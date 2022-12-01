@@ -10,8 +10,15 @@
         "nodejs",
         "ecommerce",
         "paypal",
+        "stripe",
+        "authorize.net",
+        "blockonomics",
+        "adyen",
+        "instore",
         "lunr",
         "cart",
-        "shopping"
-    ]
+        "shopping",
+        "payway",
+        "westpac"
+      ]
 }

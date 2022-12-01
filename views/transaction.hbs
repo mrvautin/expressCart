@@ -1,0 +1,25 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-sm-12">
+        <h2>View Transaction</h2>
+    </div>
+    <div class="order-layout col-md-12">
+        <ul class="list-group">
+            <li class="list-group-item"><strong> {{ @root.__ "Date" }}: </strong><span class="float-right">{{formatDate result.created "DD/MM/YYYY hh:mmA"}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Transaction ID" }}: </strong><span class="float-right">{{result._id}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Gateway reference" }}: </strong><span class="float-right">{{result.gatewayReference}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Gateway message" }}: </strong><span class="float-right">{{result.gatewayMessage}}</span></li>
+            {{#if result.approved}}
+            <li class="list-group-item"><strong> {{ @root.__ "Approved" }}: </strong><span class="float-right text-success">{{result.approved}}</span></li>
+            {{else}}
+            <li class="list-group-item"><strong> {{ @root.__ "Approved" }}: </strong><span class="float-right text-danger">{{result.approved}}</span></li>
+            {{/if}}
+            <li class="list-group-item"><strong> {{ @root.__ "Gateway" }}: </strong><span class="float-right">{{result.gateway}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Amount" }}: </strong><span class="float-right">{{currencySymbol config.currencySymbol}}{{formatAmount result.amount}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Currency" }}: </strong><span class="float-right">{{toUpper result.currency}}</span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Customer" }}: </strong><span class="float-right"><a href="/admin/customer/view/{{result.customer}}">{{result.customer}} {{{feather 'external-link'}}}</a></span></li>
+            <li class="list-group-item"><strong> {{ @root.__ "Order" }}: </strong><span class="float-right"><a href="/admin/order/view/{{result.order}}">{{result.order}} {{{feather 'external-link'}}}</a></span></li>
+        </ul>
+        <input type="hidden" id="transaction_id" value="{{result._id}}">
+    </div>
+</main>

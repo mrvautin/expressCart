@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "currency": {
+            "type": "string"
+        },
+        "userId": {
+            "type": "string"
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "baseUrl": {
+            "type": "string"
+        },
+        "entityId": {
+            "type": "string"
+        },
+        "paymentContract": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "description",
+        "currency",
+        "userId",
+        "apiKey",
+        "baseUrl",
+        "entityId",
+        "paymentContract"
+    ],
+    "additionalProperties": false
+}

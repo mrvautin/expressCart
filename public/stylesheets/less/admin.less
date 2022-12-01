@@ -1,0 +1,349 @@
+@accent-color: #cc4135;
+@danger-color: #dc3545;
+@nav-menu-bg: #f5f5f5;
+@btn-danger-color-txt: #ffffff;
+@btn-danger-color-bg: #000000;
+@btn-danger-color-border: #000000;
+@pagination-hover: #762323;
+
+html,body {
+    height: 100%;
+    background-color: #f8f9fa !important;
+}
+
+.content-body {
+    margin-bottom: 0;
+}
+
+.feather{
+    width: 16px;
+    height: 16px;
+}
+
+.bg-secondary{
+    background-color: @nav-menu-bg !important;
+}
+
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info {
+    background-color: white;
+}
+
+.btn-outline-primary {
+    color: @btn-danger-color-txt !important;
+    background-color:@btn-danger-color-bg;
+    border-color: @btn-danger-color-border;
+}
+
+.btn-outline-danger{
+    color: @danger-color !important;
+}
+
+.btn-outline-danger:hover{
+    color: @btn-danger-color-txt !important;
+}
+
+.has-error input, .has-error textarea, .has-error div {
+    border-color: @accent-color;
+}
+
+.search-bar-input, #frm_search, .search-bar-input .btn {
+    padding-top: 10px;
+    height: 45px;
+}
+
+.footer{
+    padding-top: 20px;
+}
+
+.admin-menu{
+    padding-left: 0;
+}
+
+.admin-menu .list-group-item {
+    border-bottom: none;
+}
+
+.navbarMenuWrapper{
+    background-color: @nav-menu-bg;
+}
+
+.navbarMenu>ul>li>a:hover{
+    color: @accent-color !important;
+}
+
+.navbarMenu{
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.product-wrapper>a:hover{
+    color: @accent-color !important;
+}
+
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a{
+    margin-bottom: 0;
+    height: 100px !important;
+}
+
+#navbar>.navbar-nav>li>a{
+    padding-top: 35px;
+}
+
+.pagination>li>a{
+    background-color: @accent-color !important;
+}
+
+.page-item.active .page-link {
+    color: @pagination-hover !important;
+}
+
+.page-link:hover {
+    color: @pagination-hover !important;
+}
+
+.admin-card {
+    background-color: white !important;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 0 1px rgba(0,0,0,.12), 0 1px 6px rgba(0,0,0,.03), 0 6px 10px -8px rgba(0,0,0,.1);
+}
+
+.admin-card-body {
+    padding: 5px;
+}
+
+/* Fixes summernote editor issue: https://github.com/summernote/summernote/issues/2516 */
+body .popover{display:none !important; }
+
+.navbar-brand{
+    color: @accent-color !important;
+    letter-spacing: 4px;
+    padding-left: 20px !important;
+    padding-top: 0 !important;
+    height: 80px !important;
+    font-size: 55px !important;
+}
+
+.navbar-brand-image, .navbar-brand{
+    height: 80px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.navbar-default .badge {
+    background-color: @accent-color;
+}
+
+.pushy-link:hover, .pushy-link:focus, .pushy-link:active, .pushy-link:active:hover,
+#empty-cart:hover, #empty-cart:focus, #empty-cart:active, #empty-cart:active:hover{
+    border-color: @accent-color;
+    background-color: @accent-color;
+}
+
+.navActive>a{
+    margin-bottom: 0px;
+    padding-top: 15px;
+    border-bottom: 5px solid @accent-color;
+}
+
+.navbar-static-top, #navbar, .navbar-header, #navbar>.navbar-nav, #navbar>.navbar-nav>li>a {
+    background-color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #838b8f;
+    font-size: 20px;
+}
+
+.global-result-type {
+    color: #8d8d8d;
+}
+
+.global-result:hover {
+    background-color: #007bff;
+}
+
+.global-result:hover .global-result-detail, 
+.global-result:hover .global-result-type, 
+.global-result:hover .global-result-type .fal {
+    color: #fff !important;
+}
+
+.global-result a {
+    text-decoration: none !important;
+}
+
+.global-result:hover {
+    cursor: pointer;
+}
+
+.global-result:first-child {
+    border-top-left-radius: 0; 
+    border-top-right-radius: 0;
+}
+
+.global-result {
+    border-left: 0;
+    border-right: 0;
+}
+
+.global-search-modal-content, .global-search-modal-header{
+    background-color: transparent;
+    border: none;
+}
+
+#global-search-results{
+    padding-right: 0;
+    border-bottom-left-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+}
+
+.global-search-form{
+    margin-bottom: 0;
+}
+
+#global-search-value {
+    border-bottom-right-radius: 0;
+}
+
+.search-input-addon {
+    border-bottom-left-radius: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    background-color: white;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+  
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: 100vh;
+    padding-top: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+  
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+    .sidebar-sticky {
+        position: -webkit-sticky;
+        position: sticky;
+    }
+}
+  
+.sidebar .nav-link {
+    font-weight: 400;
+    color: #333;
+}
+  
+.sidebar .nav-link .feather {
+    margin-right: 4px;
+    color: #999;
+}
+  
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+    color: inherit;
+}
+  
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+.sidebar-brand {
+    width: 80%;
+}
+
+.sidebar-search {
+    text-align: center;
+    width: 20%;
+}
+
+.sidebar-addon {
+    height: 40px;
+}
+
+.sidebar-link {
+    display: inline-block;
+    width: 80%;
+}
+
+.sidebar-link-addon {
+    display: inline-block;
+    width: 10%;
+}
+
+/*
+ * Content
+ */
+
+[role="main"] {
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+  
+@media (min-width: 768px) {
+    [role="main"] {
+        padding-top: 20px; 
+        padding-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    .navbar-default .navbar-brand {
+        padding-top: 10px;
+    }
+
+    .navbar-default .navbar-nav>li>a{
+        font-size: 16px;
+    }
+
+    .searchBarWrapper{
+        padding-top: 10px;
+    }
+
+    .navbarMenuWrapper{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .navbarMenuOuter{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .navActive>a {
+        color: #fff !important;
+    }
+
+    .navbarMenu {
+        padding-right: 7.5px;
+        padding-left: 7.5px;
+    }
+
+    .navActive>a{
+        color: white !important;
+        background-color: @accent-color;
+        border-bottom: none;
+    }
+
+    .footer {
+        padding-top: 10px;
+    }
+}

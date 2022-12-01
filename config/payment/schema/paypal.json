@@ -1,0 +1,32 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string",
+            "enum": ["sandbox", "live"]
+        },
+        "client_id": {
+            "type": "string"
+        },
+        "client_secret": {
+            "type": "string"
+        },
+        "paypalCartDescription": {
+            "type": "string"
+        },
+        "paypalCurrency": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "description",
+        "mode",
+        "client_id",
+        "client_secret",
+        "paypalCartDescription",
+        "paypalCurrency"
+    ],
+    "additionalProperties": false
+}

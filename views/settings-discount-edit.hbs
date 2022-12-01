@@ -1,0 +1,47 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <form class="form-horizontal" id="discountEditForm" data-toggle="validator">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <div class="float-right">
+                    <button id="" class="btn btn-outline-success" type="submit">Update discount</button>
+                </div>
+                <h2>{{ @root.__ "Edit discount" }}</h2>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountCode" class="control-label">{{ @root.__ "Discount code" }} *</label>
+                <input type="text" id="discountCode" class="form-control" minlength="1" maxlength="50" value="{{discount.code}}" required/>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountType" class="control-label">{{ @root.__ "Discount type" }} *</label>
+                <select class="form-control" id="discountType">
+                    <option value="amount"  {{selectState discount.type "amount"}}>{{ @root.__ "Amount" }}</option>
+                    <option value="percent" {{selectState discount.type "percent"}}>{{ @root.__ "Percent" }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountValue" class="control-label">{{ @root.__ "Discount value" }} *</label>
+                <input type="number" id="discountValue" class="form-control" minlength="1" maxlength="50" value="{{discount.value}}" required/>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountStart" class="control-label">{{ @root.__ "Discount start" }} *</label>
+                <input id="discountStart" value="{{formatDate discount.start 'DD/MM/YYYY kk:mm'}}" />
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="discountEnd" class="control-label">{{ @root.__ "Discount end" }} *</label>
+                <input id="discountEnd" value="{{formatDate discount.end 'DD/MM/YYYY kk:mm'}}" />
+            </div>
+        </div>
+        <input type="hidden" id="discountId" value="{{discount._id}}">
+    </form>
+</main>

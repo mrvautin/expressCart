@@ -1,0 +1,12 @@
+{
+    "description": "Card payment",
+    "secretKey": "sk_test_this_is_not_real",
+    "publicKey": "pk_test_this_is_not_real",
+    "stripeCurrency": "usd",
+    "stripeDescription": "expressCart payment",
+    "stripeLogoURL": "http://localhost:1111/images/stripelogo.png",
+    "stripeWebhookSecret": "",
+    "paymentMethods": [
+        "card"
+    ]
+}

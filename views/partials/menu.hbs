@@ -1,24 +1,115 @@
-<div class="col-lg-3">
-    <h2>Menu</h2>
-    <ul class="list-group">
-        <li class="list-group-item"><strong>Products</strong></li>
-        {{#ifCond session.isAdmin '===' true}}
-        <li class="list-group-item"><i class="fa fa-plus-square-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/product/new">New</a></li>
-        {{/ifCond}}
-        <li class="list-group-item"><i class="fa fa-list fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/products">List</a></li>
-        <li class="list-group-item"><strong>Orders</strong></li>
-        <li class="list-group-item"><i class="fa fa-cube fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/orders">List</a></li>
-        <li class="list-group-item"><strong>Customers</strong></li>
-        <li class="list-group-item"><i class="fa fa-users fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/customers">List</a></li>
-        <li class="list-group-item"><strong>Users</strong></li>
-        {{#ifCond session.isAdmin '===' true}}
-        <li class="list-group-item"><i class="fa fa-user-plus fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/new">New</a></li>
-        <li class="list-group-item"><i class="fa fa-user fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/users">Edit</a></li>
-        {{/ifCond}}
-        <li class="list-group-item"><i class="fa fa-user-circle-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/user/edit/{{session.userId}}">My Account</a></li>
-        <li class="list-group-item"><strong>Settings</strong></li>
-        <li class="list-group-item"><i class="fa fa-cog fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings">General settings</a></li>
-        <li class="list-group-item"><i class="fa fa-bars fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/menu">Menu</a></li>
-        <li class="list-group-item"><i class="fa fa-file-o fa-icon" aria-hidden="true"></i> &nbsp; <a href="/admin/settings/pages">Static pages</a></li>
-    </ul>
-</div>
+<nav class="col-md-2 d-none d-md-block sidebar">
+    <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="/admin"><img class="sidebar-brand" src="/images/logo-admin.png"></a>
+                <a href="#" data-toggle="modal" data-target="#globalSearchModal" class="sidebar-search sidebar-link-addon text-muted">{{{feather 'search'}}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/dashboard">
+                    {{{feather 'bar-chart'}}} &nbsp;
+                    {{ @root.__ "Dashboard" }}
+                </a>
+            </li>
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Manage</span>
+            </h6>
+            {{#ifCond session.isAdmin '===' true}}
+            <li class="nav-item sidebar-addon">
+                <a class="nav-link sidebar-link" href="/admin/products">
+                    {{{feather 'tag'}}} &nbsp;
+                    Products
+                </a>
+                <a class="sidebar-link-addon text-muted" href="/admin/product/new">
+                    {{{feather 'plus'}}}
+                </a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/products">
+                    {{{feather 'tag'}}} &nbsp;
+                    Products
+                </a>
+            </li>
+            {{/ifCond}}
+            <li class="nav-item sidebar-addon">
+                <a class="nav-link sidebar-link" href="/admin/orders">
+                    {{{feather 'package'}}} &nbsp;
+                    Orders
+                </a>
+                <a class="sidebar-link-addon text-muted" href="/admin/order/create">
+                    {{{feather 'plus'}}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/customers">
+                    {{{feather 'users'}}} &nbsp;
+                    Customers
+                </a>
+            </li>
+            <li class="nav-item sidebar-addon">
+                <a class="nav-link sidebar-link" href="/admin/users">
+                    {{{feather 'user'}}} &nbsp;
+                    Users
+                </a>
+                <a class="sidebar-link-addon text-muted" href="/admin/user/new">
+                    {{{feather 'plus'}}}
+                </a>
+            </li>
+            <li class="nav-item sidebar-addon">
+                <a class="nav-link sidebar-link" href="/admin/transactions">
+                    {{{feather 'dollar-sign'}}} &nbsp;
+                    Transactions
+                </a>
+            </li>
+            {{#if @root.config.modules.enabled.reviews}}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/reviews">
+                    {{{feather 'star'}}} &nbsp;
+                    Reviews
+                </a>
+            </li>
+            {{/if}}
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Settings</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/settings">
+                    {{{feather 'sliders'}}} &nbsp;
+                    {{ @root.__ "General settings" }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/settings/menu">
+                    {{{feather 'menu'}}} &nbsp;
+                    {{ @root.__ "Menu" }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/settings/pages">
+                    {{{feather 'file-text'}}} &nbsp;
+                    {{ @root.__ "Static pages" }}
+                </a>
+            </li>
+            {{#ifCond session.isAdmin '===' true}}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/settings/discounts">
+                    {{{feather 'code'}}} &nbsp;
+                    {{ @root.__ "Discount codes" }}
+                </a>
+            </li>
+            {{/ifCond}}
+        </ul>
+        <ul class="nav flex-column mt-5">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/logout">
+                    {{{feather 'log-out'}}} &nbsp;
+                    {{ @root.__ "Logout" }}
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

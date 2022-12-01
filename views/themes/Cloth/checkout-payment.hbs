@@ -1,0 +1,75 @@
+<div class="col-md-10 offset-md-1 col-sm-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/information">Information</a></li>
+            <li class="breadcrumb-item" aria-current="page"><a href="/checkout/shipping">Shipping</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="/checkout/payment">Payment</a></li>
+        </ol>
+    </nav>
+    <div class="row">
+        {{#if paymentMessage}}
+            <p class="text-danger text-center">{{paymentMessage}}</p>
+        {{/if}}
+        <div class="col-md-5">
+            <div class="card top-marg-15">
+                <div class="card-body">
+                    <h5 class="card-title">{{ @root.__ "Customer details" }}</h5>
+                    <ul class="list-group bottom-pad-15">
+                        <li class="list-group-item">
+                            {{@root.session.customerFirstname}} {{@root.session.customerLastname}} - 
+                            {{@root.session.customerEmail}}
+                            <span class="float-right"><a href="/checkout/information">Change</a></span>
+                        </li>
+                    </ul>
+                    <ul class="list-group bottom-pad-15">
+                        {{#ifCond @root.session.totalCartShipping '>' 0}}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{@root.session.shippingMessage}}
+                                </div>
+                                <div class="col-md-6">
+                                    <span><strong>{{currencySymbol @root.config.currencySymbol}}{{formatAmount @root.session.totalCartShipping}}</strong></span>
+                                    <span class="float-right"><a href="/checkout/shipping">Change</a></span>
+                                </div>
+                            </div>
+                        </li>
+                        {{else}}
+                        <li class="list-group-item">FREE shipping <span class="float-right"><a href="/checkout/shipping">Change</a></span></li>
+                        {{/ifCond}}
+                    </ul>
+                    {{#if @root.config.modules.loaded.discount}}
+                    <div class="input-group bottom-pad-15">
+                        <input class="form-control" id="discountCode" type="search" placeholder="{{ @root.__ "Discount code" }}" value="{{@root.session.discountCode}}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success" id="addDiscountCode">{{ @root.__ "Apply" }}</button>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-danger" id="removeDiscountCode">{{{feather 'x'}}}</button>
+                        </div>
+                    </div>
+                    {{/if}}
+                    <div id="payment-form" class="payment-form">
+                    {{#if session.customerPresent}}
+                        <ul class="list-group bottom-pad-15">
+                            {{#each config.paymentGateway}}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{> (partial this) }}
+                                    </div>
+                                </div>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="cart" class="col-md-7">
+            {{> (getTheme 'cart')}}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-md-12">
+        <h2 class="clearfix">{{ @root.__ "Discount codes" }} <div class="float-right"><a href="/admin/settings/discount/new" class="btn btn-outline-success">{{ @root.__ "New Discount" }}</a></div></h2>
+        {{#if discounts}}
+            <ul class="list-group">
+                {{#each discounts}}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-4 mt-2">
+                                <span><strong>{{ @root.__ "Code" }}:</strong>&nbsp; {{this.code}}</span>
+                            </div>
+                            <div class="col-2 mt-2">
+                                <span><strong>{{ @root.__ "Type" }}:</strong>&nbsp; {{this.type}}</span>
+                            </div>
+                            <div class="col-3 mt-2">
+                                <span><strong>{{ @root.__ "Status" }}:</strong>
+                                {{#ifCond (discountExpiry this.start this.end) '===' true}}
+                                    <span class="text-success">{{ @root.__ "Running" }}</span>
+                                {{else}}
+                                    <span class="text-danger">{{ @root.__ "Not running" }}</span>
+                                {{/ifCond}}
+                                </span>
+                            </div>
+                            <div class="col-3 text-right">
+                                <a class="btn btn-outline-success" href="/admin/settings/discount/edit/{{this._id}}">{{ @root.__ "Edit" }}</a>
+                                <button class="btn btn-outline-danger" id="btnDiscountDelete" data-id="{{this._id}}">{{ @root.__ "Delete" }}</button>
+                            </div>
+                        </div>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <h4 class="text-warning text-center">{{ @root.__ "There are currently no discount codes setup." }}</h4>
+        {{/if}}
+    </div>
+</main>

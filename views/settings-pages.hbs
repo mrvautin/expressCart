@@ -1,0 +1,33 @@
+{{> partials/menu}}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-md-12">
+        <h2 class="clearfix">{{ @root.__ "Static pages" }} <div class="float-right"><a href="/admin/settings/pages/new" class="btn btn-outline-success">{{ @root.__ "New page" }}</a></div></h2>
+        <p class="text-muted">
+            {{ @root.__ "Static_Pages_Info" }}
+        </p>
+        {{#if pages}}
+            <ul class="list-group">
+                {{#each pages}}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="top-pad-5"><strong>{{ @root.__ "Name" }}:</strong>&nbsp; {{pageName}}</div>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <a class="btn btn-outline-success" href="/admin/settings/pages/edit/{{_id}}">{{ @root.__ "Edit" }}</a>
+                                <button class="btn btn-outline-danger" id="btnPageDelete" data-id="{{_id}}">{{ @root.__ "Delete" }}</button>
+                            </div>
+                        </div>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <h4 class="text-warning text-center">{{ @root.__ "There are currently no static pages setup. Please setup a static page." }}</h4>
+            <p class="text-center">
+                <a class="btn btn-outline-success" href="/admin/settings/pages/new"> {{ @root.__ "Create new" }}</a>
+            </p>
+        {{/if}}
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet">

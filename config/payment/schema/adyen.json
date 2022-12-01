@@ -1,0 +1,36 @@
+{
+    "properties": {
+        "description": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string",
+            "enum": ["test", "live"]
+        },
+        "apiKey": {
+            "type": "string"
+        },
+        "clientKey": {
+            "type": "string"
+        },
+        "merchantAccount": {
+            "type": "string"
+        },
+        "currency": {
+            "type": "string"
+        },
+        "countryCode": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "description",
+        "environment",
+        "apiKey",
+        "clientKey",
+        "merchantAccount",
+        "currency",
+        "countryCode"
+    ],
+    "additionalProperties": false
+}
