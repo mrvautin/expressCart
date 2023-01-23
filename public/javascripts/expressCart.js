@@ -74,6 +74,12 @@ $(document).ready(function (){
         cartUpdate(qtyElement);
     });
 
+
+    $(document).on('change', '.cart-product-quantity', function (e) {
+
+        cartUpdate(e.target);
+    });
+
     $(document).on('click', '.btn-delete-from-cart', function(e){
         deleteFromCart($(e.target));
     });
