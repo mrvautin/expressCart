@@ -549,9 +549,8 @@ $(document).ready(function (){
     // checkout-blockonomics page (blockonomics_payment route) handling START ***
     if($('#blockonomics_div').length > 0){
         var orderid = $('#blockonomics_div').data('orderid') || '';
-        var timestamp = $('#blockonomics_div').data('timestamp') || -1;
         var address = $('#blockonomics_div').data('address') || '';
-        var blSocket = new WebSocket('wss://www.blockonomics.co/payment/' + address + '?timestamp=' + timestamp);
+        var blSocket = new WebSocket('wss://www.blockonomics.co/payment/' + address);
         blSocket.onopen = function (msg){
         };
         var timeOutMinutes = 10;
