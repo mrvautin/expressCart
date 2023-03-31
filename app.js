@@ -214,6 +214,13 @@ handlebars = handlebars.create({
         discountExpiry: (start, end) => {
             return moment().isBetween(moment(start), moment(end));
         },
+        IsHidden: (v1, operator, v2) => {
+            switch(operator){
+                case '==':
+                    return (v1 === v2) ? "" : "hidden"
+
+            }
+        },
         ifCond: (v1, operator, v2, options) => {
             switch(operator){
                 case '==':
@@ -250,7 +257,7 @@ handlebars = handlebars.create({
             }
             if(status === 'Pending'){
                 const paymentConfig = getPaymentConfig();
-                if(config.paymentGateway === 'instore'){
+                if(['instore', 'wiretransfer' , 'ondelivery'].includes(config.paymentGateway) ){
                     return `<h2 class="text-warning">${paymentConfig.resultMessage}</h2>`;
                 }
                 return '<h2 class="text-warning">The payment for this order is pending. We will be in contact shortly.</h2>';
@@ -315,6 +322,43 @@ handlebars = handlebars.create({
         timeAgo: (date) => {
             return moment(date).fromNow();
         },
+        setVar: (varName, varValue, options) => {
+            options.data.root[varName] = varValue;
+        },
+        getDescriptionLanguage: (result, language) => {
+            return result[`productDescription_${language}`] ? result[`productDescription_${language}`] : ""
+        },
+        getExtraLanguageFromKey: (result, key,  language, defaultLanguage) => {
+            if (defaultLanguage !== language) {
+                return result[`${key}_${language}`] ? result[`${key}_${language}`] : ""
+            } else {
+                return result[key];
+            }
+        },
+        getIdForLanguages : (idName, language, defaultLanguage) => {
+            return defaultLanguage === language ?idName : `${idName}_${language}`;
+        },
+        getIdForLanguagesForMenuId : (idName, language, defaultLanguage,menu) => {
+            if(menu.language === language || (!menu.language && language === defaultLanguage)){
+                return defaultLanguage === language ?idName : `${idName}_${language}`;
+            }else{
+                return "dont_use";
+            }
+
+        },
+        getIdForLanguagesWithId : (idName,id, language, defaultLanguage) => {
+            return defaultLanguage === language ? `${idName}-${id}` : `${idName}-${id}_${language}`;
+        },
+        getMinLength : (language, defaultLanguage, minLengthIfDefaultLang ) => {
+            return language === defaultLanguage ? minLengthIfDefaultLang : 0
+        },
+        getRequired : (language, defaultLanguage ) => {
+            return language === defaultLanguage ? "required" : ""
+        },
+        isMatchingLanguageOrDefault : (menu, lang2 , deflocale, options) => {
+            const result = (lang2 === menu.language) || (typeof menu.language === "undefined" && deflocale === lang2);
+            return  result ? options.fn(this) : options.inverse(this);
+},
         imagePath: (value) => {
             if(value && value.substring(0, 4) === 'http'){
                 return value;
@@ -336,6 +380,7 @@ handlebars = handlebars.create({
                 <use xlink:href="/dist/feather-sprite.svg#${icon}"/>
             </svg>`;
         }
+
     }
 });
 
@@ -363,6 +408,7 @@ app.set('port', process.env.PORT || 1111);
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(config.secretCookie));
+
 app.use(session({
     resave: true,
     saveUninitialized: true,
@@ -498,6 +544,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         await db.cart.deleteMany({
             sessionId: { $nin: validSessionIds }
         });
+
     });
 
     // Fire up the cron job to create google product feed
@@ -525,6 +572,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
         });
     };
 
+
     // Set trackStock for testing
     if(process.env.NODE_ENV === 'test'){
         config.trackStock = true;
@@ -535,6 +583,7 @@ initDb(config.databaseConnectionString, async (err, db) => {
 
     // Start the app
     try{
+        await versionUpdate(db);
         await app.listen(app.get('port'));
         app.emit('appStarted');
         if(process.env.NODE_ENV !== 'test'){
@@ -545,5 +594,28 @@ initDb(config.databaseConnectionString, async (err, db) => {
         process.exit(2);
     }
 });
+const versionUpdate = async (db) => {
+    const version = await db.systeminfo.findOne({_id : "version"});
+    if(!version){
+        console.warn('will upgrade data to latest version');
+        try{
+            const menus = await (db.menu.find({})).toArray();
+            for(const menu of menus){
+                const items = menu.items.map(x => {
+                    x.id = `${Math.floor(Math.random()*10000000000)}`
+                    return x;
+                });
+                db.menu.updateOne({_id : menu._id},{$set : {items : items}});
 
+            }
+            db.systeminfo.insertOne({_id : "version", value :"1.2.0"});
+        }catch(e){
+            console.error("upgrade failed",e);
+        }
+
+    }else{
+        console.log(`expressCart is running V${version.value}`);
+    }
+
+}
 module.exports = app;

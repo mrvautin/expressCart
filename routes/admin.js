@@ -29,11 +29,13 @@ const {
 const {
     sortMenu,
     getMenu,
+    getMenus,
     newMenu,
     updateMenu,
     deleteMenu,
     orderMenu
 } = require('../lib/menu');
+const sharp = require("sharp");
 const ObjectId = require('mongodb').ObjectID;
 const router = express.Router();
 const csrfProtection = csrf({ cookie: true });
@@ -281,7 +283,7 @@ router.get('/admin/settings/menu', csrfProtection, restrict, async (req, res) =>
         messageType: clearSessionValue(req.session, 'messageType'),
         helpers: req.handlebars.helpers,
         config: req.app.config,
-        menu: sortMenu(await getMenu(db)),
+        menus: (await getMenus(db)).map(sortMenu),
         csrfToken: req.csrfToken()
     });
 });
@@ -422,18 +424,18 @@ router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
 });
 
 // update existing menu item
-router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = updateMenu(req);
-    if(result === false){
-        res.status(400).json({ message: 'Failed updating menu.' });
+router.post('/admin/settings/menu/update', restrict, checkAccess, async (req, res) => {
+    const result = await updateMenu(req);
+    if (result === false) {
+        res.status(400).json({message: 'Failed updating menu.'});
         return;
     }
-    res.status(200).json({ message: 'Menu updated successfully.' });
+    res.status(200).json({message: 'Menu updated successfully.'});
 });
 
 // delete menu item
-router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => {
-    const result = deleteMenu(req, req.body.menuId);
+router.post('/admin/settings/menu/delete', restrict, checkAccess, async (req, res) => {
+    const result = await deleteMenu(req, req.body.menuId);
     if(result === false){
         res.status(400).json({ message: 'Failed deleting menu.' });
         return;
@@ -442,10 +444,10 @@ router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => 
 });
 
 // We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
-    const result = orderMenu(req, res);
-    if(result === false){
-        res.status(400).json({ message: 'Failed saving menu order' });
+router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, async (req, res) => {
+    const result = await orderMenu(req, res);
+    if (result === false) {
+        res.status(400).json({message: 'Failed saving menu order'});
         return;
     }
     res.status(200).json({});
@@ -719,15 +721,23 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
 
         const productPath = product._id.toString();
         const uploadDir = path.join('public/uploads', productPath);
+        const thumbnailDir = path.join('public/uploads', productPath,"thumbnails");
+
 
         // Check directory and create (if needed)
         checkDirectorySync(uploadDir);
+        checkDirectorySync(thumbnailDir);
+
+
 
         // Setup the new path
-        const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
+        const sanitizedFileName = file.originalname.replace(/ /g, '_');
+        const imagePath = path.join('/uploads', productPath, sanitizedFileName);
+        const thumbnailPath = path.join('/uploads', productPath,"thumbnails",sanitizedFileName);
+
 
         // save the new file
-        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
+        const dest = fs.createWriteStream(path.join(uploadDir, sanitizedFileName));
         const pipeline = util.promisify(stream.pipeline);
 
         try{
@@ -735,13 +745,19 @@ router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFi
                 fs.createReadStream(file.path),
                 dest
             );
+            //resize image for thumbnails
+            await sharp(file.path)
+                .resize(500,375)
+                .jpeg({ mozjpeg: true })
+                .toFile(path.join(thumbnailDir,sanitizedFileName));
+
 
             // delete the temp file.
             fs.unlinkSync(file.path);
 
             // if there isn't a product featured image, set this one
             if(!product.productImage){
-                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
+                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath, productThumbnail : thumbnailPath } }, { multi: false });
             }
             res.status(200).json({ message: 'File uploaded successfully' });
         }catch(ex){

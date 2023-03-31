@@ -3,31 +3,55 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
     <div class="col-sm-12">
         <h2>Menu</h2>
+         <input type="hidden" class="defaultLocale" id="defaultLocale" value="{{@root.config.defaultLocale}}">
+            <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages,translatableClass)>
+                                    {{#availableLanguages}}
+                                        <option value={{this}}>{{@root.__ this}}</option>
+                                    {{/availableLanguages}}
+                                 </select>
         <div class="row">
             <div class="col-sm-2 offset-sm-1">Menu</div>
-            <div class="col-sm-9">link</div> 
-        </div> 
+            <div class="col-sm-9">link</div>
+        </div>
         <div id="draggable_list">
-            {{#each menu.items}}
-                <div class="row drag-row mb-2" id="menuId-{{@key}}">
-                    <input type="hidden" class="navId" value="{{title}}">
-                    <div class="col-sm-1 dragable_item">{{{feather 'move'}}}</div>
-                    <div class="col-sm-2 dragable_item">
-                        <input type="text" class="form-control navMenu navItem" value="{{title}}">
-                    </div>
-                    <div class="col-sm-6 dragable_item">
-                        <input type="text" class="form-control navLink navItem" value="{{link}}">
-                    </div>
-                    <div class="col-sm-3 dragable_item">
-                        <a class="btn btn-outline-danger settings-menu-delete" data-id="{{@key}}">
-                            {{{feather 'trash-2'}}}
-                        </a>
-                        <button type="submit" class="btn btn-outline-success" id="settings-menu-update" data-id="{{@key}}">
-                            {{{feather 'save'}}}
-                        </button>
-                    </div>
-                </div>
+         {{#each menus}}
+
+            {{#availableLanguages}}
+             <input type="hidden" id="{{getIdForLanguagesForMenuId "menuMongoId" this @root.config.defaultLocale ../this}}" value="{{../this._id}}">
+            {{#isMatchingLanguageOrDefault ../this this  @root.config.defaultLocale}}
+            {{#each ../../this.items}}
+
+
+                    <div class="{{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguages "menuRow" ../../this @root.config.defaultLocale}}" {{IsHidden ../../this '==' @root.config.defaultLocale}}>
+                     <div class="row drag-row mb-2 {{getIdForLanguages "translatable" ../../this @root.config.defaultLocale}}" id="{{getIdForLanguagesWithId "menuId" @key ../../this @root.config.defaultLocale}}" >
+                                                <input type="hidden" class="navId {{../../this}}" value="{{this.id}}">
+                                                <input type="hidden" class="language" id="language" value="{{../../this}}">
+
+                                                <div class="col-sm-1 dragable_item" >{{{feather 'move'}}}</div>
+                                                <div class="col-sm-2 dragable_item" >
+
+                                                    <input type="text" id="{{getIdForLanguages "navMenuTitle" ../../this @root.config.defaultLocale}}"  class="form-control navItem navMenu" value="{{this.title}}">
+                                                </div>
+                                                <div class="col-sm-6 dragable_item">
+                                                    <input type="text" class="form-control navLink navItem" value="{{this.link}}">
+                                                </div>
+                                                <div class="col-sm-3 dragable_item">
+                                                    <a class="btn btn-outline-danger settings-menu-delete" data-id="{{this.id}}">
+                                                        {{{feather 'trash-2'}}}
+                                                    </a>
+                                                    <button type="submit" class="btn btn-outline-success" id="settings-menu-update" data-id="{{@key}}">
+                                                        {{{feather 'save'}}}
+                                                    </button>
+                                                </div>
+                                            </div>
+                       </div>
+                        {{else}}
+
+
             {{/each}}
+                 {{/isMatchingLanguageOrDefault}}
+{{/availableLanguages}}
+             {{/each}}
         </div>
         <div class="row">
             <div class="col-sm-2 offset-sm-1">
@@ -47,3 +71,16 @@
         </p>
     </div>
 </main>
+<script>
+const getAllLanguages = () => {
+        const languages = [];
+     {{#availableLanguages}}
+     languages.push("{{this}}")
+     {{/availableLanguages}}
+     return languages;
+     }
+const allLanguages = getAllLanguages();
+const translatableFields = ["navMenuTitle","menuRow"];
+const translatableClass = "translatable";
+
+</script>

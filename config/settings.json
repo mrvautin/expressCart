@@ -15,8 +15,8 @@
     "googleAnalytics": "",
     "injectJs": "",
     "customCss": "",
-    "currencySymbol": "£",
-    "currencyISO": "USD",
+    "currencySymbol": "lei",
+    "currencyISO": "RON",
     "paymentGateway": [
         "stripe"
     ],
@@ -24,9 +24,22 @@
     "theme": "Cloth",
     "trackStock": false,
     "orderHook": "",
+    "hooks" : {
+        "product" : {
+            "onCreate" : ""
+        },
+        "variant" : {
+            "onCreate" : ""
+        },
+        "order" : {
+            "onCreate" : ""
+        }
+
+    },
     "availableLanguages": [
         "en",
-        "it"
+        "it",
+        "ro"
     ],
     "defaultLocale": "en",
     "maxQuantity": 25,
@@ -47,5 +60,8 @@
         }
     },
     "showRelatedProducts": true,
-    "showHomepageVariants": false
+    "showHomepageVariants": false,
+    "variantTemplates" : [{
+        "color" : ["black","white","red"]
+    }]
 }

@@ -137,6 +137,7 @@ router.post('/admin/order/create', async (req, res, next) => {
         orderPaymentGateway: 'Instore',
         orderPaymentMessage: 'Your payment was successfully completed',
         orderTotal: req.session.totalCartAmount,
+        orderCurrency: config.currencyISO,
         orderShipping: req.session.totalCartShipping,
         orderItemCount: req.session.totalCartItems,
         orderProductCount: req.session.totalCartProducts,

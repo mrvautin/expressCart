@@ -22,11 +22,15 @@
                         <div class="product-wrapper">
                             <a href="/product/{{this.productPermalink}}">
                                 <div class="vertical-center img-thumbnail">
-                                    {{#if productImage}}
-                                        <img class="img-fluid" src="{{this.productImage}}" alt="...">
-                                    {{else}}
-                                        <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
-                                    {{/if}}
+                                {{#if productThumbnail}}
+                                    <img class="img-fluid" src="{{this.productThumbnail}}" alt="productThumbnail">
+                                {{else}}
+                                  {{#if productImage}}
+                                     <img class="img-fluid" src="{{this.productImage}}" alt="productImage">
+                                  {{else}}
+                                     <img class="img-fluid" src="/uploads/placeholder.png" alt="placeHolder">
+                                   {{/if}}
+                                {{/if}}
                                 </div>
                                 <h3 class="product-title product-title-home top-pad-10">
                                     {{this.productTitle}}
@@ -36,10 +40,14 @@
                     {{else}}
                         <a href="/product/{{this._id}}">
                             <div class="vertical-center img-thumbnail">
-                                {{#if productImage}}
-                                    <img class="img-fluid" src="{{this.productImage}}" alt="...">
+                                {{#if productThumbnail}}
+                                    <img class="img-fluid" src="{{this.productThumbnail}}" alt="productThumbnail">
                                 {{else}}
-                                    <img class="img-fluid" src="/uploads/placeholder.png" alt="...">
+                                  {{#if productImage}}
+                                     <img class="img-fluid" src="{{this.productImage}}" alt="productImage">
+                                  {{else}}
+                                     <img class="img-fluid" src="/uploads/placeholder.png" alt="placeHolder">
+                                   {{/if}}
                                 {{/if}}
                             </div>
                             <h3 class="product-title product-title-home top-pad-10">

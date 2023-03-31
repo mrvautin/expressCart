@@ -1,6 +1,6 @@
 {
   "name": "express-cart",
-  "version": "1.1.19",
+  "version": "1.2.3",
   "description": "A fully functioning Node.js shopping cart with Stripe, PayPal and Authorize.net payments.",
   "private": false,
   "scripts": {
@@ -23,9 +23,10 @@
     }
   },
   "engines": {
-    "node": ">=10.16.0"
+    "node": ">=12.13.0 <=16.13.0"
   },
   "dependencies": {
+    "@adyen/api-library": "^2.1.7",
     "ajv": "^6.10.2",
     "ajv-errors": "^1.0.1",
     "async": "^2.6.3",
@@ -68,6 +69,7 @@
     "rand-token": "^0.4.0",
     "rimraf": "^2.7.1",
     "sanitize-html": "^2.3.2",
+    "sharp": "^0.29.2",
     "sitemap": "^1.6.0",
     "string-strip-html": "^4.3.14",
     "strip-bom": "^3.0.0",

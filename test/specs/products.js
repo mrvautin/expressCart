@@ -83,6 +83,33 @@ test('[Success] Add a product', async t => {
     t.deepEqual(res.body.message, 'New product successfully created');
 });
 
+test('[Success] Add a product with dimensions', async t => {
+    const product = {
+        productPermalink: 'test-jacket-with-size',
+        productTitle: 'Test Jacket',
+        productPrice: '100.00',
+        productDescription: 'Test product description used to describe the product',
+        productPublished: true,
+        productTags: 'organic, jacket',
+        productComment: false,
+        productStock: 50,
+        productDimensions : {
+            length : "180",
+            height : "105",
+            width : "47"
+        }
+    };
+
+    const res = await g.request
+        .post('/admin/product/insert')
+        .send(product)
+        .set('apiKey', g.users[0].apiKey)
+        .expect(200);
+
+    // Check the returned message
+    t.deepEqual(res.body.message, 'New product successfully created');
+});
+
 test('[Success] Add a product with incorrect GTIN', async t => {
     const product = {
         productPermalink: 'test-jacket-invalid-gtin',

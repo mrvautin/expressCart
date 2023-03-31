@@ -1,41 +1,41 @@
 <div class="row">
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <input type="email" class="form-control customerDetails" id="shipEmail" name="shipEmail" minlength="5" placeholder="Email address" value="{{@root.session.customerEmail}}" required>
+            <input type="email" class="form-control customerDetails" id="shipEmail" name="shipEmail" minlength="5" placeholder="{{@root.__ "Email address"}}" value="{{@root.session.customerEmail}}" required>
             <div class="invalid-feedback">
-                Please enter a valid email address
+                {{@root.__ "Please enter a valid email address"}}
             </div>
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipCompany" name="shipCompany" placeholder="Company name" value="{{@root.session.customerCompany}}">
+            <input type="text" class="form-control customerDetails" id="shipCompany" name="shipCompany" placeholder="{{@root.__ "Company name"}}" value="{{@root.session.customerCompany}}">
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipFirstname" name="shipFirstname" placeholder="First name" value="{{@root.session.customerFirstname}}" required>
+            <input type="text" class="form-control customerDetails" id="shipFirstname" name="shipFirstname" placeholder="{{@root.__ "First name"}}" value="{{@root.session.customerFirstname}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipLastname" name="shipLastname" placeholder="Last name" value="{{@root.session.customerLastname}}" required>
+            <input type="text" class="form-control customerDetails" id="shipLastname" name="shipLastname" placeholder="{{@root.__ "Last name"}}" value="{{@root.session.customerLastname}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipAddr1" name="shipAddr1" placeholder="Address 1" value="{{@root.session.customerAddress1}}" required>
+            <input type="text" class="form-control customerDetails" id="shipAddr1" name="shipAddr1" placeholder="{{@root.__ "Address 1"}}" value="{{@root.session.customerAddress1}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipAddr2" name="shipAddr2" placeholder="Address 2 (optional)" value="{{@root.session.customerAddress2}}">
+            <input type="text" class="form-control customerDetails" id="shipAddr2" name="shipAddr2" placeholder="{{@root.__ "Address 2 (optional)"}}" value="{{@root.session.customerAddress2}}">
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
             <select class="form-control" id="shipCountry" name="shipCountry" required>
-                <option value="" disabled selected>Select Country</option>
+                <option value="" disabled selected>{{@root.__ "Select Country"}}</option>
                 {{#each countryList}}
                 <option {{selectState this @root.session.customerCountry}} value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -44,22 +44,22 @@
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipState" name="shipState" placeholder="State" value="{{@root.session.customerState}}" required>
+            <input type="text" class="form-control customerDetails" id="shipState" name="shipState" placeholder="{{@root.__ "State"}}" value="{{@root.session.customerState}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <input type="text" class="form-control customerDetails" id="shipPostcode" name="shipPostcode" placeholder="Post code" value="{{@root.session.customerPostcode}}" required>
+            <input type="text" class="form-control customerDetails" id="shipPostcode" name="shipPostcode" placeholder="{{@root.__ "Post code"}}" value="{{@root.session.customerPostcode}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <input type="number" class="form-control customerDetails" id="shipPhoneNumber" name="shipPhoneNumber" placeholder="Phone number" value="{{@root.session.customerPhone}}" required>
+            <input type="number" class="form-control customerDetails" id="shipPhoneNumber" name="shipPhoneNumber" placeholder="{{@root.__ "Phone number"}}" value="{{@root.session.customerPhone}}" required>
         </div>
     </div>
     <div class="col-sm-12 col-md-12">
         <div class="form-group">
-            <textarea class="form-control customerDetails" placeholder="Order comment" id="orderComment" name="orderComment">{{@root.session.orderComment}}</textarea>
+            <textarea class="form-control customerDetails" placeholder="{{@root.__ "Order comment"}}" id="orderComment" name="orderComment">{{@root.session.orderComment}}</textarea>
         </div>
     </div>
 </div>

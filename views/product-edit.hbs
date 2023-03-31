@@ -12,9 +12,16 @@
                 </div>
             </div>
             <div class="col-12">
+                <select id="languageSelector" onChange = switchLanguage("{{@root.config.defaultLocale}}",translatableFields,allLanguages,translatableClass)>
+                    {{#availableLanguages}}
+                        <option value={{this}}>{{@root.__ this}}</option>
+                    {{/availableLanguages}}
+                 </select>
                 <div class="form-group">
                     <label for="productTitle" class="control-label">{{ @root.__ "Product title" }} *</label>
-                    <input type="text" id="productTitle" class="form-control" minlength="5" maxlength="200" value="{{result.productTitle}}" required/>
+                         {{#availableLanguages}}
+                    <input type="text" id="{{getIdForLanguages "productTitle" this @root.config.defaultLocale}}" {{IsHidden this '==' @root.config.defaultLocale}} class="form-control" minlength="{{getMinLength this @root.config.defaultLocale 0}}" maxlength="200" value="{{getExtraLanguageFromKey ../result 'productTitle' this @root.config.defaultLocale}}" {{getRequired this @root.config.defaultLocale}}/>
+                         {{/availableLanguages}}
                 </div>
             </div>
             <div class="row ml-0 mr-0">
@@ -72,12 +79,16 @@
             <div class="col-12">
                 <div class="form-group">
                     <label for="productDescription" class="control-label">{{ @root.__ "Product description" }} *</label>
-                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{result.productDescription}}</textarea>
+                    <textarea minlength="5" rows="10" id="productDescription" class="form-control" required>{{lookup result 'productDescription'}}</textarea>
+                     {{#availableLanguages}}
+                    <textarea minlength="5" rows="10" hidden = false id="{{getIdForLanguages "productDescription" this @root.config.defaultLocale}}" class="form-control">{{getDescriptionLanguage ../result this}}</textarea>
+                     {{/availableLanguages}}
+
                 </div>
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <label class="control-label">Permalink</label>
+                    <label class="control-label">{{@root.__ "Permalink"}}</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="productPermalink" placeholder="Permalink for the article" value={{result.productPermalink}}>
                         <div class="input-group-append">
@@ -88,14 +99,25 @@
                 </div>
             </div>
             <div class="col-12">
+        <div class="form-group">
+            <label class="control-label">{{@root.__ "Dimensions"}}</label>
+            <div class="input-group">
+                <input type="number" id="productDimensionsHeight" class="form-control" value="{{result.productDimensions.height}}" step="any" /> X
+                <input type="number" id="productDimensionsWidth" class="form-control" value="{{result.productDimensions.width}}" step="any" /> X
+                <input type="number" id="productDimensionsLength" class="form-control" value="{{result.productDimensions.length}}" step="any" />
+            </div>
+            <p class="help-block">{{ @root.__ "height*width*length" }}</p>
+        </div>
+    </div>
+            <div class="col-12">
                 <div class="form-group">
                     <label class="control-label">{{ @root.__ "Product variants" }}</label>
                     <ul class="list-group" id="product_opt_wrapper">
                         <li class="list-group-item bg-secondary">
                             <div class="row">
-                                <div class='col-sm-3'>Title</div>
-                                <div class='col-sm-3'>Price</div>
-                                <div class='col-sm-3'>Stock</div>
+                                <div class='col-sm-3'>{{ @root.__ "Title" }}</div>
+                                <div class='col-sm-3'>{{ @root.__ "Price" }}</div>
+                                <div class='col-sm-3'>{{ @root.__ "Stock" }}</div>
                                 <div class='col-sm-3 text-right'>
                                     <a href="#" data-toggle="modal" data-target="#variantModal" class="btn btn-outline-success">{{ @root.__ "Add" }}</a>
                                 </div>
@@ -105,20 +127,31 @@
                         {{#each result.variants}}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class='col-sm-3'>{{this.title}}</div>
-                                <div class='col-sm-3'>{{currencySymbol config.currencySymbol}}{{formatAmount this.price}}</div>
+                              {{#availableLanguages}}
+                                <div id="{{getIdForLanguagesWithId "variantTitle" @key this @root.config.defaultLocale}}"
+                                {{IsHidden this '==' @root.config.defaultLocale}}
+                                class='col-sm-3 {{getIdForLanguages "language" this @root.config.defaultLocale}}'>{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}
+                                </div>
+
+                             {{/availableLanguages}}
+
+                                <div class='col-sm-3'>{{currencySymbol @root.config.currencySymbol}} {{formatAmount this.price}}</div>
                                 {{#if this.stock}}
                                 <div class='col-sm-3'>{{this.stock}}</div>
                                 {{else}}
                                 <div class='col-sm-3'>N/A</div>
                                 {{/if}}
                                 <div class='col-sm-3 text-right'>
-                                    <button class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
-                                        data-id="{{this._id}}"
-                                        data-title="{{this.title}}"
-                                        data-price="{{this.price}}"
-                                        data-stock="{{this.stock}}"
+                                  {{#availableLanguages}}
+                                    <button id="{{getIdForLanguages "variantButton" this @root.config.defaultLocale}}" class='btn btn-outline-warning editVariant' href="#variantEditModal" data-toggle="modal"
+                                     {{IsHidden this '==' @root.config.defaultLocale}}
+                                        data-id="{{../this._id}}"
+                                        data-title="{{getExtraLanguageFromKey ../this 'title' this @root.config.defaultLocale}}"
+                                        data-language="{{this}}"
+                                        data-price="{{../this.price}}"
+                                        data-stock="{{../this.stock}}"
                                     >{{ @root.__ "Edit" }}</button>
+                                  {{/availableLanguages}}
                                     <button class='btn btn-outline-danger removeVariant' data-id="{{this._id}}">{{ @root.__ "Remove" }}</button>
                                 </div>
                             </div>
@@ -127,7 +160,7 @@
                         {{else}}
                         <li class="list-group-item">
                             <div class="row">
-                                <div class='col-sm-12 text-center'>No current variants</div>
+                                <div class='col-sm-12 text-center'>{{ @root.__ "No current variants"}}</div>
                             </div>
                         </li>
                         {{/if}}
@@ -224,6 +257,7 @@
                 <span class="btn btn-outline-info btn-file">
                     {{ @root.__ "Select file" }}<input type="file" name="uploadFile" id="uploadFile" form="uploadForm">
                 </span>
+                <input type="hidden" id="productId" name="productId" value="{{result._id}}"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -235,6 +269,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.min.js" integrity="sha256-Q4K0T9IUORjpebn9dIu9szj2Rgn7GmLF+S3RjgM8aXw=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" integrity="sha256-f/v2ew/bb0v4el1ALE7bOoXGUDWGk2k+dkPLo3JPhLw=" crossorigin="anonymous" />
 <script>
+const getAllLanguages = () => {
+        const languages = [];
+     {{#availableLanguages}}
+     languages.push("{{this}}")
+     {{/availableLanguages}}
+     return languages;
+     }
+const allLanguages = getAllLanguages();
+const translatableFields = ["productDescription","productTitle","variantTitle", "variantButton"];
+const translatableClass = "language";
+
+
+
+
     $(document).ready(function() {
         $('#productDescription').summernote({
             height: 300,

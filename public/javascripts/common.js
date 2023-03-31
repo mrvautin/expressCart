@@ -82,11 +82,82 @@ $(document).ready(function (){
         });
     };
 
+    if($('#stripe-form2121').length > 0){
+        var stripe = Stripe($('#stripePublicKey').val());
+        var elements = stripe.elements();
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                    '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        // Create an instance of the card Element.
+        var card = elements.create('card', { style: style });
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        $(document).on('submit', '#stripe-payment-form', function(e){
+            e.preventDefault();
+
+            stripe.createToken(card).then(function(response){
+                if(response.error){
+                    console.log('Stripe err', response.error);
+                    showNotification('Failed to complete transaction', 'danger', true);
+                }else{
+                    $.ajax({
+                        type: 'POST',
+                        url: '/stripe/checkout_action',
+                        data: {
+                            token: response.token.id
+                        }
+                    }).done((response) => {
+                        window.location = '/payment/' + response.paymentId;
+                    }).fail((response) => {
+                        console.log('Stripe err', response.error);
+                        window.location = '/payment/' + response.paymentId;
+                    });
+                }
+            });
+        });
+    }
+
     $('#checkoutInstore').validator().on('click', function(e){
         e.preventDefault();
         $.ajax({
             type: 'POST',
             url: '/instore/checkout_action'
+        }).done((response) => {
+            window.location = '/payment/' + response.paymentId;
+        }).fail((response) => {
+            window.location = '/payment/' + response.paymentId;
+        });
+    });
+    $('#checkoutWiretransfer').validator().on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/wiretransfer/checkout_action'
+        }).done((response) => {
+            window.location = '/payment/' + response.paymentId;
+        }).fail((response) => {
+            window.location = '/payment/' + response.paymentId;
+        });
+    });
+    $('#checkoutOnDelivery').validator().on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/ondelivery/checkout_action'
         }).done((response) => {
             window.location = '/payment/' + response.paymentId;
         }).fail((response) => {
@@ -203,4 +274,55 @@ function slugify(str){
     .replace(/ø/gi, 'oe')
     .replace(/å/gi, 'a');
     return $slug.toLowerCase();
+}
+
+
+function switchLanguage (defaultLang,translatableFields,allLanguages,translatableClass){
+    const e = document.getElementById("languageSelector");
+
+    const language = e.value;
+    const nonDefaultLanguages = allLanguages.filter((x) => x !== defaultLang);
+    if (language === defaultLang) {
+        for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = false;
+
+        nonDefaultLanguages.forEach((language) => {
+            for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = true;
+            translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId.concat("_").concat(language))
+            if(item) item.hidden = true
+            })
+            if (translatableFields.includes("productDescription")) $("#productDescription_".concat(language)).summernote('destroy');
+        })
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId)
+            if(item) item.hidden = false
+        })
+        if (translatableFields.includes("productDescription")) $('#productDescription').summernote({height: 300, minHeight: null});
+
+    } else {
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId)
+            if (item) item.hidden = true
+        })
+
+        if (translatableFields.includes(`productDescription`)) $('#productDescription').summernote('destroy');
+        for (let el of document.querySelectorAll(`.${translatableClass}`)) el.hidden = true;
+
+        nonDefaultLanguages.forEach((language) => {
+            for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = true;
+            translatableFields.forEach((fieldId) => {
+                const item = document.getElementById(fieldId.concat("_").concat(language))
+                if (item) item.hidden = true
+            })
+            if (translatableFields.includes(`productDescription`)) $("#productDescription_".concat(language)).summernote('destroy');
+        })
+
+        translatableFields.forEach((fieldId) => {
+            const item = document.getElementById(fieldId.concat("_").concat(language))
+            if (item) item.hidden = false
+        })
+        for (let el of document.querySelectorAll(`.${translatableClass}_${language}`)) el.hidden = false;
+        if (translatableFields.includes("productDescription")) $("#productDescription_".concat(language)).summernote({height: 300, minHeight: null});
+    }
+
 }

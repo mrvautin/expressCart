@@ -12,11 +12,13 @@ const {
 const { indexProducts } = require('../lib/indexing');
 const { validateJson } = require('../lib/schema');
 const { paginateData } = require('../lib/paginate');
+const {getNonDefaultLanguages, getConfig} = require('../lib/config');
 const colors = require('colors');
 const rimraf = require('rimraf');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
+const hooker = require('../lib/hooks');
 
 router.get('/admin/products/:page?', restrict, async (req, res, next) => {
     let pageNum = 1;
@@ -110,8 +112,19 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
         productAddedDate: new Date(),
         productStock: safeParseInt(req.body.productStock) || null,
         productStockDisable: convertBool(req.body.productStockDisable),
+        productDimensions: {
+            length : req.body.productDimensions?.length,
+            width : req.body.productDimensions?.width,
+            height: req.body.productDimensions?.height
+        },
+        productStockDisable: convertBool(req.body.productStockDisable),
         productSubscription: cleanHtml(req.body.productSubscription)
     };
+
+    //to save the dimensions we need them all 3;
+    if(!doc.productDimensions.length || !doc.productDimensions.width || !doc.productDimensions.height){
+        delete doc.productDimensions;
+    }
 
     // Validate the body again schema
     const schemaValidate = validateJson('newProduct', doc);
@@ -143,6 +156,7 @@ router.post('/admin/product/insert', restrict, checkAccess, async (req, res) => 
                 productId: newId
             });
         });
+        hooker.emit("product_onCreate",product);
     }catch(ex){
         console.log(colors.red(`Error inserting document: ${ex}`));
         res.status(400).json({ message: 'Error inserting document' });
@@ -190,18 +204,73 @@ router.get('/admin/product/edit/:id', restrict, checkAccess, async (req, res) =>
     });
 });
 
+const titleGenerator = (__,title,color,dimensions,product) => {
+    let titles ={}
+    if(!title){
+        titles = getNonDefaultLanguages().reduce((acc,x) => {
+            acc[`title_${x}`] = defaultTitleLogic(__,title,color,dimensions,x,product);
+            return acc
+        },{})  ;
+        titles[`title`] = defaultTitleLogic(__,title,color,dimensions,getConfig().defaultLocale,product);
+    }else{
+        titles = getNonDefaultLanguages().reduce((acc,x) => {
+            acc[`title_${x}`] = title;
+            return acc
+        },{});
+        titles[`title`] = title;
+    }
+    return titles;
+}
+const defaultTitleLogic = (__, title,untranslatedColor,dimensions, language,product) => {
+    const color = __({phrase :untranslatedColor,locale : language})
+    const sameDimension = (
+        product?.productDimensions.length === dimensions.length
+        && product?.productDimensions.width === dimensions.width
+        && product?.productDimensions.height === dimensions.height )
+
+    return title ?
+        title : color ?
+            dimensions && !sameDimension  ?
+                `${color} - ${dimensions.height}x${dimensions.width}x${dimensions.length}` :
+                color :
+            dimensions && !sameDimension ?
+                `${dimensions.height}x${dimensions.width}x${dimensions.length}` :
+                undefined
+}
+
 // Add a variant to a product
 router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
+    // Check product exists
+    try{
+        const product = await db.products.findOne({ _id: getId(req.body.product) });
+
+        if(!product){
+            console.log("no product found");
+            res.status(400).json({ message: 'Failed to add product variant' });
+            return;
+        }
 
     const variantDoc = {
         product: req.body.product,
-        title: req.body.title,
+        ...titleGenerator(req.__,req.body.title,req.body.color,req.body.productDimensions, product),
         price: req.body.price,
-        stock: safeParseInt(req.body.stock) || null
+        stock: safeParseInt(req.body.stock) || null,
+        type: req.body.type
     };
+    if(req.body.productDimensions) {
+        variantDoc.productDimensions = {
+            width: req.body.productDimensions.width,
+            length: req.body.productDimensions.length,
+            height: req.body.productDimensions.height
+        }
+    }
+    if(req.body.color){
+        variantDoc.color = req.body.color
+    }
 
-    // Validate the body again schema
+
+    // Validate the body against schema
     const schemaValidate = validateJson('newVariant', variantDoc);
     if(!schemaValidate.result){
         if(process.env.NODE_ENV !== 'test'){
@@ -211,25 +280,17 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
         return;
     }
 
-    // Check product exists
-    const product = await db.products.findOne({ _id: getId(req.body.product) });
 
-    if(!product){
-        console.log('here1?');
-        res.status(400).json({ message: 'Failed to add product variant' });
-        return;
-    }
 
     // Fix values
     variantDoc.product = getId(req.body.product);
     variantDoc.added = new Date();
 
-    try{
         const variant = await db.variants.insertOne(variantDoc);
         product.variants = variant.ops;
+        hooker.emit("variant_onCreate",product);
         res.status(200).json({ message: 'Successfully added variant', product });
     }catch(ex){
-        console.log('here?');
         res.status(400).json({ message: 'Failed to add variant. Please try again' });
     }
 });
@@ -237,7 +298,7 @@ router.post('/admin/product/addvariant', restrict, checkAccess, async (req, res)
 // Update an existing product variant
 router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res) => {
     const db = req.app.db;
-
+    const defaultLang = req.app.config.defaultLocale;
     const variantDoc = {
         product: req.body.product,
         variant: req.body.variant,
@@ -248,6 +309,10 @@ router.post('/admin/product/editvariant', restrict, checkAccess, async (req, res
 
     // Validate the body again schema
     const schemaValidate = validateJson('editVariant', variantDoc);
+    if(req.body.language && (req.body.language !== defaultLang)){
+        delete variantDoc.title;
+        variantDoc[`title_${req.body.language}`] = req.body.title
+    }
     if(!schemaValidate.result){
         if(process.env.NODE_ENV !== 'test'){
             console.log('schemaValidate errors', schemaValidate.errors);
@@ -335,9 +400,24 @@ router.post('/admin/product/update', restrict, checkAccess, async (req, res) => 
         productTags: req.body.productTags,
         productComment: checkboxBool(req.body.productComment),
         productStock: safeParseInt(req.body.productStock) || null,
+        productDimensions: {
+            length : req.body.productDimensions?.length,
+            width : req.body.productDimensions?.width,
+            height: req.body.productDimensions?.height
+        },
         productStockDisable: convertBool(req.body.productStockDisable),
         productSubscription: cleanHtml(req.body.productSubscription)
     };
+    //to save the dimensions we need them all 3;
+    if(!productDoc.productDimensions.length || !productDoc.productDimensions.width || !productDoc.productDimensions.height){
+        productDoc.productDimensions = undefined;
+    }
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productDescription_${lang}`] = cleanHtml(req.body[`productDescription_${lang}`]);
+    })
+    req.app.config.availableLanguages.map((lang) => {
+       productDoc[`productTitle_${lang}`] = cleanHtml(req.body[`productTitle_${lang}`]);
+    })
 
     // Validate the body again schema
     const schemaValidate = validateJson('editProduct', productDoc);
@@ -416,7 +496,16 @@ router.post('/admin/product/setasmainimage', restrict, checkAccess, async (req, 
 
     try{
         // update the productImage to the db
-        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: req.body.productImage } }, { multi: false });
+        const path = req.body.productImage.split("/");
+        const filename = path[path.length - 1];
+
+        const thumbnailLocalPath = `/uploads/${req.body.product_id}/thumbnails/${filename}`;
+        const hasThumbnail =  await fs.promises.access(`public${thumbnailLocalPath}`, fs.constants.F_OK) .then(() => true)
+            .catch(() => false);
+        //if there is a thumbnail in the system we use that one, otherwise we'll use the main image because we are not going to generate thumbnails of URL provided images
+        const thumbnailLocation = hasThumbnail ? thumbnailLocalPath : req.body.productImage
+
+        await db.products.updateOne({ _id: getId(req.body.product_id) }, { $set: { productImage: req.body.productImage, productThumbnail : thumbnailLocation } }, { multi: false });
         res.status(200).json({ message: 'Main image successfully set' });
     }catch(ex){
         res.status(400).json({ message: 'Unable to set as main image. Please try again.' });

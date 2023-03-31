@@ -130,6 +130,35 @@
         "orderHook": {
             "format": "uri-template"
         },
+        "hooks" : {
+            "type": "object",
+            "properties": {
+                "product" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                },
+                "variant" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                },
+                "order" : {
+                    "type": "object",
+                    "properties": {
+                        "onCreate": {
+                            "format": "uri-template"
+                        }
+                    }
+                }
+            }
+        },
         "secretCookie": {
             "type": "string"
         },
@@ -192,6 +221,20 @@
         "showHomepageVariants": {
             "type": "boolean",
             "default": false
+        },
+        "variantTemplates" : {
+            "type": "array",
+            "items" : {
+                "type" : "object",
+                "patternProperties" : {
+                    ".*" : {
+                        "type" : "array",
+                        "items" : {
+                            "type" : "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "required": [
