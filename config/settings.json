@@ -26,7 +26,8 @@
     "orderHook": "",
     "availableLanguages": [
         "en",
-        "it"
+        "it",
+        "ru"
     ],
     "defaultLocale": "en",
     "maxQuantity": 25,

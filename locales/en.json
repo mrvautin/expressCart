@@ -241,5 +241,6 @@
 	"Currency": "Currency",
 	"Approved": "Approved",
 	"Transactions": "Transactions",
-	"Order": "Order"
+	"Order": "Order",
+	"ru": "ru"
 }
