@@ -941,11 +941,17 @@ router.get('/search/:searchTerm/:pageNum?', (req, res) => {
     const productsIndex = req.app.productsIndex;
     const config = req.app.config;
     const numberProducts = config.productsPerPage ? config.productsPerPage : 6;
+    const keys = Object.keys(productsIndex.invertedIndex)
 
     const lunrIdArray = [];
-    productsIndex.search(searchTerm).forEach((id) => {
-        lunrIdArray.push(getId(id.ref));
-    });
+    for ( let i = 0; i < keys.length; i++ ) {
+        if (keys[i].includes(searchTerm)) {
+            let keyName = keys[i];
+            productsIndex.search(keyName).forEach((id) => {
+                lunrIdArray.push(getId(id.ref));
+            });
+        }
+    }
 
     let pageNum = 1;
     if(req.params.pageNum){
