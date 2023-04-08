@@ -185,7 +185,12 @@ $(document).ready(function (){
                 window.location = '/checkout/shipping';
             })
             .fail(function(msg){
-                showNotification(msg.responseJSON.message, 'danger');
+                const errData = JSON.parse(msg.responseText);
+                if (errData[0].message == 'should match format \"emailAddress\"') {
+                    showNotification('Email filled out incorrectly', 'danger');
+                } else {
+                    showNotification(msg.responseJSON.message, 'danger');
+                }
             });
         }
     });
