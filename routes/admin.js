@@ -109,10 +109,10 @@ router.post('/admin/login_action', async (req, res) => {
                 req.session.isAdmin = user.isAdmin;
                 res.status(200).json({ message: 'Login successful' });
                 return;
-            }
+            } else {
             // password is not correct
             res.status(400).json({ message: 'Access denied. Check password and try again.' });
-        });
+        }});
 });
 
 // setup form is shown when there are no users setup in the DB

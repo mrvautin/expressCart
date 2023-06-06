@@ -5,7 +5,7 @@ const stripHtml = require('string-strip-html');
 const moment = require('moment');
 const fs = require('fs');
 const path = require('path');
-const _ = require('lodash');
+const lodash = require('lodash');
 const ObjectId = require('mongodb').ObjectID;
 const {
     getId,
@@ -626,7 +626,7 @@ router.post('/product/updatecart', async (req, res, next) => {
 
             // If there is stock
             if(stockHeld.length > 0){
-                const totalHeld = _.find(stockHeld, ['_id', getId(cartItem.cartId)]).sumHeld;
+                const totalHeld = lodash.find(stockHeld, ['_id', getId(cartItem.cartId)]).sumHeld;
                 const netStock = productStock - totalHeld;
 
                 // Check there is sufficient stock
@@ -782,7 +782,7 @@ router.post('/product/addtocart', async (req, res, next) => {
 
             // If there is stock
             if(stockHeld.length > 0){
-                const heldProduct = _.find(stockHeld, ['_id', getId(productCartId)]);
+                const heldProduct = lodash.find(stockHeld, ['_id', getId(productCartId)]);
                 if(heldProduct){
                     const netStock = productStock - heldProduct.sumHeld;
 
@@ -1030,7 +1030,7 @@ router.get('/category/:cat/:pageNum?', (req, res) => {
                 productsPerPage: numberProducts,
                 totalProductCount: results.totalItems,
                 pageNum: pageNum,
-                menuLink: _.find(sortedMenu.items, (obj) => { return obj.link === searchTerm; }),
+                menuLink: lodash.find(sortedMenu.items, (obj) => { return obj.link === searchTerm; }),
                 paginateUrl: 'category',
                 config: config,
                 menu: sortedMenu,
