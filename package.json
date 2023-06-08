@@ -9,7 +9,8 @@
     "testdata": "node lib/testdata.js",
     "test": "ava",
     "dev": " pm2-dev start app.js",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "cypress:open": "cypress open"
   },
   "ava": {
     "serial": true,
@@ -79,6 +80,7 @@
   "devDependencies": {
     "ava": "^3.13.0",
     "clean-css": "^4.2.3",
+    "cypress": "^12.11.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-extra-rules": "0.0.0-development",
