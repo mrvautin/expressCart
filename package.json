@@ -7,7 +7,7 @@
     "start": "node app.js",
     "deploy": "node deploy.js",
     "testdata": "node lib/testdata.js",
-    "test": "ava",
+    "test": "nyc ava",
     "dev": " pm2-dev start app.js",
     "lint": "eslint ./",
     "cypress:open": "cypress open"
@@ -78,7 +78,9 @@
     "yenv": "^2.1.1"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.10.7",
     "ava": "^3.13.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "clean-css": "^4.2.3",
     "cypress": "^12.11.0",
     "eslint": "^6.8.0",
@@ -90,6 +92,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "globby": "^11.0.1",
     "less": "^3.12.2",
+    "nyc": "^15.1.0",
     "pm2": "^4.5.0",
     "supertest": "^4.0.2",
     "uglify-es": "^3.3.9"
