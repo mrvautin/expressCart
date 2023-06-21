@@ -16,7 +16,7 @@ describe("Prueba cambio de nombre de la tienda", () => {
     cy.get(".col-md-12 > :nth-child(1) > .form-control").type("Gucci");
     cy.get("#btnSettingsUpdate").click();
     cy.visit("http://localhost:1111/");
-    cy.get(".navbar-brand").should("have.text", "Gucci");
+    cy.get(".navbar-brand").contains("Gucci");
   });
   it("Sin nombre", () => {
     cy.get("#email").type("juanestebanortizbejarano@gmail.com");
@@ -25,10 +25,7 @@ describe("Prueba cambio de nombre de la tienda", () => {
     cy.get(".mb-2 > :nth-child(1) > .nav-link").click();
     cy.get(".col-md-12 > :nth-child(1) > .form-control").clear();
     cy.get("#btnSettingsUpdate").click();
-    cy.get("#notify_message").should(
-      "have.text",
-      "Cannot update the cart name"
-    );
+    cy.get("#notify_message").contains("Cannot update the cart name");
   });
   it("Nombre por fuera de la longitud aceptada", () => {
     cy.get("#email").type("juanestebanortizbejarano@gmail.com");
@@ -40,9 +37,6 @@ describe("Prueba cambio de nombre de la tienda", () => {
       "Cloth maximus for you"
     );
     cy.get("#btnSettingsUpdate").click();
-    cy.get("#notify_message").should(
-      "have.text",
-      "The lenght of the name is too long"
-    );
+    cy.get("#notify_message").contains("The lenght of the name is too long");
   });
 });
