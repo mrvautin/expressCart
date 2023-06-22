@@ -1,18 +1,18 @@
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
-describe("newUser", () => {
-  beforeEach("get newUser", () => {
+describe("Search Shop", () => {
+  beforeEach("Visit shop", () => {
     cy.visit("http://localhost:1111");
   });
 
   it("test id S1", () => {
-    cy.get(":nth-child(4) > .sidebar-link-addon").type("maletin");
+    cy.get(":nth-child(4) > .sidebar-link-addon").type("camiseta");
     cy.get("#btn_search").click();
     cy.get(":nth-child(4) > .sidebar-link-addon").should(
       "have.value",
-      "maletin"
+      "camiseta"
     );
-    cy.url("http://localhost:1111/search/maletin");
+    cy.url("http://localhost:1111/search/camiseta");
   });
 
   it("test id S2", () => {
@@ -22,23 +22,23 @@ describe("newUser", () => {
       "not.have.value",
       "1234"
     );
-    cy.url("http://localhost:1111/search/maletin");
+    cy.url("http://localhost:1111/search/camiseta");
   });
 
   it("test id S3", () => {
-    cy.get(":nth-child(4) > .sidebar-link-addon").type("@maletin#");
+    cy.get(":nth-child(4) > .sidebar-link-addon").type("@camiseta#");
     cy.get("#btn_search").click();
     cy.get(":nth-child(4) > .sidebar-link-addon").should(
       "not.have.value",
-      "@maletin#"
+      "@camiseta#"
     );
-    cy.url("http://localhost:1111/search/maletin");
+    cy.url("http://localhost:1111/search/camiseta");
   });
 
   it("test id S4", () => {
     cy.get(":nth-child(4) > .sidebar-link-addon").type("");
     cy.get("#btn_search").click();
     cy.get(":nth-child(4) > .sidebar-link-addon").should("not.have.value", "");
-    cy.url("http://localhost:1111/search/maletin");
+    cy.url("http://localhost:1111/search/camiseta");
   });
 });
