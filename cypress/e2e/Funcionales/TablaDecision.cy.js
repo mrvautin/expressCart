@@ -8,9 +8,11 @@ describe('Tipo de envio', () => {
     // reset and seed the database prior to every test
     cy.exec('mongod && npm start');
   }); */
-  it('asserts', () => {
-    cy.visit('/');
+  beforeEach(() => {
+    cy.visit('http://localhost:1111/');
+  });
 
+  it('Envio10E', () => {
     // Tipo de envio
 
     // Caso envio 10 Euros
@@ -21,9 +23,12 @@ describe('Tipo de envio', () => {
       'Estimated shipping :£10.00'
     );
     // cy.get('.my-auto').should('contain', '25.00');
+  });
 
+  it('Caso100E', () => {
     // Caso mayor de 100 euros
-
+    cy.get(':nth-child(4) > .thumbnail > p.text-center > .btn').click();
+    cy.contains('Cart').click();
     for (let i = 0; i < 3; i++) {
       cy.contains('+').click();
     }
@@ -31,18 +36,18 @@ describe('Tipo de envio', () => {
       'contain',
       'FREE shipping'
     );
+  });
 
-    cy.get('.col-4 > .btn').click();
-    cy.get('.pushy-link').click();
-
+  it('CasoProductoSub', () => {
     // Caso Producto subcription
-
     cy.visit('http://localhost:1111/product/asrqwe134232');
     cy.get('.btnAddToCart > .btn').click();
     cy.get('.navbar-nav > :nth-child(3) > .btn').click();
     cy.get('#shipping-amount').should('contain', 'FREE shipping');
+  });
 
-    cy.visit('/admin');
+  it('Status', () => {
+    cy.visit('http://localhost:1111/admin');
     cy.get('#email').type('juan.getial@correounivalle.edu.co');
     cy.get('#password').type('199656');
     cy.get('#loginForm').click();
