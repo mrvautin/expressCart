@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable quotes */
 describe("Prueba cambio de nombre de la tienda", () => {
   beforeEach(() => {

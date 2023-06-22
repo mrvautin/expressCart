@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable spaced-comment */
 /* eslint-disable extra-rules/no-commented-out-code */
 /* eslint-disable quotes */
