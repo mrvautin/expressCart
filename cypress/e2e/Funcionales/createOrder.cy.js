@@ -11,48 +11,44 @@ describe("createOrder", () => {
     // cy.get('.float-right > .btn').click()
   });
 
-  it("FN", () => {
+  it("Name y last name correct", () => {
     cy.get("#orderFirstName").type("samir");
     cy.get("#orderLastName").type("ramos");
+    cy.get("#orderFirstName").should("have.value", "samir");
+    cy.get("#orderLastName").should("have.value", "ramos");
   });
 
-  it("FN", () => {
+  it("Name number and last name correct", () => {
     cy.get("#orderFirstName").type("123");
     cy.get("#orderLastName").type("ramos");
     cy.get("#orderFirstName").should("not.have.value", "123");
   });
 
-  it("FN", () => {
+  it("Name with special character and last name correct", () => {
     cy.get("#orderFirstName").type("#@$");
     cy.get("#orderLastName").type("ramos");
     cy.get("#orderFirstName").should("not.have.value", "#@$");
   });
 
-  it("FN", () => {
+  it("Name empty adn last name correct", () => {
     cy.get("#orderFirstName").type("");
     cy.get("#orderLastName").type("ramos");
     cy.get("#orderFirstName").should("not.have.value", "");
   });
 
-  it("LN", () => {
-    cy.get("#orderFirstName").type("samir");
-    cy.get("#orderLastName").type("ramos");
-    cy.get("#orderLastName").should("have.value", "ramos");
-  });
-
-  it("LN", () => {
+  it("Name correct and last name number", () => {
     cy.get("#orderFirstName").type("samir");
     cy.get("#orderLastName").type("123");
     cy.get("#orderLastName").should("have.value", "123");
   });
 
-  it("LN", () => {
+  it("Name correct and last name special character", () => {
     cy.get("#orderFirstName").type("samir");
     cy.get("#orderLastName").type("#@$");
     cy.get("#orderLastName").should("not.have.value", "#@$");
   });
 
-  it("LN", () => {
+  it("Name correct and no last name", () => {
     cy.get("#orderFirstName").type("samir");
     cy.get("#orderLastName").type("");
     cy.get("#orderLastName").should("not.have.value", "");

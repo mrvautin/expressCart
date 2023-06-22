@@ -14,7 +14,7 @@ describe("newUser", () => {
     cy.get(".float-right > .btn").click();
   });
 
-  it("test id UN", () => {
+  it("test id 1", () => {
     cy.get("#usersName").type("samir");
     cy.get("#userEmail").type("samir@gmail.com");
     cy.get("#userPassword").type("123456");
@@ -23,7 +23,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id UN", () => {
+  it("test id 2", () => {
     cy.get("#usersName").type("8");
     cy.get("#userEmail").type("samir@gmail.com");
     cy.get("#userPassword").type("123456");
@@ -32,7 +32,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id UN", () => {
+  it("test id 3", () => {
     cy.get("#usersName").type("@");
     cy.get("#userEmail").type("samir@gmail.com");
     cy.get("#userPassword").type("123456");
@@ -41,7 +41,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id UN", () => {
+  it("test id 4", () => {
     cy.get("#usersName").type("");
     cy.get("#userEmail").type("samir@gmail.com");
     cy.get("#userPassword").type("123456");

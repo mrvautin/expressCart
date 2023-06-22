@@ -12,22 +12,22 @@ describe("createOrder", () => {
     //cy.get('.float-right > .btn').click()
   });
 
-  it("PP", () => {
+  it("PP 1", () => {
     cy.get("#productPrice").type(60);
     cy.get("#productPrice").should("have.value", "60");
   });
 
-  it("PP", () => {
+  it("PP 2", () => {
     cy.get("#productPrice").type("samir");
     cy.get("#productPrice").should("not.have.value", "samir");
   });
 
-  it("PP", () => {
+  it("PP 3", () => {
     cy.get("#productPrice").type("#@$");
     cy.get("#productPrice").should("not.have.value", "#@$");
   });
 
-  it("PP", () => {
+  it("PP 4", () => {
     cy.get("#productPrice").type("");
     cy.get("#productPrice").should("not.have.value", "");
   });

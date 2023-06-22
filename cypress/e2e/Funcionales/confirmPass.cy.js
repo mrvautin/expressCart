@@ -9,7 +9,7 @@ describe("newUser", () => {
     cy.get(":nth-child(7) > .nav-link").click();
     cy.get(".float-right > .btn").click();
   });
-  it("test id PW1", () => {
+  it("test id P1", () => {
     cy.get("#usersName").type("samir");
     cy.get("#userEmail").type("samir@gmail.com");
     cy.get("#userPassword").type("123456789");
@@ -21,7 +21,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id PW2", () => {
+  it("test id P2", () => {
     cy.get("#usersName").type("samir");
     cy.get("#userEmail").type("samir@gmail");
     cy.get("#userPassword").type("1234");
@@ -33,7 +33,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id PW2", () => {
+  it("test id P3", () => {
     cy.get("#usersName").type("samir");
     cy.get("#userEmail").type("samir@gmail");
     cy.get("#userPassword").type("123456789");

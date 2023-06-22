@@ -27,7 +27,7 @@ describe("newUser", () => {
     cy.get("#btnUserAdd").click();
   });
 
-  it("test id PW2", () => {
+  it("test id PW3", () => {
     cy.get("#usersName").type("samir");
     cy.get("#userEmail").type("samir@gmail");
     cy.get("#userPassword").type("");
