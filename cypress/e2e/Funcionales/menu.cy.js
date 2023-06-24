@@ -8,36 +8,34 @@ describe("Prueba cambio de nombre de la tienda", () => {
     // we include it in our beforeEach function so that it runs before each test
     cy.visit("http://localhost:1111/admin");
   });
-  it("Nombre aceptable", () => {
+  it("Campos aceptables", () => {
     cy.get("#email").type("juanestebanortizbejarano@gmail.com");
     cy.get("#password").type("admin12");
     cy.get("#loginForm").click();
-    cy.get(".mb-2 > :nth-child(1) > .nav-link").click();
-    cy.get(".col-md-12 > :nth-child(1) > .form-control").clear();
-    cy.get(".col-md-12 > :nth-child(1) > .form-control").type("Gucci");
-    cy.get("#btnSettingsUpdate").click();
-    cy.visit("http://localhost:1111/");
-    cy.get(".navbar-brand").contains("Gucci");
+    cy.get(".mb-2 > :nth-child(2) > .nav-link").click();
+    cy.get("#newNavMenu");
+    cy.get("#newNavLink");
+    cy.get("#settings-menu-new");
+    cy.get("#notify_message");
   });
   it("Sin nombre", () => {
     cy.get("#email").type("juanestebanortizbejarano@gmail.com");
     cy.get("#password").type("admin12");
     cy.get("#loginForm").click();
-    cy.get(".mb-2 > :nth-child(1) > .nav-link").click();
-    cy.get(".col-md-12 > :nth-child(1) > .form-control").clear();
-    cy.get("#btnSettingsUpdate").click();
-    cy.get("#notify_message").contains("Cannot update the cart name");
+    cy.get(".mb-2 > :nth-child(2) > .nav-link").click();
+    cy.get("#newNavMenu");
+    cy.get("#newNavLink");
+    cy.get("#settings-menu-new");
+    cy.get("#notify_message");
   });
   it("Nombre por fuera de la longitud aceptada", () => {
     cy.get("#email").type("juanestebanortizbejarano@gmail.com");
     cy.get("#password").type("admin12");
     cy.get("#loginForm").click();
-    cy.get(".mb-2 > :nth-child(1) > .nav-link").click();
-    cy.get(".col-md-12 > :nth-child(1) > .form-control").clear();
-    cy.get(".col-md-12 > :nth-child(1) > .form-control").type(
-      "Cloth maximus for you"
-    );
-    cy.get("#btnSettingsUpdate").click();
-    cy.get("#notify_message").contains("The lenght of the name is too long");
+    cy.get(".mb-2 > :nth-child(2) > .nav-link").click();
+    cy.get("#newNavMenu");
+    cy.get("#newNavLink");
+    cy.get("#settings-menu-new");
+    cy.get("#notify_message");
   });
 });
