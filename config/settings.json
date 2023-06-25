@@ -1,5 +1,5 @@
 {
-    "cartTitle": "CLOTH",
+    "cartTitle": "Cloth maximus for you",
     "cartDescription": "expressCart",
     "cartLogo": "",
     "baseUrl": "http://localhost:1111",
@@ -47,5 +47,9 @@
         }
     },
     "showRelatedProducts": true,
-    "showHomepageVariants": false
+    "showHomepageVariants": false,
+    "secretCookie": "32cd0371889cc5969cb8c58a0b5a3e9793d78fdf",
+    "secretSession": "e9815ce20aba57efd33fc3c48a8cd960f4fec78d",
+    "themeViews": "../views/themes/Cloth/",
+    "env": ""
 }
