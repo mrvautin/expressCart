@@ -1,5 +1,28 @@
-const{clearSessionValue, mongoSanitize} = require('../lib/common');
+const escape = require('html-entities').AllHtmlEntities;
+const{clearSessionValue,
+     mongoSanitize,
+     getThemes, 
+     getId,
+    allowedMimeType, 
+    fileSizeLimit,
+    checkDirectorySync, 
+    sendEmail }= require('../lib/common');
 const bcrypt = require('bcryptjs');
+const {
+    getConfig,
+    updateConfig
+} = require('../lib/config');
+const {
+    sortMenu,
+    getMenu,
+    newMenu,
+    updateMenu,
+    deleteMenu,
+    orderMenu
+} = require('../lib/menu');
+
+
+
 // Admin section
 const adminDashboard=( (req, res, next)=>{
     res.redirect('/admin/dashboard');
@@ -119,5 +142,133 @@ const setupUser=(async (req, res) => {   //can convert this to function because 
 });
 
 
+// dashboard 6
+const dashboard=(async (req, res) => {
+    const db = req.app.db;
 
-module.exports={adminDashboard, logout, login, loginValidate, adminSetup, setupUser}
+    // Collate data for dashboard
+    const dashboardData = {
+        productsCount: await db.products.countDocuments({
+            productPublished: true
+        }),
+        ordersCount: await db.orders.countDocuments({}),
+        ordersAmount: await db.orders.aggregate([{ $match: {} },
+            { $group: { _id: null, sum: { $sum: '$orderTotal' } }
+        }]).toArray(),
+        productsSold: await db.orders.aggregate([{ $match: {} },
+            { $group: { _id: null, sum: { $sum: '$orderProductCount' } }
+        }]).toArray(),
+        topProducts: await db.orders.aggregate([
+            { $project: { _id: 0 } },
+            { $project: { o: { $objectToArray: '$orderProducts' } } },
+            { $unwind: '$o' },
+            { $group: {
+                    _id: '$o.v.title',
+                    productImage: { $last: '$o.v.productImage' },
+                    count: { $sum: '$o.v.quantity' }
+            } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]).toArray()
+    };
+
+    // Fix aggregate data
+    if(dashboardData.ordersAmount.length > 0){
+        dashboardData.ordersAmount = dashboardData.ordersAmount[0].sum;
+    }
+    if(dashboardData.productsSold.length > 0){
+        dashboardData.productsSold = dashboardData.productsSold[0].sum;
+    }else{
+        dashboardData.productsSold = 0;
+    }
+
+    res.render('dashboard', {
+        title: 'Cart dashboard',
+        session: req.session,
+        admin: true,
+        dashboardData,
+        themes: getThemes(),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config,
+        csrfToken: req.csrfToken()
+    });
+});
+
+// settings
+const getSettings=((req, res) => {
+    res.render('settings', {
+        title: 'Cart settings',
+        session: req.session,
+        admin: true,
+        themes: getThemes(),
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config,
+        footerHtml: typeof req.app.config.footerHtml !== 'undefined' ? escape.decode(req.app.config.footerHtml) : null,
+        googleAnalytics: typeof req.app.config.googleAnalytics !== 'undefined' ? escape.decode(req.app.config.googleAnalytics) : null,
+        csrfToken: req.csrfToken()
+    });
+});
+
+// create API key
+const genAPI=(async (req, res) => {
+    const db = req.app.db;
+    const result = await db.users.findOneAndUpdate({
+        _id: ObjectId(req.session.userId),
+        isAdmin: true
+    }, {
+        $set: {
+            apiKey: new ObjectId()
+        }
+    }, {
+        returnOriginal: false
+    });
+
+    if(result.value && result.value.apiKey){
+        res.status(200).json({ message: 'API Key generated', apiKey: result.value.apiKey });
+        return;
+    }
+    res.status(400).json({ message: 'Failed to generate API Key' });
+});
+
+// settings update
+function settingsUpdate(req, res) {
+    const result = updateConfig(req.body);
+    if(result === true){
+        req.app.config = getConfig();
+        res.status(200).json({ message: 'Settings successfully updated' });
+        return;
+    }
+    res.status(400).json({ message: 'Permission denied' });
+};
+
+// settings menu
+const settingsMenu=(async (req, res) => {
+    const db = req.app.db;
+    res.render('settings-menu', {
+        title: 'Cart menu',
+        session: req.session,
+        admin: true,
+        message: clearSessionValue(req.session, 'message'),
+        messageType: clearSessionValue(req.session, 'messageType'),
+        helpers: req.handlebars.helpers,
+        config: req.app.config,
+        menu: sortMenu(await getMenu(db)),
+        csrfToken: req.csrfToken()
+    });
+});
+
+module.exports={adminDashboard,
+    settingsMenu,
+     logout, login, 
+     loginValidate,
+      adminSetup, 
+      setupUser, 
+      dashboard, 
+      getSettings,
+      genAPI, 
+      settingsUpdate
+    }
