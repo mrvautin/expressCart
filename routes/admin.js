@@ -12,6 +12,8 @@ const csrf = require('csurf');
 const util = require('util');
 const stream = require('stream');
 const { validateJson } = require('../lib/schema');
+
+const {adminDashboard,logout} = require('../controller/admin.controller')
 const {
     clearSessionValue,
     mongoSanitize,
@@ -43,17 +45,10 @@ const emailRegex = /\S+@\S+\.\S+/;
 const numericRegex = /^\d*\.?\d*$/;
 
 // Admin section
-router.get('/admin', restrict, (req, res, next) => {
-    res.redirect('/admin/dashboard');
-});
+router.get('/admin',adminDashboard);
 
 // logout
-router.get('/admin/logout', (req, res) => {
-    req.session.user = null;
-    req.session.message = null;
-    req.session.messageType = null;
-    res.redirect('/');
-});
+router.get('/admin/logout',logout);
 
 // Used for tests only
 if(process.env.NODE_ENV === 'test'){
