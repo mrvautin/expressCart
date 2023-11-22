@@ -13,7 +13,7 @@ const util = require('util');
 const stream = require('stream');
 const { validateJson } = require('../lib/schema');
 
-const {adminDashboard,logout,login} = require('../controller/admin.controller')
+const {adminDashboard,logout,login, loginValidate, adminSetup, setupUser} = require('../controller/admin.controller')
 const {
     clearSessionValue,
     mongoSanitize,
@@ -63,82 +63,13 @@ if(process.env.NODE_ENV === 'test'){
 router.get('/admin/login', login );
 
 // login the user and check the password
-router.post('/admin/login_action', async (req, res) => {
-    const db = req.app.db;
-
-    const user = await db.users.findOne({ userEmail: mongoSanitize(req.body.email) });
-    if(!user || user === null){
-        res.status(400).json({ message: 'A user with that email does not exist.' });
-        return;
-    }
-
-    // we have a user under that email so we compare the password
-    bcrypt.compare(req.body.password, user.userPassword)
-        .then((result) => {
-            if(result){
-                req.session.user = req.body.email;
-                req.session.usersName = user.usersName;
-                req.session.userId = user._id.toString();
-                req.session.isAdmin = user.isAdmin;
-                res.status(200).json({ message: 'Login successful' });
-                return;
-            }
-            // password is not correct
-            res.status(400).json({ message: 'Access denied. Check password and try again.' });
-        });
-});
+router.post('/admin/login_action', loginValidate);
 
 // setup form is shown when there are no users setup in the DB
-router.get('/admin/setup', async (req, res) => {
-    const db = req.app.db;
-
-    const userCount = await db.users.countDocuments({});
-    // dont allow the user to "re-setup" if a user exists.
-    // set needsSetup to false as a user exists
-    req.session.needsSetup = false;
-    if(userCount === 0){
-        req.session.needsSetup = true;
-        res.render('setup', {
-            title: 'Setup',
-            config: req.app.config,
-            helpers: req.handlebars.helpers,
-            message: clearSessionValue(req.session, 'message'),
-            messageType: clearSessionValue(req.session, 'messageType'),
-            showFooter: 'showFooter'
-        });
-        return;
-    }
-    res.redirect('/admin/login');
-});
+router.get('/admin/setup', adminSetup);
 
 // insert a user
-router.post('/admin/setup_action', async (req, res) => {
-    const db = req.app.db;
-
-    const doc = {
-        usersName: req.body.usersName,
-        userEmail: req.body.userEmail,
-        userPassword: bcrypt.hashSync(req.body.userPassword, 10),
-        isAdmin: true,
-        isOwner: true
-    };
-
-    // check for users
-    const userCount = await db.users.countDocuments({});
-    if(userCount === 0){
-        // email is ok to be used.
-        try{
-            await db.users.insertOne(doc);
-            res.status(200).json({ message: 'User account inserted' });
-            return;
-        }catch(ex){
-            console.error(colors.red(`Failed to insert user: ${ex}`));
-            res.status(200).json({ message: 'Setup failed' });
-            return;
-        }
-    }
-    res.status(200).json({ message: 'Already setup.' });
-});
+router.post('/admin/setup_action', setupUser);
 
 // dashboard
 router.get('/admin/dashboard', csrfProtection, restrict, async (req, res) => {
