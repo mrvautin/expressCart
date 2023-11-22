@@ -13,7 +13,7 @@ const util = require('util');
 const stream = require('stream');
 const { validateJson } = require('../lib/schema');
 
-const {adminDashboard,logout} = require('../controller/admin.controller')
+const {adminDashboard,logout,login} = require('../controller/admin.controller')
 const {
     clearSessionValue,
     mongoSanitize,
@@ -60,29 +60,7 @@ if(process.env.NODE_ENV === 'test'){
 }
 
 // login form
-router.get('/admin/login', async (req, res) => {
-    const db = req.app.db;
-
-    const userCount = await db.users.countDocuments({});
-    // we check for a user. If one exists, redirect to login form otherwise setup
-    if(userCount && userCount > 0){
-        // set needsSetup to false as a user exists
-        req.session.needsSetup = false;
-        res.render('login', {
-            title: 'Login',
-            referringUrl: req.header('Referer'),
-            config: req.app.config,
-            message: clearSessionValue(req.session, 'message'),
-            messageType: clearSessionValue(req.session, 'messageType'),
-            helpers: req.handlebars.helpers,
-            showFooter: 'showFooter'
-        });
-    }else{
-        // if there are no users set the "needsSetup" session
-        req.session.needsSetup = true;
-        res.redirect('/admin/setup');
-    }
-});
+router.get('/admin/login', login );
 
 // login the user and check the password
 router.post('/admin/login_action', async (req, res) => {
