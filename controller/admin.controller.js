@@ -46,7 +46,7 @@ const logout=( (req, res)=>{
     res.redirect('/');
 })
 
-// login form 2
+// login form 
 const login=(async (req, res) => {
     const db = req.app.db;
 
@@ -71,7 +71,7 @@ const login=(async (req, res) => {
     }
 });
 
-// login the user and check the password 3
+// login the user and check the password 
 const loginValidate=( async (req, res) => {
     const db = req.app.db;
 
@@ -98,7 +98,7 @@ const loginValidate=( async (req, res) => {
 });
 
 
-// setup form is shown when there are no users setup in the DB 4
+// setup form is shown when there are no users setup in the DB 
 const adminSetup=(async (req, res) => {
     const db = req.app.db;
 
@@ -153,7 +153,7 @@ const setupUser=(async (req, res) => {
 });
 
 
-// dashboard 6
+// dashboard 
 const dashboard=(async (req, res) => {
     const db = req.app.db;
 

@@ -1,6 +1,5 @@
 const express = require('express');
 const { restrict, checkAccess } = require('../lib/auth');
-const escape = require('html-entities').AllHtmlEntities;
 const colors = require('colors');
 const bcrypt = require('bcryptjs');
 const moment = require('moment');
@@ -11,23 +10,11 @@ const mime = require('mime-type/with-db');
 const csrf = require('csurf');
 const util = require('util');
 const stream = require('stream');
-const { validateJson } = require('../lib/schema');
+
 
 const {adminDashboard,logout,login, loginValidate, adminSetup, setupUser, dashboard, getSettings, genAPI, settingsUpdate, settingsMenu, getPages, newPages, editPage, insertPage, deletePage, menuItem, saveOrder, validatePerma, discount, editDiscount, updateDiscount, getDiscount, createDiscount, deleteDiscount, addImage, uploadFile, testEmail, searchAll} = require('../controller/admin.controller')
-const {
-    clearSessionValue,
-    mongoSanitize,
-    getThemes,
-    getId,
-    allowedMimeType,
-    fileSizeLimit,
-    checkDirectorySync,
-    sendEmail
-} = require('../lib/common');
-const {
-    getConfig,
-    updateConfig
-} = require('../lib/config');
+
+
 const {
     sortMenu,
     getMenu,
@@ -36,7 +23,7 @@ const {
     deleteMenu,
     orderMenu
 } = require('../lib/menu');
-const ObjectId = require('mongodb').ObjectID;
+
 const router = express.Router();
 const csrfProtection = csrf({ cookie: true });
 
