@@ -13,7 +13,7 @@ const util = require('util');
 const stream = require('stream');
 const { validateJson } = require('../lib/schema');
 
-const {adminDashboard,logout,login, loginValidate, adminSetup, setupUser, dashboard, getSettings, genAPI, settingsUpdate, settingsMenu} = require('../controller/admin.controller')
+const {adminDashboard,logout,login, loginValidate, adminSetup, setupUser, dashboard, getSettings, genAPI, settingsUpdate, settingsMenu, getPages, newPages, editPage, insertPage, deletePage, menuItem, saveOrder, validatePerma, discount, editDiscount, updateDiscount, getDiscount, createDiscount, deleteDiscount, addImage, uploadFile, testEmail, searchAll} = require('../controller/admin.controller')
 const {
     clearSessionValue,
     mongoSanitize,
@@ -87,583 +87,63 @@ router.post('/admin/settings/update', restrict, checkAccess, settingsUpdate);
 router.get('/admin/settings/menu', csrfProtection, restrict, settingsMenu);
 
 // page list
-router.get('/admin/settings/pages', csrfProtection, restrict, async (req, res) => {
-    const db = req.app.db;
-    const pages = await db.pages.find({}).toArray();
-
-    res.render('settings-pages', {
-        title: 'Static pages',
-        pages: pages,
-        session: req.session,
-        admin: true,
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        config: req.app.config,
-        menu: sortMenu(await getMenu(db)),
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/pages', csrfProtection, restrict, getPages);
 
 // pages new
-router.get('/admin/settings/pages/new', csrfProtection, restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    res.render('settings-page', {
-        title: 'Static pages',
-        session: req.session,
-        admin: true,
-        button_text: 'Create',
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        config: req.app.config,
-        menu: sortMenu(await getMenu(db)),
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/pages/new', csrfProtection, restrict, checkAccess, newPages);
 
 // pages editor
-router.get('/admin/settings/pages/edit/:page', csrfProtection, restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-    const page = await db.pages.findOne({ _id: getId(req.params.page) });
-    const menu = sortMenu(await getMenu(db));
-    if(!page){
-        res.status(404).render('error', {
-            title: '404 Error - Page not found',
-            config: req.app.config,
-            message: '404 Error - Page not found',
-            helpers: req.handlebars.helpers,
-            showFooter: 'showFooter',
-            menu
-        });
-        return;
-    }
-
-    res.render('settings-page', {
-        title: 'Static pages',
-        page: page,
-        button_text: 'Update',
-        session: req.session,
-        admin: true,
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        config: req.app.config,
-        menu,
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/pages/edit/:page', csrfProtection, restrict, checkAccess, editPage);
 
 // insert/update page
-router.post('/admin/settings/page', restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    const doc = {
-        pageName: req.body.pageName,
-        pageSlug: req.body.pageSlug,
-        pageEnabled: req.body.pageEnabled,
-        pageContent: req.body.pageContent
-    };
-
-    if(req.body.pageId){
-        // existing page
-        const page = await db.pages.findOne({ _id: getId(req.body.pageId) });
-        if(!page){
-            res.status(400).json({ message: 'Page not found' });
-            return;
-        }
-
-        try{
-            const updatedPage = await db.pages.findOneAndUpdate({ _id: getId(req.body.pageId) }, { $set: doc }, { returnOriginal: false });
-            res.status(200).json({ message: 'Page updated successfully', pageId: req.body.pageId, page: updatedPage.value });
-        }catch(ex){
-            res.status(400).json({ message: 'Error updating page. Please try again.' });
-        }
-    }else{
-        // insert page
-        try{
-            const newDoc = await db.pages.insertOne(doc);
-            res.status(200).json({ message: 'New page successfully created', pageId: newDoc.insertedId });
-            return;
-        }catch(ex){
-            res.status(400).json({ message: 'Error creating page. Please try again.' });
-        }
-    }
-});
+router.post('/admin/settings/page', restrict, checkAccess, insertPage);
 
 // delete a page
-router.post('/admin/settings/page/delete', restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    const page = await db.pages.findOne({ _id: getId(req.body.pageId) });
-    if(!page){
-        res.status(400).json({ message: 'Page not found' });
-        return;
-    }
-
-    try{
-        await db.pages.deleteOne({ _id: getId(req.body.pageId) }, {});
-        res.status(200).json({ message: 'Page successfully deleted' });
-        return;
-    }catch(ex){
-        res.status(400).json({ message: 'Error deleting page. Please try again.' });
-    }
-});
+router.post('/admin/settings/page/delete', restrict, checkAccess, deletePage);
 
 // new menu item
-router.post('/admin/settings/menu/new', restrict, checkAccess, (req, res) => {
-    const result = newMenu(req);
-    if(result === false){
-        res.status(400).json({ message: 'Failed creating menu.' });
-        return;
-    }
-    res.status(200).json({ message: 'Menu created successfully.' });
-});
+router.post('/admin/settings/menu/new', restrict, checkAccess, menuItem);
 
 // update existing menu item
-router.post('/admin/settings/menu/update', restrict, checkAccess, (req, res) => {
-    const result = updateMenu(req);
-    if(result === false){
-        res.status(400).json({ message: 'Failed updating menu.' });
-        return;
-    }
-    res.status(200).json({ message: 'Menu updated successfully.' });
-});
+router.post('/admin/settings/menu/update', restrict, checkAccess, updateMenu);
 
 // delete menu item
-router.post('/admin/settings/menu/delete', restrict, checkAccess, (req, res) => {
-    const result = deleteMenu(req, req.body.menuId);
-    if(result === false){
-        res.status(400).json({ message: 'Failed deleting menu.' });
-        return;
-    }
-    res.status(200).json({ message: 'Menu deleted successfully.' });
-});
+router.post('/admin/settings/menu/delete', restrict, checkAccess, deleteMenu);
 
-// We call this via a Ajax call to save the order from the sortable list
-router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, (req, res) => {
-    const result = orderMenu(req, res);
-    if(result === false){
-        res.status(400).json({ message: 'Failed saving menu order' });
-        return;
-    }
-    res.status(200).json({});
-});
+// We call this via a Ajax call to save the order from the sortable list 
+router.post('/admin/settings/menu/saveOrder', restrict, checkAccess, saveOrder);
 
 // validate the permalink
-router.post('/admin/validatePermalink', async (req, res) => {
-    // if doc id is provided it checks for permalink in any products other that one provided,
-    // else it just checks for any products with that permalink
-    const db = req.app.db;
-
-    let query = {};
-    if(typeof req.body.docId === 'undefined' || req.body.docId === ''){
-        query = { productPermalink: req.body.permalink };
-    }else{
-        query = { productPermalink: req.body.permalink, _id: { $ne: getId(req.body.docId) } };
-    }
-
-    const products = await db.products.countDocuments(query);
-    if(products && products > 0){
-        res.status(400).json({ message: 'Permalink already exists' });
-        return;
-    }
-    res.status(200).json({ message: 'Permalink validated successfully' });
-});
+router.post('/admin/validatePermalink', validatePerma);
 
 // Discount codes
-router.get('/admin/settings/discounts', csrfProtection, restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    const discounts = await db.discounts.find({}).toArray();
-
-    res.render('settings-discounts', {
-        title: 'Discount code',
-        config: req.app.config,
-        session: req.session,
-        discounts,
-        admin: true,
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/discounts', csrfProtection, restrict, checkAccess, discount);
 
 // Edit a discount code
-router.get('/admin/settings/discount/edit/:id', csrfProtection, restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    const discount = await db.discounts.findOne({ _id: getId(req.params.id) });
-
-    res.render('settings-discount-edit', {
-        title: 'Discount code edit',
-        session: req.session,
-        admin: true,
-        discount,
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        config: req.app.config,
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/discount/edit/:id', csrfProtection, restrict, checkAccess, editDiscount);
 
 // Update discount code
-router.post('/admin/settings/discount/update', restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-     // Doc to insert
-     const discountDoc = {
-        discountId: req.body.discountId,
-        code: req.body.code,
-        type: req.body.type,
-        value: parseInt(req.body.value),
-        start: moment(req.body.start, 'DD/MM/YYYY HH:mm').toDate(),
-        end: moment(req.body.end, 'DD/MM/YYYY HH:mm').toDate()
-    };
-
-    // Validate the body again schema
-    const schemaValidate = validateJson('editDiscount', discountDoc);
-    if(!schemaValidate.result){
-        res.status(400).json(schemaValidate.errors);
-        return;
-    }
-
-    // Check start is after today
-    if(moment(discountDoc.start).isBefore(moment())){
-        res.status(400).json({ message: 'Discount start date needs to be after today' });
-        return;
-    }
-
-    // Check end is after the start
-    if(!moment(discountDoc.end).isAfter(moment(discountDoc.start))){
-        res.status(400).json({ message: 'Discount end date needs to be after start date' });
-        return;
-    }
-
-    // Check if code exists
-    const checkCode = await db.discounts.countDocuments({
-        code: discountDoc.code,
-        _id: { $ne: getId(discountDoc.discountId) }
-    });
-    if(checkCode){
-        res.status(400).json({ message: 'Discount code already exists' });
-        return;
-    }
-
-    // Remove discountID
-    delete discountDoc.discountId;
-
-    try{
-        await db.discounts.updateOne({ _id: getId(req.body.discountId) }, { $set: discountDoc }, {});
-        res.status(200).json({ message: 'Successfully saved', discount: discountDoc });
-    }catch(ex){
-        res.status(400).json({ message: 'Failed to save. Please try again' });
-    }
-});
+router.post('/admin/settings/discount/update', restrict, checkAccess, updateDiscount);
 
 // Create a discount code
-router.get('/admin/settings/discount/new', csrfProtection, restrict, checkAccess, async (req, res) => {
-    res.render('settings-discount-new', {
-        title: 'Discount code create',
-        session: req.session,
-        admin: true,
-        message: clearSessionValue(req.session, 'message'),
-        messageType: clearSessionValue(req.session, 'messageType'),
-        helpers: req.handlebars.helpers,
-        config: req.app.config,
-        csrfToken: req.csrfToken()
-    });
-});
+router.get('/admin/settings/discount/new', csrfProtection, restrict, checkAccess, getDiscount);
 
 // Create a discount code
-router.post('/admin/settings/discount/create', csrfProtection, restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    // Doc to insert
-    const discountDoc = {
-        code: req.body.code,
-        type: req.body.type,
-        value: parseInt(req.body.value),
-        start: moment(req.body.start, 'DD/MM/YYYY HH:mm').toDate(),
-        end: moment(req.body.end, 'DD/MM/YYYY HH:mm').toDate()
-    };
-
-    // Validate the body again schema
-    const schemaValidate = validateJson('newDiscount', discountDoc);
-    if(!schemaValidate.result){
-        res.status(400).json(schemaValidate.errors);
-        return;
-    }
-
-    // Check if code exists
-    const checkCode = await db.discounts.countDocuments({
-        code: discountDoc.code
-    });
-    if(checkCode){
-        res.status(400).json({ message: 'Discount code already exists' });
-        return;
-    }
-
-    // Check start is after today
-    if(moment(discountDoc.start).isBefore(moment())){
-        res.status(400).json({ message: 'Discount start date needs to be after today' });
-        return;
-    }
-
-    // Check end is after the start
-    if(!moment(discountDoc.end).isAfter(moment(discountDoc.start))){
-        res.status(400).json({ message: 'Discount end date needs to be after start date' });
-        return;
-    }
-
-    // Insert discount code
-    const discount = await db.discounts.insertOne(discountDoc);
-    res.status(200).json({ message: 'Discount code created successfully', discountId: discount.insertedId });
-});
+router.post('/admin/settings/discount/create', csrfProtection, restrict, checkAccess, createDiscount);
 
 // Delete discount code
-router.delete('/admin/settings/discount/delete', restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    try{
-        await db.discounts.deleteOne({ _id: getId(req.body.discountId) }, {});
-        res.status(200).json({ message: 'Discount code successfully deleted' });
-        return;
-    }catch(ex){
-        res.status(400).json({ message: 'Error deleting discount code. Please try again.' });
-    }
-});
+router.delete('/admin/settings/discount/delete', restrict, checkAccess, deleteDiscount);
 
 // Add image by URL
-router.post('/admin/file/url', restrict, checkAccess, async (req, res) => {
-    const db = req.app.db;
-
-    // get the product form the DB
-    const product = await db.products.findOne({ _id: getId(req.body.productId) });
-    if(!product){
-        // Return error
-        res.status(400).json({ message: 'Image error. Please try again.' });
-        return;
-    }
-
-    // Check image URL already in list
-    if(product.productImages){
-        if(product.productImages.includes(req.body.imageUrl)){
-            res.status(400).json({ message: 'Image error. Image with that URL already exists.' });
-            return;
-        }
-    }
-
-    // Check image URL already set as main image
-    if(product.productImage === req.body.imageUrl){
-        res.status(400).json({ message: 'Image error. Image with that URL already exists.' });
-        return;
-    }
-
-    // Check productImages and init
-    if(!product.productImages){
-        product.productImages = [];
-    }
-    // Add the image to our images
-    product.productImages.push(req.body.imageUrl);
-
-    try{
-        // if there isn't a product featured image, set this one
-        if(!product.productImage){
-            await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: req.body.imageUrl } }, { multi: false });
-        }
-
-        // Add the images
-        await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImages: product.productImages } }, { multi: false });
-        res.status(200).json({ message: 'Image added successfully' });
-    }catch(ex){
-        console.log('Failed to upload the file', ex);
-        res.status(400).json({ message: 'Image error. Please try again.' });
-    }
-});
+router.post('/admin/file/url', restrict, checkAccess, addImage);
 
 // upload the file
 const upload = multer({ dest: 'public/uploads/' });
-router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFile'), async (req, res) => {
-    const db = req.app.db;
-
-    if(req.file){
-        const file = req.file;
-
-        // Get the mime type of the file
-        const mimeType = mime.lookup(file.originalname);
-
-        // Check for allowed mime type and file size
-        if(!allowedMimeType.includes(mimeType) || file.size > fileSizeLimit){
-            // Remove temp file
-            fs.unlinkSync(file.path);
-
-            // Return error
-            res.status(400).json({ message: 'File type not allowed or too large. Please try again.' });
-            return;
-        }
-
-        // get the product form the DB
-        const product = await db.products.findOne({ _id: getId(req.body.productId) });
-        if(!product){
-            // delete the temp file.
-            fs.unlinkSync(file.path);
-
-            // Return error
-            res.status(400).json({ message: 'File upload error. Please try again.' });
-            return;
-        }
-
-        const productPath = product._id.toString();
-        const uploadDir = path.join('public/uploads', productPath);
-
-        // Check directory and create (if needed)
-        checkDirectorySync(uploadDir);
-
-        // Setup the new path
-        const imagePath = path.join('/uploads', productPath, file.originalname.replace(/ /g, '_'));
-
-        // save the new file
-        const dest = fs.createWriteStream(path.join(uploadDir, file.originalname.replace(/ /g, '_')));
-        const pipeline = util.promisify(stream.pipeline);
-
-        try{
-            await pipeline(
-                fs.createReadStream(file.path),
-                dest
-            );
-
-            // delete the temp file.
-            fs.unlinkSync(file.path);
-
-            // if there isn't a product featured image, set this one
-            if(!product.productImage){
-                await db.products.updateOne({ _id: getId(req.body.productId) }, { $set: { productImage: imagePath } }, { multi: false });
-            }
-            res.status(200).json({ message: 'File uploaded successfully' });
-        }catch(ex){
-            console.log('Failed to upload the file', ex);
-            res.status(400).json({ message: 'File upload error. Please try again.' });
-        }
-    }else{
-        // Return error
-        console.log('fail', req.file);
-        res.status(400).json({ message: 'File upload error. Please try again.' });
-    }
-});
+router.post('/admin/file/upload', restrict, checkAccess, upload.single('uploadFile'), uploadFile);
 
 // delete a file via ajax request
-router.post('/admin/testEmail', restrict, (req, res) => {
-    const config = req.app.config;
-    // TODO: Should fix this to properly handle result
-    sendEmail(config.emailAddress, 'expressCart test email', 'Your email settings are working');
-    res.status(200).json({ message: 'Test email sent' });
-});
+router.post('/admin/testEmail', restrict, testEmail);
 
-router.post('/admin/searchall', restrict, async (req, res, next) => {
-    const db = req.app.db;
-    const searchValue = req.body.searchValue;
-    const limitReturned = 5;
-
-    // Empty arrays
-    let customers = [];
-    let orders = [];
-    let products = [];
-
-    // Default queries
-    const customerQuery = {};
-    const orderQuery = {};
-    const productQuery = {};
-
-    // If an ObjectId is detected use that
-    if(ObjectId.isValid(req.body.searchValue)){
-        // Get customers
-        customers = await db.customers.find({
-            _id: ObjectId(searchValue)
-        })
-        .limit(limitReturned)
-        .sort({ created: 1 })
-        .toArray();
-
-        // Get orders
-        orders = await db.orders.find({
-            _id: ObjectId(searchValue)
-        })
-        .limit(limitReturned)
-        .sort({ orderDate: 1 })
-        .toArray();
-
-        // Get products
-        products = await db.products.find({
-            _id: ObjectId(searchValue)
-        })
-        .limit(limitReturned)
-        .sort({ productAddedDate: 1 })
-        .toArray();
-
-        return res.status(200).json({
-            customers,
-            orders,
-            products
-        });
-    }
-
-    // If email address is detected
-    if(emailRegex.test(req.body.searchValue)){
-        customerQuery.email = searchValue;
-        orderQuery.orderEmail = searchValue;
-    }else if(numericRegex.test(req.body.searchValue)){
-        // If a numeric value is detected
-        orderQuery.amount = req.body.searchValue;
-        productQuery.productPrice = req.body.searchValue;
-    }else{
-        // String searches
-        customerQuery.$or = [
-            { firstName: { $regex: new RegExp(searchValue, 'img') } },
-            { lastName: { $regex: new RegExp(searchValue, 'img') } }
-        ];
-        orderQuery.$or = [
-            { orderFirstname: { $regex: new RegExp(searchValue, 'img') } },
-            { orderLastname: { $regex: new RegExp(searchValue, 'img') } }
-        ];
-        productQuery.$or = [
-            { productTitle: { $regex: new RegExp(searchValue, 'img') } },
-            { productDescription: { $regex: new RegExp(searchValue, 'img') } }
-        ];
-    }
-
-    // Get customers
-    if(Object.keys(customerQuery).length > 0){
-        customers = await db.customers.find(customerQuery)
-        .limit(limitReturned)
-        .sort({ created: 1 })
-        .toArray();
-    }
-
-    // Get orders
-    if(Object.keys(orderQuery).length > 0){
-        orders = await db.orders.find(orderQuery)
-        .limit(limitReturned)
-        .sort({ orderDate: 1 })
-        .toArray();
-    }
-
-    // Get products
-    if(Object.keys(productQuery).length > 0){
-        products = await db.products.find(productQuery)
-        .limit(limitReturned)
-        .sort({ productAddedDate: 1 })
-        .toArray();
-    }
-
-    return res.status(200).json({
-        customers,
-        orders,
-        products
-    });
-});
+router.post('/admin/searchall', restrict, searchAll);
 
 module.exports = router;
